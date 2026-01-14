@@ -1,0 +1,67 @@
+name: xargs
+description: Build and execute command lines from standard input
+flags:
+  - long: null
+    short: "0"
+    description: Input items are terminated by null character
+  - long: arg-file
+    short: a
+    description: Read items from file instead of standard input
+    takes_value: true
+  - long: delimiter
+    short: d
+    description: Input items are terminated by delimiter character
+    takes_value: true
+  - long: eof
+    short: E
+    description: Set logical EOF string
+    takes_value: true
+  - short: e
+    description: Set logical EOF string
+    takes_value: true
+  - long: replace
+    short: I
+    description: Replace occurrences of replstr in the initial-arguments
+    takes_value: true
+  - short: i
+    description: Replace {} in the initial-arguments
+    takes_value: true
+  - long: max-lines
+    short: L
+    description: Use at most max-lines nonblank input lines per command line
+    takes_value: true
+  - short: l
+    description: Use at most max-lines nonblank input lines per command line
+    takes_value: true
+  - long: max-args
+    short: n
+    description: Use at most max-args arguments per command line
+    takes_value: true
+  - long: open-tty
+    short: o
+    description: Reopen stdin as /dev/tty
+  - long: interactive
+    short: p
+    description: Prompt before executing each command line
+  - long: no-run-if-empty
+    short: r
+    description: If stdin is empty, do not run the command
+  - long: max-chars
+    short: s
+    description: Use at most max-chars per command line
+    takes_value: true
+  - long: verbose
+    short: t
+    description: Print the command line before executing it
+  - long: exit
+    short: x
+    description: Exit if the size is exceeded
+  - long: max-procs
+    short: P
+    description: Run up to max-procs processes at a time
+    takes_value: true
+  - long: process-slot-var
+    description: Set environment variable to slot number
+    takes_value: true
+  - long: show-limits
+    description: Show limits on the command-line length

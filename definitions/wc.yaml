@@ -1,0 +1,22 @@
+name: wc
+description: Print newline, word, and byte counts for each file
+flags:
+  - long: bytes
+    short: c
+    description: Print the byte counts
+  - long: chars
+    short: m
+    description: Print the character counts
+  - long: lines
+    short: l
+    description: Print the newline counts
+  - long: files0-from
+    description: Read input from NUL-terminated names in file
+    takes_value: true
+  - long: max-line-length
+    short: L
+    description: Print the maximum display width
+  - long: words
+    short: w
+    description: Print the word counts
+is_path_completion: true

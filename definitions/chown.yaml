@@ -1,0 +1,39 @@
+name: chown
+description: Change file owner and group
+flags:
+  - long: recursive
+    short: R
+    description: Operate on files and directories recursively
+  - long: changes
+    short: c
+    description: Report only when a change is made
+  - long: silent
+    short: f
+    description: Suppress most error messages
+  - long: quiet
+    description: Suppress most error messages
+  - long: verbose
+    short: v
+    description: Output for every file processed
+  - long: dereference
+    description: Affect the referent of each symbolic link
+  - long: no-dereference
+    short: h
+    description: Affect symbolic links instead of referenced file
+  - long: from
+    description: Change owner/group only if they currently match
+    takes_value: true
+  - long: no-preserve-root
+    description: Do not treat '/' specially
+  - long: preserve-root
+    description: Fail to operate recursively on '/'
+  - long: reference
+    description: Use reference file's owner and group
+    takes_value: true
+  - short: H
+    description: If a command line argument is a symlink, traverse it
+  - short: L
+    description: Traverse every symbolic link
+  - short: P
+    description: Do not traverse any symbolic links (default)
+is_path_completion: true

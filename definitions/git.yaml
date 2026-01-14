@@ -1,36 +1,395 @@
 name: git
 description: Distributed version control system
 subcommands:
-  - name: commit
-    description: Record changes to the repository
+  - name: init
+    description: Create an empty Git repository
     flags:
-      - long: message
-        short: m
-        description: Commit message
-      - long: all
-        short: a
-        description: Stage all modified and deleted paths
-  - name: checkout
-    description: Switch branches or restore working tree files
-    flags:
-      - long: force
-        short: f
-        description: Force checkout
-      - long: branch
-        short: b
-        description: Create a new branch
+      - long: bare
+        description: Create a bare repository
   - name: clone
     description: Clone a repository into a new directory
-  - name: status
-    description: Show the working tree status
-  - name: push
-    description: Update remote refs along with associated objects
-  - name: pull
-    description: Fetch from and integrate with another repository or a local branch
+    flags:
+      - long: depth
+        description: Create a shallow clone with limited history
+        takes_value: true
+      - long: branch
+        short: b
+        description: Clone specific branch
+        takes_value: true
+      - long: recursive
+        description: Initialize submodules in the clone
   - name: add
     description: Add file contents to the index
     flags:
       - long: all
         short: A
         description: Add all files
+      - long: patch
+        short: p
+        description: Interactively choose hunks to stage
+      - long: update
+        short: u
+        description: Update tracked files
     is_path_completion: true
+  - name: commit
+    description: Record changes to the repository
+    flags:
+      - long: message
+        short: m
+        description: Commit message
+        takes_value: true
+      - long: all
+        short: a
+        description: Stage all modified and deleted paths
+      - long: amend
+        description: Amend the previous commit
+      - long: no-edit
+        description: Use previous commit message without editing
+      - long: allow-empty
+        description: Allow empty commit
+  - name: status
+    description: Show the working tree status
+    flags:
+      - long: short
+        short: s
+        description: Give output in short format
+      - long: branch
+        short: b
+        description: Show branch information
+  - name: diff
+    description: Show changes between commits, commit and working tree, etc
+    flags:
+      - long: staged
+        description: Show staged changes
+      - long: cached
+        description: Alias for --staged
+      - long: stat
+        description: Show diffstat
+      - long: name-only
+        description: Show only names of changed files
+    is_path_completion: true
+  - name: log
+    description: Show commit logs
+    flags:
+      - long: oneline
+        description: One line per commit
+      - long: graph
+        description: Draw a text-based graph of commits
+      - long: all
+        description: Show all refs
+      - long: author
+        description: Filter by author
+        takes_value: true
+      - long: since
+        description: Show commits after date
+        takes_value: true
+      - long: until
+        description: Show commits before date
+        takes_value: true
+      - short: n
+        description: Limit number of commits
+        takes_value: true
+  - name: show
+    description: Show various types of objects
+    flags:
+      - long: stat
+        description: Show diffstat
+      - long: name-only
+        description: Show only names of changed files
+  - name: checkout
+    description: Switch branches or restore working tree files
+    flags:
+      - long: branch
+        short: b
+        description: Create and checkout a new branch
+      - long: force
+        short: f
+        description: Force checkout
+      - long: track
+        short: t
+        description: Set up tracking mode
+    is_path_completion: true
+  - name: switch
+    description: Switch branches
+    flags:
+      - long: create
+        short: c
+        description: Create a new branch
+      - long: detach
+        short: d
+        description: Detach HEAD at named commit
+  - name: branch
+    description: List, create, or delete branches
+    flags:
+      - long: delete
+        short: d
+        description: Delete a branch
+      - long: force
+        short: D
+        description: Force delete a branch
+      - long: move
+        short: m
+        description: Move/rename a branch
+      - long: all
+        short: a
+        description: List both remote and local branches
+      - long: remote
+        short: r
+        description: List remote branches
+      - long: verbose
+        short: v
+        description: Show sha1 and commit subject line
+  - name: merge
+    description: Join two or more development histories together
+    flags:
+      - long: no-ff
+        description: Create a merge commit even when fast-forward is possible
+      - long: squash
+        description: Squash commits into a single commit
+      - long: abort
+        description: Abort the current merge
+      - long: continue
+        description: Continue the current merge
+  - name: rebase
+    description: Reapply commits on top of another base tip
+    flags:
+      - long: interactive
+        short: i
+        description: Interactive rebase
+      - long: onto
+        description: Rebase onto a given branch
+        takes_value: true
+      - long: abort
+        description: Abort the current rebase
+      - long: continue
+        description: Continue the current rebase
+      - long: skip
+        description: Skip current patch
+  - name: reset
+    description: Reset current HEAD to the specified state
+    flags:
+      - long: soft
+        description: Keep changes staged
+      - long: mixed
+        description: Keep changes unstaged (default)
+      - long: hard
+        description: Discard all changes
+    is_path_completion: true
+  - name: revert
+    description: Revert some existing commits
+    flags:
+      - long: no-commit
+        short: n
+        description: Revert without committing
+      - long: mainline
+        short: m
+        description: Parent number for merge commit
+        takes_value: true
+  - name: stash
+    description: Stash the changes in a dirty working directory away
+    subcommands:
+      - name: push
+        description: Save local modifications to a new stash
+        flags:
+          - long: message
+            short: m
+            description: Stash message
+            takes_value: true
+          - long: keep-index
+            short: k
+            description: Keep staged changes
+      - name: pop
+        description: Remove and apply a single stash
+      - name: apply
+        description: Apply a stash without removing it
+      - name: list
+        description: List stashes
+      - name: drop
+        description: Remove a single stash
+      - name: clear
+        description: Remove all stashes
+      - name: show
+        description: Show changes in a stash
+  - name: push
+    description: Update remote refs along with associated objects
+    flags:
+      - long: force
+        short: f
+        description: Force push
+      - long: force-with-lease
+        description: Safer force push
+      - long: set-upstream
+        short: u
+        description: Set upstream for the branch
+      - long: tags
+        description: Push all tags
+      - long: delete
+        short: d
+        description: Delete remote branch
+      - long: all
+        description: Push all branches
+  - name: pull
+    description: Fetch from and integrate with another repository
+    flags:
+      - long: rebase
+        short: r
+        description: Rebase instead of merge
+      - long: no-rebase
+        description: Merge instead of rebase
+      - long: force
+        short: f
+        description: Force pull
+  - name: fetch
+    description: Download objects and refs from another repository
+    flags:
+      - long: all
+        description: Fetch all remotes
+      - long: prune
+        short: p
+        description: Remove remote-tracking references that no longer exist
+      - long: tags
+        short: t
+        description: Fetch all tags
+  - name: remote
+    description: Manage set of tracked repositories
+    subcommands:
+      - name: add
+        description: Add a new remote
+      - name: remove
+        description: Remove a remote
+      - name: rename
+        description: Rename a remote
+      - name: show
+        description: Show information about a remote
+      - name: prune
+        description: Remove stale remote-tracking branches
+      - name: set-url
+        description: Change URL for a remote
+    flags:
+      - long: verbose
+        short: v
+        description: Be verbose
+  - name: tag
+    description: Create, list, delete or verify tags
+    flags:
+      - long: annotate
+        short: a
+        description: Make an annotated tag
+      - long: message
+        short: m
+        description: Tag message
+        takes_value: true
+      - long: delete
+        short: d
+        description: Delete tags
+      - long: list
+        short: l
+        description: List tags
+      - long: force
+        short: f
+        description: Replace existing tag
+  - name: cherry-pick
+    description: Apply the changes introduced by some existing commits
+    flags:
+      - long: no-commit
+        short: n
+        description: Apply changes without committing
+      - long: edit
+        short: e
+        description: Edit the commit message
+      - long: abort
+        description: Abort the current operation
+      - long: continue
+        description: Continue the current operation
+  - name: clean
+    description: Remove untracked files from the working tree
+    flags:
+      - long: force
+        short: f
+        description: Force clean
+      - long: dry-run
+        short: n
+        description: Show what would be done
+      - long: directories
+        short: d
+        description: Remove untracked directories
+      - long: ignored
+        short: x
+        description: Remove ignored files as well
+  - name: bisect
+    description: Use binary search to find the commit that introduced a bug
+    subcommands:
+      - name: start
+        description: Start bisecting
+      - name: good
+        description: Mark commit as good
+      - name: bad
+        description: Mark commit as bad
+      - name: reset
+        description: Finish bisecting
+      - name: skip
+        description: Skip current commit
+  - name: blame
+    description: Show what revision and author last modified each line
+    flags:
+      - long: line-porcelain
+        short: L
+        description: Show in a format designed for machine consumption
+    is_path_completion: true
+  - name: restore
+    description: Restore working tree files
+    flags:
+      - long: staged
+        short: S
+        description: Restore staged content
+      - long: worktree
+        short: W
+        description: Restore working tree
+      - long: source
+        short: s
+        description: Restore from source
+        takes_value: true
+    is_path_completion: true
+  - name: config
+    description: Get and set repository or global options
+    flags:
+      - long: global
+        description: Use global config file
+      - long: local
+        description: Use repository config file
+      - long: list
+        short: l
+        description: List all variables
+      - long: edit
+        short: e
+        description: Open config in editor
+  - name: submodule
+    description: Initialize, update or inspect submodules
+    subcommands:
+      - name: add
+        description: Add a new submodule
+      - name: init
+        description: Initialize submodules
+      - name: update
+        description: Update submodules
+        flags:
+          - long: init
+            description: Initialize submodules if needed
+          - long: recursive
+            description: Update nested submodules
+      - name: status
+        description: Show status of submodules
+      - name: foreach
+        description: Run command in each submodule
+  - name: worktree
+    description: Manage multiple working trees
+    subcommands:
+      - name: add
+        description: Create a new working tree
+        is_path_completion: true
+      - name: list
+        description: List working trees
+      - name: remove
+        description: Remove a working tree
+      - name: prune
+        description: Prune working tree information

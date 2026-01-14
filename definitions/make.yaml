@@ -1,0 +1,114 @@
+name: make
+description: GNU make utility to maintain groups of programs
+flags:
+  - long: file
+    short: f
+    description: Read FILE as a makefile
+    takes_value: true
+  - long: directory
+    short: C
+    description: Change to DIRECTORY before doing anything
+    takes_value: true
+  - long: debug
+    short: d
+    description: Print debugging information
+  - long: environment-overrides
+    short: e
+    description: Environment variables override makefiles
+  - short: E
+    description: Environment variables override makefiles
+  - long: eval
+    description: Evaluate STRING as a makefile statement
+    takes_value: true
+  - long: ignore-errors
+    short: i
+    description: Ignore errors from recipes
+  - long: include-dir
+    short: I
+    description: Search DIRECTORY for included makefiles
+    takes_value: true
+  - long: jobs
+    short: j
+    description: Allow N jobs at once; infinite with no arg
+    takes_value: true
+  - long: keep-going
+    short: k
+    description: Keep going when some targets can't be made
+  - long: load-average
+    short: l
+    description: Don't start multiple jobs unless load is below N
+    takes_value: true
+  - long: check-symlink-times
+    short: L
+    description: Use the latest mtime between symlinks and target
+  - long: just-print
+    short: n
+    description: Don't actually run any recipe; just print
+  - long: dry-run
+    description: Don't actually run any recipe; just print
+  - long: recon
+    description: Don't actually run any recipe; just print
+  - long: old-file
+    short: o
+    description: Consider FILE to be very old
+    takes_value: true
+  - long: assume-old
+    description: Consider FILE to be very old
+    takes_value: true
+  - long: output-sync
+    short: O
+    description: Synchronize output (none, line, target, recurse)
+    takes_value: true
+  - long: print-data-base
+    short: p
+    description: Print make's internal database
+  - long: question
+    short: q
+    description: Run no recipe; exit status says if up to date
+  - long: no-builtin-rules
+    short: r
+    description: Disable the built-in implicit rules
+  - long: no-builtin-variables
+    short: R
+    description: Disable the built-in variable settings
+  - long: silent
+    short: s
+    description: Don't echo recipes
+  - long: quiet
+    description: Don't echo recipes
+  - long: no-silent
+    description: Echo recipes
+  - long: no-keep-going
+    short: S
+    description: Turns off -k
+  - long: stop
+    description: Turns off -k
+  - long: touch
+    short: t
+    description: Touch targets instead of remaking them
+  - long: trace
+    description: Print tracing information
+  - long: version
+    short: v
+    description: Print version information
+  - long: print-directory
+    short: w
+    description: Print the current directory
+  - long: no-print-directory
+    description: Turn off -w
+  - long: what-if
+    short: W
+    description: Consider FILE to be infinitely new
+    takes_value: true
+  - long: new-file
+    description: Consider FILE to be infinitely new
+    takes_value: true
+  - long: assume-new
+    description: Consider FILE to be infinitely new
+    takes_value: true
+  - long: warn-undefined-variables
+    description: Warn when an undefined variable is referenced
+  - long: shuffle
+    description: Randomize dependency order (random, reverse, seed, none)
+    takes_value: true
+is_path_completion: true

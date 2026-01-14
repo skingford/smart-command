@@ -1,9 +1,502 @@
 name: cargo
-description: Rust package manager
+description: Rust package manager and build system
 subcommands:
+  - name: new
+    description: Create a new Cargo package
+    flags:
+      - long: bin
+        description: Create a binary package
+      - long: lib
+        description: Create a library package
+      - long: name
+        description: Set the package name
+        takes_value: true
+      - long: vcs
+        description: Initialize a VCS repository (git, hg, pijul, fossil, none)
+        takes_value: true
+    is_path_completion: true
+  - name: init
+    description: Create a new Cargo package in an existing directory
+    flags:
+      - long: bin
+        description: Create a binary package
+      - long: lib
+        description: Create a library package
+      - long: name
+        description: Set the package name
+        takes_value: true
+    is_path_completion: true
+  - name: build
+    description: Compile the current package
+    flags:
+      - long: release
+        short: r
+        description: Build in release mode with optimizations
+      - long: all-targets
+        description: Build all targets
+      - long: all-features
+        description: Activate all available features
+      - long: no-default-features
+        description: Do not activate default features
+      - long: features
+        short: F
+        description: Space or comma separated list of features
+        takes_value: true
+      - long: target
+        description: Build for the target triple
+        takes_value: true
+      - long: jobs
+        short: j
+        description: Number of parallel jobs
+        takes_value: true
+      - long: package
+        short: p
+        description: Package to build
+        takes_value: true
+      - long: verbose
+        short: v
+        description: Use verbose output
   - name: run
     description: Run a binary or example of the local package
-  - name: build
-    description: Compile a local package and all of its dependencies
+    flags:
+      - long: release
+        short: r
+        description: Run in release mode with optimizations
+      - long: bin
+        description: Name of the bin target to run
+        takes_value: true
+      - long: example
+        description: Name of the example target to run
+        takes_value: true
+      - long: features
+        short: F
+        description: Space or comma separated list of features
+        takes_value: true
+      - long: all-features
+        description: Activate all available features
+      - long: no-default-features
+        description: Do not activate default features
+      - long: package
+        short: p
+        description: Package with the target to run
+        takes_value: true
   - name: check
-    description: Check a local package and all of its dependencies for errors
+    description: Analyze the current package and report errors
+    flags:
+      - long: all-targets
+        description: Check all targets
+      - long: release
+        short: r
+        description: Check in release mode
+      - long: all-features
+        description: Activate all available features
+      - long: no-default-features
+        description: Do not activate default features
+      - long: features
+        short: F
+        description: Space or comma separated list of features
+        takes_value: true
+      - long: package
+        short: p
+        description: Package to check
+        takes_value: true
+  - name: test
+    description: Execute all unit and integration tests
+    flags:
+      - long: release
+        short: r
+        description: Build and run tests in release mode
+      - long: all-targets
+        description: Test all targets
+      - long: doc
+        description: Test documentation examples
+      - long: no-run
+        description: Compile but do not run tests
+      - long: no-fail-fast
+        description: Run all tests regardless of failure
+      - long: features
+        short: F
+        description: Space or comma separated list of features
+        takes_value: true
+      - long: all-features
+        description: Activate all available features
+      - long: no-default-features
+        description: Do not activate default features
+      - long: package
+        short: p
+        description: Package to test
+        takes_value: true
+      - long: lib
+        description: Test only library
+      - long: bins
+        description: Test only binaries
+  - name: bench
+    description: Execute all benchmarks
+    flags:
+      - long: all-targets
+        description: Benchmark all targets
+      - long: features
+        short: F
+        description: Space or comma separated list of features
+        takes_value: true
+      - long: all-features
+        description: Activate all available features
+      - long: no-default-features
+        description: Do not activate default features
+      - long: package
+        short: p
+        description: Package to benchmark
+        takes_value: true
+  - name: clean
+    description: Remove artifacts that cargo has generated
+    flags:
+      - long: release
+        short: r
+        description: Clean release artifacts
+      - long: doc
+        description: Clean documentation artifacts
+      - long: package
+        short: p
+        description: Package to clean
+        takes_value: true
+      - long: target-dir
+        description: Directory for all generated artifacts
+        takes_value: true
+  - name: doc
+    description: Build package documentation
+    flags:
+      - long: open
+        description: Open docs in a browser after building
+      - long: no-deps
+        description: Do not build documentation for dependencies
+      - long: document-private-items
+        description: Document private items
+      - long: all-features
+        description: Activate all available features
+      - long: no-default-features
+        description: Do not activate default features
+      - long: features
+        short: F
+        description: Space or comma separated list of features
+        takes_value: true
+      - long: package
+        short: p
+        description: Package to document
+        takes_value: true
+  - name: publish
+    description: Upload a package to the registry
+    flags:
+      - long: dry-run
+        description: Perform all checks without uploading
+      - long: token
+        description: Token to use when uploading
+        takes_value: true
+      - long: no-verify
+        description: Do not verify the contents
+      - long: allow-dirty
+        description: Allow dirty working directories
+      - long: registry
+        description: Registry to publish to
+        takes_value: true
+  - name: install
+    description: Install a Rust binary
+    flags:
+      - long: path
+        description: Filesystem path to local crate
+        takes_value: true
+      - long: git
+        description: Git URL to install the crate from
+        takes_value: true
+      - long: branch
+        description: Branch to use when installing from git
+        takes_value: true
+      - long: tag
+        description: Tag to use when installing from git
+        takes_value: true
+      - long: rev
+        description: Specific commit to use when installing from git
+        takes_value: true
+      - long: version
+        description: Specify a version to install
+        takes_value: true
+      - long: force
+        short: f
+        description: Force overwriting existing crates
+      - long: locked
+        description: Require Cargo.lock is up to date
+      - long: features
+        short: F
+        description: Space or comma separated list of features
+        takes_value: true
+  - name: uninstall
+    description: Remove a Rust binary
+  - name: update
+    description: Update dependencies in Cargo.lock
+    flags:
+      - long: package
+        short: p
+        description: Package to update
+        takes_value: true
+      - long: dry-run
+        description: Display what would be updated
+      - long: precise
+        description: Update to a specific version
+        takes_value: true
+  - name: search
+    description: Search packages in crates.io
+    flags:
+      - long: limit
+        description: Limit the number of results
+        takes_value: true
+      - long: registry
+        description: Registry to search
+        takes_value: true
+  - name: add
+    description: Add dependencies to Cargo.toml
+    flags:
+      - long: dev
+        short: D
+        description: Add as development dependency
+      - long: build
+        short: B
+        description: Add as build dependency
+      - long: features
+        short: F
+        description: Space or comma separated list of features
+        takes_value: true
+      - long: optional
+        description: Mark the dependency as optional
+      - long: no-default-features
+        description: Disable default features
+      - long: rename
+        description: Rename the dependency
+        takes_value: true
+      - long: path
+        description: Filesystem path to local crate
+        takes_value: true
+      - long: git
+        description: Git repository location
+        takes_value: true
+      - long: branch
+        description: Git branch
+        takes_value: true
+      - long: tag
+        description: Git tag
+        takes_value: true
+      - long: rev
+        description: Git reference
+        takes_value: true
+  - name: remove
+    description: Remove dependencies from Cargo.toml
+    flags:
+      - long: dev
+        short: D
+        description: Remove as development dependency
+      - long: build
+        short: B
+        description: Remove as build dependency
+      - long: package
+        short: p
+        description: Package to remove from
+        takes_value: true
+  - name: tree
+    description: Display a tree visualization of dependencies
+    flags:
+      - long: all-features
+        description: Activate all available features
+      - long: no-default-features
+        description: Do not activate default features
+      - long: features
+        short: F
+        description: Space or comma separated list of features
+        takes_value: true
+      - long: invert
+        short: i
+        description: Invert the tree direction
+      - long: duplicates
+        short: d
+        description: Show only duplicates
+      - long: depth
+        description: Maximum display depth
+        takes_value: true
+      - long: package
+        short: p
+        description: Package to display tree for
+        takes_value: true
+  - name: fmt
+    description: Format Rust code
+    flags:
+      - long: check
+        description: Run in check mode
+      - long: all
+        description: Format all packages in workspace
+      - long: package
+        short: p
+        description: Package to format
+        takes_value: true
+  - name: clippy
+    description: Run Clippy lints
+    flags:
+      - long: fix
+        description: Automatically apply lint suggestions
+      - long: all-targets
+        description: Check all targets
+      - long: all-features
+        description: Activate all available features
+      - long: no-default-features
+        description: Do not activate default features
+      - long: features
+        short: F
+        description: Space or comma separated list of features
+        takes_value: true
+      - long: allow
+        short: A
+        description: Set lint allowed
+        takes_value: true
+      - long: warn
+        short: W
+        description: Set lint warnings
+        takes_value: true
+      - long: deny
+        short: D
+        description: Set lint denied
+        takes_value: true
+      - long: package
+        short: p
+        description: Package to check
+        takes_value: true
+  - name: fix
+    description: Automatically fix lint warnings
+    flags:
+      - long: edition
+        description: Fix code to latest edition
+      - long: edition-idioms
+        description: Fix code to use edition idioms
+      - long: broken-code
+        description: Fix code even if it has compiler errors
+      - long: allow-dirty
+        description: Fix code even if working directory is dirty
+      - long: allow-staged
+        description: Fix code even if staged files exist
+  - name: audit
+    description: Audit dependencies for security vulnerabilities
+    flags:
+      - long: deny
+        description: Deny on any findings
+      - long: ignore
+        description: Ignore a specific advisory
+        takes_value: true
+  - name: outdated
+    description: Display outdated dependencies
+    flags:
+      - long: root-deps-only
+        short: R
+        description: Only check root dependencies
+      - long: workspace
+        short: w
+        description: Check entire workspace
+  - name: vendor
+    description: Vendor all dependencies locally
+    flags:
+      - long: no-delete
+        description: Do not delete existing vendor directory
+      - long: versioned-dirs
+        description: Use version in directory names
+    is_path_completion: true
+  - name: metadata
+    description: Output package metadata in machine-readable format
+    flags:
+      - long: format-version
+        description: Format version
+        takes_value: true
+      - long: no-deps
+        description: Output only workspace members
+      - long: all-features
+        description: Activate all available features
+      - long: no-default-features
+        description: Do not activate default features
+      - long: features
+        short: F
+        description: Space or comma separated list of features
+        takes_value: true
+  - name: locate-project
+    description: Print the Cargo.toml location
+    flags:
+      - long: workspace
+        description: Locate workspace root
+      - long: message-format
+        description: Output format (json or plain)
+        takes_value: true
+  - name: generate-lockfile
+    description: Generate Cargo.lock
+  - name: fetch
+    description: Fetch dependencies from the network
+    flags:
+      - long: target
+        description: Fetch for the target triple
+        takes_value: true
+  - name: login
+    description: Save an API token from the registry locally
+    flags:
+      - long: registry
+        description: Registry to login to
+        takes_value: true
+  - name: logout
+    description: Remove an API token from the registry locally
+    flags:
+      - long: registry
+        description: Registry to logout from
+        takes_value: true
+  - name: owner
+    description: Manage the owners of a crate
+    subcommands:
+      - name: add
+        description: Add an owner
+      - name: remove
+        description: Remove an owner
+      - name: list
+        description: List owners
+    flags:
+      - long: add
+        short: a
+        description: Name of owner to add
+        takes_value: true
+      - long: remove
+        short: r
+        description: Name of owner to remove
+        takes_value: true
+      - long: list
+        short: l
+        description: List owners
+      - long: token
+        description: API token
+        takes_value: true
+      - long: registry
+        description: Registry to use
+        takes_value: true
+  - name: yank
+    description: Remove a pushed crate from the index
+    flags:
+      - long: version
+        description: Version to yank
+        takes_value: true
+      - long: undo
+        description: Undo a yank
+      - long: token
+        description: API token
+        takes_value: true
+      - long: registry
+        description: Registry to yank from
+        takes_value: true
+  - name: package
+    description: Assemble the local package into a distributable tarball
+    flags:
+      - long: list
+        short: l
+        description: List files in the package
+      - long: no-verify
+        description: Do not verify the package
+      - long: allow-dirty
+        description: Allow dirty working directories
+      - long: no-metadata
+        description: Ignore warnings about metadata

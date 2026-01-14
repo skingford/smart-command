@@ -1,0 +1,42 @@
+name: htop
+description: Interactive process viewer
+flags:
+  - long: delay
+    short: d
+    description: Delay between updates in tenths of seconds
+    takes_value: true
+  - long: filter
+    short: F
+    description: Show only the commands matching the given filter
+    takes_value: true
+  - long: highlight-changes
+    short: H
+    description: Highlight new and old processes
+    takes_value: true
+  - long: no-color
+    short: C
+    description: Start htop in monochrome mode
+  - long: no-mouse
+    description: Disable mouse support
+  - long: no-unicode
+    description: Do not use unicode
+  - long: pid
+    short: p
+    description: Show only the given PIDs
+    takes_value: true
+  - long: sort-key
+    short: s
+    description: Sort by this column
+    takes_value: true
+  - long: tree
+    short: t
+    description: Show processes in tree view
+  - long: user
+    short: u
+    description: Show only processes of a given user
+    takes_value: true
+  - long: readonly
+    description: Disable all system and process changing features
+  - long: version
+    short: V
+    description: Output version information

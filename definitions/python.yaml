@@ -1,0 +1,53 @@
+name: python
+description: Python interpreter
+flags:
+  - short: c
+    description: Execute Python code directly
+    takes_value: true
+  - short: m
+    description: Run library module as a script
+    takes_value: true
+  - short: i
+    description: Inspect interactively after running script
+  - short: O
+    description: Optimize bytecode (remove asserts)
+  - short: B
+    description: Don't write .pyc files
+  - short: s
+    description: Don't add user site directory to sys.path
+  - short: S
+    description: Don't run 'import site' on initialization
+  - short: E
+    description: Ignore PYTHON* environment variables
+  - short: I
+    description: Isolate Python from the user's environment
+  - short: P
+    description: Don't prepend working directory to sys.path
+  - short: v
+    description: Verbose (trace import statements)
+  - short: V
+    description: Print the Python version number
+  - long: version
+    description: Print the Python version number
+  - short: W
+    description: Warning control (error, ignore, always, default, module, once)
+    takes_value: true
+  - short: X
+    description: Set implementation-specific option
+    takes_value: true
+  - short: q
+    description: Quiet (don't print version at startup)
+  - short: u
+    description: Force unbuffered stdout and stderr
+  - short: x
+    description: Skip first line of source
+  - short: h
+    description: Print help message
+  - long: help
+    description: Print help message
+  - short: d
+    description: Debug output from parser
+  - long: check-hash-based-pycs
+    description: Control hash-based .pyc validation (default, always, never)
+    takes_value: true
+is_path_completion: true

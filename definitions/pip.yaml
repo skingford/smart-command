@@ -1,0 +1,486 @@
+name: pip
+description: Python package installer
+subcommands:
+  - name: install
+    description: Install packages
+    flags:
+      - long: requirement
+        short: r
+        description: Install from requirements file
+        takes_value: true
+      - long: constraint
+        short: c
+        description: Constrain versions using file
+        takes_value: true
+      - long: no-deps
+        description: Don't install package dependencies
+      - long: pre
+        description: Include pre-release and development versions
+      - long: editable
+        short: e
+        description: Install a project in editable mode
+        takes_value: true
+      - long: target
+        short: t
+        description: Install packages into target directory
+        takes_value: true
+      - long: platform
+        description: Only use wheels compatible with platform
+        takes_value: true
+      - long: python-version
+        description: Python version for wheel compatibility
+        takes_value: true
+      - long: implementation
+        description: Only use wheels for Python implementation
+        takes_value: true
+      - long: abi
+        description: Only use wheels compatible with Python ABI
+        takes_value: true
+      - long: user
+        description: Install to the Python user install directory
+      - long: root
+        description: Install everything relative to this root
+        takes_value: true
+      - long: prefix
+        description: Installation prefix
+        takes_value: true
+      - long: src
+        description: Directory to check out editable projects into
+        takes_value: true
+      - long: upgrade
+        short: U
+        description: Upgrade all specified packages
+      - long: upgrade-strategy
+        description: Upgrade strategy (only-if-needed or eager)
+        takes_value: true
+      - long: force-reinstall
+        description: Reinstall all packages
+      - long: ignore-installed
+        short: I
+        description: Ignore the installed packages
+      - long: ignore-requires-python
+        description: Ignore Requires-Python information
+      - long: no-build-isolation
+        description: Disable isolation when building
+      - long: use-pep517
+        description: Use PEP 517 for building
+      - long: check-build-dependencies
+        description: Check build dependencies
+      - long: break-system-packages
+        description: Allow installing into EXTERNALLY-MANAGED environment
+      - long: config-settings
+        short: C
+        description: Configuration settings passed to build backend
+        takes_value: true
+      - long: global-option
+        description: Global options for setup.py
+        takes_value: true
+      - long: compile
+        description: Compile Python source files to bytecode
+      - long: no-compile
+        description: Do not compile Python source files to bytecode
+      - long: no-warn-script-location
+        description: Do not warn about PATH
+      - long: no-warn-conflicts
+        description: Do not warn about conflicting dependencies
+      - long: no-binary
+        description: Do not use binary packages
+        takes_value: true
+      - long: only-binary
+        description: Do not use source packages
+        takes_value: true
+      - long: prefer-binary
+        description: Prefer older binary packages
+      - long: require-hashes
+        description: Require hash checking
+      - long: progress-bar
+        description: Progress bar type (on, off, raw)
+        takes_value: true
+      - long: root-user-action
+        description: Action when running as root (warn, ignore)
+        takes_value: true
+      - long: report
+        description: Generate JSON report of installation
+        takes_value: true
+      - long: no-clean
+        description: Don't clean up build directories
+      - long: dry-run
+        description: Don't actually install anything
+    is_path_completion: true
+  - name: uninstall
+    description: Uninstall packages
+    flags:
+      - long: requirement
+        short: r
+        description: Uninstall packages listed in file
+        takes_value: true
+      - long: yes
+        short: y
+        description: Don't ask for confirmation
+      - long: root-user-action
+        description: Action when running as root (warn, ignore)
+        takes_value: true
+      - long: break-system-packages
+        description: Allow uninstalling from EXTERNALLY-MANAGED environment
+  - name: download
+    description: Download packages
+    flags:
+      - long: requirement
+        short: r
+        description: Install from requirements file
+        takes_value: true
+      - long: constraint
+        short: c
+        description: Constrain versions using file
+        takes_value: true
+      - long: no-deps
+        description: Don't install package dependencies
+      - long: global-option
+        description: Global options for setup.py
+        takes_value: true
+      - long: no-binary
+        description: Do not use binary packages
+        takes_value: true
+      - long: only-binary
+        description: Do not use source packages
+        takes_value: true
+      - long: prefer-binary
+        description: Prefer older binary packages
+      - long: src
+        description: Directory to check out editable projects into
+        takes_value: true
+      - long: pre
+        description: Include pre-release versions
+      - long: require-hashes
+        description: Require hash checking
+      - long: progress-bar
+        description: Progress bar type (on, off, raw)
+        takes_value: true
+      - long: no-build-isolation
+        description: Disable isolation when building
+      - long: use-pep517
+        description: Use PEP 517 for building
+      - long: ignore-requires-python
+        description: Ignore Requires-Python information
+      - long: dest
+        short: d
+        description: Download packages to directory
+        takes_value: true
+      - long: platform
+        description: Only use wheels compatible with platform
+        takes_value: true
+      - long: python-version
+        description: Python version for wheel compatibility
+        takes_value: true
+      - long: implementation
+        description: Only use wheels for Python implementation
+        takes_value: true
+      - long: abi
+        description: Only use wheels compatible with Python ABI
+        takes_value: true
+      - long: no-clean
+        description: Don't clean up build directories
+    is_path_completion: true
+  - name: list
+    description: List installed packages
+    flags:
+      - long: outdated
+        short: o
+        description: List outdated packages
+      - long: uptodate
+        short: u
+        description: List uptodate packages
+      - long: editable
+        short: e
+        description: List editable projects
+      - long: local
+        short: l
+        description: Do not list globally-installed packages
+      - long: user
+        description: Only show packages installed in user site
+      - long: path
+        description: Show packages in specified path
+        takes_value: true
+      - long: pre
+        description: Include pre-release versions when checking
+      - long: format
+        description: Output format (columns, freeze, json)
+        takes_value: true
+      - long: not-required
+        description: List packages that are not dependencies
+      - long: exclude-editable
+        description: Exclude editable packages
+      - long: include-editable
+        description: Include editable packages
+      - long: exclude
+        description: Exclude specified package
+        takes_value: true
+  - name: show
+    description: Show information about installed packages
+    flags:
+      - long: files
+        short: f
+        description: Show the full list of installed files
+  - name: freeze
+    description: Output installed packages in requirements format
+    flags:
+      - long: requirement
+        short: r
+        description: Use order from given requirements file
+        takes_value: true
+      - long: local
+        short: l
+        description: Do not output globally-installed packages
+      - long: user
+        description: Only output packages installed in user site
+      - long: path
+        description: Show packages in specified path
+        takes_value: true
+      - long: all
+        description: Do not skip pip, setuptools, distribute, wheel
+      - long: exclude-editable
+        description: Exclude editable packages
+      - long: exclude
+        description: Exclude specified package
+        takes_value: true
+  - name: check
+    description: Verify installed packages have compatible dependencies
+  - name: config
+    description: Manage pip configuration
+    subcommands:
+      - name: list
+        description: List the active configuration
+      - name: edit
+        description: Edit the configuration file
+      - name: get
+        description: Get the value associated with name
+      - name: set
+        description: Set the name=value
+      - name: unset
+        description: Unset the value associated with name
+      - name: debug
+        description: List the configuration files and values
+    flags:
+      - long: editor
+        description: Editor to use
+        takes_value: true
+      - long: global
+        description: Use the system-wide configuration file
+      - long: user
+        description: Use the user configuration file
+      - long: site
+        description: Use the site configuration file
+  - name: search
+    description: Search PyPI for packages (deprecated)
+    flags:
+      - long: index
+        short: i
+        description: Base URL of Python Package Index
+        takes_value: true
+  - name: cache
+    description: Inspect and manage pip's wheel cache
+    subcommands:
+      - name: dir
+        description: Show the cache directory
+      - name: info
+        description: Show information about the cache
+      - name: list
+        description: List files in the wheel cache
+        flags:
+          - long: format
+            description: Output format (human, abspath)
+            takes_value: true
+      - name: remove
+        description: Remove wheels from the cache
+      - name: purge
+        description: Remove all items from the cache
+  - name: index
+    description: Inspect information available from package indexes
+    subcommands:
+      - name: versions
+        description: List versions available for a package
+        flags:
+          - long: pre
+            description: Include pre-release versions
+  - name: wheel
+    description: Build wheels from your requirements
+    flags:
+      - long: wheel-dir
+        short: w
+        description: Build wheels into directory
+        takes_value: true
+      - long: no-binary
+        description: Do not use binary packages
+        takes_value: true
+      - long: only-binary
+        description: Do not use source packages
+        takes_value: true
+      - long: prefer-binary
+        description: Prefer older binary packages
+      - long: no-build-isolation
+        description: Disable isolation when building
+      - long: use-pep517
+        description: Use PEP 517 for building
+      - long: constraint
+        short: c
+        description: Constrain versions using file
+        takes_value: true
+      - long: editable
+        short: e
+        description: Install in editable mode
+        takes_value: true
+      - long: requirement
+        short: r
+        description: Install from requirements file
+        takes_value: true
+      - long: src
+        description: Directory to check out editable projects into
+        takes_value: true
+      - long: ignore-requires-python
+        description: Ignore Requires-Python information
+      - long: no-deps
+        description: Don't install package dependencies
+      - long: progress-bar
+        description: Progress bar type (on, off, raw)
+        takes_value: true
+      - long: no-verify
+        description: Don't verify built wheel
+      - long: config-settings
+        short: C
+        description: Configuration settings passed to build backend
+        takes_value: true
+      - long: build-option
+        description: Build options for setup.py bdist_wheel
+        takes_value: true
+      - long: global-option
+        description: Global options for setup.py
+        takes_value: true
+      - long: pre
+        description: Include pre-release versions
+      - long: require-hashes
+        description: Require hash checking
+      - long: no-clean
+        description: Don't clean up build directories
+    is_path_completion: true
+  - name: hash
+    description: Compute hashes of package archives
+    flags:
+      - long: algorithm
+        short: a
+        description: Hash algorithm (sha256, sha384, sha512)
+        takes_value: true
+    is_path_completion: true
+  - name: completion
+    description: Shell completion for pip
+    flags:
+      - long: bash
+        short: b
+        description: Emit completion code for bash
+      - long: zsh
+        short: z
+        description: Emit completion code for zsh
+      - long: fish
+        short: f
+        description: Emit completion code for fish
+      - long: powershell
+        short: p
+        description: Emit completion code for powershell
+  - name: debug
+    description: Show debug information
+    flags:
+      - long: platform
+        description: Use platform tag
+        takes_value: true
+      - long: python-version
+        description: Use Python version
+        takes_value: true
+      - long: implementation
+        description: Use Python implementation
+        takes_value: true
+      - long: abi
+        description: Use Python ABI
+        takes_value: true
+  - name: inspect
+    description: Inspect the Python environment
+    flags:
+      - long: local
+        short: l
+        description: Do not list globally-installed packages
+      - long: user
+        description: Only output packages in user site
+      - long: path
+        description: Show packages in specified path
+        takes_value: true
+flags:
+  - long: isolated
+    description: Run pip in isolated mode
+  - long: require-virtualenv
+    description: Require a virtualenv
+  - long: python
+    description: Run pip with the specified Python interpreter
+    takes_value: true
+  - long: verbose
+    short: v
+    description: Give more output
+  - long: quiet
+    short: q
+    description: Give less output
+  - long: log
+    description: Path to a verbose log
+    takes_value: true
+  - long: no-input
+    description: Disable prompting for input
+  - long: keyring-provider
+    description: Enable the credential lookup via keyring
+    takes_value: true
+  - long: proxy
+    description: Specify a proxy
+    takes_value: true
+  - long: retries
+    description: Maximum number of retries
+    takes_value: true
+  - long: timeout
+    description: Set the socket timeout
+    takes_value: true
+  - long: exists-action
+    description: Action when path already exists (s=switch, i=ignore, w=wipe, b=backup, a=abort)
+    takes_value: true
+  - long: trusted-host
+    description: Mark this host as trusted
+    takes_value: true
+  - long: cert
+    description: Path to PEM-encoded CA certificate bundle
+    takes_value: true
+  - long: client-cert
+    description: Path to SSL client certificate
+    takes_value: true
+  - long: cache-dir
+    description: Store the cache data in directory
+    takes_value: true
+  - long: no-cache-dir
+    description: Disable the cache
+  - long: disable-pip-version-check
+    description: Don't periodically check for pip upgrade
+  - long: no-color
+    description: Suppress colored output
+  - long: no-python-version-warning
+    description: Silence deprecation warnings
+  - long: use-feature
+    description: Enable new functionality
+    takes_value: true
+  - long: use-deprecated
+    description: Enable deprecated functionality
+    takes_value: true
+  - long: index-url
+    short: i
+    description: Base URL of Python Package Index
+    takes_value: true
+  - long: extra-index-url
+    description: Extra URLs of package indexes
+    takes_value: true
+  - long: no-index
+    description: Ignore package index
+  - long: find-links
+    short: f
+    description: URL or path to HTML page with links to packages
+    takes_value: true

@@ -1,0 +1,92 @@
+name: sort
+description: Sort lines of text files
+flags:
+  - long: ignore-leading-blanks
+    short: b
+    description: Ignore leading blanks
+  - long: dictionary-order
+    short: d
+    description: Consider only blanks and alphanumeric characters
+  - long: ignore-case
+    short: f
+    description: Fold lower case to upper case characters
+  - long: general-numeric-sort
+    short: g
+    description: Compare according to general numerical value
+  - long: ignore-nonprinting
+    short: i
+    description: Consider only printable characters
+  - long: month-sort
+    short: M
+    description: Compare (unknown) < JAN < ... < DEC
+  - long: human-numeric-sort
+    short: h
+    description: Compare human readable numbers (2K 1G)
+  - long: numeric-sort
+    short: n
+    description: Compare according to string numerical value
+  - long: random-sort
+    short: R
+    description: Shuffle, but group identical keys
+  - long: random-source
+    description: Get random bytes from FILE
+    takes_value: true
+  - long: reverse
+    short: r
+    description: Reverse the result of comparisons
+  - long: sort
+    description: Sort according to WORD (general-numeric, human-numeric, month, numeric, random, version)
+    takes_value: true
+  - long: version-sort
+    short: V
+    description: Natural sort of (version) numbers within text
+  - long: batch-size
+    description: Merge at most NMERGE inputs at once
+    takes_value: true
+  - long: check
+    short: c
+    description: Check for sorted input
+  - long: compress-program
+    description: Compress temporaries with PROG
+    takes_value: true
+  - long: debug
+    description: Annotate the part of the line used to sort
+  - long: files0-from
+    description: Read input from NUL-terminated names in FILE
+    takes_value: true
+  - long: key
+    short: k
+    description: Sort via a key (KEYDEF)
+    takes_value: true
+  - long: merge
+    short: m
+    description: Merge already sorted files
+  - long: output
+    short: o
+    description: Write result to FILE instead of standard output
+    takes_value: true
+  - long: stable
+    short: s
+    description: Stabilize sort by disabling last-resort comparison
+  - long: buffer-size
+    short: S
+    description: Use SIZE for main memory buffer
+    takes_value: true
+  - long: field-separator
+    short: t
+    description: Use SEP instead of non-blank to blank transition
+    takes_value: true
+  - long: temporary-directory
+    short: T
+    description: Use DIR for temporaries, not $TMPDIR or /tmp
+    takes_value: true
+  - long: parallel
+    description: Change number of sorts run concurrently to N
+    takes_value: true
+  - long: unique
+    short: u
+    description: Output only the first of an equal run
+  - long: zero-terminated
+    short: z
+    description: Line delimiter is NUL, not newline
+is_path_completion: true

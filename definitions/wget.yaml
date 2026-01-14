@@ -1,0 +1,365 @@
+name: wget
+description: The non-interactive network downloader
+flags:
+  - long: version
+    short: V
+    description: Display the version of Wget
+  - long: help
+    short: h
+    description: Print this help
+  - long: background
+    short: b
+    description: Go to background after startup
+  - long: execute
+    short: e
+    description: Execute .wgetrc command
+    takes_value: true
+  - long: output-file
+    short: o
+    description: Log all messages to logfile
+    takes_value: true
+  - long: append-output
+    short: a
+    description: Append messages to logfile
+    takes_value: true
+  - long: debug
+    short: d
+    description: Print lots of debugging information
+  - long: quiet
+    short: q
+    description: Quiet (no output)
+  - long: verbose
+    short: v
+    description: Be verbose (default)
+  - long: no-verbose
+    description: Turn off verboseness
+  - long: report-speed
+    description: Report download speed as TYPE (bits)
+    takes_value: true
+  - long: input-file
+    short: i
+    description: Download URLs found in local or external FILE
+    takes_value: true
+  - long: force-html
+    short: F
+    description: Treat input file as HTML
+  - long: base
+    short: B
+    description: Resolves HTML input-file links relative to URL
+    takes_value: true
+  - long: config
+    description: Specify config file to use
+    takes_value: true
+  - long: no-config
+    description: Do not read any config file
+  - long: rejected-log
+    description: Log reasons for URL rejection to FILE
+    takes_value: true
+  - long: tries
+    short: t
+    description: Set number of retries to NUMBER
+    takes_value: true
+  - long: retry-connrefused
+    description: Retry even if connection is refused
+  - long: output-document
+    short: O
+    description: Write documents to FILE
+    takes_value: true
+  - long: no-clobber
+    description: Skip downloads that would overwrite files
+  - long: no-netrc
+    description: Don't try to obtain credentials from .netrc
+  - long: continue
+    short: c
+    description: Resume getting a partially-downloaded file
+  - long: start-pos
+    description: Start downloading from position
+    takes_value: true
+  - long: progress
+    description: Select progress gauge type (bar, dot)
+    takes_value: true
+  - long: show-progress
+    description: Force showing progress bar
+  - long: no-show-progress
+    description: Do not show progress bar
+  - long: timestamping
+    short: N
+    description: Don't re-retrieve files unless newer
+  - long: no-if-modified-since
+    description: Don't use conditional if-modified-since
+  - long: no-use-server-timestamps
+    description: Don't set local file's timestamp
+  - long: server-response
+    short: S
+    description: Print server response
+  - long: spider
+    description: Don't download anything
+  - long: timeout
+    short: T
+    description: Set all timeout values to SECONDS
+    takes_value: true
+  - long: dns-timeout
+    description: Set the DNS lookup timeout
+    takes_value: true
+  - long: connect-timeout
+    description: Set the connect timeout
+    takes_value: true
+  - long: read-timeout
+    description: Set the read timeout
+    takes_value: true
+  - long: wait
+    short: w
+    description: Wait SECONDS between retrievals
+    takes_value: true
+  - long: waitretry
+    description: Wait 1..SECONDS between retries of a retrieval
+    takes_value: true
+  - long: random-wait
+    description: Wait from 0.5*WAIT to 1.5*WAIT secs between retrievals
+  - long: no-proxy
+    description: Explicitly turn off proxy
+  - long: quota
+    short: Q
+    description: Set retrieval quota to NUMBER
+    takes_value: true
+  - long: bind-address
+    description: Bind to ADDRESS on local host
+    takes_value: true
+  - long: limit-rate
+    description: Limit download rate
+    takes_value: true
+  - long: no-dns-cache
+    description: Disable caching DNS lookups
+  - long: restrict-file-names
+    description: Restrict chars in file names (OS-specific)
+    takes_value: true
+  - long: ignore-case
+    description: Ignore case when matching files/directories
+  - long: inet4-only
+    short: "4"
+    description: Connect only to IPv4 addresses
+  - long: inet6-only
+    short: "6"
+    description: Connect only to IPv6 addresses
+  - long: prefer-family
+    description: Connect first to specified family (IPv4, IPv6, none)
+    takes_value: true
+  - long: user
+    description: Set both ftp and http user
+    takes_value: true
+  - long: password
+    description: Set both ftp and http password
+    takes_value: true
+  - long: ask-password
+    description: Prompt for passwords
+  - long: use-askpass
+    description: Specify credential handler
+    takes_value: true
+  - long: no-iri
+    description: Turn off IRI support
+  - long: local-encoding
+    description: Use ENC as local encoding for IRIs
+    takes_value: true
+  - long: remote-encoding
+    description: Use ENC as remote encoding for IRIs
+    takes_value: true
+  - long: unlink
+    description: Remove file before clobber
+  - long: xattr
+    description: Turn on storage of metadata in xattrs
+  - long: directory-prefix
+    short: P
+    description: Save files to PREFIX/...
+    takes_value: true
+  - long: cut-dirs
+    description: Ignore NUMBER remote directory components
+    takes_value: true
+  - long: http-user
+    description: Set http user
+    takes_value: true
+  - long: http-password
+    description: Set http password
+    takes_value: true
+  - long: no-cache
+    description: Disallow server-cached data
+  - long: default-page
+    description: Change the default page name (index.html)
+    takes_value: true
+  - long: adjust-extension
+    short: E
+    description: Save HTML/CSS documents with proper extensions
+  - long: ignore-length
+    description: Ignore Content-Length header field
+  - long: header
+    description: Insert STRING among the headers
+    takes_value: true
+  - long: max-redirect
+    description: Maximum redirections allowed per page
+    takes_value: true
+  - long: proxy-user
+    description: Set USERNAME as proxy username
+    takes_value: true
+  - long: proxy-password
+    description: Set PASSWORD as proxy password
+    takes_value: true
+  - long: referer
+    description: "Include Referer: URL header in HTTP request"
+    takes_value: true
+  - long: save-headers
+    description: Save the HTTP headers to file
+  - long: user-agent
+    short: U
+    description: Identify as AGENT instead of Wget/VERSION
+    takes_value: true
+  - long: no-http-keep-alive
+    description: Disable HTTP keep-alive
+  - long: no-cookies
+    description: Don't use cookies
+  - long: load-cookies
+    description: Load cookies from FILE before session
+    takes_value: true
+  - long: save-cookies
+    description: Save cookies to FILE after session
+    takes_value: true
+  - long: keep-session-cookies
+    description: Load and save session cookies
+  - long: post-data
+    description: Use the POST method with data
+    takes_value: true
+  - long: post-file
+    description: Use the POST method with file contents
+    takes_value: true
+  - long: method
+    description: Use HTTP method
+    takes_value: true
+  - long: body-data
+    description: Send STRING as data
+    takes_value: true
+  - long: body-file
+    description: Send contents of FILE
+    takes_value: true
+  - long: content-disposition
+    description: Honor the Content-Disposition header
+  - long: content-on-error
+    description: Output the received content on server errors
+  - long: auth-no-challenge
+    description: Send Basic HTTP auth info without challenge
+  - long: secure-protocol
+    description: Choose secure protocol (auto, SSLv2, SSLv3, TLSv1, TLSv1_1, TLSv1_2, TLSv1_3, PFS)
+    takes_value: true
+  - long: https-only
+    description: Only follow secure HTTPS links
+  - long: no-check-certificate
+    description: Don't validate the server's certificate
+  - long: certificate
+    description: Client certificate file
+    takes_value: true
+  - long: certificate-type
+    description: Client certificate type (PEM or DER)
+    takes_value: true
+  - long: private-key
+    description: Private key file
+    takes_value: true
+  - long: private-key-type
+    description: Private key type (PEM or DER)
+    takes_value: true
+  - long: ca-certificate
+    description: File with the bundle of CAs
+    takes_value: true
+  - long: ca-directory
+    description: Directory where hash list of CAs is stored
+    takes_value: true
+  - long: crl-file
+    description: File with bundle of CRLs
+    takes_value: true
+  - long: pinnedpubkey
+    description: Public key to verify peer against
+    takes_value: true
+  - long: random-file
+    description: File with random data for seeding the SSL PRNG
+    takes_value: true
+  - long: ciphers
+    description: Set the priority string for ciphers
+    takes_value: true
+  - long: no-hsts
+    description: Disable HSTS
+  - long: hsts-file
+    description: Path of HSTS database
+    takes_value: true
+  - long: recursive
+    short: r
+    description: Specify recursive download
+  - long: level
+    short: l
+    description: Maximum recursion depth (inf or 0 for infinite)
+    takes_value: true
+  - long: delete-after
+    description: Delete files locally after downloading them
+  - long: convert-links
+    short: k
+    description: Make links in downloaded HTML point to local files
+  - long: backup-converted
+    short: K
+    description: Before converting file X, back up as X.orig
+  - long: mirror
+    short: m
+    description: Shortcut for -N -r -l inf --no-remove-listing
+  - long: page-requisites
+    short: p
+    description: Get all images, etc. needed to display HTML page
+  - long: strict-comments
+    description: Turn on strict HTML comment handling
+  - long: accept
+    short: A
+    description: Comma-separated list of accepted extensions
+    takes_value: true
+  - long: reject
+    short: R
+    description: Comma-separated list of rejected extensions
+    takes_value: true
+  - long: accept-regex
+    description: Regex matching accepted URLs
+    takes_value: true
+  - long: reject-regex
+    description: Regex matching rejected URLs
+    takes_value: true
+  - long: regex-type
+    description: Regex type (posix or pcre)
+    takes_value: true
+  - long: domains
+    short: D
+    description: Comma-separated list of accepted domains
+    takes_value: true
+  - long: exclude-domains
+    description: Comma-separated list of rejected domains
+    takes_value: true
+  - long: follow-ftp
+    description: Follow FTP links from HTML documents
+  - long: follow-tags
+    description: Comma-separated list of followed HTML tags
+    takes_value: true
+  - long: ignore-tags
+    description: Comma-separated list of ignored HTML tags
+    takes_value: true
+  - long: span-hosts
+    short: H
+    description: Go to foreign hosts when recursive
+  - long: relative
+    short: L
+    description: Follow relative links only
+  - long: include-directories
+    short: I
+    description: List of allowed directories
+    takes_value: true
+  - long: exclude-directories
+    short: X
+    description: List of excluded directories
+    takes_value: true
+  - long: no-host-directories
+    description: Don't create host directories
+  - long: no-parent
+    description: Don't ascend to the parent directory
+  - long: robots
+    description: "Honor robots.txt (default: on)"
+    takes_value: true
+is_path_completion: true

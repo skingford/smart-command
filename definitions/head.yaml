@@ -1,0 +1,23 @@
+name: head
+description: Output the first part of files
+flags:
+  - long: bytes
+    short: c
+    description: Print the first NUM bytes of each file
+    takes_value: true
+  - long: lines
+    short: n
+    description: Print the first NUM lines instead of 10
+    takes_value: true
+  - long: quiet
+    short: q
+    description: Never print headers giving file names
+  - long: silent
+    description: Never print headers giving file names
+  - long: verbose
+    short: v
+    description: Always print headers giving file names
+  - long: zero-terminated
+    short: z
+    description: Line delimiter is NUL, not newline
+is_path_completion: true

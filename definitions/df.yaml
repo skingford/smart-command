@@ -1,0 +1,50 @@
+name: df
+description: Report file system disk space usage
+flags:
+  - long: all
+    short: a
+    description: Include pseudo, duplicate, inaccessible file systems
+  - long: block-size
+    short: B
+    description: Scale sizes by SIZE
+    takes_value: true
+  - long: total
+    description: Elide all entries insignificant to available space
+  - short: h
+    description: Print sizes in human readable format (e.g., 1K 234M 2G)
+  - long: human-readable
+    description: Print sizes in human readable format
+  - short: H
+    description: Likewise, but use powers of 1000 not 1024
+  - long: si
+    description: Likewise, but use powers of 1000 not 1024
+  - long: inodes
+    short: i
+    description: List inode information instead of block usage
+  - short: k
+    description: Like --block-size=1K
+  - long: local
+    short: l
+    description: Limit listing to local file systems
+  - long: no-sync
+    description: Do not invoke sync before getting usage info (default)
+  - long: output
+    description: Use the output format defined by FIELD_LIST
+    takes_value: true
+  - long: portability
+    short: P
+    description: Use the POSIX output format
+  - long: sync
+    description: Invoke sync before getting usage info
+  - long: type
+    short: t
+    description: Limit listing to file systems of type TYPE
+    takes_value: true
+  - long: print-type
+    short: T
+    description: Print file system type
+  - long: exclude-type
+    short: x
+    description: Limit listing to file systems not of type TYPE
+    takes_value: true
+is_path_completion: true

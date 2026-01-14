@@ -1,0 +1,38 @@
+name: uniq
+description: Report or omit repeated lines
+flags:
+  - long: count
+    short: c
+    description: Prefix lines by the number of occurrences
+  - long: repeated
+    short: d
+    description: Only print duplicate lines, one for each group
+  - long: all-repeated
+    short: D
+    description: Print all duplicate lines (none, prepend, separate)
+    takes_value: true
+  - long: skip-fields
+    short: f
+    description: Avoid comparing the first N fields
+    takes_value: true
+  - long: group
+    description: Show all items, separating groups (separate, prepend, append, both)
+    takes_value: true
+  - long: ignore-case
+    short: i
+    description: Ignore differences in case when comparing
+  - long: skip-chars
+    short: s
+    description: Avoid comparing the first N characters
+    takes_value: true
+  - long: unique
+    short: u
+    description: Only print unique lines
+  - long: zero-terminated
+    short: z
+    description: Line delimiter is NUL, not newline
+  - long: check-chars
+    short: w
+    description: Compare no more than N characters in lines
+    takes_value: true
+is_path_completion: true

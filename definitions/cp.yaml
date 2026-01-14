@@ -1,0 +1,89 @@
+name: cp
+description: Copy files and directories
+flags:
+  - long: archive
+    short: a
+    description: Same as -dR --preserve=all
+  - long: attributes-only
+    description: Don't copy file data, just attributes
+  - long: backup
+    short: b
+    description: Make backup of each existing destination file
+    takes_value: true
+  - long: copy-contents
+    description: Copy contents of special files when recursive
+  - long: no-dereference
+    short: d
+    description: Never follow symbolic links in source
+  - long: force
+    short: f
+    description: Remove existing destination files
+  - long: interactive
+    short: i
+    description: Prompt before overwrite
+  - long: follow-command-line-symlinks
+    short: H
+    description: Follow command-line symbolic links
+  - long: link
+    short: l
+    description: Hard link files instead of copying
+  - long: dereference
+    short: L
+    description: Always follow symbolic links
+  - long: no-clobber
+    short: n
+    description: Do not overwrite existing file
+  - long: no-preserve
+    description: Don't preserve specified attributes
+    takes_value: true
+  - long: parents
+    description: Use full source file name under directory
+  - short: P
+    description: Never follow symbolic links
+  - long: preserve
+    short: p
+    description: Preserve mode, ownership, timestamps
+    takes_value: true
+  - long: recursive
+    short: R
+    description: Copy directories recursively
+  - short: r
+    description: Copy directories recursively
+  - long: reflink
+    description: Control clone/CoW copies
+    takes_value: true
+  - long: remove-destination
+    description: Remove existing destination files before copying
+  - long: sparse
+    description: Control creation of sparse files
+    takes_value: true
+  - long: strip-trailing-slashes
+    description: Remove trailing slashes from source arguments
+  - long: symbolic-link
+    short: s
+    description: Make symbolic links instead of copying
+  - long: suffix
+    short: S
+    description: Override the usual backup suffix
+    takes_value: true
+  - long: target-directory
+    short: t
+    description: Copy all source arguments into directory
+    takes_value: true
+  - long: no-target-directory
+    short: T
+    description: Treat destination as a normal file
+  - long: update
+    short: u
+    description: Copy only when source is newer
+  - long: verbose
+    short: v
+    description: Explain what is being done
+  - long: one-file-system
+    short: x
+    description: Stay on this file system
+  - long: context
+    short: Z
+    description: Set SELinux security context of destination file
+    takes_value: true
+is_path_completion: true

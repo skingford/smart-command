@@ -1,0 +1,3 @@
+name: cd
+description: Change the shell working directory
+is_path_completion: true

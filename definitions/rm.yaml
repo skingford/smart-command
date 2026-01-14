@@ -1,0 +1,32 @@
+name: rm
+description: Remove files or directories
+flags:
+  - long: force
+    short: f
+    description: Ignore nonexistent files and arguments, never prompt
+  - long: interactive
+    short: i
+    description: Prompt before every removal
+  - short: I
+    description: Prompt once before removing more than three files
+  - long: interactive
+    description: Prompt according to WHEN (never, once, always)
+    takes_value: true
+  - long: one-file-system
+    description: When removing recursively, skip directories on different filesystems
+  - long: no-preserve-root
+    description: Do not treat '/' specially
+  - long: preserve-root
+    description: Do not remove '/' (default)
+  - long: recursive
+    short: R
+    description: Remove directories and their contents recursively
+  - short: r
+    description: Remove directories and their contents recursively
+  - long: dir
+    short: d
+    description: Remove empty directories
+  - long: verbose
+    short: v
+    description: Explain what is being done
+is_path_completion: true

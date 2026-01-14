@@ -1,0 +1,474 @@
+name: yarn
+description: JavaScript package manager
+subcommands:
+  - name: add
+    description: Install a package
+    flags:
+      - long: dev
+        short: D
+        description: Save package to devDependencies
+      - long: peer
+        short: P
+        description: Save package to peerDependencies
+      - long: optional
+        short: O
+        description: Save package to optionalDependencies
+      - long: exact
+        short: E
+        description: Install exact version
+      - long: tilde
+        short: T
+        description: Install most recent release with same minor version
+      - long: ignore-workspace-root-check
+        short: W
+        description: Allow installing packages to workspace root
+      - long: audit
+        description: Run vulnerability audit
+      - long: interactive
+        short: i
+        description: Choose interactively which version to install
+  - name: remove
+    description: Remove a package
+  - name: install
+    description: Install all dependencies
+    flags:
+      - long: check-files
+        description: Verify tree matches lockfile
+      - long: flat
+        description: Only allow one version of a package
+      - long: force
+        description: Refetch all packages
+      - long: frozen-lockfile
+        description: Don't generate a lockfile
+      - long: ignore-scripts
+        description: Don't run scripts
+      - long: ignore-optional
+        description: Ignore optional dependencies
+      - long: ignore-engines
+        description: Ignore engines check
+      - long: ignore-platform
+        description: Ignore platform checks
+      - long: modules-folder
+        description: Alternative node_modules path
+        takes_value: true
+      - long: no-lockfile
+        description: Don't read or generate a lockfile
+      - long: production
+        description: Skip devDependencies
+      - long: pure-lockfile
+        description: Don't generate a lockfile
+      - long: focus
+        description: Focus on a single workspace
+      - long: silent
+        short: s
+        description: Skip messages
+      - long: offline
+        description: Run in offline mode
+      - long: update-checksums
+        description: Update package checksums
+      - long: audit
+        description: Run vulnerability audit
+      - long: non-interactive
+        description: Disable interactive prompts
+  - name: init
+    description: Create a package.json
+    flags:
+      - long: yes
+        short: y
+        description: Skip all questions
+      - long: private
+        short: p
+        description: Set private field to true
+      - long: install
+        short: i
+        description: Run install after initializing
+  - name: run
+    description: Run a script
+    flags:
+      - long: silent
+        short: s
+        description: Skip messages
+  - name: test
+    description: Run test script
+  - name: build
+    description: Run build script
+  - name: start
+    description: Run start script
+  - name: publish
+    description: Publish a package
+    flags:
+      - long: access
+        description: Set access level (public or restricted)
+        takes_value: true
+      - long: tag
+        description: Publish with a tag
+        takes_value: true
+      - long: new-version
+        description: New version to publish
+        takes_value: true
+      - long: message
+        description: Message for version commit
+        takes_value: true
+      - long: no-git-tag-version
+        description: Don't create git tag
+      - long: no-commit-hooks
+        description: Don't run commit hooks
+  - name: upgrade
+    description: Upgrade packages
+    flags:
+      - long: scope
+        short: S
+        description: Upgrade packages in scope
+        takes_value: true
+      - long: latest
+        short: L
+        description: Upgrade to latest version
+      - long: caret
+        short: C
+        description: Use caret range
+      - long: tilde
+        short: T
+        description: Use tilde range
+      - long: exact
+        short: E
+        description: Upgrade to exact version
+      - long: pattern
+        short: P
+        description: Upgrade packages matching pattern
+        takes_value: true
+      - long: audit
+        description: Run vulnerability audit
+  - name: upgrade-interactive
+    description: Interactively upgrade packages
+    flags:
+      - long: latest
+        description: Show all versions
+  - name: outdated
+    description: Check for outdated packages
+  - name: list
+    description: List installed packages
+    flags:
+      - long: depth
+        description: Limit the depth of the tree
+        takes_value: true
+      - long: pattern
+        description: Filter by pattern
+        takes_value: true
+      - long: json
+        description: Output as JSON
+  - name: info
+    description: Show information about a package
+    flags:
+      - long: json
+        description: Output as JSON
+  - name: why
+    description: Show why a package is installed
+  - name: cache
+    description: Manage the package cache
+    subcommands:
+      - name: list
+        description: List cached packages
+        flags:
+          - long: pattern
+            description: Filter by pattern
+            takes_value: true
+      - name: dir
+        description: Print cache directory
+      - name: clean
+        description: Remove all cached packages
+        flags:
+          - long: mirror
+            description: Clean mirror cache
+          - long: all
+            description: Clean all caches
+  - name: config
+    description: Manage configuration
+    subcommands:
+      - name: set
+        description: Set a config value
+        flags:
+          - long: global
+            short: g
+            description: Set global config
+      - name: get
+        description: Get a config value
+      - name: delete
+        description: Delete a config key
+      - name: list
+        description: List config values
+      - name: current
+        description: Show current config
+  - name: global
+    description: Manage global packages
+    subcommands:
+      - name: add
+        description: Install global package
+      - name: bin
+        description: Print global bin folder
+      - name: dir
+        description: Print global folder
+      - name: list
+        description: List global packages
+        flags:
+          - long: depth
+            description: Limit tree depth
+            takes_value: true
+          - long: pattern
+            description: Filter by pattern
+            takes_value: true
+      - name: remove
+        description: Remove global package
+      - name: upgrade
+        description: Upgrade global package
+    flags:
+      - long: prefix
+        description: Prefix location
+        takes_value: true
+      - long: latest
+        description: Install latest version
+  - name: link
+    description: Symlink a package folder
+    is_path_completion: true
+  - name: unlink
+    description: Remove a symlinked package
+  - name: pack
+    description: Create a compressed gzip archive
+    flags:
+      - long: filename
+        short: f
+        description: Name the archive
+        takes_value: true
+  - name: version
+    description: Bump package version
+    flags:
+      - long: new-version
+        description: New version
+        takes_value: true
+      - long: major
+        description: Bump major version
+      - long: minor
+        description: Bump minor version
+      - long: patch
+        description: Bump patch version
+      - long: premajor
+        description: Bump premajor version
+      - long: preminor
+        description: Bump preminor version
+      - long: prepatch
+        description: Bump prepatch version
+      - long: prerelease
+        description: Bump prerelease version
+      - long: preid
+        description: Prerelease identifier
+        takes_value: true
+      - long: message
+        short: m
+        description: Commit message
+        takes_value: true
+      - long: no-git-tag-version
+        description: Don't create git tag
+      - long: no-commit-hooks
+        description: Don't run commit hooks
+  - name: versions
+    description: Display version information
+  - name: workspace
+    description: Run a command in a workspace
+  - name: workspaces
+    description: Show workspace information
+    subcommands:
+      - name: info
+        description: Display workspace dependency tree
+        flags:
+          - long: json
+            description: Output as JSON
+      - name: run
+        description: Run a command in each workspace
+        flags:
+          - long: verbose
+            description: Prefix each line with workspace name
+      - name: foreach
+        description: Run a command in each workspace
+        flags:
+          - long: all
+            short: A
+            description: Run in all workspaces
+          - long: recursive
+            short: R
+            description: Run recursively
+          - long: verbose
+            description: Prefix each line with workspace name
+          - long: parallel
+            short: p
+            description: Run in parallel
+          - long: interlaced
+            short: i
+            description: Print output immediately
+          - long: topological
+            short: t
+            description: Order by dependency
+          - long: topological-dev
+            description: Include devDependencies in order
+          - long: include
+            description: Include workspaces matching glob
+            takes_value: true
+          - long: exclude
+            description: Exclude workspaces matching glob
+            takes_value: true
+          - long: jobs
+            short: j
+            description: Max number of parallel tasks
+            takes_value: true
+  - name: audit
+    description: Check for known security issues
+    flags:
+      - long: verbose
+        description: Output verbose audit output
+      - long: json
+        description: Output JSON format
+      - long: level
+        description: Only print advisories with severity
+        takes_value: true
+      - long: groups
+        description: Only audit specified dep groups
+        takes_value: true
+  - name: autoclean
+    description: Clean and remove unnecessary files
+    flags:
+      - long: init
+        short: I
+        description: Create .yarnclean file
+      - long: force
+        short: F
+        description: Force clean
+  - name: bin
+    description: Display bin folder path
+  - name: check
+    description: Verify package dependencies
+    flags:
+      - long: integrity
+        description: Verify package content
+      - long: verify-tree
+        description: Recursively verify tree
+  - name: create
+    description: Create new project from create-* starter kit
+  - name: dedupe
+    description: Deduplicate dependencies
+    flags:
+      - long: check
+        short: c
+        description: Check for duplicates
+      - long: strategy
+        short: s
+        description: Deduplication strategy
+        takes_value: true
+  - name: exec
+    description: Run a shell script
+  - name: generate-lock-entry
+    description: Generate lock file entry
+  - name: help
+    description: Show command help
+  - name: import
+    description: Generate yarn.lock from existing npm install
+  - name: licenses
+    description: List licenses for installed packages
+    subcommands:
+      - name: list
+        description: List licenses
+        flags:
+          - long: json
+            description: Output as JSON
+      - name: generate-disclaimer
+        description: Generate disclaimer for licenses
+  - name: login
+    description: Store registry credentials
+  - name: logout
+    description: Clear registry credentials
+  - name: node
+    description: Run node with the correct Node.js version
+  - name: owner
+    description: Manage package owners
+    subcommands:
+      - name: add
+        description: Add an owner
+      - name: rm
+        description: Remove an owner
+      - name: list
+        description: List owners
+  - name: policies
+    description: Define project-wide policies
+    subcommands:
+      - name: set-version
+        description: Lock the Yarn version
+  - name: set
+    description: Configure settings
+    subcommands:
+      - name: resolution
+        description: Force package to be resolved to version
+      - name: version
+        description: Set Yarn version
+        flags:
+          - long: yarn-path
+            description: Store version in .yarn
+  - name: tag
+    description: Add, remove, or list package distribution tags
+    subcommands:
+      - name: add
+        description: Add a dist-tag
+      - name: rm
+        description: Remove a dist-tag
+      - name: list
+        description: List dist-tags
+  - name: team
+    description: Manage organization teams
+    subcommands:
+      - name: create
+        description: Create a team
+      - name: destroy
+        description: Remove a team
+      - name: add
+        description: Add user to team
+      - name: rm
+        description: Remove user from team
+      - name: list
+        description: List teams
+  - name: unplug
+    description: Force the unpacking of a list of packages
+  - name: explain
+    description: Explain a peer dependency
+flags:
+  - long: verbose
+    description: Enable verbose logging
+  - long: offline
+    description: Run in offline mode
+  - long: prefer-offline
+    description: Use cached data when possible
+  - long: strict-semver
+    description: Strict semver
+  - long: json
+    description: Format output as JSON
+  - long: ignore-scripts
+    description: Don't run scripts
+  - long: no-progress
+    description: Disable progress bar
+  - long: non-interactive
+    description: Disable interactive prompts
+  - long: cwd
+    description: Working directory
+    takes_value: true
+  - long: mutex
+    description: Mutex lock
+    takes_value: true
+  - long: emoji
+    description: Enable emoji in output
+  - long: silent
+    short: s
+    description: Skip logging
+  - long: registry
+    description: Registry to use
+    takes_value: true
+  - long: network-concurrency
+    description: Max concurrent requests
+    takes_value: true
+  - long: network-timeout
+    description: Request timeout
+    takes_value: true

@@ -1,0 +1,40 @@
+name: tail
+description: Output the last part of files
+flags:
+  - long: bytes
+    short: c
+    description: Output the last NUM bytes
+    takes_value: true
+  - long: follow
+    short: f
+    description: Output appended data as the file grows
+  - short: F
+    description: Same as --follow=name --retry
+  - long: lines
+    short: n
+    description: Output the last NUM lines instead of 10
+    takes_value: true
+  - long: max-unchanged-stats
+    description: Reopen file after N iterations with no change
+    takes_value: true
+  - long: pid
+    description: Terminate after process ID dies with -f
+    takes_value: true
+  - long: quiet
+    short: q
+    description: Never output headers giving file names
+  - long: silent
+    description: Never output headers giving file names
+  - long: retry
+    description: Keep trying to open a file if it is inaccessible
+  - long: sleep-interval
+    short: s
+    description: Sleep for N seconds between iterations with -f
+    takes_value: true
+  - long: verbose
+    short: v
+    description: Always output headers giving file names
+  - long: zero-terminated
+    short: z
+    description: Line delimiter is NUL, not newline
+is_path_completion: true

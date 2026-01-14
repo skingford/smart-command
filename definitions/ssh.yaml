@@ -1,0 +1,101 @@
+name: ssh
+description: OpenSSH remote login client
+flags:
+  - long: verbose
+    short: v
+    description: Verbose mode
+  - short: p
+    description: Port to connect to
+    takes_value: true
+  - short: i
+    description: Identity file (private key)
+    takes_value: true
+  - short: l
+    description: Login name
+    takes_value: true
+  - short: o
+    description: SSH option
+    takes_value: true
+  - short: F
+    description: Config file
+    takes_value: true
+  - short: N
+    description: Do not execute remote command
+  - short: T
+    description: Disable pseudo-terminal allocation
+  - short: t
+    description: Force pseudo-terminal allocation
+  - short: f
+    description: Go to background before command execution
+  - short: n
+    description: Redirect stdin from /dev/null
+  - short: q
+    description: Quiet mode
+  - short: C
+    description: Enable compression
+  - short: X
+    description: Enable X11 forwarding
+  - short: x
+    description: Disable X11 forwarding
+  - short: A
+    description: Enable forwarding of authentication agent
+  - short: a
+    description: Disable forwarding of authentication agent
+  - short: L
+    description: Local port forwarding (port:host:hostport)
+    takes_value: true
+  - short: R
+    description: Remote port forwarding (port:host:hostport)
+    takes_value: true
+  - short: D
+    description: Dynamic port forwarding (SOCKS proxy)
+    takes_value: true
+  - short: W
+    description: Forward stdin and stdout to host:port
+    takes_value: true
+  - short: J
+    description: Jump host
+    takes_value: true
+  - short: g
+    description: Allow remote hosts to connect to forwarded ports
+  - short: K
+    description: Enable GSSAPI authentication
+  - short: k
+    description: Disable GSSAPI credential forwarding
+  - short: Y
+    description: Enable trusted X11 forwarding
+  - short: c
+    description: Cipher spec
+    takes_value: true
+  - short: m
+    description: MAC spec
+    takes_value: true
+  - short: e
+    description: Escape character
+    takes_value: true
+  - short: w
+    description: Request tun device forwarding
+    takes_value: true
+  - short: O
+    description: Control multiplexed connection (check, forward, cancel, exit, stop)
+    takes_value: true
+  - short: S
+    description: Control socket path
+    takes_value: true
+  - short: M
+    description: Place ssh client in master mode for connection sharing
+  - short: B
+    description: Bind address for connection
+    takes_value: true
+  - short: E
+    description: Log file
+    takes_value: true
+  - short: 1
+    description: Force protocol version 1
+  - short: 2
+    description: Force protocol version 2
+  - short: 4
+    description: Use IPv4 addresses only
+  - short: 6
+    description: Use IPv6 addresses only
+is_path_completion: true

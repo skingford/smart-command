@@ -1,0 +1,161 @@
+name: ls
+description: List directory contents
+flags:
+  - long: all
+    short: a
+    description: Include hidden files (entries starting with .)
+  - long: almost-all
+    short: A
+    description: Include hidden files except . and ..
+  - long: long
+    short: l
+    description: Use long listing format
+  - long: human-readable
+    short: h
+    description: Human readable sizes with -l
+  - long: size
+    short: s
+    description: Print size of each file in blocks
+  - long: reverse
+    short: r
+    description: Reverse order while sorting
+  - long: recursive
+    short: R
+    description: List subdirectories recursively
+  - long: sort
+    description: Sort by (size, time, version, extension, none)
+    takes_value: true
+  - short: S
+    description: Sort by size, largest first
+  - short: t
+    description: Sort by time, newest first
+  - short: X
+    description: Sort alphabetically by extension
+  - short: v
+    description: Natural sort of version numbers
+  - short: U
+    description: Do not sort
+  - short: f
+    description: Do not sort and enable -aU
+  - long: time
+    description: Time field to use (atime, access, use, ctime, status, birth, creation)
+    takes_value: true
+  - short: u
+    description: Sort by access time (with -lt) or show access time
+  - short: c
+    description: Sort by ctime (with -lt) or show ctime
+  - long: time-style
+    description: Time/date format (full-iso, long-iso, iso, locale, +FORMAT)
+    takes_value: true
+  - long: color
+    description: When to colorize (always, auto, never)
+    takes_value: true
+  - short: G
+    description: Enable colorized output (BSD) or no group names (GNU)
+  - short: F
+    description: Append indicator to entries
+  - long: classify
+    description: Append indicator to entries
+  - short: p
+    description: Append / indicator to directories
+  - long: indicator-style
+    description: Append indicator (none, slash, file-type, classify)
+    takes_value: true
+  - long: file-type
+    description: Append indicator (not *)
+  - long: format
+    description: Output format (across, commas, horizontal, long, single-column, verbose, vertical)
+    takes_value: true
+  - short: "1"
+    description: One file per line
+  - short: C
+    description: List entries by columns
+  - short: x
+    description: List entries by lines instead of columns
+  - short: m
+    description: Comma separated list
+  - long: group-directories-first
+    description: Group directories before files
+  - long: dereference
+    short: L
+    description: Show file information for symlink target
+  - long: dereference-command-line
+    short: H
+    description: Follow symlinks listed on command line
+  - long: dereference-command-line-symlink-to-dir
+    description: Follow each command line symlink pointing to directory
+  - short: d
+    description: List directories themselves, not contents
+  - long: directory
+    description: List directories themselves, not contents
+  - long: inode
+    short: i
+    description: Print inode number
+  - long: numeric-uid-gid
+    short: n
+    description: Show numeric UID and GID
+  - short: o
+    description: Long format without group
+  - short: g
+    description: Long format without owner
+  - long: author
+    description: Show author of each file (with -l)
+  - long: no-group
+    description: Do not print group names
+  - long: block-size
+    description: Scale sizes by SIZE
+    takes_value: true
+  - short: k
+    description: Use 1024-byte blocks
+  - long: si
+    description: Use powers of 1000 not 1024
+  - long: width
+    short: w
+    description: Assume screen width
+    takes_value: true
+  - short: T
+    description: Tab size
+    takes_value: true
+  - long: tabsize
+    description: Tab size
+    takes_value: true
+  - long: quote-name
+    short: Q
+    description: Enclose entry names in double quotes
+  - long: quoting-style
+    description: Quoting style (literal, locale, shell, shell-always, shell-escape, shell-escape-always, c, escape)
+    takes_value: true
+  - short: b
+    description: Print C-style escapes for nongraphic characters
+  - long: escape
+    description: Print C-style escapes for nongraphic characters
+  - short: q
+    description: Print ? instead of nongraphic characters
+  - long: hide-control-chars
+    description: Print ? instead of nongraphic characters
+  - long: show-control-chars
+    description: Show nongraphic characters as-is
+  - short: N
+    description: Print entry names without quoting
+  - long: literal
+    description: Print entry names without quoting
+  - long: hide
+    description: Do not list entries matching pattern
+    takes_value: true
+  - long: ignore
+    short: I
+    description: Do not list entries matching pattern
+    takes_value: true
+  - short: B
+    description: Do not list entries ending with ~
+  - long: ignore-backups
+    description: Do not list entries ending with ~
+  - long: context
+    short: Z
+    description: Print security context
+  - long: hyperlink
+    description: Hyperlink file names (always, auto, never)
+    takes_value: true
+  - long: zero
+    description: End each output line with NUL
+is_path_completion: true

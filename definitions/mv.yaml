@@ -1,0 +1,42 @@
+name: mv
+description: Move (rename) files
+flags:
+  - long: backup
+    short: b
+    description: Make a backup of each existing destination file
+    takes_value: true
+  - long: force
+    short: f
+    description: Do not prompt before overwriting
+  - long: interactive
+    short: i
+    description: Prompt before overwrite
+  - long: no-clobber
+    short: n
+    description: Do not overwrite existing file
+  - long: no-copy
+    description: Do not copy if renaming fails
+  - long: strip-trailing-slashes
+    description: Remove trailing slashes from source arguments
+  - long: suffix
+    short: S
+    description: Override the usual backup suffix
+    takes_value: true
+  - long: target-directory
+    short: t
+    description: Move all source arguments into directory
+    takes_value: true
+  - long: no-target-directory
+    short: T
+    description: Treat destination as a normal file
+  - long: update
+    short: u
+    description: Move only when source is newer
+  - long: verbose
+    short: v
+    description: Explain what is being done
+  - long: context
+    short: Z
+    description: Set SELinux security context of destination file
+    takes_value: true
+is_path_completion: true

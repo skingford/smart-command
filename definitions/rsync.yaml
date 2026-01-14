@@ -1,0 +1,289 @@
+name: rsync
+description: Fast and versatile file copying tool
+flags:
+  - long: verbose
+    short: v
+    description: Increase verbosity
+  - long: quiet
+    short: q
+    description: Suppress non-error messages
+  - long: checksum
+    short: c
+    description: Skip based on checksum, not mod-time & size
+  - long: archive
+    short: a
+    description: Archive mode (equals -rlptgoD)
+  - long: recursive
+    short: r
+    description: Recurse into directories
+  - long: links
+    short: l
+    description: Copy symlinks as symlinks
+  - long: copy-links
+    short: L
+    description: Transform symlinks into referent file/dir
+  - long: copy-unsafe-links
+    description: Copy links outside the source tree
+  - long: safe-links
+    description: Ignore links outside the destination tree
+  - long: copy-dirlinks
+    short: k
+    description: Transform symlink to dir into referent dir
+  - long: keep-dirlinks
+    short: K
+    description: Treat symlinked dir on receiver as dir
+  - long: hard-links
+    short: H
+    description: Preserve hard links
+  - long: perms
+    short: p
+    description: Preserve permissions
+  - long: executability
+    short: E
+    description: Preserve executability
+  - long: acls
+    short: A
+    description: Preserve ACLs
+  - long: xattrs
+    short: X
+    description: Preserve extended attributes
+  - long: owner
+    short: o
+    description: Preserve owner
+  - long: group
+    short: g
+    description: Preserve group
+  - long: devices
+    description: Preserve device files
+  - long: specials
+    description: Preserve special files
+  - short: D
+    description: Same as --devices --specials
+  - long: times
+    short: t
+    description: Preserve modification times
+  - long: omit-dir-times
+    short: O
+    description: Omit directories from --times
+  - long: omit-link-times
+    short: J
+    description: Omit symlinks from --times
+  - long: super
+    description: Receiver attempts super-user activities
+  - long: fake-super
+    description: Store/recover privileged attrs using xattrs
+  - long: sparse
+    short: S
+    description: Handle sparse files efficiently
+  - long: preallocate
+    description: Allocate dest files before writing
+  - long: dry-run
+    short: n
+    description: Perform a trial run
+  - long: whole-file
+    short: W
+    description: Copy files whole (without delta-xfer algorithm)
+  - long: one-file-system
+    short: x
+    description: Don't cross filesystem boundaries
+  - long: block-size
+    short: B
+    description: Force a fixed checksum block-size
+    takes_value: true
+  - long: rsh
+    short: e
+    description: Specify the remote shell to use
+    takes_value: true
+  - long: rsync-path
+    description: Specify the rsync to run on remote machine
+    takes_value: true
+  - long: existing
+    description: Skip creating new files on receiver
+  - long: ignore-non-existing
+    description: Skip creating new files on receiver
+  - long: ignore-existing
+    description: Skip updating files that exist on receiver
+  - long: remove-source-files
+    description: Sender removes synchronized files
+  - long: delete
+    description: Delete extraneous files from dest dirs
+  - long: delete-before
+    description: Receiver deletes before xfer, not during
+  - long: delete-during
+    description: Receiver deletes during transfer
+  - long: delete-delay
+    description: Find deletions during, delete after
+  - long: delete-after
+    description: Receiver deletes after transfer
+  - long: delete-excluded
+    description: Also delete excluded files from dest
+  - long: ignore-errors
+    description: Delete even if there are I/O errors
+  - long: force
+    description: Force deletion of dirs even if not empty
+  - long: max-delete
+    description: Don't delete more than NUM files
+    takes_value: true
+  - long: max-size
+    description: Don't transfer any file larger than SIZE
+    takes_value: true
+  - long: min-size
+    description: Don't transfer any file smaller than SIZE
+    takes_value: true
+  - long: partial
+    description: Keep partially transferred files
+  - long: partial-dir
+    description: Put a partially transferred file into DIR
+    takes_value: true
+  - long: delay-updates
+    description: Put all updated files into place at end
+  - long: prune-empty-dirs
+    short: m
+    description: Prune empty directory chains from file-list
+  - long: numeric-ids
+    description: Don't map uid/gid values by user/group name
+  - long: timeout
+    description: Set I/O timeout in seconds
+    takes_value: true
+  - long: contimeout
+    description: Set daemon connection timeout in seconds
+    takes_value: true
+  - long: ignore-times
+    short: I
+    description: Don't skip files that match size and time
+  - long: size-only
+    description: Skip files that match in size
+  - long: modify-window
+    description: Compare mod-times with reduced accuracy
+    takes_value: true
+  - long: temp-dir
+    short: T
+    description: Create temporary files in directory DIR
+    takes_value: true
+  - long: fuzzy
+    short: y
+    description: Find similar file for basis if no dest file
+  - long: compare-dest
+    description: Compare dest files with files in DIR
+    takes_value: true
+  - long: copy-dest
+    description: Use files in DIR as possible transfer source
+    takes_value: true
+  - long: link-dest
+    description: Hardlink to files in DIR when unchanged
+    takes_value: true
+  - long: compress
+    short: z
+    description: Compress file data during the transfer
+  - long: compress-level
+    description: Explicitly set compression level
+    takes_value: true
+  - long: skip-compress
+    description: Skip compressing files with suffix in LIST
+    takes_value: true
+  - long: cvs-exclude
+    short: C
+    description: Auto-ignore files in the same way CVS does
+  - long: filter
+    short: f
+    description: Add a file-filtering RULE
+    takes_value: true
+  - short: F
+    description: Same as --filter='dir-merge /.rsync-filter'
+  - long: exclude
+    description: Exclude files matching PATTERN
+    takes_value: true
+  - long: exclude-from
+    description: Read exclude patterns from FILE
+    takes_value: true
+  - long: include
+    description: Include files matching PATTERN
+    takes_value: true
+  - long: include-from
+    description: Read include patterns from FILE
+    takes_value: true
+  - long: files-from
+    description: Read list of source-file names from FILE
+    takes_value: true
+  - long: from0
+    short: "0"
+    description: All *-from/filter files are delimited by 0s
+  - long: protect-args
+    short: s
+    description: No space-splitting of args
+  - long: address
+    description: Bind address for outgoing socket to daemon
+    takes_value: true
+  - long: port
+    description: Specify double-colon alternate port number
+    takes_value: true
+  - long: sockopts
+    description: Specify custom TCP options
+    takes_value: true
+  - long: blocking-io
+    description: Use blocking I/O for the remote shell
+  - long: stats
+    description: Print verbose transfer statistics
+  - long: "8-bit-output"
+    short: "8"
+    description: Allow high-bit characters in output
+  - long: human-readable
+    short: h
+    description: Output numbers in a human-readable format
+  - long: progress
+    description: Show progress during transfer
+  - short: P
+    description: Same as --partial --progress
+  - long: itemize-changes
+    short: i
+    description: Output a change-summary for all updates
+  - long: out-format
+    description: Output updates using the specified FORMAT
+    takes_value: true
+  - long: log-file
+    description: Log what we're doing to the specified FILE
+    takes_value: true
+  - long: log-file-format
+    description: Log updates using the specified FMT
+    takes_value: true
+  - long: password-file
+    description: Read daemon-access password from FILE
+    takes_value: true
+  - long: list-only
+    description: List the files instead of copying them
+  - long: bwlimit
+    description: Limit socket I/O bandwidth
+    takes_value: true
+  - long: outbuf
+    description: Set out buffering to (N)one, (L)ine, or (B)lock
+    takes_value: true
+  - long: write-batch
+    description: Write a batched update to FILE
+    takes_value: true
+  - long: only-write-batch
+    description: Like --write-batch but no updates to receiver
+    takes_value: true
+  - long: read-batch
+    description: Read a batched update from FILE
+    takes_value: true
+  - long: protocol
+    description: Force an older protocol version to be used
+    takes_value: true
+  - long: iconv
+    description: Request charset conversion of filenames
+    takes_value: true
+  - long: checksum-seed
+    description: Set block/file checksum seed
+    takes_value: true
+  - long: ipv4
+    short: "4"
+    description: Prefer IPv4
+  - long: ipv6
+    short: "6"
+    description: Prefer IPv6
+  - long: version
+    short: V
+    description: Print version number
+  - long: help
+    description: Show this help
+is_path_completion: true

@@ -1,0 +1,70 @@
+name: ps
+description: Report a snapshot of the current processes
+flags:
+  - short: e
+    description: Select all processes
+  - short: f
+    description: Full-format listing
+  - short: a
+    description: Select all processes except session leaders
+  - short: u
+    description: User-oriented format
+  - short: x
+    description: Lift the BSD-style "must have a tty" restriction
+  - short: l
+    description: Long format
+  - short: j
+    description: BSD job control format
+  - short: o
+    description: User-defined format
+    takes_value: true
+  - short: p
+    description: Select by process ID
+    takes_value: true
+  - short: t
+    description: Select by tty
+    takes_value: true
+  - short: U
+    description: Select by real user ID or name
+    takes_value: true
+  - long: sort
+    description: Specify sorting order
+    takes_value: true
+  - long: forest
+    description: ASCII art process tree
+  - long: headers
+    description: Repeat header lines
+  - long: no-headers
+    description: Print no header line at all
+  - long: width
+    description: Wide output
+  - long: cols
+    description: Set screen width
+    takes_value: true
+  - long: rows
+    description: Set screen height
+    takes_value: true
+  - long: pid
+    description: Select by process ID
+    takes_value: true
+  - long: ppid
+    description: Select by parent process ID
+    takes_value: true
+  - long: sid
+    description: Select by session ID
+    takes_value: true
+  - long: tty
+    description: Select by tty
+    takes_value: true
+  - long: user
+    description: Select by effective user
+    takes_value: true
+  - long: group
+    description: Select by effective group
+    takes_value: true
+  - long: User
+    description: Select by real user
+    takes_value: true
+  - long: Group
+    description: Select by real group
+    takes_value: true

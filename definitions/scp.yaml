@@ -1,0 +1,57 @@
+name: scp
+description: OpenSSH secure file copy
+flags:
+  - short: r
+    description: Recursively copy entire directories
+  - short: p
+    description: Preserve modification times, access times, and modes
+  - short: q
+    description: Quiet mode
+  - short: C
+    description: Enable compression
+  - short: P
+    description: Port to connect to
+    takes_value: true
+  - short: i
+    description: Identity file (private key)
+    takes_value: true
+  - short: l
+    description: Limit bandwidth (Kbit/s)
+    takes_value: true
+  - short: o
+    description: SSH option
+    takes_value: true
+  - short: F
+    description: Config file
+    takes_value: true
+  - short: S
+    description: Program to use for encrypted connection
+    takes_value: true
+  - short: c
+    description: Cipher to use
+    takes_value: true
+  - short: v
+    description: Verbose mode
+  - short: B
+    description: Batch mode (prevents password prompts)
+  - short: 3
+    description: Copy through local host
+  - short: 4
+    description: Use IPv4 addresses only
+  - short: 6
+    description: Use IPv6 addresses only
+  - short: A
+    description: Allow forwarding of authentication agent
+  - short: J
+    description: Jump host
+    takes_value: true
+  - short: O
+    description: Use legacy SCP protocol
+  - short: s
+    description: Use SFTP protocol
+  - short: T
+    description: Disable strict filename checking
+  - short: D
+    description: Connect to SFTP server program directly
+    takes_value: true
+is_path_completion: true

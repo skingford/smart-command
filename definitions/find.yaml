@@ -1,0 +1,183 @@
+name: find
+description: Search for files in a directory hierarchy
+flags:
+  - long: name
+    description: Match filename (case sensitive)
+    takes_value: true
+  - long: iname
+    description: Match filename (case insensitive)
+    takes_value: true
+  - long: path
+    description: Match path
+    takes_value: true
+  - long: ipath
+    description: Match path (case insensitive)
+    takes_value: true
+  - long: regex
+    description: Match path using regex
+    takes_value: true
+  - long: iregex
+    description: Match path using regex (case insensitive)
+    takes_value: true
+  - long: type
+    description: File type (f=file, d=dir, l=link, b=block, c=char, p=pipe, s=socket)
+    takes_value: true
+  - long: xtype
+    description: Type for symbolic link target
+    takes_value: true
+  - long: size
+    description: File size (+N=larger, -N=smaller, Nc/k/M/G)
+    takes_value: true
+  - long: empty
+    description: Match empty files or directories
+  - long: newer
+    description: Match files newer than reference
+    takes_value: true
+  - long: newermt
+    description: Match files newer than timestamp
+    takes_value: true
+  - long: mtime
+    description: File modified time in days (+N/-N/N)
+    takes_value: true
+  - long: mmin
+    description: File modified time in minutes (+N/-N/N)
+    takes_value: true
+  - long: atime
+    description: File access time in days (+N/-N/N)
+    takes_value: true
+  - long: amin
+    description: File access time in minutes (+N/-N/N)
+    takes_value: true
+  - long: ctime
+    description: File status change time in days (+N/-N/N)
+    takes_value: true
+  - long: cmin
+    description: File status change time in minutes (+N/-N/N)
+    takes_value: true
+  - long: user
+    description: Match by owner username
+    takes_value: true
+  - long: uid
+    description: Match by owner UID
+    takes_value: true
+  - long: group
+    description: Match by group name
+    takes_value: true
+  - long: gid
+    description: Match by group GID
+    takes_value: true
+  - long: nouser
+    description: Match files with no known user
+  - long: nogroup
+    description: Match files with no known group
+  - long: perm
+    description: Match by permissions (mode, -mode, /mode)
+    takes_value: true
+  - long: readable
+    description: Match readable files
+  - long: writable
+    description: Match writable files
+  - long: executable
+    description: Match executable files
+  - long: maxdepth
+    description: Maximum search depth
+    takes_value: true
+  - long: mindepth
+    description: Minimum search depth
+    takes_value: true
+  - long: depth
+    description: Process directory contents before directory
+  - short: d
+    description: Process directory contents before directory
+  - long: mount
+    description: Do not descend into other filesystems
+  - long: xdev
+    description: Do not descend into other filesystems
+  - short: x
+    description: Do not descend into other filesystems
+  - long: prune
+    description: Do not descend into matched directory
+  - long: ignore_readdir_race
+    description: Ignore errors from racing with file removal
+  - long: noignore_readdir_race
+    description: Do not ignore errors from racing with file removal
+  - long: follow
+    short: L
+    description: Follow symbolic links
+  - short: H
+    description: Follow symbolic links on command line only
+  - short: P
+    description: Never follow symbolic links (default)
+  - long: print
+    description: Print matched file path
+  - long: print0
+    description: Print matched file path with null terminator
+  - long: fprint
+    description: Print matched file path to file
+    takes_value: true
+  - long: fprint0
+    description: Print matched file path to file with null terminator
+    takes_value: true
+  - long: printf
+    description: Print formatted output
+    takes_value: true
+  - long: fprintf
+    description: Print formatted output to file
+    takes_value: true
+  - long: ls
+    description: List matched files in ls -dils format
+  - long: fls
+    description: List matched files to file in ls -dils format
+    takes_value: true
+  - long: exec
+    description: Execute command on matched files
+    takes_value: true
+  - long: execdir
+    description: Execute command in directory of matched files
+    takes_value: true
+  - long: ok
+    description: Execute command with confirmation
+    takes_value: true
+  - long: okdir
+    description: Execute command in directory with confirmation
+    takes_value: true
+  - long: delete
+    description: Delete matched files
+  - long: quit
+    description: Exit immediately after first match
+  - long: true
+    description: Always true
+  - long: false
+    description: Always false
+  - long: and
+    short: a
+    description: AND operator (default)
+  - long: or
+    short: o
+    description: OR operator
+  - long: not
+    description: NOT operator
+  - long: daystart
+    description: Measure times from start of today
+  - long: warn
+    description: Enable warnings
+  - long: nowarn
+    description: Disable warnings
+  - long: noleaf
+    description: Do not optimize by assuming directory link count
+  - long: samefile
+    description: Match files with same inode
+    takes_value: true
+  - long: inum
+    description: Match by inode number
+    takes_value: true
+  - long: links
+    description: Match by number of hard links
+    takes_value: true
+  - long: fstype
+    description: Match by filesystem type
+    takes_value: true
+  - long: context
+    description: Match by SELinux context
+    takes_value: true
+is_path_completion: true

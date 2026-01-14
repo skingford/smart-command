@@ -1,0 +1,1004 @@
+name: kubectl
+description: Kubernetes command-line tool
+subcommands:
+  - name: get
+    description: Display one or many resources
+    flags:
+      - long: output
+        short: o
+        description: Output format (json, yaml, wide, name, custom-columns, jsonpath)
+        takes_value: true
+      - long: all-namespaces
+        short: A
+        description: List across all namespaces
+      - long: namespace
+        short: n
+        description: Namespace to use
+        takes_value: true
+      - long: selector
+        short: l
+        description: Label selector
+        takes_value: true
+      - long: field-selector
+        description: Field selector
+        takes_value: true
+      - long: watch
+        short: w
+        description: Watch for changes
+      - long: show-labels
+        description: Show labels
+      - long: sort-by
+        description: Sort list types
+        takes_value: true
+      - long: no-headers
+        description: Don't print headers
+  - name: describe
+    description: Show details of a specific resource
+    flags:
+      - long: namespace
+        short: n
+        description: Namespace to use
+        takes_value: true
+      - long: selector
+        short: l
+        description: Label selector
+        takes_value: true
+      - long: all-namespaces
+        short: A
+        description: All namespaces
+      - long: show-events
+        description: Show events related to object
+  - name: create
+    description: Create a resource from a file or stdin
+    flags:
+      - long: filename
+        short: f
+        description: Filename, directory, or URL to files
+        takes_value: true
+      - long: namespace
+        short: n
+        description: Namespace to use
+        takes_value: true
+      - long: dry-run
+        description: Must be none, server, or client
+        takes_value: true
+      - long: output
+        short: o
+        description: Output format
+        takes_value: true
+      - long: save-config
+        description: Save the configuration of current object
+    is_path_completion: true
+  - name: apply
+    description: Apply a configuration to a resource
+    flags:
+      - long: filename
+        short: f
+        description: Filename, directory, or URL to files
+        takes_value: true
+      - long: recursive
+        short: R
+        description: Process the directory used in -f recursively
+      - long: namespace
+        short: n
+        description: Namespace to use
+        takes_value: true
+      - long: dry-run
+        description: Must be none, server, or client
+        takes_value: true
+      - long: selector
+        short: l
+        description: Label selector
+        takes_value: true
+      - long: prune
+        description: Prune resources not in the configs
+      - long: force
+        description: Delete and re-create resource
+      - long: server-side
+        description: Use server-side apply
+      - long: field-manager
+        description: Field manager name
+        takes_value: true
+    is_path_completion: true
+  - name: delete
+    description: Delete resources
+    flags:
+      - long: filename
+        short: f
+        description: Filename, directory, or URL to files
+        takes_value: true
+      - long: namespace
+        short: n
+        description: Namespace to use
+        takes_value: true
+      - long: selector
+        short: l
+        description: Label selector
+        takes_value: true
+      - long: all
+        description: Delete all resources
+      - long: cascade
+        description: Cascade delete to dependents
+        takes_value: true
+      - long: force
+        description: Force deletion
+      - long: grace-period
+        description: Period of time to wait before deletion
+        takes_value: true
+      - long: now
+        description: Immediate deletion
+      - long: wait
+        description: Wait for deletion to complete
+      - long: dry-run
+        description: Must be none, server, or client
+        takes_value: true
+    is_path_completion: true
+  - name: edit
+    description: Edit a resource
+    flags:
+      - long: filename
+        short: f
+        description: Filename, directory, or URL to files
+        takes_value: true
+      - long: namespace
+        short: n
+        description: Namespace to use
+        takes_value: true
+      - long: output
+        short: o
+        description: Output format
+        takes_value: true
+    is_path_completion: true
+  - name: exec
+    description: Execute a command in a container
+    flags:
+      - long: container
+        short: c
+        description: Container name
+        takes_value: true
+      - long: namespace
+        short: n
+        description: Namespace to use
+        takes_value: true
+      - long: stdin
+        short: i
+        description: Pass stdin to the container
+      - long: tty
+        short: t
+        description: Stdin is a TTY
+  - name: logs
+    description: Print the logs for a container
+    flags:
+      - long: container
+        short: c
+        description: Container name
+        takes_value: true
+      - long: namespace
+        short: n
+        description: Namespace to use
+        takes_value: true
+      - long: follow
+        short: f
+        description: Follow the log output
+      - long: previous
+        short: p
+        description: Print previous instance logs
+      - long: tail
+        description: Number of lines from the end
+        takes_value: true
+      - long: since
+        description: Only return logs newer than duration
+        takes_value: true
+      - long: since-time
+        description: Only return logs after a specific date
+        takes_value: true
+      - long: timestamps
+        description: Include timestamps on each line
+      - long: all-containers
+        description: Get logs from all containers
+      - long: selector
+        short: l
+        description: Label selector
+        takes_value: true
+  - name: port-forward
+    description: Forward local ports to a pod
+    flags:
+      - long: namespace
+        short: n
+        description: Namespace to use
+        takes_value: true
+      - long: address
+        description: Addresses to listen on
+        takes_value: true
+  - name: proxy
+    description: Run a proxy to the Kubernetes API server
+    flags:
+      - long: port
+        short: p
+        description: Port to run the proxy on
+        takes_value: true
+      - long: address
+        description: Address to listen on
+        takes_value: true
+      - long: api-prefix
+        description: Prefix to serve proxy API under
+        takes_value: true
+      - long: disable-filter
+        description: Disable request filtering
+      - long: www
+        short: w
+        description: Static file directory to serve
+        takes_value: true
+  - name: run
+    description: Run a particular image on the cluster
+    flags:
+      - long: image
+        description: Container image to run
+        takes_value: true
+      - long: namespace
+        short: n
+        description: Namespace to use
+        takes_value: true
+      - long: env
+        description: Environment variables
+        takes_value: true
+      - long: port
+        description: Port to expose
+        takes_value: true
+      - long: labels
+        short: l
+        description: Labels to apply
+        takes_value: true
+      - long: restart
+        description: Restart policy
+        takes_value: true
+      - long: command
+        description: Run this command
+      - long: stdin
+        short: i
+        description: Keep stdin open
+      - long: tty
+        short: t
+        description: Allocate a TTY
+      - long: rm
+        description: Delete pod after completion
+      - long: dry-run
+        description: Must be none, server, or client
+        takes_value: true
+      - long: output
+        short: o
+        description: Output format
+        takes_value: true
+  - name: expose
+    description: Expose a resource as a new Kubernetes service
+    flags:
+      - long: namespace
+        short: n
+        description: Namespace to use
+        takes_value: true
+      - long: port
+        description: Port that the service should serve on
+        takes_value: true
+      - long: target-port
+        description: Port on the container
+        takes_value: true
+      - long: protocol
+        description: Network protocol
+        takes_value: true
+      - long: name
+        description: Name for the service
+        takes_value: true
+      - long: selector
+        description: Label selector
+        takes_value: true
+      - long: type
+        description: Type of service (ClusterIP, NodePort, LoadBalancer)
+        takes_value: true
+      - long: dry-run
+        description: Must be none, server, or client
+        takes_value: true
+      - long: output
+        short: o
+        description: Output format
+        takes_value: true
+  - name: scale
+    description: Set a new size for a deployment, replica set, or replication controller
+    flags:
+      - long: namespace
+        short: n
+        description: Namespace to use
+        takes_value: true
+      - long: replicas
+        description: Number of replicas
+        takes_value: true
+      - long: current-replicas
+        description: Precondition for current size
+        takes_value: true
+      - long: resource-version
+        description: Precondition for resource version
+        takes_value: true
+      - long: timeout
+        description: Time to wait before giving up
+        takes_value: true
+      - long: dry-run
+        description: Must be none, server, or client
+        takes_value: true
+  - name: rollout
+    description: Manage the rollout of a resource
+    subcommands:
+      - name: history
+        description: View rollout history
+        flags:
+          - long: namespace
+            short: n
+            description: Namespace to use
+            takes_value: true
+          - long: revision
+            description: Revision number
+            takes_value: true
+      - name: pause
+        description: Pause the rollout
+        flags:
+          - long: namespace
+            short: n
+            description: Namespace to use
+            takes_value: true
+      - name: restart
+        description: Restart a resource
+        flags:
+          - long: namespace
+            short: n
+            description: Namespace to use
+            takes_value: true
+      - name: resume
+        description: Resume a paused rollout
+        flags:
+          - long: namespace
+            short: n
+            description: Namespace to use
+            takes_value: true
+      - name: status
+        description: Show the status of the rollout
+        flags:
+          - long: namespace
+            short: n
+            description: Namespace to use
+            takes_value: true
+          - long: watch
+            short: w
+            description: Watch the status
+          - long: timeout
+            description: Timeout for watch
+            takes_value: true
+      - name: undo
+        description: Undo a previous rollout
+        flags:
+          - long: namespace
+            short: n
+            description: Namespace to use
+            takes_value: true
+          - long: to-revision
+            description: Revision to roll back to
+            takes_value: true
+          - long: dry-run
+            description: Must be none, server, or client
+            takes_value: true
+  - name: set
+    description: Set specific features on objects
+    subcommands:
+      - name: env
+        description: Update environment variables
+        flags:
+          - long: namespace
+            short: n
+            description: Namespace to use
+            takes_value: true
+          - long: env
+            short: e
+            description: Environment variable
+            takes_value: true
+          - long: from
+            description: Get env from resource
+            takes_value: true
+          - long: prefix
+            description: Prefix to prepend
+            takes_value: true
+          - long: containers
+            short: c
+            description: Container names
+            takes_value: true
+      - name: image
+        description: Update container image
+        flags:
+          - long: namespace
+            short: n
+            description: Namespace to use
+            takes_value: true
+          - long: all
+            description: Select all resources
+          - long: selector
+            short: l
+            description: Label selector
+            takes_value: true
+          - long: dry-run
+            description: Must be none, server, or client
+            takes_value: true
+      - name: resources
+        description: Update resource requests/limits
+        flags:
+          - long: namespace
+            short: n
+            description: Namespace to use
+            takes_value: true
+          - long: limits
+            description: Resource limits
+            takes_value: true
+          - long: requests
+            description: Resource requests
+            takes_value: true
+          - long: containers
+            short: c
+            description: Container names
+            takes_value: true
+      - name: selector
+        description: Set the selector on a resource
+        flags:
+          - long: namespace
+            short: n
+            description: Namespace to use
+            takes_value: true
+          - long: all
+            description: Select all resources
+      - name: serviceaccount
+        description: Update service account of a resource
+        flags:
+          - long: namespace
+            short: n
+            description: Namespace to use
+            takes_value: true
+          - long: dry-run
+            description: Must be none, server, or client
+            takes_value: true
+      - name: subject
+        description: Update user, group or service account
+        flags:
+          - long: namespace
+            short: n
+            description: Namespace to use
+            takes_value: true
+          - long: user
+            description: Usernames to bind
+            takes_value: true
+          - long: group
+            description: Groups to bind
+            takes_value: true
+          - long: serviceaccount
+            description: Service accounts to bind
+            takes_value: true
+  - name: label
+    description: Update the labels on a resource
+    flags:
+      - long: namespace
+        short: n
+        description: Namespace to use
+        takes_value: true
+      - long: selector
+        short: l
+        description: Label selector
+        takes_value: true
+      - long: all
+        description: Select all resources
+      - long: overwrite
+        description: Overwrite existing labels
+      - long: dry-run
+        description: Must be none, server, or client
+        takes_value: true
+      - long: output
+        short: o
+        description: Output format
+        takes_value: true
+  - name: annotate
+    description: Update the annotations on a resource
+    flags:
+      - long: namespace
+        short: n
+        description: Namespace to use
+        takes_value: true
+      - long: selector
+        short: l
+        description: Label selector
+        takes_value: true
+      - long: all
+        description: Select all resources
+      - long: overwrite
+        description: Overwrite existing annotations
+      - long: dry-run
+        description: Must be none, server, or client
+        takes_value: true
+      - long: output
+        short: o
+        description: Output format
+        takes_value: true
+  - name: patch
+    description: Update fields of a resource
+    flags:
+      - long: namespace
+        short: n
+        description: Namespace to use
+        takes_value: true
+      - long: patch
+        short: p
+        description: Patch to be applied
+        takes_value: true
+      - long: patch-file
+        description: File containing patch
+        takes_value: true
+      - long: type
+        description: Patch type (json, merge, strategic)
+        takes_value: true
+      - long: dry-run
+        description: Must be none, server, or client
+        takes_value: true
+      - long: output
+        short: o
+        description: Output format
+        takes_value: true
+    is_path_completion: true
+  - name: replace
+    description: Replace a resource by file or stdin
+    flags:
+      - long: filename
+        short: f
+        description: Filename, directory, or URL to files
+        takes_value: true
+      - long: namespace
+        short: n
+        description: Namespace to use
+        takes_value: true
+      - long: force
+        description: Delete and re-create resource
+      - long: cascade
+        description: Cascade delete to dependents
+        takes_value: true
+      - long: grace-period
+        description: Grace period for deletion
+        takes_value: true
+      - long: dry-run
+        description: Must be none, server, or client
+        takes_value: true
+      - long: output
+        short: o
+        description: Output format
+        takes_value: true
+    is_path_completion: true
+  - name: cp
+    description: Copy files and directories to and from containers
+    flags:
+      - long: container
+        short: c
+        description: Container name
+        takes_value: true
+      - long: namespace
+        short: n
+        description: Namespace to use
+        takes_value: true
+      - long: no-preserve
+        description: Do not preserve file ownership and permissions
+    is_path_completion: true
+  - name: attach
+    description: Attach to a running container
+    flags:
+      - long: container
+        short: c
+        description: Container name
+        takes_value: true
+      - long: namespace
+        short: n
+        description: Namespace to use
+        takes_value: true
+      - long: stdin
+        short: i
+        description: Pass stdin to the container
+      - long: tty
+        short: t
+        description: Stdin is a TTY
+  - name: top
+    description: Display resource usage
+    subcommands:
+      - name: node
+        description: Display resource usage of nodes
+        flags:
+          - long: selector
+            short: l
+            description: Label selector
+            takes_value: true
+          - long: sort-by
+            description: Sort by field
+            takes_value: true
+          - long: no-headers
+            description: Don't print headers
+      - name: pod
+        description: Display resource usage of pods
+        flags:
+          - long: namespace
+            short: n
+            description: Namespace to use
+            takes_value: true
+          - long: all-namespaces
+            short: A
+            description: All namespaces
+          - long: containers
+            description: Print containers stats
+          - long: selector
+            short: l
+            description: Label selector
+            takes_value: true
+          - long: sort-by
+            description: Sort by field
+            takes_value: true
+          - long: no-headers
+            description: Don't print headers
+  - name: cordon
+    description: Mark node as unschedulable
+    flags:
+      - long: selector
+        short: l
+        description: Label selector
+        takes_value: true
+      - long: dry-run
+        description: Must be none, server, or client
+        takes_value: true
+  - name: uncordon
+    description: Mark node as schedulable
+    flags:
+      - long: selector
+        short: l
+        description: Label selector
+        takes_value: true
+      - long: dry-run
+        description: Must be none, server, or client
+        takes_value: true
+  - name: drain
+    description: Drain node in preparation for maintenance
+    flags:
+      - long: force
+        description: Continue even if there are pods not managed by a controller
+      - long: grace-period
+        description: Grace period for deletion
+        takes_value: true
+      - long: ignore-daemonsets
+        description: Ignore DaemonSet pods
+      - long: delete-emptydir-data
+        description: Delete pods using emptyDir
+      - long: selector
+        short: l
+        description: Label selector
+        takes_value: true
+      - long: timeout
+        description: Time to wait before giving up
+        takes_value: true
+      - long: dry-run
+        description: Must be none, server, or client
+        takes_value: true
+  - name: taint
+    description: Update the taints on one or more nodes
+    flags:
+      - long: selector
+        short: l
+        description: Label selector
+        takes_value: true
+      - long: all
+        description: Select all nodes
+      - long: overwrite
+        description: Overwrite existing taints
+      - long: dry-run
+        description: Must be none, server, or client
+        takes_value: true
+      - long: output
+        short: o
+        description: Output format
+        takes_value: true
+  - name: cluster-info
+    description: Display cluster information
+    subcommands:
+      - name: dump
+        description: Dump cluster state for debugging
+        flags:
+          - long: all-namespaces
+            short: A
+            description: All namespaces
+          - long: namespaces
+            description: Namespaces to dump
+            takes_value: true
+          - long: output-directory
+            description: Output directory
+            takes_value: true
+  - name: config
+    description: Modify kubeconfig files
+    subcommands:
+      - name: current-context
+        description: Display the current context
+      - name: delete-cluster
+        description: Delete a cluster from kubeconfig
+      - name: delete-context
+        description: Delete a context from kubeconfig
+      - name: delete-user
+        description: Delete a user from kubeconfig
+      - name: get-clusters
+        description: Display clusters defined in kubeconfig
+      - name: get-contexts
+        description: Display contexts from kubeconfig
+        flags:
+          - long: output
+            short: o
+            description: Output format
+            takes_value: true
+          - long: no-headers
+            description: Don't print headers
+      - name: get-users
+        description: Display users defined in kubeconfig
+      - name: rename-context
+        description: Rename a context
+      - name: set
+        description: Set an individual value in kubeconfig
+      - name: set-cluster
+        description: Set a cluster entry in kubeconfig
+        flags:
+          - long: server
+            description: Server URL
+            takes_value: true
+          - long: certificate-authority
+            description: CA cert file path
+            takes_value: true
+          - long: insecure-skip-tls-verify
+            description: Skip TLS verification
+      - name: set-context
+        description: Set a context entry in kubeconfig
+        flags:
+          - long: cluster
+            description: Cluster to use
+            takes_value: true
+          - long: user
+            description: User to use
+            takes_value: true
+          - long: namespace
+            description: Default namespace
+            takes_value: true
+      - name: set-credentials
+        description: Set a user entry in kubeconfig
+        flags:
+          - long: client-certificate
+            description: Client cert file path
+            takes_value: true
+          - long: client-key
+            description: Client key file path
+            takes_value: true
+          - long: token
+            description: Bearer token
+            takes_value: true
+          - long: username
+            description: Username
+            takes_value: true
+          - long: password
+            description: Password
+            takes_value: true
+      - name: unset
+        description: Unset an individual value in kubeconfig
+      - name: use-context
+        description: Set the current context
+      - name: view
+        description: Display merged kubeconfig settings
+        flags:
+          - long: minify
+            description: Remove unused information
+          - long: flatten
+            description: Flatten resulting kubeconfig
+          - long: raw
+            description: Display raw byte data
+          - long: output
+            short: o
+            description: Output format
+            takes_value: true
+  - name: api-resources
+    description: Print supported API resources
+    flags:
+      - long: output
+        short: o
+        description: Output format (wide, name)
+        takes_value: true
+      - long: namespaced
+        description: Filter by namespaced scope
+      - long: verbs
+        description: Filter by verb
+        takes_value: true
+      - long: api-group
+        description: Filter by API group
+        takes_value: true
+      - long: sort-by
+        description: Sort by name or kind
+        takes_value: true
+      - long: no-headers
+        description: Don't print headers
+  - name: api-versions
+    description: Print supported API versions
+  - name: version
+    description: Print the client and server version information
+    flags:
+      - long: client
+        description: Show only client version
+      - long: short
+        description: Print just the version number
+      - long: output
+        short: o
+        description: Output format
+        takes_value: true
+  - name: diff
+    description: Diff the live version against a potential apply
+    flags:
+      - long: filename
+        short: f
+        description: Filename, directory, or URL to files
+        takes_value: true
+      - long: recursive
+        short: R
+        description: Process the directory used in -f recursively
+      - long: selector
+        short: l
+        description: Label selector
+        takes_value: true
+      - long: server-side
+        description: Use server-side apply
+      - long: field-manager
+        description: Field manager name
+        takes_value: true
+    is_path_completion: true
+  - name: wait
+    description: Wait for a specific condition on one or many resources
+    flags:
+      - long: namespace
+        short: n
+        description: Namespace to use
+        takes_value: true
+      - long: for
+        description: Condition to wait for
+        takes_value: true
+      - long: timeout
+        description: Time to wait before giving up
+        takes_value: true
+      - long: selector
+        short: l
+        description: Label selector
+        takes_value: true
+      - long: all
+        description: Select all resources
+      - long: all-namespaces
+        short: A
+        description: All namespaces
+  - name: auth
+    description: Inspect authorization
+    subcommands:
+      - name: can-i
+        description: Check whether an action is allowed
+        flags:
+          - long: namespace
+            short: n
+            description: Namespace to use
+            takes_value: true
+          - long: all-namespaces
+            short: A
+            description: Check in all namespaces
+          - long: list
+            description: List all allowed actions
+          - long: quiet
+            short: q
+            description: Suppress output
+          - long: subresource
+            description: SubResource to check
+            takes_value: true
+      - name: reconcile
+        description: Reconciles rules for RBAC role, role binding, cluster role, and cluster role binding objects
+        flags:
+          - long: filename
+            short: f
+            description: Filename, directory, or URL to files
+            takes_value: true
+          - long: dry-run
+            description: Must be none, server, or client
+            takes_value: true
+          - long: remove-extra-permissions
+            description: Remove extra permissions
+          - long: remove-extra-subjects
+            description: Remove extra subjects
+      - name: whoami
+        description: "Experimental: Check self subject attributes"
+        flags:
+          - long: output
+            short: o
+            description: Output format
+            takes_value: true
+  - name: certificate
+    description: Modify certificate resources
+    subcommands:
+      - name: approve
+        description: Approve a certificate signing request
+        flags:
+          - long: force
+            description: Update even if resource has been modified
+      - name: deny
+        description: Deny a certificate signing request
+        flags:
+          - long: force
+            description: Update even if resource has been modified
+  - name: debug
+    description: Create debugging sessions for troubleshooting workloads and nodes
+    flags:
+      - long: namespace
+        short: n
+        description: Namespace to use
+        takes_value: true
+      - long: image
+        description: Container image to use for debug container
+        takes_value: true
+      - long: container
+        short: c
+        description: Container name to use for debug container
+        takes_value: true
+      - long: stdin
+        short: i
+        description: Keep stdin open
+      - long: tty
+        short: t
+        description: Allocate a TTY
+      - long: copy-to
+        description: Name for the copied pod
+        takes_value: true
+      - long: target
+        description: Target container to attach debugger
+        takes_value: true
+      - long: share-processes
+        description: Enable process namespace sharing
+flags:
+  - long: kubeconfig
+    description: Path to the kubeconfig file
+    takes_value: true
+  - long: context
+    description: Name of the kubeconfig context to use
+    takes_value: true
+  - long: cluster
+    description: Name of the kubeconfig cluster to use
+    takes_value: true
+  - long: namespace
+    short: n
+    description: Namespace to use
+    takes_value: true
+  - long: server
+    short: s
+    description: Address of the Kubernetes API server
+    takes_value: true
+  - long: insecure-skip-tls-verify
+    description: Skip server certificate verification
+  - long: client-certificate
+    description: Path to client certificate file
+    takes_value: true
+  - long: client-key
+    description: Path to client private key file
+    takes_value: true
+  - long: token
+    description: Bearer token for authentication
+    takes_value: true
+  - long: as
+    description: Username to impersonate
+    takes_value: true
+  - long: as-group
+    description: Group to impersonate
+    takes_value: true
+  - long: as-uid
+    description: UID to impersonate
+    takes_value: true
+  - long: request-timeout
+    description: Timeout for single server request
+    takes_value: true
+  - long: verbose
+    short: v
+    description: Verbosity level
+    takes_value: true

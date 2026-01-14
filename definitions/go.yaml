@@ -1,0 +1,484 @@
+name: go
+description: Go programming language tool
+subcommands:
+  - name: build
+    description: Compile packages and dependencies
+    flags:
+      - short: o
+        description: Output file or directory
+        takes_value: true
+      - short: v
+        description: Print packages as they are compiled
+      - short: a
+        description: Force rebuilding of packages
+      - short: n
+        description: Print commands but do not run them
+      - short: x
+        description: Print commands as they are executed
+      - short: p
+        description: Number of parallel builds
+        takes_value: true
+      - long: race
+        description: Enable race detector
+      - long: msan
+        description: Enable memory sanitizer
+      - long: asan
+        description: Enable address sanitizer
+      - long: cover
+        description: Enable code coverage
+      - long: covermode
+        description: Coverage mode (set, count, atomic)
+        takes_value: true
+      - long: ldflags
+        description: Linker flags
+        takes_value: true
+      - long: gcflags
+        description: Compiler flags
+        takes_value: true
+      - long: asmflags
+        description: Assembler flags
+        takes_value: true
+      - long: tags
+        description: Build tags
+        takes_value: true
+      - long: trimpath
+        description: Remove file system paths from executable
+      - long: mod
+        description: Module download mode (readonly, vendor, mod)
+        takes_value: true
+      - long: work
+        description: Print work directory and do not delete it
+    is_path_completion: true
+  - name: run
+    description: Compile and run Go program
+    flags:
+      - short: v
+        description: Print packages as they are compiled
+      - short: a
+        description: Force rebuilding of packages
+      - short: n
+        description: Print commands but do not run them
+      - short: x
+        description: Print commands as they are executed
+      - long: race
+        description: Enable race detector
+      - long: msan
+        description: Enable memory sanitizer
+      - long: asan
+        description: Enable address sanitizer
+      - long: cover
+        description: Enable code coverage
+      - long: ldflags
+        description: Linker flags
+        takes_value: true
+      - long: gcflags
+        description: Compiler flags
+        takes_value: true
+      - long: tags
+        description: Build tags
+        takes_value: true
+      - long: trimpath
+        description: Remove file system paths from executable
+      - long: exec
+        description: Run binary using xprog
+        takes_value: true
+    is_path_completion: true
+  - name: test
+    description: Run tests
+    flags:
+      - short: v
+        description: Verbose output
+      - short: c
+        description: Compile test binary but do not run it
+      - short: o
+        description: Compile test binary to named file
+        takes_value: true
+      - short: i
+        description: Install packages that are dependencies of the test
+      - long: json
+        description: Output results in JSON
+      - long: race
+        description: Enable race detector
+      - long: msan
+        description: Enable memory sanitizer
+      - long: asan
+        description: Enable address sanitizer
+      - long: cover
+        description: Enable coverage analysis
+      - long: covermode
+        description: Coverage mode (set, count, atomic)
+        takes_value: true
+      - long: coverpkg
+        description: Packages to include in coverage
+        takes_value: true
+      - long: coverprofile
+        description: Write coverage profile
+        takes_value: true
+      - long: bench
+        description: Run benchmarks matching regexp
+        takes_value: true
+      - long: benchtime
+        description: Run each benchmark for duration d
+        takes_value: true
+      - long: benchmem
+        description: Print memory allocation statistics
+      - long: run
+        description: Run only tests matching regexp
+        takes_value: true
+      - long: short
+        description: Shorten long-running tests
+      - long: timeout
+        description: Test timeout
+        takes_value: true
+      - long: count
+        description: Number of times to run tests
+        takes_value: true
+      - long: cpu
+        description: List of GOMAXPROCS values
+        takes_value: true
+      - long: parallel
+        description: Max parallel test execution
+        takes_value: true
+      - long: failfast
+        description: Stop on first failure
+      - long: shuffle
+        description: Randomize test order (off, on, seed)
+        takes_value: true
+      - long: ldflags
+        description: Linker flags
+        takes_value: true
+      - long: gcflags
+        description: Compiler flags
+        takes_value: true
+      - long: tags
+        description: Build tags
+        takes_value: true
+    is_path_completion: true
+  - name: install
+    description: Compile and install packages and dependencies
+    flags:
+      - short: v
+        description: Print packages as they are compiled
+      - short: a
+        description: Force rebuilding of packages
+      - short: n
+        description: Print commands but do not run them
+      - short: x
+        description: Print commands as they are executed
+      - long: race
+        description: Enable race detector
+      - long: ldflags
+        description: Linker flags
+        takes_value: true
+      - long: gcflags
+        description: Compiler flags
+        takes_value: true
+      - long: tags
+        description: Build tags
+        takes_value: true
+      - long: trimpath
+        description: Remove file system paths from executable
+    is_path_completion: true
+  - name: get
+    description: Add dependencies to current module
+    flags:
+      - short: d
+        description: Only download, do not install
+      - short: t
+        description: Also download test packages
+      - short: u
+        description: Update to latest version
+      - short: v
+        description: Verbose output
+      - short: x
+        description: Print commands as they are executed
+      - long: insecure
+        description: Allow insecure custom domains
+  - name: mod
+    description: Module maintenance
+    subcommands:
+      - name: init
+        description: Initialize new module
+      - name: tidy
+        description: Add missing and remove unused modules
+        flags:
+          - short: v
+            description: Verbose output
+          - short: e
+            description: Attempt to proceed despite errors
+          - long: go
+            description: Update go directive
+            takes_value: true
+          - long: compat
+            description: Compatibility version
+            takes_value: true
+      - name: download
+        description: Download modules to local cache
+        flags:
+          - short: x
+            description: Print commands as they are executed
+          - long: json
+            description: Print JSON output
+      - name: verify
+        description: Verify dependencies have expected content
+      - name: graph
+        description: Print module requirement graph
+        flags:
+          - long: go
+            description: Report module graph as loaded by Go version
+            takes_value: true
+          - short: x
+            description: Print commands as they are executed
+      - name: why
+        description: Explain why packages or modules are needed
+        flags:
+          - short: m
+            description: Treat arguments as modules
+          - long: vendor
+            description: Exclude test dependencies
+      - name: edit
+        description: Edit go.mod from tools or scripts
+        flags:
+          - long: module
+            description: Set the module's path
+            takes_value: true
+          - long: go
+            description: Set the expected Go version
+            takes_value: true
+          - long: require
+            description: Add a requirement
+            takes_value: true
+          - long: droprequire
+            description: Drop a requirement
+            takes_value: true
+          - long: exclude
+            description: Add an exclusion
+            takes_value: true
+          - long: dropexclude
+            description: Drop an exclusion
+            takes_value: true
+          - long: replace
+            description: Add a replacement
+            takes_value: true
+          - long: dropreplace
+            description: Drop a replacement
+            takes_value: true
+          - long: retract
+            description: Add a retraction
+            takes_value: true
+          - long: dropretract
+            description: Drop a retraction
+            takes_value: true
+          - long: json
+            description: Print JSON output
+          - long: print
+            description: Print the final go.mod
+          - long: fmt
+            description: Reformat the go.mod file
+      - name: vendor
+        description: Make vendored copy of dependencies
+        flags:
+          - short: v
+            description: Print vendored modules
+          - short: e
+            description: Attempt to proceed despite errors
+          - short: o
+            description: Output directory
+            takes_value: true
+  - name: work
+    description: Workspace maintenance
+    subcommands:
+      - name: init
+        description: Initialize workspace
+        is_path_completion: true
+      - name: use
+        description: Add modules to workspace file
+        flags:
+          - short: r
+            description: Recursively find modules in directory
+        is_path_completion: true
+      - name: edit
+        description: Edit go.work from tools or scripts
+        flags:
+          - long: go
+            description: Set the expected Go version
+            takes_value: true
+          - long: use
+            description: Add a use directive
+            takes_value: true
+          - long: dropuse
+            description: Drop a use directive
+            takes_value: true
+          - long: replace
+            description: Add a replacement
+            takes_value: true
+          - long: dropreplace
+            description: Drop a replacement
+            takes_value: true
+          - long: json
+            description: Print JSON output
+          - long: print
+            description: Print the final go.work
+          - long: fmt
+            description: Reformat the go.work file
+      - name: sync
+        description: Sync workspace build list to modules
+  - name: clean
+    description: Remove object files and cached files
+    flags:
+      - short: i
+        description: Remove installed executables
+      - short: r
+        description: Apply recursively to all dependencies
+      - long: cache
+        description: Remove the entire go build cache
+      - long: testcache
+        description: Remove all test result cache
+      - long: modcache
+        description: Remove the entire module cache
+      - short: n
+        description: Print commands but do not run them
+      - short: x
+        description: Print commands as they are executed
+  - name: doc
+    description: Show documentation
+    flags:
+      - long: all
+        description: Show all documentation
+      - long: c
+        description: Respect case when matching symbols
+      - long: cmd
+        description: Treat command like a regular package
+      - long: short
+        description: One-line synopsis
+      - long: src
+        description: Show source code
+      - long: u
+        description: Show unexported symbols
+  - name: env
+    description: Print Go environment information
+    flags:
+      - long: json
+        description: Print in JSON format
+      - short: u
+        description: Unset environment variable
+      - short: w
+        description: Set environment variable
+  - name: fix
+    description: Update packages to use new APIs
+    is_path_completion: true
+  - name: fmt
+    description: Format Go source code
+    flags:
+      - short: n
+        description: Print commands but do not run them
+      - short: x
+        description: Print commands as they are executed
+      - long: mod
+        description: Module download mode
+        takes_value: true
+    is_path_completion: true
+  - name: generate
+    description: Generate Go files by processing source
+    flags:
+      - short: v
+        description: Print packages as they are processed
+      - short: n
+        description: Print commands but do not run them
+      - short: x
+        description: Print commands as they are executed
+      - long: run
+        description: Run only directives matching regexp
+        takes_value: true
+    is_path_completion: true
+  - name: list
+    description: List packages or modules
+    flags:
+      - short: e
+        description: Report errors found
+      - short: f
+        description: Specify output format template
+        takes_value: true
+      - long: json
+        description: Output in JSON format
+      - long: compiled
+        description: Show files after preprocessing
+      - long: deps
+        description: Show dependencies
+      - long: export
+        description: Show export data file paths
+      - long: find
+        description: Show matching directories
+      - long: test
+        description: Show test packages
+      - short: m
+        description: List modules instead of packages
+      - short: u
+        description: Add update info when listing modules
+      - long: versions
+        description: Show available versions
+      - long: retracted
+        description: Show retracted versions
+      - long: mod
+        description: Module download mode
+        takes_value: true
+    is_path_completion: true
+  - name: vet
+    description: Report likely mistakes in packages
+    flags:
+      - short: n
+        description: Print commands but do not run them
+      - short: x
+        description: Print commands as they are executed
+      - short: v
+        description: Verbose output
+      - long: tags
+        description: Build tags
+        takes_value: true
+      - long: vettool
+        description: Path to custom vet tool
+        takes_value: true
+    is_path_completion: true
+  - name: tool
+    description: Run specified go tool
+    subcommands:
+      - name: compile
+        description: Compile Go package
+      - name: link
+        description: Link Go object files
+      - name: asm
+        description: Assemble Go assembly files
+      - name: cgo
+        description: Cgo enables the creation of Go packages that call C code
+      - name: cover
+        description: Program for analyzing coverage profiles
+      - name: fix
+        description: Find deprecated Go constructs
+      - name: nm
+        description: List symbol table of object file
+      - name: objdump
+        description: Disassemble executables
+      - name: pack
+        description: Create and manipulate Go archives
+      - name: pprof
+        description: Display and analyze profile data
+      - name: test2json
+        description: Convert test output to JSON
+      - name: trace
+        description: View trace files
+      - name: vet
+        description: Find common mistakes
+  - name: version
+    description: Print Go version
+    flags:
+      - short: m
+        description: Print module version info
+      - short: v
+        description: Report unrecognized files
+  - name: help
+    description: Show help for a command
+flags:
+  - short: v
+    description: Print commands as executed
+  - long: work
+    description: Print work directory name

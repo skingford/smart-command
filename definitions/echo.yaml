@@ -1,0 +1,9 @@
+name: echo
+description: Display a line of text
+flags:
+  - short: n
+    description: Do not output the trailing newline
+  - short: e
+    description: Enable interpretation of backslash escapes
+  - short: E
+    description: Disable interpretation of backslash escapes (default)

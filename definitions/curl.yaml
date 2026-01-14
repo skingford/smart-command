@@ -1,0 +1,306 @@
+name: curl
+description: Transfer data from or to a server
+flags:
+  - long: request
+    short: X
+    description: HTTP method (GET, POST, PUT, DELETE, PATCH, etc.)
+    takes_value: true
+  - long: data
+    short: d
+    description: HTTP POST data
+    takes_value: true
+  - long: data-raw
+    description: HTTP POST data (without @ interpretation)
+    takes_value: true
+  - long: data-urlencode
+    description: HTTP POST data URL encoded
+    takes_value: true
+  - long: data-binary
+    description: HTTP POST binary data
+    takes_value: true
+  - long: form
+    short: F
+    description: Multipart form data
+    takes_value: true
+  - long: header
+    short: H
+    description: HTTP header
+    takes_value: true
+  - long: include
+    short: i
+    description: Include HTTP response headers
+  - long: head
+    short: I
+    description: Fetch headers only
+  - long: output
+    short: o
+    description: Write output to file
+    takes_value: true
+  - long: remote-name
+    short: O
+    description: Write output to file named like remote file
+  - long: location
+    short: L
+    description: Follow redirects
+  - long: max-redirs
+    description: Maximum number of redirects
+    takes_value: true
+  - long: silent
+    short: s
+    description: Silent mode
+  - long: show-error
+    short: S
+    description: Show error even with silent mode
+  - long: fail
+    short: f
+    description: Fail silently on server errors
+  - long: fail-with-body
+    description: Fail with body on server errors
+  - long: verbose
+    short: v
+    description: Verbose output
+  - long: trace
+    description: Enable full trace dump
+    takes_value: true
+  - long: trace-ascii
+    description: Enable full trace dump in ASCII
+    takes_value: true
+  - long: user
+    short: u
+    description: User and password
+    takes_value: true
+  - long: basic
+    description: Use HTTP Basic authentication
+  - long: digest
+    description: Use HTTP Digest authentication
+  - long: ntlm
+    description: Use HTTP NTLM authentication
+  - long: negotiate
+    description: Use HTTP Negotiate authentication
+  - long: oauth2-bearer
+    description: OAuth 2.0 Bearer Token
+    takes_value: true
+  - long: aws-sigv4
+    description: Use AWS V4 signature authentication
+    takes_value: true
+  - long: cookie
+    short: b
+    description: Send cookie
+    takes_value: true
+  - long: cookie-jar
+    short: c
+    description: Save cookies to file
+    takes_value: true
+  - long: user-agent
+    short: A
+    description: User-Agent header
+    takes_value: true
+  - long: referer
+    short: e
+    description: Referer URL
+    takes_value: true
+  - long: compressed
+    description: Request compressed response
+  - long: connect-timeout
+    description: Maximum time for connection
+    takes_value: true
+  - long: max-time
+    short: m
+    description: Maximum time for transfer
+    takes_value: true
+  - long: retry
+    description: Number of retries
+    takes_value: true
+  - long: retry-delay
+    description: Time between retries
+    takes_value: true
+  - long: retry-max-time
+    description: Maximum time for retries
+    takes_value: true
+  - long: retry-all-errors
+    description: Retry on all errors
+  - long: limit-rate
+    description: Limit transfer rate
+    takes_value: true
+  - long: speed-limit
+    short: Y
+    description: Stop if below speed limit
+    takes_value: true
+  - long: speed-time
+    short: y
+    description: Trigger speed limit after this time
+    takes_value: true
+  - long: cacert
+    description: CA certificate file
+    takes_value: true
+  - long: capath
+    description: CA certificate directory
+    takes_value: true
+  - long: cert
+    short: E
+    description: Client certificate file
+    takes_value: true
+  - long: cert-type
+    description: Certificate type (PEM, DER, ENG, P12)
+    takes_value: true
+  - long: key
+    description: Private key file
+    takes_value: true
+  - long: key-type
+    description: Private key type
+    takes_value: true
+  - long: insecure
+    short: k
+    description: Allow insecure connections
+  - long: proxy
+    short: x
+    description: Use proxy
+    takes_value: true
+  - long: proxy-user
+    short: U
+    description: Proxy authentication
+    takes_value: true
+  - long: noproxy
+    description: List of hosts to bypass proxy
+    takes_value: true
+  - long: socks4
+    description: SOCKS4 proxy
+    takes_value: true
+  - long: socks4a
+    description: SOCKS4a proxy
+    takes_value: true
+  - long: socks5
+    description: SOCKS5 proxy
+    takes_value: true
+  - long: socks5-hostname
+    description: SOCKS5 proxy with hostname resolution
+    takes_value: true
+  - long: resolve
+    description: Resolve host to IP
+    takes_value: true
+  - long: interface
+    description: Use network interface
+    takes_value: true
+  - long: local-port
+    description: Local port range
+    takes_value: true
+  - long: upload-file
+    short: T
+    description: Transfer local file to URL
+    takes_value: true
+  - long: range
+    short: r
+    description: Byte range to retrieve
+    takes_value: true
+  - long: continue-at
+    short: C
+    description: Resume transfer offset
+    takes_value: true
+  - long: remote-time
+    short: R
+    description: Set remote file's time on local output
+  - long: time-cond
+    short: z
+    description: Request file newer than date
+    takes_value: true
+  - long: create-dirs
+    description: Create necessary local directories
+  - long: progress-bar
+    description: Display progress bar
+  - long: no-progress-meter
+    description: Do not show progress meter
+  - long: write-out
+    short: w
+    description: Define output format
+    takes_value: true
+  - long: config
+    short: K
+    description: Config file to read
+    takes_value: true
+  - long: url
+    description: URL to work with
+    takes_value: true
+  - long: next
+    description: Use next URL
+  - long: parallel
+    short: Z
+    description: Perform transfers in parallel
+  - long: parallel-max
+    description: Maximum parallel transfers
+    takes_value: true
+  - long: parallel-immediate
+    description: Do not wait for multiplexing
+  - long: proto
+    description: Enable/disable protocols
+    takes_value: true
+  - long: proto-default
+    description: Default protocol
+    takes_value: true
+  - long: proto-redir
+    description: Enable/disable protocols on redirect
+    takes_value: true
+  - long: http0.9
+    description: Allow HTTP/0.9 responses
+  - long: http1.0
+    short: "0"
+    description: Use HTTP/1.0
+  - long: http1.1
+    description: Use HTTP/1.1
+  - long: http2
+    description: Use HTTP/2
+  - long: http2-prior-knowledge
+    description: Use HTTP/2 without upgrade
+  - long: http3
+    description: Use HTTP/3
+  - long: json
+    description: HTTP POST JSON data
+    takes_value: true
+  - long: url-query
+    description: Add URL query parameter
+    takes_value: true
+  - long: get
+    short: G
+    description: Use GET request
+  - long: globoff
+    short: g
+    description: Disable URL globbing
+  - long: ipv4
+    short: "4"
+    description: Use IPv4
+  - long: ipv6
+    short: "6"
+    description: Use IPv6
+  - long: path-as-is
+    description: Do not squash .. in URL path
+  - long: no-keepalive
+    description: Disable keepalive
+  - long: keepalive-time
+    description: Interval for keepalive probes
+    takes_value: true
+  - long: tcp-fastopen
+    description: Use TCP Fast Open
+  - long: tcp-nodelay
+    description: Use TCP_NODELAY option
+  - long: no-buffer
+    short: N
+    description: Disable output buffering
+  - long: no-sessionid
+    description: Disable SSL session reuse
+  - long: stderr
+    description: Where to redirect stderr
+    takes_value: true
+  - long: styled-output
+    description: Enable styled output
+  - long: dump-header
+    short: D
+    description: Dump headers to file
+    takes_value: true
+  - long: netrc
+    short: n
+    description: Read .netrc for credentials
+  - long: netrc-file
+    description: Netrc file to use
+    takes_value: true
+  - long: netrc-optional
+    description: Use netrc if present
+is_path_completion: true

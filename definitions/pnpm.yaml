@@ -1,0 +1,505 @@
+name: pnpm
+description: Fast, disk space efficient package manager
+subcommands:
+  - name: add
+    description: Install a package
+    flags:
+      - long: save-prod
+        short: P
+        description: Save to dependencies
+      - long: save-dev
+        short: D
+        description: Save to devDependencies
+      - long: save-optional
+        short: O
+        description: Save to optionalDependencies
+      - long: save-peer
+        description: Save to peerDependencies
+      - long: save-exact
+        short: E
+        description: Save exact version
+      - long: global
+        short: g
+        description: Install globally
+      - long: workspace
+        short: w
+        description: Only adds to workspace package
+      - long: filter
+        short: F
+        description: Filter by package
+        takes_value: true
+      - long: ignore-workspace-root-check
+        description: Allow installing in workspace root
+      - long: recursive
+        short: r
+        description: Run in all workspace packages
+  - name: remove
+    description: Remove packages
+    flags:
+      - long: global
+        short: g
+        description: Remove global package
+      - long: save-dev
+        short: D
+        description: Remove from devDependencies
+      - long: save-optional
+        short: O
+        description: Remove from optionalDependencies
+      - long: save-prod
+        short: P
+        description: Remove from dependencies
+      - long: recursive
+        short: r
+        description: Run in all workspace packages
+      - long: filter
+        short: F
+        description: Filter by package
+        takes_value: true
+  - name: install
+    description: Install dependencies
+    flags:
+      - long: force
+        description: Force reinstall dependencies
+      - long: offline
+        description: Run in offline mode
+      - long: prefer-offline
+        description: Prefer cached packages
+      - long: ignore-scripts
+        description: Don't run scripts
+      - long: frozen-lockfile
+        description: Fail if lockfile needs update
+      - long: lockfile-only
+        description: Only update lockfile
+      - long: fix-lockfile
+        description: Fix broken lockfile
+      - long: prod
+        short: P
+        description: Install production deps only
+      - long: dev
+        short: D
+        description: Only install devDependencies
+      - long: no-optional
+        description: Skip optionalDependencies
+      - long: filter
+        short: F
+        description: Filter by package
+        takes_value: true
+      - long: recursive
+        short: r
+        description: Run in all workspace packages
+      - long: shamefully-hoist
+        description: Hoist all dependencies
+      - long: strict-peer-dependencies
+        description: Fail on missing peer dependencies
+      - long: no-lockfile
+        description: Don't generate a lockfile
+      - long: ignore-pnpmfile
+        description: Disable the pnpmfile
+      - long: virtual-store-dir
+        description: Virtual store directory
+        takes_value: true
+      - long: modules-dir
+        description: Modules directory
+        takes_value: true
+  - name: update
+    description: Update packages
+    flags:
+      - long: global
+        short: g
+        description: Update global packages
+      - long: recursive
+        short: r
+        description: Run in all workspace packages
+      - long: latest
+        short: L
+        description: Update to latest version
+      - long: dev
+        short: D
+        description: Only update devDependencies
+      - long: prod
+        short: P
+        description: Only update production deps
+      - long: no-optional
+        description: Skip optionalDependencies
+      - long: interactive
+        short: i
+        description: Show outdated and choose
+      - long: workspace
+        description: Only update workspace packages
+      - long: filter
+        short: F
+        description: Filter by package
+        takes_value: true
+  - name: link
+    description: Link a package
+    flags:
+      - long: global
+        short: g
+        description: Link globally
+      - long: dir
+        short: C
+        description: Change to directory
+        takes_value: true
+    is_path_completion: true
+  - name: unlink
+    description: Unlink a package
+    flags:
+      - long: recursive
+        short: r
+        description: Run in all workspace packages
+  - name: import
+    description: Generate pnpm-lock.yaml from other lockfiles
+  - name: rebuild
+    description: Rebuild a package
+    flags:
+      - long: recursive
+        short: r
+        description: Run in all workspace packages
+      - long: filter
+        short: F
+        description: Filter by package
+        takes_value: true
+  - name: prune
+    description: Remove unnecessary packages
+    flags:
+      - long: prod
+        description: Remove dev dependencies
+      - long: no-optional
+        description: Remove optional dependencies
+  - name: fetch
+    description: Fetch packages only
+  - name: pack
+    description: Create a tarball
+    flags:
+      - long: pack-destination
+        description: Where to store tarball
+        takes_value: true
+  - name: publish
+    description: Publish a package
+    flags:
+      - long: tag
+        description: Publish with a tag
+        takes_value: true
+      - long: access
+        description: Set access level (public or restricted)
+        takes_value: true
+      - long: no-git-checks
+        description: Don't check git status
+      - long: publish-branch
+        description: Git branch to publish from
+        takes_value: true
+      - long: force
+        description: Force publish
+      - long: dry-run
+        description: Don't publish, just report
+      - long: recursive
+        short: r
+        description: Publish all workspace packages
+      - long: filter
+        short: F
+        description: Filter by package
+        takes_value: true
+      - long: report-summary
+        description: Create a summary report
+  - name: run
+    description: Run a script
+    flags:
+      - long: recursive
+        short: r
+        description: Run in all workspace packages
+      - long: if-present
+        description: Don't fail if script is missing
+      - long: parallel
+        description: Run scripts in parallel
+      - long: stream
+        description: Stream output immediately
+      - long: filter
+        short: F
+        description: Filter by package
+        takes_value: true
+      - long: reporter
+        description: Reporter type (default, append-only, ndjson)
+        takes_value: true
+      - long: workspace-concurrency
+        description: Set workspace concurrency
+        takes_value: true
+  - name: exec
+    description: Execute a command in workspace packages
+    flags:
+      - long: recursive
+        short: r
+        description: Run in all workspace packages
+      - long: parallel
+        description: Run in parallel
+      - long: stream
+        description: Stream output immediately
+      - long: filter
+        short: F
+        description: Filter by package
+        takes_value: true
+      - long: workspace-concurrency
+        description: Set workspace concurrency
+        takes_value: true
+      - long: shell-mode
+        short: c
+        description: Run command in a shell
+  - name: test
+    description: Run tests
+    flags:
+      - long: recursive
+        short: r
+        description: Run in all workspace packages
+      - long: filter
+        short: F
+        description: Filter by package
+        takes_value: true
+  - name: start
+    description: Run start script
+  - name: create
+    description: Create a project from create-* starter kit
+  - name: dlx
+    description: Fetch and execute a package binary
+    flags:
+      - long: package
+        short: p
+        description: Package to install the command from
+        takes_value: true
+      - long: shell-mode
+        short: c
+        description: Run command in a shell
+  - name: env
+    description: Manage Node.js versions
+    subcommands:
+      - name: use
+        description: Install and use specified Node.js version
+        flags:
+          - long: global
+            short: g
+            description: Set Node.js version globally
+      - name: remove
+        description: Remove specified Node.js version
+        flags:
+          - long: global
+            short: g
+            description: Remove from global
+      - name: list
+        description: List available Node.js versions
+        flags:
+          - long: remote
+            description: List versions from Node.js server
+  - name: store
+    description: Manage the package store
+    subcommands:
+      - name: add
+        description: Add packages to store
+      - name: prune
+        description: Remove unreferenced packages
+      - name: status
+        description: Show store status
+      - name: path
+        description: Print store path
+  - name: list
+    description: List installed packages
+    flags:
+      - long: recursive
+        short: r
+        description: Run in all workspace packages
+      - long: json
+        description: Output as JSON
+      - long: long
+        description: Show extended information
+      - long: parseable
+        short: p
+        description: Machine-readable output
+      - long: global
+        short: g
+        description: List global packages
+      - long: depth
+        description: Max display depth
+        takes_value: true
+      - long: dev
+        short: D
+        description: Only show devDependencies
+      - long: prod
+        short: P
+        description: Only show dependencies
+      - long: no-optional
+        description: Hide optionalDependencies
+      - long: filter
+        short: F
+        description: Filter by package
+        takes_value: true
+  - name: outdated
+    description: Check for outdated packages
+    flags:
+      - long: recursive
+        short: r
+        description: Run in all workspace packages
+      - long: global
+        short: g
+        description: Check global packages
+      - long: long
+        description: Show extended information
+      - long: format
+        description: Output format (default, list, json)
+        takes_value: true
+      - long: dev
+        short: D
+        description: Only check devDependencies
+      - long: prod
+        short: P
+        description: Only check dependencies
+      - long: no-optional
+        description: Hide optionalDependencies
+      - long: compatible
+        description: Show only backwards-compatible updates
+      - long: filter
+        short: F
+        description: Filter by package
+        takes_value: true
+  - name: why
+    description: Show why a package is installed
+    flags:
+      - long: recursive
+        short: r
+        description: Run in all workspace packages
+      - long: json
+        description: Output as JSON
+      - long: long
+        description: Show extended information
+      - long: parseable
+        short: p
+        description: Machine-readable output
+      - long: global
+        short: g
+        description: List global packages
+      - long: dev
+        short: D
+        description: Only show dev dependencies
+      - long: prod
+        short: P
+        description: Only show production dependencies
+      - long: filter
+        short: F
+        description: Filter by package
+        takes_value: true
+  - name: audit
+    description: Check for known security issues
+    flags:
+      - long: audit-level
+        description: Only print advisories at this level
+        takes_value: true
+      - long: dev
+        short: D
+        description: Only audit devDependencies
+      - long: prod
+        short: P
+        description: Only audit dependencies
+      - long: no-optional
+        description: Skip optionalDependencies
+      - long: json
+        description: Output as JSON
+      - long: fix
+        description: Apply fixes
+      - long: ignore-registry-errors
+        description: Don't fail if registry returns errors
+  - name: licenses
+    description: Check package licenses
+    subcommands:
+      - name: list
+        description: List licenses
+        flags:
+          - long: recursive
+            short: r
+            description: Run in all workspace packages
+          - long: json
+            description: Output as JSON
+          - long: long
+            description: Show extended information
+          - long: dev
+            short: D
+            description: Only show devDependencies
+          - long: prod
+            short: P
+            description: Only show dependencies
+          - long: no-optional
+            description: Hide optionalDependencies
+  - name: root
+    description: Print the effective modules directory
+    flags:
+      - long: global
+        short: g
+        description: Print global modules directory
+  - name: bin
+    description: Print the directory of executables
+    flags:
+      - long: global
+        short: g
+        description: Print global bin directory
+  - name: setup
+    description: Setup pnpm
+  - name: init
+    description: Create a package.json
+  - name: dedupe
+    description: Remove duplicate packages
+    flags:
+      - long: check
+        description: Exit with error if dedupe needed
+  - name: patch
+    description: Prepare a package for patching
+    flags:
+      - long: edit-dir
+        description: Directory to write the package to
+        takes_value: true
+  - name: patch-commit
+    description: Generate patch from directory
+    is_path_completion: true
+  - name: patch-remove
+    description: Remove a patch
+  - name: deploy
+    description: Deploy a package
+    flags:
+      - long: filter
+        short: F
+        description: Filter by package
+        takes_value: true
+      - long: prod
+        short: P
+        description: Only deploy production dependencies
+      - long: dev
+        short: D
+        description: Only deploy dev dependencies
+    is_path_completion: true
+flags:
+  - long: color
+    description: Controls colors in output (always, auto, never)
+    takes_value: true
+  - long: dir
+    short: C
+    description: Change to directory
+    takes_value: true
+  - long: recursive
+    short: r
+    description: Run in all workspace packages
+  - long: filter
+    short: F
+    description: Filter by package
+    takes_value: true
+  - long: workspace-root
+    short: w
+    description: Run in the root workspace package
+  - long: stream
+    description: Stream output immediately
+  - long: reporter
+    description: Reporter type
+    takes_value: true
+  - long: aggregate-output
+    description: Aggregate output
+  - long: loglevel
+    description: Log level
+    takes_value: true
+  - long: use-stderr
+    description: Print to stderr
+  - long: config
+    description: Config file
+    takes_value: true

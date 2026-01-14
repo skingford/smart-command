@@ -1,0 +1,31 @@
+name: cat
+description: Concatenate files and print on the standard output
+flags:
+  - long: show-all
+    short: A
+    description: Equivalent to -vET
+  - long: number-nonblank
+    short: b
+    description: Number nonempty output lines
+  - short: e
+    description: Equivalent to -vE
+  - long: show-ends
+    short: E
+    description: Display $ at end of each line
+  - long: number
+    short: n
+    description: Number all output lines
+  - long: squeeze-blank
+    short: s
+    description: Suppress repeated empty output lines
+  - short: t
+    description: Equivalent to -vT
+  - long: show-tabs
+    short: T
+    description: Display TAB characters as ^I
+  - short: u
+    description: (ignored)
+  - long: show-nonprinting
+    short: v
+    description: Use ^ and M- notation, except for LFD and TAB
+is_path_completion: true

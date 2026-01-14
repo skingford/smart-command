@@ -1,0 +1,611 @@
+name: npm
+description: Node.js package manager
+subcommands:
+  - name: init
+    description: Create a package.json file
+    flags:
+      - long: yes
+        short: y
+        description: Generate package.json without prompts
+      - long: scope
+        description: Set the scope of the project
+        takes_value: true
+      - long: workspace
+        short: w
+        description: Create a workspace package
+  - name: install
+    description: Install package dependencies
+    flags:
+      - long: save
+        short: S
+        description: Package will be added to dependencies
+      - long: save-dev
+        short: D
+        description: Package will be added to devDependencies
+      - long: save-optional
+        short: O
+        description: Package will be added to optionalDependencies
+      - long: save-exact
+        short: E
+        description: Save exact version
+      - long: global
+        short: g
+        description: Install package globally
+      - long: production
+        description: Skip devDependencies
+      - long: legacy-peer-deps
+        description: Ignore peer dependencies
+      - long: force
+        short: f
+        description: Force installation
+      - long: no-save
+        description: Do not save to package.json
+      - long: package-lock-only
+        description: Only update package-lock.json
+      - long: ignore-scripts
+        description: Do not run scripts
+      - long: audit
+        description: Run security audit
+      - long: no-audit
+        description: Skip security audit
+      - long: dry-run
+        description: Report what would be installed
+  - name: uninstall
+    description: Remove a package
+    flags:
+      - long: save
+        short: S
+        description: Remove from dependencies
+      - long: save-dev
+        short: D
+        description: Remove from devDependencies
+      - long: global
+        short: g
+        description: Remove global package
+      - long: no-save
+        description: Do not remove from package.json
+  - name: update
+    description: Update packages
+    flags:
+      - long: global
+        short: g
+        description: Update global packages
+      - long: save
+        short: S
+        description: Save updated packages
+      - long: dev
+        short: D
+        description: Update devDependencies only
+      - long: depth
+        description: Depth to check for updates
+        takes_value: true
+  - name: run
+    description: Run arbitrary package scripts
+    flags:
+      - long: silent
+        description: Suppress output from script itself
+      - long: if-present
+        description: Do not error if script is missing
+      - long: ignore-scripts
+        description: Do not run pre/post scripts
+      - long: workspace
+        short: w
+        description: Run in specific workspace
+        takes_value: true
+      - long: workspaces
+        description: Run in all workspaces
+  - name: start
+    description: Start a package
+    flags:
+      - long: ignore-scripts
+        description: Do not run pre/post scripts
+  - name: stop
+    description: Stop a package
+  - name: restart
+    description: Restart a package
+  - name: test
+    description: Run package tests
+    flags:
+      - long: ignore-scripts
+        description: Do not run pre/post scripts
+      - long: workspace
+        short: w
+        description: Run in specific workspace
+        takes_value: true
+      - long: workspaces
+        description: Run in all workspaces
+  - name: build
+    description: Build a package
+  - name: publish
+    description: Publish a package
+    flags:
+      - long: tag
+        description: Registers package with given tag
+        takes_value: true
+      - long: access
+        description: Set access level (public or restricted)
+        takes_value: true
+      - long: otp
+        description: One-time password for 2FA
+        takes_value: true
+      - long: dry-run
+        description: Report what would be published
+      - long: registry
+        description: Registry to publish to
+        takes_value: true
+  - name: unpublish
+    description: Remove a package from the registry
+    flags:
+      - long: force
+        short: f
+        description: Force unpublish
+      - long: otp
+        description: One-time password
+        takes_value: true
+  - name: pack
+    description: Create a tarball from a package
+    flags:
+      - long: dry-run
+        description: Report what would be packed
+      - long: json
+        description: Output in JSON format
+    is_path_completion: true
+  - name: link
+    description: Symlink a package folder
+    flags:
+      - long: save
+        description: Save as a local dependency
+      - long: global
+        short: g
+        description: Install globally
+    is_path_completion: true
+  - name: unlink
+    description: Remove a package symlink
+    flags:
+      - long: global
+        short: g
+        description: Remove global symlink
+  - name: ls
+    description: List installed packages
+    flags:
+      - long: all
+        short: a
+        description: Show all packages
+      - long: json
+        description: Output as JSON
+      - long: long
+        short: l
+        description: Show extended information
+      - long: depth
+        description: Max display depth
+        takes_value: true
+      - long: global
+        short: g
+        description: List global packages
+      - long: production
+        short: p
+        description: Only show production dependencies
+      - long: development
+        short: D
+        description: Only show dev dependencies
+      - long: link
+        description: Show linked packages
+  - name: outdated
+    description: Check for outdated packages
+    flags:
+      - long: json
+        description: Output as JSON
+      - long: long
+        short: l
+        description: Show extended information
+      - long: global
+        short: g
+        description: Check global packages
+      - long: depth
+        description: Max depth for checking dependencies
+        takes_value: true
+  - name: search
+    description: Search for packages
+    flags:
+      - long: json
+        description: Output as JSON
+      - long: long
+        short: l
+        description: Show full package descriptions
+      - long: searchopt
+        description: Space-separated options
+        takes_value: true
+      - long: registry
+        description: Registry to search
+        takes_value: true
+  - name: view
+    description: View registry info about a package
+    flags:
+      - long: json
+        description: Output as JSON
+      - long: registry
+        description: Registry to use
+        takes_value: true
+  - name: info
+    description: View registry info about a package (alias for view)
+    flags:
+      - long: json
+        description: Output as JSON
+  - name: audit
+    description: Run a security audit
+    flags:
+      - long: json
+        description: Output as JSON
+      - long: production
+        description: Only audit production dependencies
+      - long: audit-level
+        description: Set the minimum vulnerability level (low, moderate, high, critical)
+        takes_value: true
+      - long: fix
+        description: Apply remediations
+      - long: force
+        description: Force audit fix
+      - long: dry-run
+        description: Report what would be fixed
+      - long: package-lock-only
+        description: Only update package-lock.json
+  - name: fund
+    description: Display package funding information
+    flags:
+      - long: json
+        description: Output as JSON
+      - long: which
+        description: Show which package provides funding
+        takes_value: true
+  - name: dedupe
+    description: Reduce duplication in package tree
+    flags:
+      - long: dry-run
+        description: Report what would be done
+  - name: prune
+    description: Remove extraneous packages
+    flags:
+      - long: production
+        description: Remove devDependencies
+      - long: dry-run
+        description: Report what would be removed
+      - long: json
+        description: Output as JSON
+  - name: cache
+    description: Manipulate packages cache
+    subcommands:
+      - name: add
+        description: Add the specified packages to the cache
+      - name: clean
+        description: Delete all data out of the cache
+        flags:
+          - long: force
+            description: Force clean
+      - name: ls
+        description: Show the data in the cache
+      - name: verify
+        description: Verify the contents of the cache
+  - name: config
+    description: Manage configuration
+    subcommands:
+      - name: set
+        description: Set a config key to a value
+      - name: get
+        description: Get a config key's value
+      - name: delete
+        description: Delete a config key
+      - name: list
+        description: List all config settings
+        flags:
+          - long: json
+            description: Output as JSON
+          - long: long
+            short: l
+            description: Show descriptions
+      - name: edit
+        description: Open config in editor
+        flags:
+          - long: global
+            short: g
+            description: Edit global config
+    flags:
+      - long: global
+        short: g
+        description: Use global config
+      - long: location
+        description: Config location (global, user, project)
+        takes_value: true
+  - name: version
+    description: Bump package version
+    flags:
+      - long: major
+        description: Bump major version
+      - long: minor
+        description: Bump minor version
+      - long: patch
+        description: Bump patch version
+      - long: premajor
+        description: Bump to pre-release major
+      - long: preminor
+        description: Bump to pre-release minor
+      - long: prepatch
+        description: Bump to pre-release patch
+      - long: prerelease
+        description: Bump pre-release version
+      - long: preid
+        description: Pre-release identifier
+        takes_value: true
+      - long: message
+        short: m
+        description: Git commit message
+        takes_value: true
+      - long: tag-version-prefix
+        description: "Tag prefix (default: v)"
+        takes_value: true
+      - long: no-git-tag-version
+        description: Do not create git tag
+      - long: allow-same-version
+        description: Allow same version
+  - name: login
+    description: Add a registry user account
+    flags:
+      - long: registry
+        description: Registry to login to
+        takes_value: true
+      - long: scope
+        description: Associate with a scope
+        takes_value: true
+  - name: logout
+    description: Log out of the registry
+    flags:
+      - long: registry
+        description: Registry to logout from
+        takes_value: true
+      - long: scope
+        description: Scope to log out from
+        takes_value: true
+  - name: whoami
+    description: Display npm username
+    flags:
+      - long: registry
+        description: Check login on registry
+        takes_value: true
+  - name: owner
+    description: Manage package owners
+    subcommands:
+      - name: add
+        description: Add a new owner
+      - name: rm
+        description: Remove an owner
+      - name: ls
+        description: List owners
+    flags:
+      - long: registry
+        description: Registry to use
+        takes_value: true
+      - long: otp
+        description: One-time password
+        takes_value: true
+  - name: token
+    description: Manage authentication tokens
+    subcommands:
+      - name: list
+        description: List all tokens
+        flags:
+          - long: json
+            description: Output as JSON
+      - name: create
+        description: Create a new token
+        flags:
+          - long: read-only
+            description: Token can only be used for read operations
+          - long: cidr
+            description: CIDR ranges for IP whitelist
+            takes_value: true
+      - name: revoke
+        description: Revoke a token
+  - name: access
+    description: Set access level on published packages
+    subcommands:
+      - name: public
+        description: Set package to publicly accessible
+      - name: restricted
+        description: Set package to restricted
+      - name: grant
+        description: Grant access to a team
+      - name: revoke
+        description: Revoke team access
+      - name: ls-packages
+        description: List packages user/team has access to
+      - name: ls-collaborators
+        description: List collaborators on package
+  - name: deprecate
+    description: Deprecate a version of a package
+    flags:
+      - long: otp
+        description: One-time password
+        takes_value: true
+  - name: dist-tag
+    description: Modify package distribution tags
+    subcommands:
+      - name: add
+        description: Add a dist-tag
+      - name: rm
+        description: Remove a dist-tag
+      - name: ls
+        description: List dist-tags
+  - name: ci
+    description: Clean install dependencies (for CI)
+    flags:
+      - long: ignore-scripts
+        description: Do not run scripts
+      - long: audit
+        description: Run security audit
+      - long: no-audit
+        description: Skip security audit
+  - name: exec
+    description: Run a command from an npm package
+    flags:
+      - long: package
+        short: p
+        description: Package to execute
+        takes_value: true
+      - long: call
+        short: c
+        description: Run a shell command
+        takes_value: true
+      - long: workspace
+        short: w
+        description: Run in specific workspace
+        takes_value: true
+      - long: workspaces
+        description: Run in all workspaces
+  - name: pkg
+    description: Manage package.json
+    subcommands:
+      - name: get
+        description: Get a package.json field
+      - name: set
+        description: Set a package.json field
+      - name: delete
+        description: Delete a package.json field
+    flags:
+      - long: force
+        short: f
+        description: Remove conflicting fields
+      - long: json
+        description: Output as JSON
+  - name: prefix
+    description: Display prefix
+    flags:
+      - long: global
+        short: g
+        description: Display global prefix
+  - name: root
+    description: Display npm root
+    flags:
+      - long: global
+        short: g
+        description: Display global root
+  - name: bin
+    description: Display npm bin folder
+    flags:
+      - long: global
+        short: g
+        description: Display global bin folder
+  - name: bugs
+    description: Open bugs page for a package
+  - name: docs
+    description: Open documentation for a package
+  - name: repo
+    description: Open repository page for a package
+  - name: help
+    description: Get help on npm
+  - name: explain
+    description: Explain installed packages
+    flags:
+      - long: json
+        description: Output as JSON
+  - name: doctor
+    description: Check your npm environment
+  - name: completion
+    description: Tab completion script
+  - name: diff
+    description: Diff between two package versions
+    flags:
+      - long: diff
+        description: Package spec to diff
+        takes_value: true
+      - long: diff-ignore-all-space
+        description: Ignore all whitespace
+      - long: diff-name-only
+        description: Only show names of changed files
+      - long: diff-unified
+        description: Lines of context
+        takes_value: true
+  - name: shrinkwrap
+    description: Lock down dependency versions for publication
+  - name: rebuild
+    description: Rebuild a package
+    flags:
+      - long: global
+        short: g
+        description: Rebuild global packages
+  - name: explore
+    description: Browse an installed package
+  - name: edit
+    description: Edit an installed package
+  - name: star
+    description: Mark favorite packages
+  - name: unstar
+    description: Remove star from package
+  - name: stars
+    description: View starred packages
+  - name: profile
+    description: Change profile settings
+    subcommands:
+      - name: get
+        description: Display all or a specific property
+      - name: set
+        description: Set a property
+      - name: enable-2fa
+        description: Enable two-factor authentication
+      - name: disable-2fa
+        description: Disable two-factor authentication
+  - name: team
+    description: Manage organization teams
+    subcommands:
+      - name: create
+        description: Create a new team
+      - name: destroy
+        description: Delete a team
+      - name: add
+        description: Add user to team
+      - name: rm
+        description: Remove user from team
+      - name: ls
+        description: List teams or team members
+  - name: org
+    description: Manage orgs
+    subcommands:
+      - name: set
+        description: Add user to org
+      - name: rm
+        description: Remove user from org
+      - name: ls
+        description: List users in org
+  - name: hook
+    description: Manage registry hooks
+    subcommands:
+      - name: add
+        description: Add a hook
+      - name: ls
+        description: List hooks
+      - name: rm
+        description: Remove a hook
+      - name: update
+        description: Update a hook
+  - name: ping
+    description: Ping npm registry
+    flags:
+      - long: registry
+        description: Registry to ping
+        takes_value: true
+flags:
+  - long: registry
+    description: Registry to use
+    takes_value: true
+  - long: loglevel
+    description: Log level (silent, error, warn, notice, http, info, verbose, silly)
+    takes_value: true
+  - long: json
+    description: Output as JSON
+  - long: long
+    short: l
+    description: Show extended information
+  - long: parseable
+    short: p
+    description: Output parseable results
+  - long: global
+    short: g
+    description: Operate in global mode

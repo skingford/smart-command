@@ -1,0 +1,133 @@
+name: awk
+description: Pattern scanning and processing language
+flags:
+  - short: F
+    description: Sets the field separator
+    takes_value: true
+  - long: field-separator
+    description: Sets the field separator
+    takes_value: true
+  - short: v
+    description: Assign variable
+    takes_value: true
+  - long: assign
+    description: Assign variable
+    takes_value: true
+  - short: f
+    description: Read program from file
+    takes_value: true
+  - long: file
+    description: Read program from file
+    takes_value: true
+  - short: c
+    description: Run syntax check on program and exit
+  - long: lint
+    description: Warn about dubious or non-portable constructs
+    takes_value: true
+  - long: lint-old
+    description: Warn about constructs not available in original awk
+  - short: V
+    description: Print version information
+  - long: version
+    description: Print version information
+  - short: b
+    description: Use binary mode for all file I/O
+  - long: characters-as-bytes
+    description: Treat all input data as single-byte characters
+  - short: C
+    description: Turn on compatibility mode
+  - long: copyright
+    description: Print short copyright information
+  - short: d
+    description: Dump variables to file
+    takes_value: true
+  - long: dump-variables
+    description: Dump variables to file
+    takes_value: true
+  - short: D
+    description: Run in debugger mode
+    takes_value: true
+  - long: debug
+    description: Run in debugger mode
+    takes_value: true
+  - short: e
+    description: Program text
+    takes_value: true
+  - long: source
+    description: Program text
+    takes_value: true
+  - short: E
+    description: Like -f, but also ends option processing
+    takes_value: true
+  - long: exec
+    description: Like -f, but also ends option processing
+    takes_value: true
+  - short: g
+    description: Don't add file to ARGV
+  - long: gen-pot
+    description: Scan and parse program, generate .pot file
+  - short: i
+    description: Include source library
+    takes_value: true
+  - long: include
+    description: Include source library
+    takes_value: true
+  - short: I
+    description: Source library search path
+    takes_value: true
+  - short: l
+    description: Load shared library
+    takes_value: true
+  - long: load
+    description: Load shared library
+    takes_value: true
+  - short: L
+    description: Shared library search path
+    takes_value: true
+  - short: M
+    description: Force use of arbitrary precision arithmetic
+  - long: bignum
+    description: Force use of arbitrary precision arithmetic
+  - short: N
+    description: Use locale decimal point character
+  - long: use-lc-numeric
+    description: Use locale decimal point character
+  - short: n
+    description: Non-decimal input
+  - long: non-decimal-data
+    description: Non-decimal input
+  - short: o
+    description: Pretty print program
+    takes_value: true
+  - long: pretty-print
+    description: Pretty print program
+    takes_value: true
+  - short: O
+    description: Enable optimizations
+  - long: optimize
+    description: Enable optimizations
+  - short: p
+    description: Profile program
+    takes_value: true
+  - long: profile
+    description: Profile program
+    takes_value: true
+  - short: P
+    description: Enable POSIX compatibility
+  - long: posix
+    description: Enable POSIX compatibility
+  - short: r
+    description: Enable interval expressions
+  - long: re-interval
+    description: Enable interval expressions
+  - short: s
+    description: Sandbox mode
+  - long: sandbox
+    description: Sandbox mode
+  - short: S
+    description: Use extended features of regular expressions
+  - short: t
+    description: Traditional Unix awk compatibility
+  - long: traditional
+    description: Traditional Unix awk compatibility
+is_path_completion: true

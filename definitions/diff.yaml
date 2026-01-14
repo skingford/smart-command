@@ -1,0 +1,126 @@
+name: diff
+description: Compare files line by line
+flags:
+  - long: normal
+    description: Output a normal diff (default)
+  - long: brief
+    short: q
+    description: Report only when files differ
+  - long: report-identical-files
+    short: s
+    description: Report when two files are the same
+  - long: context
+    short: c
+    description: Output NUM (default 3) lines of copied context
+    takes_value: true
+  - long: unified
+    short: u
+    description: Output NUM (default 3) lines of unified context
+    takes_value: true
+  - long: ed
+    short: e
+    description: Output an ed script
+  - long: rcs
+    short: n
+    description: Output an RCS format diff
+  - long: side-by-side
+    short: y
+    description: Output in two columns
+  - long: width
+    short: W
+    description: Output at most NUM (default 130) print columns
+    takes_value: true
+  - long: left-column
+    description: Output only the left column of common lines
+  - long: suppress-common-lines
+    description: Do not output common lines
+  - long: show-c-function
+    short: p
+    description: Show which C function each change is in
+  - long: show-function-line
+    short: F
+    description: Show the most recent line matching RE
+    takes_value: true
+  - long: label
+    description: Use LABEL instead of file name and timestamp
+    takes_value: true
+  - long: expand-tabs
+    short: t
+    description: Expand tabs to spaces in output
+  - long: initial-tab
+    short: T
+    description: Make tabs line up by prepending a tab
+  - long: tabsize
+    description: Tab stops every NUM (default 8) print columns
+    takes_value: true
+  - long: suppress-blank-empty
+    description: Suppress space or tab before empty output lines
+  - long: paginate
+    short: l
+    description: Pass output through pr to paginate it
+  - long: recursive
+    short: r
+    description: Recursively compare any subdirectories found
+  - long: new-file
+    short: N
+    description: Treat absent files as empty
+  - long: unidirectional-new-file
+    description: Treat absent first files as empty
+  - long: ignore-file-name-case
+    description: Ignore case when comparing file names
+  - long: no-ignore-file-name-case
+    description: Consider case when comparing file names
+  - long: exclude
+    short: x
+    description: Exclude files that match PAT
+    takes_value: true
+  - long: exclude-from
+    short: X
+    description: Exclude files that match any pattern in FILE
+    takes_value: true
+  - long: starting-file
+    short: S
+    description: Start with FILE when comparing directories
+    takes_value: true
+  - long: from-file
+    description: Compare FROM-FILE to all operands
+    takes_value: true
+  - long: to-file
+    description: Compare all operands to TO-FILE
+    takes_value: true
+  - long: ignore-case
+    short: i
+    description: Ignore case differences in file contents
+  - long: ignore-tab-expansion
+    short: E
+    description: Ignore changes due to tab expansion
+  - long: ignore-trailing-space
+    short: Z
+    description: Ignore white space at line end
+  - long: ignore-space-change
+    short: b
+    description: Ignore changes in the amount of white space
+  - long: ignore-all-space
+    short: w
+    description: Ignore all white space
+  - long: ignore-blank-lines
+    short: B
+    description: Ignore changes where lines are all blank
+  - long: ignore-matching-lines
+    short: I
+    description: Ignore changes where all lines match RE
+    takes_value: true
+  - long: text
+    short: a
+    description: Treat all files as text
+  - long: strip-trailing-cr
+    description: Strip trailing carriage return on input
+  - long: no-dereference
+    description: Don't follow symbolic links
+  - long: color
+    description: Colorize output (never, always, auto)
+    takes_value: true
+  - long: palette
+    description: Color palette
+    takes_value: true
+is_path_completion: true

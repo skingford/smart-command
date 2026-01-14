@@ -1,0 +1,153 @@
+name: grep
+description: Search for patterns in files
+flags:
+  - long: extended-regexp
+    short: E
+    description: Use extended regular expressions
+  - long: fixed-strings
+    short: F
+    description: Use fixed strings instead of patterns
+  - long: basic-regexp
+    short: G
+    description: Use basic regular expressions (default)
+  - long: perl-regexp
+    short: P
+    description: Use Perl-compatible regular expressions
+  - long: regexp
+    short: e
+    description: Pattern to match
+    takes_value: true
+  - long: file
+    short: f
+    description: Read patterns from file
+    takes_value: true
+  - long: ignore-case
+    short: i
+    description: Case insensitive matching
+  - long: no-ignore-case
+    description: Case sensitive matching
+  - long: word-regexp
+    short: w
+    description: Match whole words only
+  - long: line-regexp
+    short: x
+    description: Match whole lines only
+  - short: z
+    description: Treat data as null-terminated lines
+  - long: null-data
+    description: Treat data as null-terminated lines
+  - long: count
+    short: c
+    description: Print only count of matching lines
+  - long: color
+    description: Colorize matching text (always, never, auto)
+    takes_value: true
+  - long: colour
+    description: Colorize matching text (always, never, auto)
+    takes_value: true
+  - long: files-with-matches
+    short: l
+    description: Print only names of files with matches
+  - long: files-without-match
+    short: L
+    description: Print only names of files without matches
+  - long: max-count
+    short: m
+    description: Stop after NUM matches
+    takes_value: true
+  - long: only-matching
+    short: o
+    description: Print only matching parts of lines
+  - long: quiet
+    short: q
+    description: Suppress all output
+  - long: silent
+    description: Suppress all output
+  - long: no-messages
+    short: s
+    description: Suppress error messages
+  - long: invert-match
+    short: v
+    description: Select non-matching lines
+  - long: byte-offset
+    short: b
+    description: Print byte offset with output
+  - long: with-filename
+    short: H
+    description: Print filename with output
+  - long: no-filename
+    short: h
+    description: Suppress filename prefix
+  - long: label
+    description: Label for stdin
+    takes_value: true
+  - long: line-number
+    short: n
+    description: Print line number with output
+  - long: initial-tab
+    short: T
+    description: Align output with tabs
+  - long: unix-byte-offsets
+    short: u
+    description: Report offsets as if CRs were not there
+  - long: null
+    short: Z
+    description: Print null byte after filename
+  - long: after-context
+    short: A
+    description: Print NUM lines after match
+    takes_value: true
+  - long: before-context
+    short: B
+    description: Print NUM lines before match
+    takes_value: true
+  - long: context
+    short: C
+    description: Print NUM lines before and after match
+    takes_value: true
+  - long: text
+    short: a
+    description: Process binary files as text
+  - long: binary-files
+    description: Set binary file handling (binary, text, without-match)
+    takes_value: true
+  - short: I
+    description: Ignore binary files
+  - long: devices
+    short: D
+    description: How to handle devices (read, skip)
+    takes_value: true
+  - long: directories
+    short: d
+    description: How to handle directories (read, skip, recurse)
+    takes_value: true
+  - long: exclude
+    description: Skip files matching pattern
+    takes_value: true
+  - long: exclude-from
+    description: Skip files matching patterns in file
+    takes_value: true
+  - long: exclude-dir
+    description: Skip directories matching pattern
+    takes_value: true
+  - long: include
+    description: Search only files matching pattern
+    takes_value: true
+  - long: recursive
+    short: r
+    description: Recursively search directories
+  - short: R
+    description: Recursively search directories following symlinks
+  - long: dereference-recursive
+    description: Follow all symbolic links
+  - long: line-buffered
+    description: Use line buffering
+  - long: binary
+    short: U
+    description: Do not strip CR characters
+  - long: group-separator
+    description: Print separator between groups
+    takes_value: true
+  - long: no-group-separator
+    description: Do not print separator between groups
+is_path_completion: true

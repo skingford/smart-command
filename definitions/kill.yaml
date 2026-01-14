@@ -1,0 +1,21 @@
+name: kill
+description: Send a signal to a process
+flags:
+  - short: s
+    description: Specify the signal to send
+    takes_value: true
+  - long: signal
+    description: Specify the signal to send
+    takes_value: true
+  - short: l
+    description: List signal names
+  - short: L
+    description: List signal names in a table
+  - short: "1"
+    description: SIGHUP
+  - short: "2"
+    description: SIGINT
+  - short: "3"
+    description: SIGQUIT
+  - short: "9"
+    description: SIGKILL

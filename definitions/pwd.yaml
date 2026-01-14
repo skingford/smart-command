@@ -1,0 +1,11 @@
+name: pwd
+description: Print name of current/working directory
+flags:
+  - short: L
+    description: Print the value of $PWD if it names the current working directory
+  - long: logical
+    description: Print the value of $PWD if it names the current working directory
+  - short: P
+    description: Print the physical directory, without any symbolic links
+  - long: physical
+    description: Print the physical directory, without any symbolic links

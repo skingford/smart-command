@@ -1,0 +1,25 @@
+name: chmod
+description: Change file mode bits
+flags:
+  - long: recursive
+    short: R
+    description: Change files and directories recursively
+  - long: changes
+    short: c
+    description: Report only when a change is made
+  - long: silent
+    short: f
+    description: Suppress most error messages
+  - long: quiet
+    description: Suppress most error messages
+  - long: verbose
+    short: v
+    description: Output for every file processed
+  - long: no-preserve-root
+    description: Do not treat '/' specially
+  - long: preserve-root
+    description: Fail to operate recursively on '/'
+  - long: reference
+    description: Use reference file's mode instead of MODE values
+    takes_value: true
+is_path_completion: true
