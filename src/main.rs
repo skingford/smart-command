@@ -1,5 +1,5 @@
 use reedline::{
-    default_emacs_keybindings, ColumnarMenu, DefaultPrompt, Reedline, ReedlineEvent, ReedlineMenu, Signal, ExampleHighlighter, Emacs, MenuBuilder
+    default_emacs_keybindings, ColumnarMenu, DefaultPrompt, Reedline, ReedlineEvent, ReedlineMenu, Signal, ExampleHighlighter, Emacs, MenuBuilder, EditCommand
 };
 use std::process::Command;
 
@@ -25,6 +25,16 @@ fn main() -> reedline::Result<()> {
         ]),
     );
     
+    // Trigger menu automatically on '/'
+    keybindings.add_binding(
+        reedline::KeyModifiers::NONE,
+        reedline::KeyCode::Char('/'),
+        ReedlineEvent::Multiple(vec![
+            ReedlineEvent::Edit(vec![EditCommand::InsertChar('/')]),
+            ReedlineEvent::Menu("completion_menu".to_string()),
+        ]),
+    );
+
     // Add Alt+H for history (placeholder as user requested)
     keybindings.add_binding(
         reedline::KeyModifiers::ALT,

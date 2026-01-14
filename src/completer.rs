@@ -39,6 +39,23 @@ impl Completer for SmartCompleter {
         let input = &line[0..pos];
         let parts: Vec<&str> = input.trim_start().split_whitespace().collect();
         
+        if line.starts_with('/') {
+            let query = &line[1..pos]; // skip the slash
+            let span_start = pos - query.len() - 1; // encompass the slash
+            
+            return self.commands.values()
+                .filter(|cmd| self.fuzzy_match(query, &cmd.name))
+                .map(|cmd| Suggestion {
+                    value: cmd.name.clone(),
+                    description: Some(cmd.description.clone()),
+                    extra: None,
+                    span: Span { start: span_start, end: pos },
+                    append_whitespace: true,
+                    style: None,
+                })
+                .collect();
+        }
+
         if parts.is_empty() || (parts.len() == 1 && !line.ends_with(' ')) {
              let query = parts.first().unwrap_or(&"");
              return self.commands.values()
@@ -55,45 +72,74 @@ impl Completer for SmartCompleter {
         }
 
         if let Some(cmd_name) = parts.first() {
-            if let Some(cmd_spec) = self.commands.get(*cmd_name) {
-                let last_part = parts.last().unwrap_or(&"");
+            if let Some(root_spec) = self.commands.get(*cmd_name) {
+                // Determine which tokens are "completed" and can be used for descent
                 let is_new_arg = line.ends_with(' ');
+                let num_parts_to_descend = if is_new_arg { parts.len() } else { parts.len().saturating_sub(1) };
                 
+                // Descend the tree
+                let mut current_spec = root_spec;
+                for i in 1..num_parts_to_descend {
+                    let sub_name = parts[i];
+                     if let Some(sub) = current_spec.subcommands.iter().find(|s| s.name == sub_name) {
+                         current_spec = sub;
+                     } else {
+                         // User typed something that isn't a known subcommand. 
+                         // It might be a flag, a file arg, or nonsense. 
+                         // We stop descending here. 
+                         // Note: We might want to clear current_spec if we hit a wall?
+                         // But practically, "git commit -m msg" -> "msg" shouldn't reset us to root.
+                         // We stay at "commit", so flags/path completion still work for "msg".
+                         // However, if we typed "git invalid sub", we probably shouldn't suggest "commit" flags for "sub".
+                         // But for now, sticking to the last valid parent is a safe heuristic.
+                         break;
+                     }
+                }
+
+                // Setup Query
+                let last_part = parts.last().unwrap_or(&"");
                 let query = if is_new_arg { "" } else { *last_part };
                 let start_idx = if is_new_arg { pos } else { pos - query.len() };
-
-                // Check for path completion trigger
-                if cmd_spec.is_path_completion {
-                     // logic below will handle it
-                } else if query.starts_with('-') || is_new_arg {
-                    let mut suggestions = Vec::new();
+                
+                // 1. Subcommand completion
+                // Suggest subcommands of the CURRENT spec
+                let sub_suggestions: Vec<Suggestion> = current_spec.subcommands.iter()
+                    .filter(|sub| self.fuzzy_match(query, &sub.name))
+                    .map(|sub| Suggestion {
+                        value: sub.name.clone(),
+                        description: Some(sub.description.clone()),
+                        extra: None,
+                        span: Span { start: start_idx, end: pos },
+                        append_whitespace: true,
+                        style: None,
+                    })
+                    .collect();
+                
+                // 2. Flag completion
+                // Suggest flags of the CURRENT spec
+                let mut flag_suggestions = Vec::new();
+                if query.starts_with('-') || is_new_arg {
+                    // Copied/Refined flag logic
                     let is_short_chain = query.starts_with('-') && !query.starts_with("--");
-                    
-                    if is_short_chain {
-                         if let Some(last_char) = query.chars().last() {
-                             if let Some(_flag) = cmd_spec.flags.iter().find(|f| f.short == Some(last_char)) {
-                                 // Option to handle specific logic if flag takes value
-                             }
-                         }
-                    }
-
                     let used_chars: Vec<char> = if is_short_chain { query.chars().skip(1).collect() } else { vec![] };
-
-                    let stop_flagging = if is_short_chain {
+                    
+                    // Simple check: if we are in short chain and last char takes value, don't suggest more flags?
+                    // Re-implementing concise logic
+                     let stop_flagging = if is_short_chain {
                         if let Some(last_char) = query.chars().last() {
-                             cmd_spec.flags.iter().any(|f| f.short == Some(last_char) && f.takes_value)
+                             current_spec.flags.iter().any(|f| f.short == Some(last_char) && f.takes_value)
                         } else { false }
                     } else { false };
 
                     if !stop_flagging {
-                        for flag in &cmd_spec.flags {
+                         for flag in &current_spec.flags {
                             let short = flag.short.map(|c| format!("-{}", c));
                             let long = flag.long.as_ref().map(|s| format!("--{}", s));
                             let match_short = short.as_ref().map(|s| s.starts_with(query)).unwrap_or(false);
                             let match_long = long.as_ref().map(|s| s.starts_with(query)).unwrap_or(false);
 
                             if match_short && short.is_some() {
-                                 suggestions.push(Suggestion {
+                                 flag_suggestions.push(Suggestion {
                                     value: short.clone().unwrap(),
                                     description: Some(flag.description.clone()),
                                     extra: None,
@@ -103,7 +149,7 @@ impl Completer for SmartCompleter {
                                 });
                             }
                             if match_long && long.is_some() {
-                                 suggestions.push(Suggestion {
+                                 flag_suggestions.push(Suggestion {
                                     value: long.clone().unwrap(),
                                     description: Some(flag.description.clone()),
                                     extra: None,
@@ -112,11 +158,12 @@ impl Completer for SmartCompleter {
                                     style: None,
                                 });
                             }
-
+                            
+                            // Combined short flags
                             if is_short_chain {
                                  if let Some(c) = flag.short {
                                      if !used_chars.contains(&c) {
-                                         suggestions.push(Suggestion {
+                                         flag_suggestions.push(Suggestion {
                                             value: format!("{}{}", query, c),
                                             description: Some(format!("{} (+{})", flag.description, c)),
                                             extra: None,
@@ -127,24 +174,24 @@ impl Completer for SmartCompleter {
                                      }
                                  }
                             }
-                        }
+                         }
                     }
-                    if !suggestions.is_empty() { return suggestions; }
                 }
 
-                if (parts.len() == 2 && !is_new_arg) || (parts.len() == 1 && is_new_arg) {
-                     let sub_suggestions: Vec<Suggestion> = cmd_spec.subcommands.iter()
-                        .filter(|sub| self.fuzzy_match(query, &sub.name))
-                        .map(|sub| Suggestion {
-                            value: sub.name.clone(),
-                            description: Some(sub.description.clone()),
-                            extra: None,
-                            span: Span { start: start_idx, end: pos },
-                            append_whitespace: true,
-                            style: None,
-                        })
-                        .collect();
-                     if !sub_suggestions.is_empty() { return sub_suggestions; }
+                // Combine suggestions
+                let mut all_suggestions = sub_suggestions;
+                all_suggestions.extend(flag_suggestions);
+
+                if !all_suggestions.is_empty() { return all_suggestions; }
+
+                // Check for path completion trigger
+                if current_spec.is_path_completion {
+                   // Fall through to path completion below
+                } else {
+                   // If not path completion, and we found no suggestions, return empty.
+                   // UNLESS we want to be permissive.
+                   // But generally, return empty.
+                   return vec![];
                 }
             }
         }
