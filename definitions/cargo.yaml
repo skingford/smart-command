@@ -1,0 +1,9 @@
+name: cargo
+description: Rust package manager
+subcommands:
+  - name: run
+    description: Run a binary or example of the local package
+  - name: build
+    description: Compile a local package and all of its dependencies
+  - name: check
+    description: Check a local package and all of its dependencies for errors

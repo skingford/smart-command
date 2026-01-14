@@ -1,0 +1,19 @@
+name: tar
+description: Manipulate tape archives
+flags:
+  - long: extract
+    short: x
+    description: Extract files from an archive
+  - long: create
+    short: c
+    description: Create a new archive
+  - long: verbose
+    short: v
+    description: Verbosely list files processed
+  - long: file
+    short: f
+    description: Use archive file or device ARCHIVE
+    takes_value: true
+  - long: gzip
+    short: z
+    description: Filter the archive through gzip

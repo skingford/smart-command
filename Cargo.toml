@@ -1,0 +1,15 @@
+[package]
+name = "smart-command"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+reedline = "0.38.0"
+nu-ansi-term = "0.50.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+anyhow = "1.0"
+crossterm = "0.27"
+regex = "1.10"
+dirs = "5.0"
+serde_yaml = "0.9.34"

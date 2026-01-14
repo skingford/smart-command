@@ -1,0 +1,36 @@
+name: git
+description: Distributed version control system
+subcommands:
+  - name: commit
+    description: Record changes to the repository
+    flags:
+      - long: message
+        short: m
+        description: Commit message
+      - long: all
+        short: a
+        description: Stage all modified and deleted paths
+  - name: checkout
+    description: Switch branches or restore working tree files
+    flags:
+      - long: force
+        short: f
+        description: Force checkout
+      - long: branch
+        short: b
+        description: Create a new branch
+  - name: clone
+    description: Clone a repository into a new directory
+  - name: status
+    description: Show the working tree status
+  - name: push
+    description: Update remote refs along with associated objects
+  - name: pull
+    description: Fetch from and integrate with another repository or a local branch
+  - name: add
+    description: Add file contents to the index
+    flags:
+      - long: all
+        short: A
+        description: Add all files
+    is_path_completion: true
