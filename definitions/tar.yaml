@@ -17,3 +17,16 @@ flags:
   - long: gzip
     short: z
     description: Filter the archive through gzip
+examples:
+  - cmd: 'tar -czvf [archive.tar.gz] [source_dir]'
+    scenario:
+      en: Compress directory
+      zh: 压缩目录
+  - cmd: 'tar -czvf "project_$(date +%Y%m%d_%H%M%S).tar.gz" ./'
+    scenario:
+      en: Compress with timestamp
+      zh: 带时间戳压缩
+  - cmd: 'tar -xzvf [archive.tar.gz] -C [target_dir]'
+    scenario:
+      en: Extract to specific directory
+      zh: 解压到指定目录

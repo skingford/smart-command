@@ -191,9 +191,26 @@ impl Completer for SmartCompleter {
                     }
                 }
 
+                // 3. Example completion
+                let mut example_suggestions = Vec::new();
+                let full_input = &line[0..pos];
+                for example in &current_spec.examples {
+                    if example.cmd.starts_with(full_input) {
+                        example_suggestions.push(Suggestion {
+                            value: example.cmd.clone(),
+                            description: Some(format!("[Ex] {}", example.scenario.get(&lang))),
+                            extra: None,
+                            span: Span { start: 0, end: pos },
+                            append_whitespace: false, // Examples are complete commands usually
+                            style: None,
+                        });
+                    }
+                }
+
                 // Combine suggestions
                 let mut all_suggestions = sub_suggestions;
                 all_suggestions.extend(flag_suggestions);
+                all_suggestions.extend(example_suggestions);
 
                 if !all_suggestions.is_empty() { return all_suggestions; }
 

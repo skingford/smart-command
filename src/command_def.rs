@@ -36,6 +36,12 @@ impl From<&str> for I18nString {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Example {
+    pub scenario: I18nString,
+    pub cmd: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CommandSpec {
     pub name: String,
     pub description: I18nString,
@@ -43,6 +49,8 @@ pub struct CommandSpec {
     pub subcommands: Vec<CommandSpec>,
     #[serde(default)]
     pub flags: Vec<FlagSpec>,
+    #[serde(default)]
+    pub examples: Vec<Example>,
     #[serde(default)]
     pub is_path_completion: bool,
 }
@@ -63,6 +71,7 @@ impl CommandSpec {
             description: I18nString::Simple(description.to_string()),
             subcommands: vec![],
             flags: vec![],
+            examples: vec![],
             is_path_completion: false,
         }
     }
@@ -75,6 +84,11 @@ impl CommandSpec {
 
     pub fn flag(mut self, flag: FlagSpec) -> Self {
         self.flags.push(flag);
+        self
+    }
+    
+    pub fn example(mut self, example: Example) -> Self {
+        self.examples.push(example);
         self
     }
     
