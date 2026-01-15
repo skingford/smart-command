@@ -4,9 +4,32 @@
       "Bash(cargo build:*)",
       "Bash(cargo doc:*)",
       "Bash(cargo tree:*)",
+      "Bash(cargo fmt:*)",
       "WebFetch(domain:docs.rs)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:raw.githubusercontent.com)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cargo fmt --check 2>&1 || echo '⚠️ Format check failed. Run: cargo fmt'"
+          }
+        ]
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cargo fmt --check 2>&1 || echo '⚠️ Format check failed. Run: cargo fmt'"
+          }
+        ]
+      }
     ]
   }
 }
