@@ -1,484 +1,876 @@
 name: go
-description: Go programming language tool
+description:
+  en: Go programming language tool
+  zh: Go 编程语言工具
 subcommands:
   - name: build
-    description: Compile packages and dependencies
+    description:
+      en: Compile packages and dependencies
+      zh: 编译包和依赖项
     flags:
       - short: o
-        description: Output file or directory
+        description:
+          en: Output file or directory
+          zh: 输出文件或目录
         takes_value: true
       - short: v
-        description: Print packages as they are compiled
+        description:
+          en: Print packages as they are compiled
+          zh: 编译时打印包名
       - short: a
-        description: Force rebuilding of packages
+        description:
+          en: Force rebuilding of packages
+          zh: 强制重新构建包
       - short: n
-        description: Print commands but do not run them
+        description:
+          en: Print commands but do not run them
+          zh: 打印命令但不执行
       - short: x
-        description: Print commands as they are executed
+        description:
+          en: Print commands as they are executed
+          zh: 执行时打印命令
       - short: p
-        description: Number of parallel builds
+        description:
+          en: Number of parallel builds
+          zh: 并行构建数量
         takes_value: true
       - long: race
-        description: Enable race detector
+        description:
+          en: Enable race detector
+          zh: 启用竞态检测器
       - long: msan
-        description: Enable memory sanitizer
+        description:
+          en: Enable memory sanitizer
+          zh: 启用内存清理器
       - long: asan
-        description: Enable address sanitizer
+        description:
+          en: Enable address sanitizer
+          zh: 启用地址清理器
       - long: cover
-        description: Enable code coverage
+        description:
+          en: Enable code coverage
+          zh: 启用代码覆盖率
       - long: covermode
-        description: Coverage mode (set, count, atomic)
+        description:
+          en: Coverage mode (set, count, atomic)
+          zh: 覆盖率模式 (set, count, atomic)
         takes_value: true
       - long: ldflags
-        description: Linker flags
+        description:
+          en: Linker flags
+          zh: 链接器标志
         takes_value: true
       - long: gcflags
-        description: Compiler flags
+        description:
+          en: Compiler flags
+          zh: 编译器标志
         takes_value: true
       - long: asmflags
-        description: Assembler flags
+        description:
+          en: Assembler flags
+          zh: 汇编器标志
         takes_value: true
       - long: tags
-        description: Build tags
+        description:
+          en: Build tags
+          zh: 构建标签
         takes_value: true
       - long: trimpath
-        description: Remove file system paths from executable
+        description:
+          en: Remove file system paths from executable
+          zh: 从可执行文件中移除文件系统路径
       - long: mod
-        description: Module download mode (readonly, vendor, mod)
+        description:
+          en: Module download mode (readonly, vendor, mod)
+          zh: 模块下载模式 (readonly, vendor, mod)
         takes_value: true
       - long: work
-        description: Print work directory and do not delete it
+        description:
+          en: Print work directory and do not delete it
+          zh: 打印工作目录且不删除
     is_path_completion: true
   - name: run
-    description: Compile and run Go program
+    description:
+      en: Compile and run Go program
+      zh: 编译并运行 Go 程序
     flags:
       - short: v
-        description: Print packages as they are compiled
+        description:
+          en: Print packages as they are compiled
+          zh: 编译时打印包名
       - short: a
-        description: Force rebuilding of packages
+        description:
+          en: Force rebuilding of packages
+          zh: 强制重新构建包
       - short: n
-        description: Print commands but do not run them
+        description:
+          en: Print commands but do not run them
+          zh: 打印命令但不执行
       - short: x
-        description: Print commands as they are executed
+        description:
+          en: Print commands as they are executed
+          zh: 执行时打印命令
       - long: race
-        description: Enable race detector
+        description:
+          en: Enable race detector
+          zh: 启用竞态检测器
       - long: msan
-        description: Enable memory sanitizer
+        description:
+          en: Enable memory sanitizer
+          zh: 启用内存清理器
       - long: asan
-        description: Enable address sanitizer
+        description:
+          en: Enable address sanitizer
+          zh: 启用地址清理器
       - long: cover
-        description: Enable code coverage
+        description:
+          en: Enable code coverage
+          zh: 启用代码覆盖率
       - long: ldflags
-        description: Linker flags
+        description:
+          en: Linker flags
+          zh: 链接器标志
         takes_value: true
       - long: gcflags
-        description: Compiler flags
+        description:
+          en: Compiler flags
+          zh: 编译器标志
         takes_value: true
       - long: tags
-        description: Build tags
+        description:
+          en: Build tags
+          zh: 构建标签
         takes_value: true
       - long: trimpath
-        description: Remove file system paths from executable
+        description:
+          en: Remove file system paths from executable
+          zh: 从可执行文件中移除文件系统路径
       - long: exec
-        description: Run binary using xprog
+        description:
+          en: Run binary using xprog
+          zh: 使用 xprog 运行二进制文件
         takes_value: true
     is_path_completion: true
   - name: test
-    description: Run tests
+    description:
+      en: Run tests
+      zh: 运行测试
     flags:
       - short: v
-        description: Verbose output
+        description:
+          en: Verbose output
+          zh: 详细输出
       - short: c
-        description: Compile test binary but do not run it
+        description:
+          en: Compile test binary but do not run it
+          zh: 编译测试二进制文件但不运行
       - short: o
-        description: Compile test binary to named file
+        description:
+          en: Compile test binary to named file
+          zh: 编译测试二进制文件到指定文件
         takes_value: true
       - short: i
-        description: Install packages that are dependencies of the test
+        description:
+          en: Install packages that are dependencies of the test
+          zh: 安装测试依赖的包
       - long: json
-        description: Output results in JSON
+        description:
+          en: Output results in JSON
+          zh: 以 JSON 格式输出结果
       - long: race
-        description: Enable race detector
+        description:
+          en: Enable race detector
+          zh: 启用竞态检测器
       - long: msan
-        description: Enable memory sanitizer
+        description:
+          en: Enable memory sanitizer
+          zh: 启用内存清理器
       - long: asan
-        description: Enable address sanitizer
+        description:
+          en: Enable address sanitizer
+          zh: 启用地址清理器
       - long: cover
-        description: Enable coverage analysis
+        description:
+          en: Enable coverage analysis
+          zh: 启用覆盖率分析
       - long: covermode
-        description: Coverage mode (set, count, atomic)
+        description:
+          en: Coverage mode (set, count, atomic)
+          zh: 覆盖率模式 (set, count, atomic)
         takes_value: true
       - long: coverpkg
-        description: Packages to include in coverage
+        description:
+          en: Packages to include in coverage
+          zh: 包含在覆盖率中的包
         takes_value: true
       - long: coverprofile
-        description: Write coverage profile
+        description:
+          en: Write coverage profile
+          zh: 写入覆盖率配置文件
         takes_value: true
       - long: bench
-        description: Run benchmarks matching regexp
+        description:
+          en: Run benchmarks matching regexp
+          zh: 运行匹配正则表达式的基准测试
         takes_value: true
       - long: benchtime
-        description: Run each benchmark for duration d
+        description:
+          en: Run each benchmark for duration d
+          zh: 每个基准测试运行持续时间 d
         takes_value: true
       - long: benchmem
-        description: Print memory allocation statistics
+        description:
+          en: Print memory allocation statistics
+          zh: 打印内存分配统计
       - long: run
-        description: Run only tests matching regexp
+        description:
+          en: Run only tests matching regexp
+          zh: 仅运行匹配正则表达式的测试
         takes_value: true
       - long: short
-        description: Shorten long-running tests
+        description:
+          en: Shorten long-running tests
+          zh: 缩短长时间运行的测试
       - long: timeout
-        description: Test timeout
+        description:
+          en: Test timeout
+          zh: 测试超时时间
         takes_value: true
       - long: count
-        description: Number of times to run tests
+        description:
+          en: Number of times to run tests
+          zh: 运行测试的次数
         takes_value: true
       - long: cpu
-        description: List of GOMAXPROCS values
+        description:
+          en: List of GOMAXPROCS values
+          zh: GOMAXPROCS 值列表
         takes_value: true
       - long: parallel
-        description: Max parallel test execution
+        description:
+          en: Max parallel test execution
+          zh: 最大并行测试执行数
         takes_value: true
       - long: failfast
-        description: Stop on first failure
+        description:
+          en: Stop on first failure
+          zh: 第一次失败时停止
       - long: shuffle
-        description: Randomize test order (off, on, seed)
+        description:
+          en: Randomize test order (off, on, seed)
+          zh: 随机测试顺序 (off, on, seed)
         takes_value: true
       - long: ldflags
-        description: Linker flags
+        description:
+          en: Linker flags
+          zh: 链接器标志
         takes_value: true
       - long: gcflags
-        description: Compiler flags
+        description:
+          en: Compiler flags
+          zh: 编译器标志
         takes_value: true
       - long: tags
-        description: Build tags
+        description:
+          en: Build tags
+          zh: 构建标签
         takes_value: true
     is_path_completion: true
   - name: install
-    description: Compile and install packages and dependencies
+    description:
+      en: Compile and install packages and dependencies
+      zh: 编译并安装包和依赖项
     flags:
       - short: v
-        description: Print packages as they are compiled
+        description:
+          en: Print packages as they are compiled
+          zh: 编译时打印包名
       - short: a
-        description: Force rebuilding of packages
+        description:
+          en: Force rebuilding of packages
+          zh: 强制重新构建包
       - short: n
-        description: Print commands but do not run them
+        description:
+          en: Print commands but do not run them
+          zh: 打印命令但不执行
       - short: x
-        description: Print commands as they are executed
+        description:
+          en: Print commands as they are executed
+          zh: 执行时打印命令
       - long: race
-        description: Enable race detector
+        description:
+          en: Enable race detector
+          zh: 启用竞态检测器
       - long: ldflags
-        description: Linker flags
+        description:
+          en: Linker flags
+          zh: 链接器标志
         takes_value: true
       - long: gcflags
-        description: Compiler flags
+        description:
+          en: Compiler flags
+          zh: 编译器标志
         takes_value: true
       - long: tags
-        description: Build tags
+        description:
+          en: Build tags
+          zh: 构建标签
         takes_value: true
       - long: trimpath
-        description: Remove file system paths from executable
+        description:
+          en: Remove file system paths from executable
+          zh: 从可执行文件中移除文件系统路径
     is_path_completion: true
   - name: get
-    description: Add dependencies to current module
+    description:
+      en: Add dependencies to current module
+      zh: 向当前模块添加依赖项
     flags:
       - short: d
-        description: Only download, do not install
+        description:
+          en: Only download, do not install
+          zh: 仅下载，不安装
       - short: t
-        description: Also download test packages
+        description:
+          en: Also download test packages
+          zh: 同时下载测试包
       - short: u
-        description: Update to latest version
+        description:
+          en: Update to latest version
+          zh: 更新到最新版本
       - short: v
-        description: Verbose output
+        description:
+          en: Verbose output
+          zh: 详细输出
       - short: x
-        description: Print commands as they are executed
+        description:
+          en: Print commands as they are executed
+          zh: 执行时打印命令
       - long: insecure
-        description: Allow insecure custom domains
+        description:
+          en: Allow insecure custom domains
+          zh: 允许不安全的自定义域名
   - name: mod
-    description: Module maintenance
+    description:
+      en: Module maintenance
+      zh: 模块维护
     subcommands:
       - name: init
-        description: Initialize new module
+        description:
+          en: Initialize new module
+          zh: 初始化新模块
       - name: tidy
-        description: Add missing and remove unused modules
+        description:
+          en: Add missing and remove unused modules
+          zh: 添加缺失的模块并移除未使用的模块
         flags:
           - short: v
-            description: Verbose output
+            description:
+              en: Verbose output
+              zh: 详细输出
           - short: e
-            description: Attempt to proceed despite errors
+            description:
+              en: Attempt to proceed despite errors
+              zh: 尝试在出错时继续
           - long: go
-            description: Update go directive
+            description:
+              en: Update go directive
+              zh: 更新 go 指令
             takes_value: true
           - long: compat
-            description: Compatibility version
+            description:
+              en: Compatibility version
+              zh: 兼容版本
             takes_value: true
       - name: download
-        description: Download modules to local cache
+        description:
+          en: Download modules to local cache
+          zh: 下载模块到本地缓存
         flags:
           - short: x
-            description: Print commands as they are executed
+            description:
+              en: Print commands as they are executed
+              zh: 执行时打印命令
           - long: json
-            description: Print JSON output
+            description:
+              en: Print JSON output
+              zh: 打印 JSON 输出
       - name: verify
-        description: Verify dependencies have expected content
+        description:
+          en: Verify dependencies have expected content
+          zh: 验证依赖项内容是否符合预期
       - name: graph
-        description: Print module requirement graph
+        description:
+          en: Print module requirement graph
+          zh: 打印模块依赖图
         flags:
           - long: go
-            description: Report module graph as loaded by Go version
+            description:
+              en: Report module graph as loaded by Go version
+              zh: 报告由 Go 版本加载的模块图
             takes_value: true
           - short: x
-            description: Print commands as they are executed
+            description:
+              en: Print commands as they are executed
+              zh: 执行时打印命令
       - name: why
-        description: Explain why packages or modules are needed
+        description:
+          en: Explain why packages or modules are needed
+          zh: 解释为什么需要这些包或模块
         flags:
           - short: m
-            description: Treat arguments as modules
+            description:
+              en: Treat arguments as modules
+              zh: 将参数视为模块
           - long: vendor
-            description: Exclude test dependencies
+            description:
+              en: Exclude test dependencies
+              zh: 排除测试依赖项
       - name: edit
-        description: Edit go.mod from tools or scripts
+        description:
+          en: Edit go.mod from tools or scripts
+          zh: 通过工具或脚本编辑 go.mod
         flags:
           - long: module
-            description: Set the module's path
+            description:
+              en: Set the module's path
+              zh: 设置模块路径
             takes_value: true
           - long: go
-            description: Set the expected Go version
+            description:
+              en: Set the expected Go version
+              zh: 设置预期的 Go 版本
             takes_value: true
           - long: require
-            description: Add a requirement
+            description:
+              en: Add a requirement
+              zh: 添加依赖项
             takes_value: true
           - long: droprequire
-            description: Drop a requirement
+            description:
+              en: Drop a requirement
+              zh: 删除依赖项
             takes_value: true
           - long: exclude
-            description: Add an exclusion
+            description:
+              en: Add an exclusion
+              zh: 添加排除项
             takes_value: true
           - long: dropexclude
-            description: Drop an exclusion
+            description:
+              en: Drop an exclusion
+              zh: 删除排除项
             takes_value: true
           - long: replace
-            description: Add a replacement
+            description:
+              en: Add a replacement
+              zh: 添加替换项
             takes_value: true
           - long: dropreplace
-            description: Drop a replacement
+            description:
+              en: Drop a replacement
+              zh: 删除替换项
             takes_value: true
           - long: retract
-            description: Add a retraction
+            description:
+              en: Add a retraction
+              zh: 添加撤回项
             takes_value: true
           - long: dropretract
-            description: Drop a retraction
+            description:
+              en: Drop a retraction
+              zh: 删除撤回项
             takes_value: true
           - long: json
-            description: Print JSON output
+            description:
+              en: Print JSON output
+              zh: 打印 JSON 输出
           - long: print
-            description: Print the final go.mod
+            description:
+              en: Print the final go.mod
+              zh: 打印最终的 go.mod
           - long: fmt
-            description: Reformat the go.mod file
+            description:
+              en: Reformat the go.mod file
+              zh: 重新格式化 go.mod 文件
       - name: vendor
-        description: Make vendored copy of dependencies
+        description:
+          en: Make vendored copy of dependencies
+          zh: 创建依赖项的 vendor 副本
         flags:
           - short: v
-            description: Print vendored modules
+            description:
+              en: Print vendored modules
+              zh: 打印 vendor 模块
           - short: e
-            description: Attempt to proceed despite errors
+            description:
+              en: Attempt to proceed despite errors
+              zh: 尝试在出错时继续
           - short: o
-            description: Output directory
+            description:
+              en: Output directory
+              zh: 输出目录
             takes_value: true
   - name: work
-    description: Workspace maintenance
+    description:
+      en: Workspace maintenance
+      zh: 工作区维护
     subcommands:
       - name: init
-        description: Initialize workspace
+        description:
+          en: Initialize workspace
+          zh: 初始化工作区
         is_path_completion: true
       - name: use
-        description: Add modules to workspace file
+        description:
+          en: Add modules to workspace file
+          zh: 向工作区文件添加模块
         flags:
           - short: r
-            description: Recursively find modules in directory
+            description:
+              en: Recursively find modules in directory
+              zh: 递归查找目录中的模块
         is_path_completion: true
       - name: edit
-        description: Edit go.work from tools or scripts
+        description:
+          en: Edit go.work from tools or scripts
+          zh: 通过工具或脚本编辑 go.work
         flags:
           - long: go
-            description: Set the expected Go version
+            description:
+              en: Set the expected Go version
+              zh: 设置预期的 Go 版本
             takes_value: true
           - long: use
-            description: Add a use directive
+            description:
+              en: Add a use directive
+              zh: 添加 use 指令
             takes_value: true
           - long: dropuse
-            description: Drop a use directive
+            description:
+              en: Drop a use directive
+              zh: 删除 use 指令
             takes_value: true
           - long: replace
-            description: Add a replacement
+            description:
+              en: Add a replacement
+              zh: 添加替换项
             takes_value: true
           - long: dropreplace
-            description: Drop a replacement
+            description:
+              en: Drop a replacement
+              zh: 删除替换项
             takes_value: true
           - long: json
-            description: Print JSON output
+            description:
+              en: Print JSON output
+              zh: 打印 JSON 输出
           - long: print
-            description: Print the final go.work
+            description:
+              en: Print the final go.work
+              zh: 打印最终的 go.work
           - long: fmt
-            description: Reformat the go.work file
+            description:
+              en: Reformat the go.work file
+              zh: 重新格式化 go.work 文件
       - name: sync
-        description: Sync workspace build list to modules
+        description:
+          en: Sync workspace build list to modules
+          zh: 将工作区构建列表同步到模块
   - name: clean
-    description: Remove object files and cached files
+    description:
+      en: Remove object files and cached files
+      zh: 删除目标文件和缓存文件
     flags:
       - short: i
-        description: Remove installed executables
+        description:
+          en: Remove installed executables
+          zh: 删除已安装的可执行文件
       - short: r
-        description: Apply recursively to all dependencies
+        description:
+          en: Apply recursively to all dependencies
+          zh: 递归应用于所有依赖项
       - long: cache
-        description: Remove the entire go build cache
+        description:
+          en: Remove the entire go build cache
+          zh: 删除整个 go 构建缓存
       - long: testcache
-        description: Remove all test result cache
+        description:
+          en: Remove all test result cache
+          zh: 删除所有测试结果缓存
       - long: modcache
-        description: Remove the entire module cache
+        description:
+          en: Remove the entire module cache
+          zh: 删除整个模块缓存
       - short: n
-        description: Print commands but do not run them
+        description:
+          en: Print commands but do not run them
+          zh: 打印命令但不执行
       - short: x
-        description: Print commands as they are executed
+        description:
+          en: Print commands as they are executed
+          zh: 执行时打印命令
   - name: doc
-    description: Show documentation
+    description:
+      en: Show documentation
+      zh: 显示文档
     flags:
       - long: all
-        description: Show all documentation
+        description:
+          en: Show all documentation
+          zh: 显示所有文档
       - long: c
-        description: Respect case when matching symbols
+        description:
+          en: Respect case when matching symbols
+          zh: 匹配符号时区分大小写
       - long: cmd
-        description: Treat command like a regular package
+        description:
+          en: Treat command like a regular package
+          zh: 将命令视为常规包
       - long: short
-        description: One-line synopsis
+        description:
+          en: One-line synopsis
+          zh: 单行摘要
       - long: src
-        description: Show source code
+        description:
+          en: Show source code
+          zh: 显示源代码
       - long: u
-        description: Show unexported symbols
+        description:
+          en: Show unexported symbols
+          zh: 显示未导出的符号
   - name: env
-    description: Print Go environment information
+    description:
+      en: Print Go environment information
+      zh: 打印 Go 环境信息
     flags:
       - long: json
-        description: Print in JSON format
+        description:
+          en: Print in JSON format
+          zh: 以 JSON 格式打印
       - short: u
-        description: Unset environment variable
+        description:
+          en: Unset environment variable
+          zh: 取消设置环境变量
       - short: w
-        description: Set environment variable
+        description:
+          en: Set environment variable
+          zh: 设置环境变量
   - name: fix
-    description: Update packages to use new APIs
+    description:
+      en: Update packages to use new APIs
+      zh: 更新包以使用新 API
     is_path_completion: true
   - name: fmt
-    description: Format Go source code
+    description:
+      en: Format Go source code
+      zh: 格式化 Go 源代码
     flags:
       - short: n
-        description: Print commands but do not run them
+        description:
+          en: Print commands but do not run them
+          zh: 打印命令但不执行
       - short: x
-        description: Print commands as they are executed
+        description:
+          en: Print commands as they are executed
+          zh: 执行时打印命令
       - long: mod
-        description: Module download mode
+        description:
+          en: Module download mode
+          zh: 模块下载模式
         takes_value: true
     is_path_completion: true
   - name: generate
-    description: Generate Go files by processing source
+    description:
+      en: Generate Go files by processing source
+      zh: 通过处理源文件生成 Go 文件
     flags:
       - short: v
-        description: Print packages as they are processed
+        description:
+          en: Print packages as they are processed
+          zh: 处理时打印包名
       - short: n
-        description: Print commands but do not run them
+        description:
+          en: Print commands but do not run them
+          zh: 打印命令但不执行
       - short: x
-        description: Print commands as they are executed
+        description:
+          en: Print commands as they are executed
+          zh: 执行时打印命令
       - long: run
-        description: Run only directives matching regexp
+        description:
+          en: Run only directives matching regexp
+          zh: 仅运行匹配正则表达式的指令
         takes_value: true
     is_path_completion: true
   - name: list
-    description: List packages or modules
+    description:
+      en: List packages or modules
+      zh: 列出包或模块
     flags:
       - short: e
-        description: Report errors found
+        description:
+          en: Report errors found
+          zh: 报告发现的错误
       - short: f
-        description: Specify output format template
+        description:
+          en: Specify output format template
+          zh: 指定输出格式模板
         takes_value: true
       - long: json
-        description: Output in JSON format
+        description:
+          en: Output in JSON format
+          zh: 以 JSON 格式输出
       - long: compiled
-        description: Show files after preprocessing
+        description:
+          en: Show files after preprocessing
+          zh: 显示预处理后的文件
       - long: deps
-        description: Show dependencies
+        description:
+          en: Show dependencies
+          zh: 显示依赖项
       - long: export
-        description: Show export data file paths
+        description:
+          en: Show export data file paths
+          zh: 显示导出数据文件路径
       - long: find
-        description: Show matching directories
+        description:
+          en: Show matching directories
+          zh: 显示匹配的目录
       - long: test
-        description: Show test packages
+        description:
+          en: Show test packages
+          zh: 显示测试包
       - short: m
-        description: List modules instead of packages
+        description:
+          en: List modules instead of packages
+          zh: 列出模块而不是包
       - short: u
-        description: Add update info when listing modules
+        description:
+          en: Add update info when listing modules
+          zh: 列出模块时添加更新信息
       - long: versions
-        description: Show available versions
+        description:
+          en: Show available versions
+          zh: 显示可用版本
       - long: retracted
-        description: Show retracted versions
+        description:
+          en: Show retracted versions
+          zh: 显示已撤回的版本
       - long: mod
-        description: Module download mode
+        description:
+          en: Module download mode
+          zh: 模块下载模式
         takes_value: true
     is_path_completion: true
   - name: vet
-    description: Report likely mistakes in packages
+    description:
+      en: Report likely mistakes in packages
+      zh: 报告包中可能的错误
     flags:
       - short: n
-        description: Print commands but do not run them
+        description:
+          en: Print commands but do not run them
+          zh: 打印命令但不执行
       - short: x
-        description: Print commands as they are executed
+        description:
+          en: Print commands as they are executed
+          zh: 执行时打印命令
       - short: v
-        description: Verbose output
+        description:
+          en: Verbose output
+          zh: 详细输出
       - long: tags
-        description: Build tags
+        description:
+          en: Build tags
+          zh: 构建标签
         takes_value: true
       - long: vettool
-        description: Path to custom vet tool
+        description:
+          en: Path to custom vet tool
+          zh: 自定义 vet 工具路径
         takes_value: true
     is_path_completion: true
   - name: tool
-    description: Run specified go tool
+    description:
+      en: Run specified go tool
+      zh: 运行指定的 go 工具
     subcommands:
       - name: compile
-        description: Compile Go package
+        description:
+          en: Compile Go package
+          zh: 编译 Go 包
       - name: link
-        description: Link Go object files
+        description:
+          en: Link Go object files
+          zh: 链接 Go 目标文件
       - name: asm
-        description: Assemble Go assembly files
+        description:
+          en: Assemble Go assembly files
+          zh: 汇编 Go 汇编文件
       - name: cgo
-        description: Cgo enables the creation of Go packages that call C code
+        description:
+          en: Cgo enables the creation of Go packages that call C code
+          zh: Cgo 允许创建调用 C 代码的 Go 包
       - name: cover
-        description: Program for analyzing coverage profiles
+        description:
+          en: Program for analyzing coverage profiles
+          zh: 用于分析覆盖率配置文件的程序
       - name: fix
-        description: Find deprecated Go constructs
+        description:
+          en: Find deprecated Go constructs
+          zh: 查找已弃用的 Go 结构
       - name: nm
-        description: List symbol table of object file
+        description:
+          en: List symbol table of object file
+          zh: 列出目标文件的符号表
       - name: objdump
-        description: Disassemble executables
+        description:
+          en: Disassemble executables
+          zh: 反汇编可执行文件
       - name: pack
-        description: Create and manipulate Go archives
+        description:
+          en: Create and manipulate Go archives
+          zh: 创建和操作 Go 归档文件
       - name: pprof
-        description: Display and analyze profile data
+        description:
+          en: Display and analyze profile data
+          zh: 显示和分析性能分析数据
       - name: test2json
-        description: Convert test output to JSON
+        description:
+          en: Convert test output to JSON
+          zh: 将测试输出转换为 JSON
       - name: trace
-        description: View trace files
+        description:
+          en: View trace files
+          zh: 查看跟踪文件
       - name: vet
-        description: Find common mistakes
+        description:
+          en: Find common mistakes
+          zh: 查找常见错误
   - name: version
-    description: Print Go version
+    description:
+      en: Print Go version
+      zh: 打印 Go 版本
     flags:
       - short: m
-        description: Print module version info
+        description:
+          en: Print module version info
+          zh: 打印模块版本信息
       - short: v
-        description: Report unrecognized files
+        description:
+          en: Report unrecognized files
+          zh: 报告无法识别的文件
   - name: help
-    description: Show help for a command
+    description:
+      en: Show help for a command
+      zh: 显示命令的帮助信息
 flags:
   - short: v
-    description: Print commands as executed
+    description:
+      en: Print commands as executed
+      zh: 执行时打印命令
   - long: work
-    description: Print work directory name
+    description:
+      en: Print work directory name
+      zh: 打印工作目录名称

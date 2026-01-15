@@ -1,126 +1,210 @@
 name: diff
-description: Compare files line by line
+description:
+  en: Compare files line by line
+  zh: 逐行比较文件
 flags:
   - long: normal
-    description: Output a normal diff (default)
+    description:
+      en: Output a normal diff (default)
+      zh: 输出普通差异（默认）
   - long: brief
     short: q
-    description: Report only when files differ
+    description:
+      en: Report only when files differ
+      zh: 仅当文件不同时报告
   - long: report-identical-files
     short: s
-    description: Report when two files are the same
+    description:
+      en: Report when two files are the same
+      zh: 当两个文件相同时报告
   - long: context
     short: c
-    description: Output NUM (default 3) lines of copied context
+    description:
+      en: Output NUM (default 3) lines of copied context
+      zh: 输出 NUM（默认 3）行上下文
     takes_value: true
   - long: unified
     short: u
-    description: Output NUM (default 3) lines of unified context
+    description:
+      en: Output NUM (default 3) lines of unified context
+      zh: 输出 NUM（默认 3）行统一上下文
     takes_value: true
   - long: ed
     short: e
-    description: Output an ed script
+    description:
+      en: Output an ed script
+      zh: 输出 ed 脚本
   - long: rcs
     short: n
-    description: Output an RCS format diff
+    description:
+      en: Output an RCS format diff
+      zh: 输出 RCS 格式差异
   - long: side-by-side
     short: y
-    description: Output in two columns
+    description:
+      en: Output in two columns
+      zh: 以两列形式输出
   - long: width
     short: W
-    description: Output at most NUM (default 130) print columns
+    description:
+      en: Output at most NUM (default 130) print columns
+      zh: 输出最多 NUM（默认 130）个打印列
     takes_value: true
   - long: left-column
-    description: Output only the left column of common lines
+    description:
+      en: Output only the left column of common lines
+      zh: 仅输出公共行的左列
   - long: suppress-common-lines
-    description: Do not output common lines
+    description:
+      en: Do not output common lines
+      zh: 不输出公共行
   - long: show-c-function
     short: p
-    description: Show which C function each change is in
+    description:
+      en: Show which C function each change is in
+      zh: 显示每个更改所在的 C 函数
   - long: show-function-line
     short: F
-    description: Show the most recent line matching RE
+    description:
+      en: Show the most recent line matching RE
+      zh: 显示匹配 RE 的最近行
     takes_value: true
   - long: label
-    description: Use LABEL instead of file name and timestamp
+    description:
+      en: Use LABEL instead of file name and timestamp
+      zh: 使用 LABEL 替代文件名和时间戳
     takes_value: true
   - long: expand-tabs
     short: t
-    description: Expand tabs to spaces in output
+    description:
+      en: Expand tabs to spaces in output
+      zh: 在输出中将制表符展开为空格
   - long: initial-tab
     short: T
-    description: Make tabs line up by prepending a tab
+    description:
+      en: Make tabs line up by prepending a tab
+      zh: 通过添加制表符使制表符对齐
   - long: tabsize
-    description: Tab stops every NUM (default 8) print columns
+    description:
+      en: Tab stops every NUM (default 8) print columns
+      zh: 每 NUM（默认 8）个打印列设置制表符
     takes_value: true
   - long: suppress-blank-empty
-    description: Suppress space or tab before empty output lines
+    description:
+      en: Suppress space or tab before empty output lines
+      zh: 抑制空输出行前的空格或制表符
   - long: paginate
     short: l
-    description: Pass output through pr to paginate it
+    description:
+      en: Pass output through pr to paginate it
+      zh: 通过 pr 分页输出
   - long: recursive
     short: r
-    description: Recursively compare any subdirectories found
+    description:
+      en: Recursively compare any subdirectories found
+      zh: 递归比较找到的任何子目录
   - long: new-file
     short: N
-    description: Treat absent files as empty
+    description:
+      en: Treat absent files as empty
+      zh: 将不存在的文件视为空文件
   - long: unidirectional-new-file
-    description: Treat absent first files as empty
+    description:
+      en: Treat absent first files as empty
+      zh: 将不存在的第一个文件视为空文件
   - long: ignore-file-name-case
-    description: Ignore case when comparing file names
+    description:
+      en: Ignore case when comparing file names
+      zh: 比较文件名时忽略大小写
   - long: no-ignore-file-name-case
-    description: Consider case when comparing file names
+    description:
+      en: Consider case when comparing file names
+      zh: 比较文件名时区分大小写
   - long: exclude
     short: x
-    description: Exclude files that match PAT
+    description:
+      en: Exclude files that match PAT
+      zh: 排除匹配 PAT 的文件
     takes_value: true
   - long: exclude-from
     short: X
-    description: Exclude files that match any pattern in FILE
+    description:
+      en: Exclude files that match any pattern in FILE
+      zh: 排除匹配 FILE 中任何模式的文件
     takes_value: true
   - long: starting-file
     short: S
-    description: Start with FILE when comparing directories
+    description:
+      en: Start with FILE when comparing directories
+      zh: 比较目录时从 FILE 开始
     takes_value: true
   - long: from-file
-    description: Compare FROM-FILE to all operands
+    description:
+      en: Compare FROM-FILE to all operands
+      zh: 将 FROM-FILE 与所有操作数比较
     takes_value: true
   - long: to-file
-    description: Compare all operands to TO-FILE
+    description:
+      en: Compare all operands to TO-FILE
+      zh: 将所有操作数与 TO-FILE 比较
     takes_value: true
   - long: ignore-case
     short: i
-    description: Ignore case differences in file contents
+    description:
+      en: Ignore case differences in file contents
+      zh: 忽略文件内容的大小写差异
   - long: ignore-tab-expansion
     short: E
-    description: Ignore changes due to tab expansion
+    description:
+      en: Ignore changes due to tab expansion
+      zh: 忽略由制表符展开导致的更改
   - long: ignore-trailing-space
     short: Z
-    description: Ignore white space at line end
+    description:
+      en: Ignore white space at line end
+      zh: 忽略行末的空白
   - long: ignore-space-change
     short: b
-    description: Ignore changes in the amount of white space
+    description:
+      en: Ignore changes in the amount of white space
+      zh: 忽略空白数量的变化
   - long: ignore-all-space
     short: w
-    description: Ignore all white space
+    description:
+      en: Ignore all white space
+      zh: 忽略所有空白
   - long: ignore-blank-lines
     short: B
-    description: Ignore changes where lines are all blank
+    description:
+      en: Ignore changes where lines are all blank
+      zh: 忽略全为空行的更改
   - long: ignore-matching-lines
     short: I
-    description: Ignore changes where all lines match RE
+    description:
+      en: Ignore changes where all lines match RE
+      zh: 忽略所有行都匹配 RE 的更改
     takes_value: true
   - long: text
     short: a
-    description: Treat all files as text
+    description:
+      en: Treat all files as text
+      zh: 将所有文件视为文本
   - long: strip-trailing-cr
-    description: Strip trailing carriage return on input
+    description:
+      en: Strip trailing carriage return on input
+      zh: 去除输入中的行尾回车符
   - long: no-dereference
-    description: Don't follow symbolic links
+    description:
+      en: Don't follow symbolic links
+      zh: 不解析符号链接
   - long: color
-    description: Colorize output (never, always, auto)
+    description:
+      en: Colorize output (never, always, auto)
+      zh: 彩色输出（never, always, auto）
     takes_value: true
   - long: palette
-    description: Color palette
+    description:
+      en: Color palette
+      zh: 颜色调色板
     takes_value: true
 is_path_completion: true

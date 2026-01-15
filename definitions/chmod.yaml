@@ -1,25 +1,43 @@
 name: chmod
-description: Change file mode bits
+description:
+  en: Change file mode bits
+  zh: 修改文件权限
 flags:
   - long: recursive
     short: R
-    description: Change files and directories recursively
+    description:
+      en: Change files and directories recursively
+      zh: 递归修改文件和目录
   - long: changes
     short: c
-    description: Report only when a change is made
+    description:
+      en: Report only when a change is made
+      zh: 仅在发生更改时报告
   - long: silent
     short: f
-    description: Suppress most error messages
+    description:
+      en: Suppress most error messages
+      zh: 抑制大部分错误消息
   - long: quiet
-    description: Suppress most error messages
+    description:
+      en: Suppress most error messages
+      zh: 抑制大部分错误消息
   - long: verbose
     short: v
-    description: Output for every file processed
+    description:
+      en: Output for every file processed
+      zh: 为每个处理的文件输出信息
   - long: no-preserve-root
-    description: Do not treat '/' specially
+    description:
+      en: Do not treat '/' specially
+      zh: 不特殊处理根目录 '/'
   - long: preserve-root
-    description: Fail to operate recursively on '/'
+    description:
+      en: Fail to operate recursively on '/'
+      zh: 拒绝递归操作根目录 '/'
   - long: reference
-    description: Use reference file's mode instead of MODE values
+    description:
+      en: Use reference file's mode instead of MODE values
+      zh: 使用参考文件的权限而不是指定值
     takes_value: true
 is_path_completion: true

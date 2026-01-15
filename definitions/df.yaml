@@ -1,50 +1,86 @@
 name: df
-description: Report file system disk space usage
+description:
+  en: Report file system disk space usage
+  zh: 报告文件系统磁盘空间使用情况
 flags:
   - long: all
     short: a
-    description: Include pseudo, duplicate, inaccessible file systems
+    description:
+      en: Include pseudo, duplicate, inaccessible file systems
+      zh: 包含伪文件系统、重复和不可访问的文件系统
   - long: block-size
     short: B
-    description: Scale sizes by SIZE
+    description:
+      en: Scale sizes by SIZE
+      zh: 按 SIZE 缩放大小
     takes_value: true
   - long: total
-    description: Elide all entries insignificant to available space
+    description:
+      en: Elide all entries insignificant to available space
+      zh: 省略对可用空间无关紧要的条目
   - short: h
-    description: Print sizes in human readable format (e.g., 1K 234M 2G)
+    description:
+      en: Print sizes in human readable format (e.g., 1K 234M 2G)
+      zh: 以人类可读格式打印大小（如 1K 234M 2G）
   - long: human-readable
-    description: Print sizes in human readable format
+    description:
+      en: Print sizes in human readable format
+      zh: 以人类可读格式打印大小
   - short: H
-    description: Likewise, but use powers of 1000 not 1024
+    description:
+      en: Likewise, but use powers of 1000 not 1024
+      zh: 类似，但使用 1000 而不是 1024 进制
   - long: si
-    description: Likewise, but use powers of 1000 not 1024
+    description:
+      en: Likewise, but use powers of 1000 not 1024
+      zh: 类似，但使用 1000 而不是 1024 进制
   - long: inodes
     short: i
-    description: List inode information instead of block usage
+    description:
+      en: List inode information instead of block usage
+      zh: 显示 inode 信息而不是块使用情况
   - short: k
-    description: Like --block-size=1K
+    description:
+      en: Like --block-size=1K
+      zh: 等同于 --block-size=1K
   - long: local
     short: l
-    description: Limit listing to local file systems
+    description:
+      en: Limit listing to local file systems
+      zh: 仅显示本地文件系统
   - long: no-sync
-    description: Do not invoke sync before getting usage info (default)
+    description:
+      en: Do not invoke sync before getting usage info (default)
+      zh: 获取使用信息前不调用 sync（默认）
   - long: output
-    description: Use the output format defined by FIELD_LIST
+    description:
+      en: Use the output format defined by FIELD_LIST
+      zh: 使用 FIELD_LIST 定义的输出格式
     takes_value: true
   - long: portability
     short: P
-    description: Use the POSIX output format
+    description:
+      en: Use the POSIX output format
+      zh: 使用 POSIX 输出格式
   - long: sync
-    description: Invoke sync before getting usage info
+    description:
+      en: Invoke sync before getting usage info
+      zh: 获取使用信息前调用 sync
   - long: type
     short: t
-    description: Limit listing to file systems of type TYPE
+    description:
+      en: Limit listing to file systems of type TYPE
+      zh: 仅显示指定类型的文件系统
     takes_value: true
   - long: print-type
     short: T
-    description: Print file system type
+    description:
+      en: Print file system type
+      zh: 打印文件系统类型
   - long: exclude-type
     short: x
-    description: Limit listing to file systems not of type TYPE
+    description:
+      en: Limit listing to file systems not of type TYPE
+      zh: 排除指定类型的文件系统
     takes_value: true
 is_path_completion: true

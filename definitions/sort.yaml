@@ -1,92 +1,150 @@
 name: sort
-description: Sort lines of text files
+description:
+  en: Sort lines of text files
+  zh: 对文本文件的行进行排序
 flags:
   - long: ignore-leading-blanks
     short: b
-    description: Ignore leading blanks
+    description:
+      en: Ignore leading blanks
+      zh: 忽略前导空白
   - long: dictionary-order
     short: d
-    description: Consider only blanks and alphanumeric characters
+    description:
+      en: Consider only blanks and alphanumeric characters
+      zh: 仅考虑空白和字母数字字符
   - long: ignore-case
     short: f
-    description: Fold lower case to upper case characters
+    description:
+      en: Fold lower case to upper case characters
+      zh: 将小写字母转换为大写字母
   - long: general-numeric-sort
     short: g
-    description: Compare according to general numerical value
+    description:
+      en: Compare according to general numerical value
+      zh: 按一般数值进行比较
   - long: ignore-nonprinting
     short: i
-    description: Consider only printable characters
+    description:
+      en: Consider only printable characters
+      zh: 仅考虑可打印字符
   - long: month-sort
     short: M
-    description: Compare (unknown) < JAN < ... < DEC
+    description:
+      en: Compare (unknown) < JAN < ... < DEC
+      zh: 按月份比较（未知 < 一月 < ... < 十二月）
   - long: human-numeric-sort
     short: h
-    description: Compare human readable numbers (2K 1G)
+    description:
+      en: Compare human readable numbers (2K 1G)
+      zh: 比较人类可读的数字（如 2K 1G）
   - long: numeric-sort
     short: n
-    description: Compare according to string numerical value
+    description:
+      en: Compare according to string numerical value
+      zh: 按字符串数值进行比较
   - long: random-sort
     short: R
-    description: Shuffle, but group identical keys
+    description:
+      en: Shuffle, but group identical keys
+      zh: 随机排序，但将相同的键分组
   - long: random-source
-    description: Get random bytes from FILE
+    description:
+      en: Get random bytes from FILE
+      zh: 从文件获取随机字节
     takes_value: true
   - long: reverse
     short: r
-    description: Reverse the result of comparisons
+    description:
+      en: Reverse the result of comparisons
+      zh: 反转比较结果
   - long: sort
-    description: Sort according to WORD (general-numeric, human-numeric, month, numeric, random, version)
+    description:
+      en: Sort according to WORD (general-numeric, human-numeric, month, numeric, random, version)
+      zh: 按指定方式排序（general-numeric、human-numeric、month、numeric、random、version）
     takes_value: true
   - long: version-sort
     short: V
-    description: Natural sort of (version) numbers within text
+    description:
+      en: Natural sort of (version) numbers within text
+      zh: 对文本中的版本号进行自然排序
   - long: batch-size
-    description: Merge at most NMERGE inputs at once
+    description:
+      en: Merge at most NMERGE inputs at once
+      zh: 一次最多合并 NMERGE 个输入
     takes_value: true
   - long: check
     short: c
-    description: Check for sorted input
+    description:
+      en: Check for sorted input
+      zh: 检查输入是否已排序
   - long: compress-program
-    description: Compress temporaries with PROG
+    description:
+      en: Compress temporaries with PROG
+      zh: 使用指定程序压缩临时文件
     takes_value: true
   - long: debug
-    description: Annotate the part of the line used to sort
+    description:
+      en: Annotate the part of the line used to sort
+      zh: 标注用于排序的行部分
   - long: files0-from
-    description: Read input from NUL-terminated names in FILE
+    description:
+      en: Read input from NUL-terminated names in FILE
+      zh: 从文件中读取以 NUL 结尾的文件名作为输入
     takes_value: true
   - long: key
     short: k
-    description: Sort via a key (KEYDEF)
+    description:
+      en: Sort via a key (KEYDEF)
+      zh: 通过键进行排序（KEYDEF）
     takes_value: true
   - long: merge
     short: m
-    description: Merge already sorted files
+    description:
+      en: Merge already sorted files
+      zh: 合并已排序的文件
   - long: output
     short: o
-    description: Write result to FILE instead of standard output
+    description:
+      en: Write result to FILE instead of standard output
+      zh: 将结果写入文件而非标准输出
     takes_value: true
   - long: stable
     short: s
-    description: Stabilize sort by disabling last-resort comparison
+    description:
+      en: Stabilize sort by disabling last-resort comparison
+      zh: 通过禁用最后手段比较来稳定排序
   - long: buffer-size
     short: S
-    description: Use SIZE for main memory buffer
+    description:
+      en: Use SIZE for main memory buffer
+      zh: 使用指定大小作为主内存缓冲区
     takes_value: true
   - long: field-separator
     short: t
-    description: Use SEP instead of non-blank to blank transition
+    description:
+      en: Use SEP instead of non-blank to blank transition
+      zh: 使用指定分隔符而非空白到非空白的转换
     takes_value: true
   - long: temporary-directory
     short: T
-    description: Use DIR for temporaries, not $TMPDIR or /tmp
+    description:
+      en: Use DIR for temporaries, not $TMPDIR or /tmp
+      zh: 使用指定目录存放临时文件，而非 $TMPDIR 或 /tmp
     takes_value: true
   - long: parallel
-    description: Change number of sorts run concurrently to N
+    description:
+      en: Change number of sorts run concurrently to N
+      zh: 将并发排序数更改为 N
     takes_value: true
   - long: unique
     short: u
-    description: Output only the first of an equal run
+    description:
+      en: Output only the first of an equal run
+      zh: 仅输出相等序列中的第一个
   - long: zero-terminated
     short: z
-    description: Line delimiter is NUL, not newline
+    description:
+      en: Line delimiter is NUL, not newline
+      zh: 行分隔符为 NUL 而非换行符
 is_path_completion: true

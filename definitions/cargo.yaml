@@ -1,502 +1,858 @@
 name: cargo
-description: Rust package manager and build system
+description:
+  en: Rust package manager and build system
+  zh: Rust 包管理器和构建系统
 subcommands:
   - name: new
-    description: Create a new Cargo package
+    description:
+      en: Create a new Cargo package
+      zh: 创建新的 Cargo 包
     flags:
       - long: bin
-        description: Create a binary package
+        description:
+          en: Create a binary package
+          zh: 创建二进制包
       - long: lib
-        description: Create a library package
+        description:
+          en: Create a library package
+          zh: 创建库包
       - long: name
-        description: Set the package name
+        description:
+          en: Set the package name
+          zh: 设置包名称
         takes_value: true
       - long: vcs
-        description: Initialize a VCS repository (git, hg, pijul, fossil, none)
+        description:
+          en: Initialize a VCS repository (git, hg, pijul, fossil, none)
+          zh: 初始化版本控制仓库 (git, hg, pijul, fossil, none)
         takes_value: true
     is_path_completion: true
   - name: init
-    description: Create a new Cargo package in an existing directory
+    description:
+      en: Create a new Cargo package in an existing directory
+      zh: 在现有目录中创建新的 Cargo 包
     flags:
       - long: bin
-        description: Create a binary package
+        description:
+          en: Create a binary package
+          zh: 创建二进制包
       - long: lib
-        description: Create a library package
+        description:
+          en: Create a library package
+          zh: 创建库包
       - long: name
-        description: Set the package name
+        description:
+          en: Set the package name
+          zh: 设置包名称
         takes_value: true
     is_path_completion: true
   - name: build
-    description: Compile the current package
+    description:
+      en: Compile the current package
+      zh: 编译当前包
     flags:
       - long: release
         short: r
-        description: Build in release mode with optimizations
+        description:
+          en: Build in release mode with optimizations
+          zh: 以优化的发布模式构建
       - long: all-targets
-        description: Build all targets
+        description:
+          en: Build all targets
+          zh: 构建所有目标
       - long: all-features
-        description: Activate all available features
+        description:
+          en: Activate all available features
+          zh: 激活所有可用特性
       - long: no-default-features
-        description: Do not activate default features
+        description:
+          en: Do not activate default features
+          zh: 不激活默认特性
       - long: features
         short: F
-        description: Space or comma separated list of features
+        description:
+          en: Space or comma separated list of features
+          zh: 空格或逗号分隔的特性列表
         takes_value: true
       - long: target
-        description: Build for the target triple
+        description:
+          en: Build for the target triple
+          zh: 为目标三元组构建
         takes_value: true
       - long: jobs
         short: j
-        description: Number of parallel jobs
+        description:
+          en: Number of parallel jobs
+          zh: 并行作业数量
         takes_value: true
       - long: package
         short: p
-        description: Package to build
+        description:
+          en: Package to build
+          zh: 要构建的包
         takes_value: true
       - long: verbose
         short: v
-        description: Use verbose output
+        description:
+          en: Use verbose output
+          zh: 使用详细输出
   - name: run
-    description: Run a binary or example of the local package
+    description:
+      en: Run a binary or example of the local package
+      zh: 运行本地包的二进制文件或示例
     flags:
       - long: release
         short: r
-        description: Run in release mode with optimizations
+        description:
+          en: Run in release mode with optimizations
+          zh: 以优化的发布模式运行
       - long: bin
-        description: Name of the bin target to run
+        description:
+          en: Name of the bin target to run
+          zh: 要运行的二进制目标名称
         takes_value: true
       - long: example
-        description: Name of the example target to run
+        description:
+          en: Name of the example target to run
+          zh: 要运行的示例目标名称
         takes_value: true
       - long: features
         short: F
-        description: Space or comma separated list of features
+        description:
+          en: Space or comma separated list of features
+          zh: 空格或逗号分隔的特性列表
         takes_value: true
       - long: all-features
-        description: Activate all available features
+        description:
+          en: Activate all available features
+          zh: 激活所有可用特性
       - long: no-default-features
-        description: Do not activate default features
+        description:
+          en: Do not activate default features
+          zh: 不激活默认特性
       - long: package
         short: p
-        description: Package with the target to run
+        description:
+          en: Package with the target to run
+          zh: 包含要运行目标的包
         takes_value: true
   - name: check
-    description: Analyze the current package and report errors
+    description:
+      en: Analyze the current package and report errors
+      zh: 分析当前包并报告错误
     flags:
       - long: all-targets
-        description: Check all targets
+        description:
+          en: Check all targets
+          zh: 检查所有目标
       - long: release
         short: r
-        description: Check in release mode
+        description:
+          en: Check in release mode
+          zh: 以发布模式检查
       - long: all-features
-        description: Activate all available features
+        description:
+          en: Activate all available features
+          zh: 激活所有可用特性
       - long: no-default-features
-        description: Do not activate default features
+        description:
+          en: Do not activate default features
+          zh: 不激活默认特性
       - long: features
         short: F
-        description: Space or comma separated list of features
+        description:
+          en: Space or comma separated list of features
+          zh: 空格或逗号分隔的特性列表
         takes_value: true
       - long: package
         short: p
-        description: Package to check
+        description:
+          en: Package to check
+          zh: 要检查的包
         takes_value: true
   - name: test
-    description: Execute all unit and integration tests
+    description:
+      en: Execute all unit and integration tests
+      zh: 执行所有单元测试和集成测试
     flags:
       - long: release
         short: r
-        description: Build and run tests in release mode
+        description:
+          en: Build and run tests in release mode
+          zh: 以发布模式构建和运行测试
       - long: all-targets
-        description: Test all targets
+        description:
+          en: Test all targets
+          zh: 测试所有目标
       - long: doc
-        description: Test documentation examples
+        description:
+          en: Test documentation examples
+          zh: 测试文档示例
       - long: no-run
-        description: Compile but do not run tests
+        description:
+          en: Compile but do not run tests
+          zh: 编译但不运行测试
       - long: no-fail-fast
-        description: Run all tests regardless of failure
+        description:
+          en: Run all tests regardless of failure
+          zh: 无论失败与否都运行所有测试
       - long: features
         short: F
-        description: Space or comma separated list of features
+        description:
+          en: Space or comma separated list of features
+          zh: 空格或逗号分隔的特性列表
         takes_value: true
       - long: all-features
-        description: Activate all available features
+        description:
+          en: Activate all available features
+          zh: 激活所有可用特性
       - long: no-default-features
-        description: Do not activate default features
+        description:
+          en: Do not activate default features
+          zh: 不激活默认特性
       - long: package
         short: p
-        description: Package to test
+        description:
+          en: Package to test
+          zh: 要测试的包
         takes_value: true
       - long: lib
-        description: Test only library
+        description:
+          en: Test only library
+          zh: 仅测试库
       - long: bins
-        description: Test only binaries
+        description:
+          en: Test only binaries
+          zh: 仅测试二进制文件
   - name: bench
-    description: Execute all benchmarks
+    description:
+      en: Execute all benchmarks
+      zh: 执行所有基准测试
     flags:
       - long: all-targets
-        description: Benchmark all targets
+        description:
+          en: Benchmark all targets
+          zh: 对所有目标进行基准测试
       - long: features
         short: F
-        description: Space or comma separated list of features
+        description:
+          en: Space or comma separated list of features
+          zh: 空格或逗号分隔的特性列表
         takes_value: true
       - long: all-features
-        description: Activate all available features
+        description:
+          en: Activate all available features
+          zh: 激活所有可用特性
       - long: no-default-features
-        description: Do not activate default features
+        description:
+          en: Do not activate default features
+          zh: 不激活默认特性
       - long: package
         short: p
-        description: Package to benchmark
+        description:
+          en: Package to benchmark
+          zh: 要进行基准测试的包
         takes_value: true
   - name: clean
-    description: Remove artifacts that cargo has generated
+    description:
+      en: Remove artifacts that cargo has generated
+      zh: 删除 cargo 生成的构建产物
     flags:
       - long: release
         short: r
-        description: Clean release artifacts
+        description:
+          en: Clean release artifacts
+          zh: 清理发布版本产物
       - long: doc
-        description: Clean documentation artifacts
+        description:
+          en: Clean documentation artifacts
+          zh: 清理文档产物
       - long: package
         short: p
-        description: Package to clean
+        description:
+          en: Package to clean
+          zh: 要清理的包
         takes_value: true
       - long: target-dir
-        description: Directory for all generated artifacts
+        description:
+          en: Directory for all generated artifacts
+          zh: 所有生成产物的目录
         takes_value: true
   - name: doc
-    description: Build package documentation
+    description:
+      en: Build package documentation
+      zh: 构建包文档
     flags:
       - long: open
-        description: Open docs in a browser after building
+        description:
+          en: Open docs in a browser after building
+          zh: 构建后在浏览器中打开文档
       - long: no-deps
-        description: Do not build documentation for dependencies
+        description:
+          en: Do not build documentation for dependencies
+          zh: 不为依赖项构建文档
       - long: document-private-items
-        description: Document private items
+        description:
+          en: Document private items
+          zh: 为私有项生成文档
       - long: all-features
-        description: Activate all available features
+        description:
+          en: Activate all available features
+          zh: 激活所有可用特性
       - long: no-default-features
-        description: Do not activate default features
+        description:
+          en: Do not activate default features
+          zh: 不激活默认特性
       - long: features
         short: F
-        description: Space or comma separated list of features
+        description:
+          en: Space or comma separated list of features
+          zh: 空格或逗号分隔的特性列表
         takes_value: true
       - long: package
         short: p
-        description: Package to document
+        description:
+          en: Package to document
+          zh: 要生成文档的包
         takes_value: true
   - name: publish
-    description: Upload a package to the registry
+    description:
+      en: Upload a package to the registry
+      zh: 上传包到注册表
     flags:
       - long: dry-run
-        description: Perform all checks without uploading
+        description:
+          en: Perform all checks without uploading
+          zh: 执行所有检查但不上传
       - long: token
-        description: Token to use when uploading
+        description:
+          en: Token to use when uploading
+          zh: 上传时使用的令牌
         takes_value: true
       - long: no-verify
-        description: Do not verify the contents
+        description:
+          en: Do not verify the contents
+          zh: 不验证内容
       - long: allow-dirty
-        description: Allow dirty working directories
+        description:
+          en: Allow dirty working directories
+          zh: 允许脏工作目录
       - long: registry
-        description: Registry to publish to
+        description:
+          en: Registry to publish to
+          zh: 要发布到的注册表
         takes_value: true
   - name: install
-    description: Install a Rust binary
+    description:
+      en: Install a Rust binary
+      zh: 安装 Rust 二进制文件
     flags:
       - long: path
-        description: Filesystem path to local crate
+        description:
+          en: Filesystem path to local crate
+          zh: 本地 crate 的文件系统路径
         takes_value: true
       - long: git
-        description: Git URL to install the crate from
+        description:
+          en: Git URL to install the crate from
+          zh: 安装 crate 的 Git URL
         takes_value: true
       - long: branch
-        description: Branch to use when installing from git
+        description:
+          en: Branch to use when installing from git
+          zh: 从 git 安装时使用的分支
         takes_value: true
       - long: tag
-        description: Tag to use when installing from git
+        description:
+          en: Tag to use when installing from git
+          zh: 从 git 安装时使用的标签
         takes_value: true
       - long: rev
-        description: Specific commit to use when installing from git
+        description:
+          en: Specific commit to use when installing from git
+          zh: 从 git 安装时使用的特定提交
         takes_value: true
       - long: version
-        description: Specify a version to install
+        description:
+          en: Specify a version to install
+          zh: 指定要安装的版本
         takes_value: true
       - long: force
         short: f
-        description: Force overwriting existing crates
+        description:
+          en: Force overwriting existing crates
+          zh: 强制覆盖现有的 crate
       - long: locked
-        description: Require Cargo.lock is up to date
+        description:
+          en: Require Cargo.lock is up to date
+          zh: 要求 Cargo.lock 是最新的
       - long: features
         short: F
-        description: Space or comma separated list of features
+        description:
+          en: Space or comma separated list of features
+          zh: 空格或逗号分隔的特性列表
         takes_value: true
   - name: uninstall
-    description: Remove a Rust binary
+    description:
+      en: Remove a Rust binary
+      zh: 删除 Rust 二进制文件
   - name: update
-    description: Update dependencies in Cargo.lock
+    description:
+      en: Update dependencies in Cargo.lock
+      zh: 更新 Cargo.lock 中的依赖项
     flags:
       - long: package
         short: p
-        description: Package to update
+        description:
+          en: Package to update
+          zh: 要更新的包
         takes_value: true
       - long: dry-run
-        description: Display what would be updated
+        description:
+          en: Display what would be updated
+          zh: 显示将要更新的内容
       - long: precise
-        description: Update to a specific version
+        description:
+          en: Update to a specific version
+          zh: 更新到特定版本
         takes_value: true
   - name: search
-    description: Search packages in crates.io
+    description:
+      en: Search packages in crates.io
+      zh: 在 crates.io 中搜索包
     flags:
       - long: limit
-        description: Limit the number of results
+        description:
+          en: Limit the number of results
+          zh: 限制结果数量
         takes_value: true
       - long: registry
-        description: Registry to search
+        description:
+          en: Registry to search
+          zh: 要搜索的注册表
         takes_value: true
   - name: add
-    description: Add dependencies to Cargo.toml
+    description:
+      en: Add dependencies to Cargo.toml
+      zh: 向 Cargo.toml 添加依赖项
     flags:
       - long: dev
         short: D
-        description: Add as development dependency
+        description:
+          en: Add as development dependency
+          zh: 添加为开发依赖项
       - long: build
         short: B
-        description: Add as build dependency
+        description:
+          en: Add as build dependency
+          zh: 添加为构建依赖项
       - long: features
         short: F
-        description: Space or comma separated list of features
+        description:
+          en: Space or comma separated list of features
+          zh: 空格或逗号分隔的特性列表
         takes_value: true
       - long: optional
-        description: Mark the dependency as optional
+        description:
+          en: Mark the dependency as optional
+          zh: 将依赖项标记为可选
       - long: no-default-features
-        description: Disable default features
+        description:
+          en: Disable default features
+          zh: 禁用默认特性
       - long: rename
-        description: Rename the dependency
+        description:
+          en: Rename the dependency
+          zh: 重命名依赖项
         takes_value: true
       - long: path
-        description: Filesystem path to local crate
+        description:
+          en: Filesystem path to local crate
+          zh: 本地 crate 的文件系统路径
         takes_value: true
       - long: git
-        description: Git repository location
+        description:
+          en: Git repository location
+          zh: Git 仓库位置
         takes_value: true
       - long: branch
-        description: Git branch
+        description:
+          en: Git branch
+          zh: Git 分支
         takes_value: true
       - long: tag
-        description: Git tag
+        description:
+          en: Git tag
+          zh: Git 标签
         takes_value: true
       - long: rev
-        description: Git reference
+        description:
+          en: Git reference
+          zh: Git 引用
         takes_value: true
   - name: remove
-    description: Remove dependencies from Cargo.toml
+    description:
+      en: Remove dependencies from Cargo.toml
+      zh: 从 Cargo.toml 删除依赖项
     flags:
       - long: dev
         short: D
-        description: Remove as development dependency
+        description:
+          en: Remove as development dependency
+          zh: 删除开发依赖项
       - long: build
         short: B
-        description: Remove as build dependency
+        description:
+          en: Remove as build dependency
+          zh: 删除构建依赖项
       - long: package
         short: p
-        description: Package to remove from
+        description:
+          en: Package to remove from
+          zh: 要从中删除的包
         takes_value: true
   - name: tree
-    description: Display a tree visualization of dependencies
+    description:
+      en: Display a tree visualization of dependencies
+      zh: 显示依赖项的树形可视化
     flags:
       - long: all-features
-        description: Activate all available features
+        description:
+          en: Activate all available features
+          zh: 激活所有可用特性
       - long: no-default-features
-        description: Do not activate default features
+        description:
+          en: Do not activate default features
+          zh: 不激活默认特性
       - long: features
         short: F
-        description: Space or comma separated list of features
+        description:
+          en: Space or comma separated list of features
+          zh: 空格或逗号分隔的特性列表
         takes_value: true
       - long: invert
         short: i
-        description: Invert the tree direction
+        description:
+          en: Invert the tree direction
+          zh: 反转树的方向
       - long: duplicates
         short: d
-        description: Show only duplicates
+        description:
+          en: Show only duplicates
+          zh: 仅显示重复项
       - long: depth
-        description: Maximum display depth
+        description:
+          en: Maximum display depth
+          zh: 最大显示深度
         takes_value: true
       - long: package
         short: p
-        description: Package to display tree for
+        description:
+          en: Package to display tree for
+          zh: 要显示依赖树的包
         takes_value: true
   - name: fmt
-    description: Format Rust code
+    description:
+      en: Format Rust code
+      zh: 格式化 Rust 代码
     flags:
       - long: check
-        description: Run in check mode
+        description:
+          en: Run in check mode
+          zh: 以检查模式运行
       - long: all
-        description: Format all packages in workspace
+        description:
+          en: Format all packages in workspace
+          zh: 格式化工作区中的所有包
       - long: package
         short: p
-        description: Package to format
+        description:
+          en: Package to format
+          zh: 要格式化的包
         takes_value: true
   - name: clippy
-    description: Run Clippy lints
+    description:
+      en: Run Clippy lints
+      zh: 运行 Clippy 代码检查
     flags:
       - long: fix
-        description: Automatically apply lint suggestions
+        description:
+          en: Automatically apply lint suggestions
+          zh: 自动应用代码检查建议
       - long: all-targets
-        description: Check all targets
+        description:
+          en: Check all targets
+          zh: 检查所有目标
       - long: all-features
-        description: Activate all available features
+        description:
+          en: Activate all available features
+          zh: 激活所有可用特性
       - long: no-default-features
-        description: Do not activate default features
+        description:
+          en: Do not activate default features
+          zh: 不激活默认特性
       - long: features
         short: F
-        description: Space or comma separated list of features
+        description:
+          en: Space or comma separated list of features
+          zh: 空格或逗号分隔的特性列表
         takes_value: true
       - long: allow
         short: A
-        description: Set lint allowed
+        description:
+          en: Set lint allowed
+          zh: 设置允许的代码检查
         takes_value: true
       - long: warn
         short: W
-        description: Set lint warnings
+        description:
+          en: Set lint warnings
+          zh: 设置警告的代码检查
         takes_value: true
       - long: deny
         short: D
-        description: Set lint denied
+        description:
+          en: Set lint denied
+          zh: 设置禁止的代码检查
         takes_value: true
       - long: package
         short: p
-        description: Package to check
+        description:
+          en: Package to check
+          zh: 要检查的包
         takes_value: true
   - name: fix
-    description: Automatically fix lint warnings
+    description:
+      en: Automatically fix lint warnings
+      zh: 自动修复代码检查警告
     flags:
       - long: edition
-        description: Fix code to latest edition
+        description:
+          en: Fix code to latest edition
+          zh: 将代码修复到最新版本
       - long: edition-idioms
-        description: Fix code to use edition idioms
+        description:
+          en: Fix code to use edition idioms
+          zh: 修复代码以使用版本惯用法
       - long: broken-code
-        description: Fix code even if it has compiler errors
+        description:
+          en: Fix code even if it has compiler errors
+          zh: 即使有编译错误也修复代码
       - long: allow-dirty
-        description: Fix code even if working directory is dirty
+        description:
+          en: Fix code even if working directory is dirty
+          zh: 即使工作目录是脏的也修复代码
       - long: allow-staged
-        description: Fix code even if staged files exist
+        description:
+          en: Fix code even if staged files exist
+          zh: 即使存在暂存文件也修复代码
   - name: audit
-    description: Audit dependencies for security vulnerabilities
+    description:
+      en: Audit dependencies for security vulnerabilities
+      zh: 审计依赖项的安全漏洞
     flags:
       - long: deny
-        description: Deny on any findings
+        description:
+          en: Deny on any findings
+          zh: 发现任何问题时拒绝
       - long: ignore
-        description: Ignore a specific advisory
+        description:
+          en: Ignore a specific advisory
+          zh: 忽略特定的安全公告
         takes_value: true
   - name: outdated
-    description: Display outdated dependencies
+    description:
+      en: Display outdated dependencies
+      zh: 显示过时的依赖项
     flags:
       - long: root-deps-only
         short: R
-        description: Only check root dependencies
+        description:
+          en: Only check root dependencies
+          zh: 仅检查根依赖项
       - long: workspace
         short: w
-        description: Check entire workspace
+        description:
+          en: Check entire workspace
+          zh: 检查整个工作区
   - name: vendor
-    description: Vendor all dependencies locally
+    description:
+      en: Vendor all dependencies locally
+      zh: 将所有依赖项本地化
     flags:
       - long: no-delete
-        description: Do not delete existing vendor directory
+        description:
+          en: Do not delete existing vendor directory
+          zh: 不删除现有的 vendor 目录
       - long: versioned-dirs
-        description: Use version in directory names
+        description:
+          en: Use version in directory names
+          zh: 在目录名中使用版本号
     is_path_completion: true
   - name: metadata
-    description: Output package metadata in machine-readable format
+    description:
+      en: Output package metadata in machine-readable format
+      zh: 以机器可读格式输出包元数据
     flags:
       - long: format-version
-        description: Format version
+        description:
+          en: Format version
+          zh: 格式版本
         takes_value: true
       - long: no-deps
-        description: Output only workspace members
+        description:
+          en: Output only workspace members
+          zh: 仅输出工作区成员
       - long: all-features
-        description: Activate all available features
+        description:
+          en: Activate all available features
+          zh: 激活所有可用特性
       - long: no-default-features
-        description: Do not activate default features
+        description:
+          en: Do not activate default features
+          zh: 不激活默认特性
       - long: features
         short: F
-        description: Space or comma separated list of features
+        description:
+          en: Space or comma separated list of features
+          zh: 空格或逗号分隔的特性列表
         takes_value: true
   - name: locate-project
-    description: Print the Cargo.toml location
+    description:
+      en: Print the Cargo.toml location
+      zh: 打印 Cargo.toml 位置
     flags:
       - long: workspace
-        description: Locate workspace root
+        description:
+          en: Locate workspace root
+          zh: 定位工作区根目录
       - long: message-format
-        description: Output format (json or plain)
+        description:
+          en: Output format (json or plain)
+          zh: 输出格式 (json 或 plain)
         takes_value: true
   - name: generate-lockfile
-    description: Generate Cargo.lock
+    description:
+      en: Generate Cargo.lock
+      zh: 生成 Cargo.lock
   - name: fetch
-    description: Fetch dependencies from the network
+    description:
+      en: Fetch dependencies from the network
+      zh: 从网络获取依赖项
     flags:
       - long: target
-        description: Fetch for the target triple
+        description:
+          en: Fetch for the target triple
+          zh: 为目标三元组获取
         takes_value: true
   - name: login
-    description: Save an API token from the registry locally
+    description:
+      en: Save an API token from the registry locally
+      zh: 将注册表的 API 令牌保存到本地
     flags:
       - long: registry
-        description: Registry to login to
+        description:
+          en: Registry to login to
+          zh: 要登录的注册表
         takes_value: true
   - name: logout
-    description: Remove an API token from the registry locally
+    description:
+      en: Remove an API token from the registry locally
+      zh: 从本地删除注册表的 API 令牌
     flags:
       - long: registry
-        description: Registry to logout from
+        description:
+          en: Registry to logout from
+          zh: 要登出的注册表
         takes_value: true
   - name: owner
-    description: Manage the owners of a crate
+    description:
+      en: Manage the owners of a crate
+      zh: 管理 crate 的所有者
     subcommands:
       - name: add
-        description: Add an owner
+        description:
+          en: Add an owner
+          zh: 添加所有者
       - name: remove
-        description: Remove an owner
+        description:
+          en: Remove an owner
+          zh: 删除所有者
       - name: list
-        description: List owners
+        description:
+          en: List owners
+          zh: 列出所有者
     flags:
       - long: add
         short: a
-        description: Name of owner to add
+        description:
+          en: Name of owner to add
+          zh: 要添加的所有者名称
         takes_value: true
       - long: remove
         short: r
-        description: Name of owner to remove
+        description:
+          en: Name of owner to remove
+          zh: 要删除的所有者名称
         takes_value: true
       - long: list
         short: l
-        description: List owners
+        description:
+          en: List owners
+          zh: 列出所有者
       - long: token
-        description: API token
+        description:
+          en: API token
+          zh: API 令牌
         takes_value: true
       - long: registry
-        description: Registry to use
+        description:
+          en: Registry to use
+          zh: 要使用的注册表
         takes_value: true
   - name: yank
-    description: Remove a pushed crate from the index
+    description:
+      en: Remove a pushed crate from the index
+      zh: 从索引中撤回已发布的 crate
     flags:
       - long: version
-        description: Version to yank
+        description:
+          en: Version to yank
+          zh: 要撤回的版本
         takes_value: true
       - long: undo
-        description: Undo a yank
+        description:
+          en: Undo a yank
+          zh: 撤销撤回操作
       - long: token
-        description: API token
+        description:
+          en: API token
+          zh: API 令牌
         takes_value: true
       - long: registry
-        description: Registry to yank from
+        description:
+          en: Registry to yank from
+          zh: 要从中撤回的注册表
         takes_value: true
   - name: package
-    description: Assemble the local package into a distributable tarball
+    description:
+      en: Assemble the local package into a distributable tarball
+      zh: 将本地包打包成可分发的压缩包
     flags:
       - long: list
         short: l
-        description: List files in the package
+        description:
+          en: List files in the package
+          zh: 列出包中的文件
       - long: no-verify
-        description: Do not verify the package
+        description:
+          en: Do not verify the package
+          zh: 不验证包
       - long: allow-dirty
-        description: Allow dirty working directories
+        description:
+          en: Allow dirty working directories
+          zh: 允许脏工作目录
       - long: no-metadata
-        description: Ignore warnings about metadata
+        description:
+          en: Ignore warnings about metadata
+          zh: 忽略关于元数据的警告

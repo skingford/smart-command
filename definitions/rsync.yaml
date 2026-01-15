@@ -1,289 +1,499 @@
 name: rsync
-description: Fast and versatile file copying tool
+description:
+  en: Fast and versatile file copying tool
+  zh: 快速通用的文件复制工具
 flags:
   - long: verbose
     short: v
-    description: Increase verbosity
+    description:
+      en: Increase verbosity
+      zh: 增加详细程度
   - long: quiet
     short: q
-    description: Suppress non-error messages
+    description:
+      en: Suppress non-error messages
+      zh: 抑制非错误消息
   - long: checksum
     short: c
-    description: Skip based on checksum, not mod-time & size
+    description:
+      en: Skip based on checksum, not mod-time & size
+      zh: 基于校验和跳过，而非修改时间和大小
   - long: archive
     short: a
-    description: Archive mode (equals -rlptgoD)
+    description:
+      en: Archive mode (equals -rlptgoD)
+      zh: 归档模式（等同于 -rlptgoD）
   - long: recursive
     short: r
-    description: Recurse into directories
+    description:
+      en: Recurse into directories
+      zh: 递归进入目录
   - long: links
     short: l
-    description: Copy symlinks as symlinks
+    description:
+      en: Copy symlinks as symlinks
+      zh: 将符号链接复制为符号链接
   - long: copy-links
     short: L
-    description: Transform symlinks into referent file/dir
+    description:
+      en: Transform symlinks into referent file/dir
+      zh: 将符号链接转换为引用的文件/目录
   - long: copy-unsafe-links
-    description: Copy links outside the source tree
+    description:
+      en: Copy links outside the source tree
+      zh: 复制源树外的链接
   - long: safe-links
-    description: Ignore links outside the destination tree
+    description:
+      en: Ignore links outside the destination tree
+      zh: 忽略目标树外的链接
   - long: copy-dirlinks
     short: k
-    description: Transform symlink to dir into referent dir
+    description:
+      en: Transform symlink to dir into referent dir
+      zh: 将目录的符号链接转换为引用目录
   - long: keep-dirlinks
     short: K
-    description: Treat symlinked dir on receiver as dir
+    description:
+      en: Treat symlinked dir on receiver as dir
+      zh: 将接收端的符号链接目录视为目录
   - long: hard-links
     short: H
-    description: Preserve hard links
+    description:
+      en: Preserve hard links
+      zh: 保留硬链接
   - long: perms
     short: p
-    description: Preserve permissions
+    description:
+      en: Preserve permissions
+      zh: 保留权限
   - long: executability
     short: E
-    description: Preserve executability
+    description:
+      en: Preserve executability
+      zh: 保留可执行性
   - long: acls
     short: A
-    description: Preserve ACLs
+    description:
+      en: Preserve ACLs
+      zh: 保留 ACL
   - long: xattrs
     short: X
-    description: Preserve extended attributes
+    description:
+      en: Preserve extended attributes
+      zh: 保留扩展属性
   - long: owner
     short: o
-    description: Preserve owner
+    description:
+      en: Preserve owner
+      zh: 保留所有者
   - long: group
     short: g
-    description: Preserve group
+    description:
+      en: Preserve group
+      zh: 保留组
   - long: devices
-    description: Preserve device files
+    description:
+      en: Preserve device files
+      zh: 保留设备文件
   - long: specials
-    description: Preserve special files
+    description:
+      en: Preserve special files
+      zh: 保留特殊文件
   - short: D
-    description: Same as --devices --specials
+    description:
+      en: Same as --devices --specials
+      zh: 等同于 --devices --specials
   - long: times
     short: t
-    description: Preserve modification times
+    description:
+      en: Preserve modification times
+      zh: 保留修改时间
   - long: omit-dir-times
     short: O
-    description: Omit directories from --times
+    description:
+      en: Omit directories from --times
+      zh: 从 --times 中排除目录
   - long: omit-link-times
     short: J
-    description: Omit symlinks from --times
+    description:
+      en: Omit symlinks from --times
+      zh: 从 --times 中排除符号链接
   - long: super
-    description: Receiver attempts super-user activities
+    description:
+      en: Receiver attempts super-user activities
+      zh: 接收端尝试超级用户操作
   - long: fake-super
-    description: Store/recover privileged attrs using xattrs
+    description:
+      en: Store/recover privileged attrs using xattrs
+      zh: 使用扩展属性存储/恢复特权属性
   - long: sparse
     short: S
-    description: Handle sparse files efficiently
+    description:
+      en: Handle sparse files efficiently
+      zh: 高效处理稀疏文件
   - long: preallocate
-    description: Allocate dest files before writing
+    description:
+      en: Allocate dest files before writing
+      zh: 写入前预分配目标文件空间
   - long: dry-run
     short: n
-    description: Perform a trial run
+    description:
+      en: Perform a trial run
+      zh: 执行试运行
   - long: whole-file
     short: W
-    description: Copy files whole (without delta-xfer algorithm)
+    description:
+      en: Copy files whole (without delta-xfer algorithm)
+      zh: 整体复制文件（不使用增量传输算法）
   - long: one-file-system
     short: x
-    description: Don't cross filesystem boundaries
+    description:
+      en: Don't cross filesystem boundaries
+      zh: 不跨越文件系统边界
   - long: block-size
     short: B
-    description: Force a fixed checksum block-size
+    description:
+      en: Force a fixed checksum block-size
+      zh: 强制使用固定校验块大小
     takes_value: true
   - long: rsh
     short: e
-    description: Specify the remote shell to use
+    description:
+      en: Specify the remote shell to use
+      zh: 指定使用的远程 shell
     takes_value: true
   - long: rsync-path
-    description: Specify the rsync to run on remote machine
+    description:
+      en: Specify the rsync to run on remote machine
+      zh: 指定远程机器上运行的 rsync
     takes_value: true
   - long: existing
-    description: Skip creating new files on receiver
+    description:
+      en: Skip creating new files on receiver
+      zh: 跳过在接收端创建新文件
   - long: ignore-non-existing
-    description: Skip creating new files on receiver
+    description:
+      en: Skip creating new files on receiver
+      zh: 跳过在接收端创建新文件
   - long: ignore-existing
-    description: Skip updating files that exist on receiver
+    description:
+      en: Skip updating files that exist on receiver
+      zh: 跳过更新接收端已存在的文件
   - long: remove-source-files
-    description: Sender removes synchronized files
+    description:
+      en: Sender removes synchronized files
+      zh: 发送端删除已同步的文件
   - long: delete
-    description: Delete extraneous files from dest dirs
+    description:
+      en: Delete extraneous files from dest dirs
+      zh: 从目标目录删除多余文件
   - long: delete-before
-    description: Receiver deletes before xfer, not during
+    description:
+      en: Receiver deletes before xfer, not during
+      zh: 接收端在传输前删除，而非传输中
   - long: delete-during
-    description: Receiver deletes during transfer
+    description:
+      en: Receiver deletes during transfer
+      zh: 接收端在传输中删除
   - long: delete-delay
-    description: Find deletions during, delete after
+    description:
+      en: Find deletions during, delete after
+      zh: 传输中查找要删除的文件，传输后删除
   - long: delete-after
-    description: Receiver deletes after transfer
+    description:
+      en: Receiver deletes after transfer
+      zh: 接收端在传输后删除
   - long: delete-excluded
-    description: Also delete excluded files from dest
+    description:
+      en: Also delete excluded files from dest
+      zh: 同时从目标删除被排除的文件
   - long: ignore-errors
-    description: Delete even if there are I/O errors
+    description:
+      en: Delete even if there are I/O errors
+      zh: 即使有 I/O 错误也删除
   - long: force
-    description: Force deletion of dirs even if not empty
+    description:
+      en: Force deletion of dirs even if not empty
+      zh: 强制删除非空目录
   - long: max-delete
-    description: Don't delete more than NUM files
+    description:
+      en: Don't delete more than NUM files
+      zh: 最多删除 NUM 个文件
     takes_value: true
   - long: max-size
-    description: Don't transfer any file larger than SIZE
+    description:
+      en: Don't transfer any file larger than SIZE
+      zh: 不传输大于 SIZE 的文件
     takes_value: true
   - long: min-size
-    description: Don't transfer any file smaller than SIZE
+    description:
+      en: Don't transfer any file smaller than SIZE
+      zh: 不传输小于 SIZE 的文件
     takes_value: true
   - long: partial
-    description: Keep partially transferred files
+    description:
+      en: Keep partially transferred files
+      zh: 保留部分传输的文件
   - long: partial-dir
-    description: Put a partially transferred file into DIR
+    description:
+      en: Put a partially transferred file into DIR
+      zh: 将部分传输的文件放入 DIR
     takes_value: true
   - long: delay-updates
-    description: Put all updated files into place at end
+    description:
+      en: Put all updated files into place at end
+      zh: 在最后一次性放置所有更新的文件
   - long: prune-empty-dirs
     short: m
-    description: Prune empty directory chains from file-list
+    description:
+      en: Prune empty directory chains from file-list
+      zh: 从文件列表中删除空目录链
   - long: numeric-ids
-    description: Don't map uid/gid values by user/group name
+    description:
+      en: Don't map uid/gid values by user/group name
+      zh: 不通过用户/组名映射 uid/gid 值
   - long: timeout
-    description: Set I/O timeout in seconds
+    description:
+      en: Set I/O timeout in seconds
+      zh: 设置 I/O 超时（秒）
     takes_value: true
   - long: contimeout
-    description: Set daemon connection timeout in seconds
+    description:
+      en: Set daemon connection timeout in seconds
+      zh: 设置守护进程连接超时（秒）
     takes_value: true
   - long: ignore-times
     short: I
-    description: Don't skip files that match size and time
+    description:
+      en: Don't skip files that match size and time
+      zh: 不跳过大小和时间匹配的文件
   - long: size-only
-    description: Skip files that match in size
+    description:
+      en: Skip files that match in size
+      zh: 跳过大小匹配的文件
   - long: modify-window
-    description: Compare mod-times with reduced accuracy
+    description:
+      en: Compare mod-times with reduced accuracy
+      zh: 以降低的精度比较修改时间
     takes_value: true
   - long: temp-dir
     short: T
-    description: Create temporary files in directory DIR
+    description:
+      en: Create temporary files in directory DIR
+      zh: 在目录 DIR 中创建临时文件
     takes_value: true
   - long: fuzzy
     short: y
-    description: Find similar file for basis if no dest file
+    description:
+      en: Find similar file for basis if no dest file
+      zh: 如果没有目标文件则查找相似文件作为基础
   - long: compare-dest
-    description: Compare dest files with files in DIR
+    description:
+      en: Compare dest files with files in DIR
+      zh: 将目标文件与 DIR 中的文件进行比较
     takes_value: true
   - long: copy-dest
-    description: Use files in DIR as possible transfer source
+    description:
+      en: Use files in DIR as possible transfer source
+      zh: 使用 DIR 中的文件作为可能的传输源
     takes_value: true
   - long: link-dest
-    description: Hardlink to files in DIR when unchanged
+    description:
+      en: Hardlink to files in DIR when unchanged
+      zh: 文件未变时硬链接到 DIR 中的文件
     takes_value: true
   - long: compress
     short: z
-    description: Compress file data during the transfer
+    description:
+      en: Compress file data during the transfer
+      zh: 传输时压缩文件数据
   - long: compress-level
-    description: Explicitly set compression level
+    description:
+      en: Explicitly set compression level
+      zh: 明确设置压缩级别
     takes_value: true
   - long: skip-compress
-    description: Skip compressing files with suffix in LIST
+    description:
+      en: Skip compressing files with suffix in LIST
+      zh: 跳过压缩 LIST 中后缀的文件
     takes_value: true
   - long: cvs-exclude
     short: C
-    description: Auto-ignore files in the same way CVS does
+    description:
+      en: Auto-ignore files in the same way CVS does
+      zh: 以 CVS 的方式自动忽略文件
   - long: filter
     short: f
-    description: Add a file-filtering RULE
+    description:
+      en: Add a file-filtering RULE
+      zh: 添加文件过滤规则
     takes_value: true
   - short: F
-    description: Same as --filter='dir-merge /.rsync-filter'
+    description:
+      en: Same as --filter='dir-merge /.rsync-filter'
+      zh: 等同于 --filter='dir-merge /.rsync-filter'
   - long: exclude
-    description: Exclude files matching PATTERN
+    description:
+      en: Exclude files matching PATTERN
+      zh: 排除匹配 PATTERN 的文件
     takes_value: true
   - long: exclude-from
-    description: Read exclude patterns from FILE
+    description:
+      en: Read exclude patterns from FILE
+      zh: 从 FILE 读取排除模式
     takes_value: true
   - long: include
-    description: Include files matching PATTERN
+    description:
+      en: Include files matching PATTERN
+      zh: 包含匹配 PATTERN 的文件
     takes_value: true
   - long: include-from
-    description: Read include patterns from FILE
+    description:
+      en: Read include patterns from FILE
+      zh: 从 FILE 读取包含模式
     takes_value: true
   - long: files-from
-    description: Read list of source-file names from FILE
+    description:
+      en: Read list of source-file names from FILE
+      zh: 从 FILE 读取源文件名列表
     takes_value: true
   - long: from0
     short: "0"
-    description: All *-from/filter files are delimited by 0s
+    description:
+      en: All *-from/filter files are delimited by 0s
+      zh: 所有 *-from/filter 文件以 0 分隔
   - long: protect-args
     short: s
-    description: No space-splitting of args
+    description:
+      en: No space-splitting of args
+      zh: 不对参数进行空格分割
   - long: address
-    description: Bind address for outgoing socket to daemon
+    description:
+      en: Bind address for outgoing socket to daemon
+      zh: 到守护进程的出站套接字绑定地址
     takes_value: true
   - long: port
-    description: Specify double-colon alternate port number
+    description:
+      en: Specify double-colon alternate port number
+      zh: 指定双冒号备用端口号
     takes_value: true
   - long: sockopts
-    description: Specify custom TCP options
+    description:
+      en: Specify custom TCP options
+      zh: 指定自定义 TCP 选项
     takes_value: true
   - long: blocking-io
-    description: Use blocking I/O for the remote shell
+    description:
+      en: Use blocking I/O for the remote shell
+      zh: 为远程 shell 使用阻塞 I/O
   - long: stats
-    description: Print verbose transfer statistics
+    description:
+      en: Print verbose transfer statistics
+      zh: 打印详细传输统计
   - long: "8-bit-output"
     short: "8"
-    description: Allow high-bit characters in output
+    description:
+      en: Allow high-bit characters in output
+      zh: 允许输出中的高位字符
   - long: human-readable
     short: h
-    description: Output numbers in a human-readable format
+    description:
+      en: Output numbers in a human-readable format
+      zh: 以人类可读格式输出数字
   - long: progress
-    description: Show progress during transfer
+    description:
+      en: Show progress during transfer
+      zh: 传输时显示进度
   - short: P
-    description: Same as --partial --progress
+    description:
+      en: Same as --partial --progress
+      zh: 等同于 --partial --progress
   - long: itemize-changes
     short: i
-    description: Output a change-summary for all updates
+    description:
+      en: Output a change-summary for all updates
+      zh: 为所有更新输出变更摘要
   - long: out-format
-    description: Output updates using the specified FORMAT
+    description:
+      en: Output updates using the specified FORMAT
+      zh: 使用指定 FORMAT 输出更新
     takes_value: true
   - long: log-file
-    description: Log what we're doing to the specified FILE
+    description:
+      en: Log what we're doing to the specified FILE
+      zh: 将操作记录到指定 FILE
     takes_value: true
   - long: log-file-format
-    description: Log updates using the specified FMT
+    description:
+      en: Log updates using the specified FMT
+      zh: 使用指定 FMT 记录更新
     takes_value: true
   - long: password-file
-    description: Read daemon-access password from FILE
+    description:
+      en: Read daemon-access password from FILE
+      zh: 从 FILE 读取守护进程访问密码
     takes_value: true
   - long: list-only
-    description: List the files instead of copying them
+    description:
+      en: List the files instead of copying them
+      zh: 列出文件而不复制
   - long: bwlimit
-    description: Limit socket I/O bandwidth
+    description:
+      en: Limit socket I/O bandwidth
+      zh: 限制套接字 I/O 带宽
     takes_value: true
   - long: outbuf
-    description: Set out buffering to (N)one, (L)ine, or (B)lock
+    description:
+      en: Set out buffering to (N)one, (L)ine, or (B)lock
+      zh: 设置输出缓冲为无(N)、行(L)或块(B)
     takes_value: true
   - long: write-batch
-    description: Write a batched update to FILE
+    description:
+      en: Write a batched update to FILE
+      zh: 将批量更新写入 FILE
     takes_value: true
   - long: only-write-batch
-    description: Like --write-batch but no updates to receiver
+    description:
+      en: Like --write-batch but no updates to receiver
+      zh: 类似 --write-batch 但不更新接收端
     takes_value: true
   - long: read-batch
-    description: Read a batched update from FILE
+    description:
+      en: Read a batched update from FILE
+      zh: 从 FILE 读取批量更新
     takes_value: true
   - long: protocol
-    description: Force an older protocol version to be used
+    description:
+      en: Force an older protocol version to be used
+      zh: 强制使用旧协议版本
     takes_value: true
   - long: iconv
-    description: Request charset conversion of filenames
+    description:
+      en: Request charset conversion of filenames
+      zh: 请求文件名字符集转换
     takes_value: true
   - long: checksum-seed
-    description: Set block/file checksum seed
+    description:
+      en: Set block/file checksum seed
+      zh: 设置块/文件校验种子
     takes_value: true
   - long: ipv4
     short: "4"
-    description: Prefer IPv4
+    description:
+      en: Prefer IPv4
+      zh: 优先使用 IPv4
   - long: ipv6
     short: "6"
-    description: Prefer IPv6
+    description:
+      en: Prefer IPv6
+      zh: 优先使用 IPv6
   - long: version
     short: V
-    description: Print version number
+    description:
+      en: Print version number
+      zh: 打印版本号
   - long: help
-    description: Show this help
+    description:
+      en: Show this help
+      zh: 显示此帮助
 is_path_completion: true

@@ -1,70 +1,124 @@
 name: ps
-description: Report a snapshot of the current processes
+description:
+  en: Report a snapshot of the current processes
+  zh: 报告当前进程的快照
 flags:
   - short: e
-    description: Select all processes
+    description:
+      en: Select all processes
+      zh: 选择所有进程
   - short: f
-    description: Full-format listing
+    description:
+      en: Full-format listing
+      zh: 完整格式列表
   - short: a
-    description: Select all processes except session leaders
+    description:
+      en: Select all processes except session leaders
+      zh: 选择所有进程（除会话领导者外）
   - short: u
-    description: User-oriented format
+    description:
+      en: User-oriented format
+      zh: 用户导向格式
   - short: x
-    description: Lift the BSD-style "must have a tty" restriction
+    description:
+      en: Lift the BSD-style "must have a tty" restriction
+      zh: 取消 BSD 风格的"必须有终端"限制
   - short: l
-    description: Long format
+    description:
+      en: Long format
+      zh: 长格式
   - short: j
-    description: BSD job control format
+    description:
+      en: BSD job control format
+      zh: BSD 作业控制格式
   - short: o
-    description: User-defined format
+    description:
+      en: User-defined format
+      zh: 用户定义格式
     takes_value: true
   - short: p
-    description: Select by process ID
+    description:
+      en: Select by process ID
+      zh: 按进程 ID 选择
     takes_value: true
   - short: t
-    description: Select by tty
+    description:
+      en: Select by tty
+      zh: 按终端选择
     takes_value: true
   - short: U
-    description: Select by real user ID or name
+    description:
+      en: Select by real user ID or name
+      zh: 按真实用户 ID 或名称选择
     takes_value: true
   - long: sort
-    description: Specify sorting order
+    description:
+      en: Specify sorting order
+      zh: 指定排序顺序
     takes_value: true
   - long: forest
-    description: ASCII art process tree
+    description:
+      en: ASCII art process tree
+      zh: ASCII 艺术进程树
   - long: headers
-    description: Repeat header lines
+    description:
+      en: Repeat header lines
+      zh: 重复标题行
   - long: no-headers
-    description: Print no header line at all
+    description:
+      en: Print no header line at all
+      zh: 不打印任何标题行
   - long: width
-    description: Wide output
+    description:
+      en: Wide output
+      zh: 宽输出
   - long: cols
-    description: Set screen width
+    description:
+      en: Set screen width
+      zh: 设置屏幕宽度
     takes_value: true
   - long: rows
-    description: Set screen height
+    description:
+      en: Set screen height
+      zh: 设置屏幕高度
     takes_value: true
   - long: pid
-    description: Select by process ID
+    description:
+      en: Select by process ID
+      zh: 按进程 ID 选择
     takes_value: true
   - long: ppid
-    description: Select by parent process ID
+    description:
+      en: Select by parent process ID
+      zh: 按父进程 ID 选择
     takes_value: true
   - long: sid
-    description: Select by session ID
+    description:
+      en: Select by session ID
+      zh: 按会话 ID 选择
     takes_value: true
   - long: tty
-    description: Select by tty
+    description:
+      en: Select by tty
+      zh: 按终端选择
     takes_value: true
   - long: user
-    description: Select by effective user
+    description:
+      en: Select by effective user
+      zh: 按有效用户选择
     takes_value: true
   - long: group
-    description: Select by effective group
+    description:
+      en: Select by effective group
+      zh: 按有效组选择
     takes_value: true
   - long: User
-    description: Select by real user
+    description:
+      en: Select by real user
+      zh: 按真实用户选择
     takes_value: true
   - long: Group
-    description: Select by real group
+    description:
+      en: Select by real group
+      zh: 按真实组选择
     takes_value: true

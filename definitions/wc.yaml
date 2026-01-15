@@ -1,22 +1,36 @@
 name: wc
-description: Print newline, word, and byte counts for each file
+description:
+  en: Print newline, word, and byte counts for each file
+  zh: 打印文件的行数、单词数和字节数
 flags:
   - long: bytes
     short: c
-    description: Print the byte counts
+    description:
+      en: Print the byte counts
+      zh: 打印字节数
   - long: chars
     short: m
-    description: Print the character counts
+    description:
+      en: Print the character counts
+      zh: 打印字符数
   - long: lines
     short: l
-    description: Print the newline counts
+    description:
+      en: Print the newline counts
+      zh: 打印行数
   - long: files0-from
-    description: Read input from NUL-terminated names in file
+    description:
+      en: Read input from NUL-terminated names in file
+      zh: 从文件中读取以 NUL 结尾的文件名列表
     takes_value: true
   - long: max-line-length
     short: L
-    description: Print the maximum display width
+    description:
+      en: Print the maximum display width
+      zh: 打印最大行宽
   - long: words
     short: w
-    description: Print the word counts
+    description:
+      en: Print the word counts
+      zh: 打印单词数
 is_path_completion: true

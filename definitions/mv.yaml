@@ -1,42 +1,68 @@
 name: mv
-description: Move (rename) files
+description:
+  en: Move (rename) files
+  zh: 移动（重命名）文件
 flags:
   - long: backup
     short: b
-    description: Make a backup of each existing destination file
+    description:
+      en: Make a backup of each existing destination file
+      zh: 为每个已存在的目标文件创建备份
     takes_value: true
   - long: force
     short: f
-    description: Do not prompt before overwriting
+    description:
+      en: Do not prompt before overwriting
+      zh: 覆盖前不提示确认
   - long: interactive
     short: i
-    description: Prompt before overwrite
+    description:
+      en: Prompt before overwrite
+      zh: 覆盖前提示确认
   - long: no-clobber
     short: n
-    description: Do not overwrite existing file
+    description:
+      en: Do not overwrite existing file
+      zh: 不覆盖已存在的文件
   - long: no-copy
-    description: Do not copy if renaming fails
+    description:
+      en: Do not copy if renaming fails
+      zh: 重命名失败时不复制
   - long: strip-trailing-slashes
-    description: Remove trailing slashes from source arguments
+    description:
+      en: Remove trailing slashes from source arguments
+      zh: 移除源参数末尾的斜杠
   - long: suffix
     short: S
-    description: Override the usual backup suffix
+    description:
+      en: Override the usual backup suffix
+      zh: 覆盖默认的备份后缀
     takes_value: true
   - long: target-directory
     short: t
-    description: Move all source arguments into directory
+    description:
+      en: Move all source arguments into directory
+      zh: 将所有源文件移动到指定目录
     takes_value: true
   - long: no-target-directory
     short: T
-    description: Treat destination as a normal file
+    description:
+      en: Treat destination as a normal file
+      zh: 将目标视为普通文件
   - long: update
     short: u
-    description: Move only when source is newer
+    description:
+      en: Move only when source is newer
+      zh: 仅当源文件较新时才移动
   - long: verbose
     short: v
-    description: Explain what is being done
+    description:
+      en: Explain what is being done
+      zh: 显示正在执行的操作
   - long: context
     short: Z
-    description: Set SELinux security context of destination file
+    description:
+      en: Set SELinux security context of destination file
+      zh: 设置目标文件的 SELinux 安全上下文
     takes_value: true
 is_path_completion: true

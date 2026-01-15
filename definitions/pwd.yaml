@@ -1,11 +1,21 @@
 name: pwd
-description: Print name of current/working directory
+description:
+  en: Print name of current/working directory
+  zh: 显示当前工作目录
 flags:
   - short: L
-    description: Print the value of $PWD if it names the current working directory
+    description:
+      en: Print the value of $PWD if it names the current working directory
+      zh: 如果 $PWD 是当前目录则打印其值
   - long: logical
-    description: Print the value of $PWD if it names the current working directory
+    description:
+      en: Print the value of $PWD if it names the current working directory
+      zh: 如果 $PWD 是当前目录则打印其值
   - short: P
-    description: Print the physical directory, without any symbolic links
+    description:
+      en: Print the physical directory, without any symbolic links
+      zh: 打印物理目录，不解析符号链接
   - long: physical
-    description: Print the physical directory, without any symbolic links
+    description:
+      en: Print the physical directory, without any symbolic links
+      zh: 打印物理目录，不解析符号链接

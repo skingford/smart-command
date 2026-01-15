@@ -1,21 +1,39 @@
 name: kill
-description: Send a signal to a process
+description:
+  en: Send a signal to a process
+  zh: 向进程发送信号
 flags:
   - short: s
-    description: Specify the signal to send
+    description:
+      en: Specify the signal to send
+      zh: 指定要发送的信号
     takes_value: true
   - long: signal
-    description: Specify the signal to send
+    description:
+      en: Specify the signal to send
+      zh: 指定要发送的信号
     takes_value: true
   - short: l
-    description: List signal names
+    description:
+      en: List signal names
+      zh: 列出信号名称
   - short: L
-    description: List signal names in a table
+    description:
+      en: List signal names in a table
+      zh: 以表格形式列出信号名称
   - short: "1"
-    description: SIGHUP
+    description:
+      en: SIGHUP
+      zh: SIGHUP（挂起信号）
   - short: "2"
-    description: SIGINT
+    description:
+      en: SIGINT
+      zh: SIGINT（中断信号）
   - short: "3"
-    description: SIGQUIT
+    description:
+      en: SIGQUIT
+      zh: SIGQUIT（退出信号）
   - short: "9"
-    description: SIGKILL
+    description:
+      en: SIGKILL
+      zh: SIGKILL（强制终止信号）

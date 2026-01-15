@@ -1,161 +1,291 @@
 name: ls
-description: List directory contents
+description:
+  en: List directory contents
+  zh: 列出目录内容
 flags:
   - long: all
     short: a
-    description: Include hidden files (entries starting with .)
+    description:
+      en: Include hidden files (entries starting with .)
+      zh: 包含隐藏文件（以 . 开头的条目）
   - long: almost-all
     short: A
-    description: Include hidden files except . and ..
+    description:
+      en: Include hidden files except . and ..
+      zh: 包含隐藏文件，但不包括 . 和 ..
   - long: long
     short: l
-    description: Use long listing format
+    description:
+      en: Use long listing format
+      zh: 使用长列表格式
   - long: human-readable
     short: h
-    description: Human readable sizes with -l
+    description:
+      en: Human readable sizes with -l
+      zh: 与 -l 一起使用时显示易读的文件大小
   - long: size
     short: s
-    description: Print size of each file in blocks
+    description:
+      en: Print size of each file in blocks
+      zh: 以块为单位打印每个文件的大小
   - long: reverse
     short: r
-    description: Reverse order while sorting
+    description:
+      en: Reverse order while sorting
+      zh: 排序时反向排列
   - long: recursive
     short: R
-    description: List subdirectories recursively
+    description:
+      en: List subdirectories recursively
+      zh: 递归列出子目录
   - long: sort
-    description: Sort by (size, time, version, extension, none)
+    description:
+      en: Sort by (size, time, version, extension, none)
+      zh: 按指定方式排序（size、time、version、extension、none）
     takes_value: true
   - short: S
-    description: Sort by size, largest first
+    description:
+      en: Sort by size, largest first
+      zh: 按大小排序，最大的在前
   - short: t
-    description: Sort by time, newest first
+    description:
+      en: Sort by time, newest first
+      zh: 按时间排序，最新的在前
   - short: X
-    description: Sort alphabetically by extension
+    description:
+      en: Sort alphabetically by extension
+      zh: 按扩展名字母顺序排序
   - short: v
-    description: Natural sort of version numbers
+    description:
+      en: Natural sort of version numbers
+      zh: 按版本号自然排序
   - short: U
-    description: Do not sort
+    description:
+      en: Do not sort
+      zh: 不排序
   - short: f
-    description: Do not sort and enable -aU
+    description:
+      en: Do not sort and enable -aU
+      zh: 不排序并启用 -aU
   - long: time
-    description: Time field to use (atime, access, use, ctime, status, birth, creation)
+    description:
+      en: Time field to use (atime, access, use, ctime, status, birth, creation)
+      zh: 使用的时间字段（atime、access、use、ctime、status、birth、creation）
     takes_value: true
   - short: u
-    description: Sort by access time (with -lt) or show access time
+    description:
+      en: Sort by access time (with -lt) or show access time
+      zh: 按访问时间排序（与 -lt 一起）或显示访问时间
   - short: c
-    description: Sort by ctime (with -lt) or show ctime
+    description:
+      en: Sort by ctime (with -lt) or show ctime
+      zh: 按 ctime 排序（与 -lt 一起）或显示 ctime
   - long: time-style
-    description: Time/date format (full-iso, long-iso, iso, locale, +FORMAT)
+    description:
+      en: Time/date format (full-iso, long-iso, iso, locale, +FORMAT)
+      zh: 时间/日期格式（full-iso、long-iso、iso、locale、+FORMAT）
     takes_value: true
   - long: color
-    description: When to colorize (always, auto, never)
+    description:
+      en: When to colorize (always, auto, never)
+      zh: 何时着色（always、auto、never）
     takes_value: true
   - short: G
-    description: Enable colorized output (BSD) or no group names (GNU)
+    description:
+      en: Enable colorized output (BSD) or no group names (GNU)
+      zh: 启用彩色输出（BSD）或不显示组名（GNU）
   - short: F
-    description: Append indicator to entries
+    description:
+      en: Append indicator to entries
+      zh: 在条目后追加类型指示符
   - long: classify
-    description: Append indicator to entries
+    description:
+      en: Append indicator to entries
+      zh: 在条目后追加类型指示符
   - short: p
-    description: Append / indicator to directories
+    description:
+      en: Append / indicator to directories
+      zh: 在目录后追加 / 指示符
   - long: indicator-style
-    description: Append indicator (none, slash, file-type, classify)
+    description:
+      en: Append indicator (none, slash, file-type, classify)
+      zh: 追加指示符（none、slash、file-type、classify）
     takes_value: true
   - long: file-type
-    description: Append indicator (not *)
+    description:
+      en: Append indicator (not *)
+      zh: 追加指示符（不包括 *）
   - long: format
-    description: Output format (across, commas, horizontal, long, single-column, verbose, vertical)
+    description:
+      en: Output format (across, commas, horizontal, long, single-column, verbose, vertical)
+      zh: 输出格式（across、commas、horizontal、long、single-column、verbose、vertical）
     takes_value: true
   - short: "1"
-    description: One file per line
+    description:
+      en: One file per line
+      zh: 每行一个文件
   - short: C
-    description: List entries by columns
+    description:
+      en: List entries by columns
+      zh: 按列列出条目
   - short: x
-    description: List entries by lines instead of columns
+    description:
+      en: List entries by lines instead of columns
+      zh: 按行而非按列列出条目
   - short: m
-    description: Comma separated list
+    description:
+      en: Comma separated list
+      zh: 以逗号分隔的列表
   - long: group-directories-first
-    description: Group directories before files
+    description:
+      en: Group directories before files
+      zh: 目录排在文件前面
   - long: dereference
     short: L
-    description: Show file information for symlink target
+    description:
+      en: Show file information for symlink target
+      zh: 显示符号链接目标的文件信息
   - long: dereference-command-line
     short: H
-    description: Follow symlinks listed on command line
+    description:
+      en: Follow symlinks listed on command line
+      zh: 跟随命令行中列出的符号链接
   - long: dereference-command-line-symlink-to-dir
-    description: Follow each command line symlink pointing to directory
+    description:
+      en: Follow each command line symlink pointing to directory
+      zh: 跟随命令行中指向目录的每个符号链接
   - short: d
-    description: List directories themselves, not contents
+    description:
+      en: List directories themselves, not contents
+      zh: 列出目录本身，而非其内容
   - long: directory
-    description: List directories themselves, not contents
+    description:
+      en: List directories themselves, not contents
+      zh: 列出目录本身，而非其内容
   - long: inode
     short: i
-    description: Print inode number
+    description:
+      en: Print inode number
+      zh: 打印 inode 号
   - long: numeric-uid-gid
     short: n
-    description: Show numeric UID and GID
+    description:
+      en: Show numeric UID and GID
+      zh: 显示数字形式的 UID 和 GID
   - short: o
-    description: Long format without group
+    description:
+      en: Long format without group
+      zh: 长格式，不显示组
   - short: g
-    description: Long format without owner
+    description:
+      en: Long format without owner
+      zh: 长格式，不显示所有者
   - long: author
-    description: Show author of each file (with -l)
+    description:
+      en: Show author of each file (with -l)
+      zh: 显示每个文件的作者（与 -l 一起）
   - long: no-group
-    description: Do not print group names
+    description:
+      en: Do not print group names
+      zh: 不打印组名
   - long: block-size
-    description: Scale sizes by SIZE
+    description:
+      en: Scale sizes by SIZE
+      zh: 按 SIZE 缩放大小
     takes_value: true
   - short: k
-    description: Use 1024-byte blocks
+    description:
+      en: Use 1024-byte blocks
+      zh: 使用 1024 字节的块
   - long: si
-    description: Use powers of 1000 not 1024
+    description:
+      en: Use powers of 1000 not 1024
+      zh: 使用 1000 的幂而非 1024
   - long: width
     short: w
-    description: Assume screen width
+    description:
+      en: Assume screen width
+      zh: 假定屏幕宽度
     takes_value: true
   - short: T
-    description: Tab size
+    description:
+      en: Tab size
+      zh: 制表符大小
     takes_value: true
   - long: tabsize
-    description: Tab size
+    description:
+      en: Tab size
+      zh: 制表符大小
     takes_value: true
   - long: quote-name
     short: Q
-    description: Enclose entry names in double quotes
+    description:
+      en: Enclose entry names in double quotes
+      zh: 用双引号括起条目名称
   - long: quoting-style
-    description: Quoting style (literal, locale, shell, shell-always, shell-escape, shell-escape-always, c, escape)
+    description:
+      en: Quoting style (literal, locale, shell, shell-always, shell-escape, shell-escape-always, c, escape)
+      zh: 引用样式（literal、locale、shell、shell-always、shell-escape、shell-escape-always、c、escape）
     takes_value: true
   - short: b
-    description: Print C-style escapes for nongraphic characters
+    description:
+      en: Print C-style escapes for nongraphic characters
+      zh: 为非图形字符打印 C 风格转义
   - long: escape
-    description: Print C-style escapes for nongraphic characters
+    description:
+      en: Print C-style escapes for nongraphic characters
+      zh: 为非图形字符打印 C 风格转义
   - short: q
-    description: Print ? instead of nongraphic characters
+    description:
+      en: Print ? instead of nongraphic characters
+      zh: 用 ? 代替非图形字符
   - long: hide-control-chars
-    description: Print ? instead of nongraphic characters
+    description:
+      en: Print ? instead of nongraphic characters
+      zh: 用 ? 代替非图形字符
   - long: show-control-chars
-    description: Show nongraphic characters as-is
+    description:
+      en: Show nongraphic characters as-is
+      zh: 原样显示非图形字符
   - short: N
-    description: Print entry names without quoting
+    description:
+      en: Print entry names without quoting
+      zh: 打印条目名称时不加引号
   - long: literal
-    description: Print entry names without quoting
+    description:
+      en: Print entry names without quoting
+      zh: 打印条目名称时不加引号
   - long: hide
-    description: Do not list entries matching pattern
+    description:
+      en: Do not list entries matching pattern
+      zh: 不列出匹配模式的条目
     takes_value: true
   - long: ignore
     short: I
-    description: Do not list entries matching pattern
+    description:
+      en: Do not list entries matching pattern
+      zh: 不列出匹配模式的条目
     takes_value: true
   - short: B
-    description: Do not list entries ending with ~
+    description:
+      en: Do not list entries ending with ~
+      zh: 不列出以 ~ 结尾的条目
   - long: ignore-backups
-    description: Do not list entries ending with ~
+    description:
+      en: Do not list entries ending with ~
+      zh: 不列出以 ~ 结尾的条目
   - long: context
     short: Z
-    description: Print security context
+    description:
+      en: Print security context
+      zh: 打印安全上下文
   - long: hyperlink
-    description: Hyperlink file names (always, auto, never)
+    description:
+      en: Hyperlink file names (always, auto, never)
+      zh: 为文件名添加超链接（always、auto、never）
     takes_value: true
   - long: zero
-    description: End each output line with NUL
+    description:
+      en: End each output line with NUL
+      zh: 每行输出以 NUL 结尾
 is_path_completion: true

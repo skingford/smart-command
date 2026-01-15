@@ -1,32 +1,56 @@
 name: rm
-description: Remove files or directories
+description:
+  en: Remove files or directories
+  zh: 删除文件或目录
 flags:
   - long: force
     short: f
-    description: Ignore nonexistent files and arguments, never prompt
+    description:
+      en: Ignore nonexistent files and arguments, never prompt
+      zh: 忽略不存在的文件，从不提示
   - long: interactive
     short: i
-    description: Prompt before every removal
+    description:
+      en: Prompt before every removal
+      zh: 每次删除前提示确认
   - short: I
-    description: Prompt once before removing more than three files
+    description:
+      en: Prompt once before removing more than three files
+      zh: 删除超过三个文件时提示一次
   - long: interactive
-    description: Prompt according to WHEN (never, once, always)
+    description:
+      en: Prompt according to WHEN (never, once, always)
+      zh: 根据条件提示（never, once, always）
     takes_value: true
   - long: one-file-system
-    description: When removing recursively, skip directories on different filesystems
+    description:
+      en: When removing recursively, skip directories on different filesystems
+      zh: 递归删除时跳过不同文件系统的目录
   - long: no-preserve-root
-    description: Do not treat '/' specially
+    description:
+      en: Do not treat '/' specially
+      zh: 不特殊处理根目录 '/'
   - long: preserve-root
-    description: Do not remove '/' (default)
+    description:
+      en: Do not remove '/' (default)
+      zh: 不删除根目录 '/'（默认）
   - long: recursive
     short: R
-    description: Remove directories and their contents recursively
+    description:
+      en: Remove directories and their contents recursively
+      zh: 递归删除目录及其内容
   - short: r
-    description: Remove directories and their contents recursively
+    description:
+      en: Remove directories and their contents recursively
+      zh: 递归删除目录及其内容
   - long: dir
     short: d
-    description: Remove empty directories
+    description:
+      en: Remove empty directories
+      zh: 删除空目录
   - long: verbose
     short: v
-    description: Explain what is being done
+    description:
+      en: Explain what is being done
+      zh: 显示正在执行的操作
 is_path_completion: true

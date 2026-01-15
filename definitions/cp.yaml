@@ -1,89 +1,149 @@
 name: cp
-description: Copy files and directories
+description:
+  en: Copy files and directories
+  zh: 复制文件和目录
 flags:
   - long: archive
     short: a
-    description: Same as -dR --preserve=all
+    description:
+      en: Same as -dR --preserve=all
+      zh: 等同于 -dR --preserve=all
   - long: attributes-only
-    description: Don't copy file data, just attributes
+    description:
+      en: Don't copy file data, just attributes
+      zh: 只复制属性，不复制数据
   - long: backup
     short: b
-    description: Make backup of each existing destination file
+    description:
+      en: Make backup of each existing destination file
+      zh: 为每个已存在的目标文件创建备份
     takes_value: true
   - long: copy-contents
-    description: Copy contents of special files when recursive
+    description:
+      en: Copy contents of special files when recursive
+      zh: 递归时复制特殊文件的内容
   - long: no-dereference
     short: d
-    description: Never follow symbolic links in source
+    description:
+      en: Never follow symbolic links in source
+      zh: 不解析源文件中的符号链接
   - long: force
     short: f
-    description: Remove existing destination files
+    description:
+      en: Remove existing destination files
+      zh: 删除已存在的目标文件
   - long: interactive
     short: i
-    description: Prompt before overwrite
+    description:
+      en: Prompt before overwrite
+      zh: 覆盖前提示确认
   - long: follow-command-line-symlinks
     short: H
-    description: Follow command-line symbolic links
+    description:
+      en: Follow command-line symbolic links
+      zh: 解析命令行中的符号链接
   - long: link
     short: l
-    description: Hard link files instead of copying
+    description:
+      en: Hard link files instead of copying
+      zh: 创建硬链接而不是复制
   - long: dereference
     short: L
-    description: Always follow symbolic links
+    description:
+      en: Always follow symbolic links
+      zh: 总是解析符号链接
   - long: no-clobber
     short: n
-    description: Do not overwrite existing file
+    description:
+      en: Do not overwrite existing file
+      zh: 不覆盖已存在的文件
   - long: no-preserve
-    description: Don't preserve specified attributes
+    description:
+      en: Don't preserve specified attributes
+      zh: 不保留指定的属性
     takes_value: true
   - long: parents
-    description: Use full source file name under directory
+    description:
+      en: Use full source file name under directory
+      zh: 在目标目录下使用完整的源文件路径
   - short: P
-    description: Never follow symbolic links
+    description:
+      en: Never follow symbolic links
+      zh: 不解析符号链接
   - long: preserve
     short: p
-    description: Preserve mode, ownership, timestamps
+    description:
+      en: Preserve mode, ownership, timestamps
+      zh: 保留权限、所有者、时间戳
     takes_value: true
   - long: recursive
     short: R
-    description: Copy directories recursively
+    description:
+      en: Copy directories recursively
+      zh: 递归复制目录
   - short: r
-    description: Copy directories recursively
+    description:
+      en: Copy directories recursively
+      zh: 递归复制目录
   - long: reflink
-    description: Control clone/CoW copies
+    description:
+      en: Control clone/CoW copies
+      zh: 控制克隆/写时复制
     takes_value: true
   - long: remove-destination
-    description: Remove existing destination files before copying
+    description:
+      en: Remove existing destination files before copying
+      zh: 复制前删除已存在的目标文件
   - long: sparse
-    description: Control creation of sparse files
+    description:
+      en: Control creation of sparse files
+      zh: 控制稀疏文件的创建
     takes_value: true
   - long: strip-trailing-slashes
-    description: Remove trailing slashes from source arguments
+    description:
+      en: Remove trailing slashes from source arguments
+      zh: 移除源参数末尾的斜杠
   - long: symbolic-link
     short: s
-    description: Make symbolic links instead of copying
+    description:
+      en: Make symbolic links instead of copying
+      zh: 创建符号链接而不是复制
   - long: suffix
     short: S
-    description: Override the usual backup suffix
+    description:
+      en: Override the usual backup suffix
+      zh: 覆盖默认的备份后缀
     takes_value: true
   - long: target-directory
     short: t
-    description: Copy all source arguments into directory
+    description:
+      en: Copy all source arguments into directory
+      zh: 将所有源文件复制到指定目录
     takes_value: true
   - long: no-target-directory
     short: T
-    description: Treat destination as a normal file
+    description:
+      en: Treat destination as a normal file
+      zh: 将目标视为普通文件
   - long: update
     short: u
-    description: Copy only when source is newer
+    description:
+      en: Copy only when source is newer
+      zh: 仅当源文件较新时才复制
   - long: verbose
     short: v
-    description: Explain what is being done
+    description:
+      en: Explain what is being done
+      zh: 显示正在执行的操作
   - long: one-file-system
     short: x
-    description: Stay on this file system
+    description:
+      en: Stay on this file system
+      zh: 不跨越文件系统
   - long: context
     short: Z
-    description: Set SELinux security context of destination file
+    description:
+      en: Set SELinux security context of destination file
+      zh: 设置目标文件的 SELinux 安全上下文
     takes_value: true
 is_path_completion: true

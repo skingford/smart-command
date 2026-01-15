@@ -1,40 +1,66 @@
 name: tail
-description: Output the last part of files
+description:
+  en: Output the last part of files
+  zh: 输出文件的末尾部分
 flags:
   - long: bytes
     short: c
-    description: Output the last NUM bytes
+    description:
+      en: Output the last NUM bytes
+      zh: 输出最后 NUM 个字节
     takes_value: true
   - long: follow
     short: f
-    description: Output appended data as the file grows
+    description:
+      en: Output appended data as the file grows
+      zh: 随着文件增长输出追加的数据
   - short: F
-    description: Same as --follow=name --retry
+    description:
+      en: Same as --follow=name --retry
+      zh: 等同于 --follow=name --retry
   - long: lines
     short: n
-    description: Output the last NUM lines instead of 10
+    description:
+      en: Output the last NUM lines instead of 10
+      zh: 输出最后 NUM 行而不是默认的 10 行
     takes_value: true
   - long: max-unchanged-stats
-    description: Reopen file after N iterations with no change
+    description:
+      en: Reopen file after N iterations with no change
+      zh: 无变化 N 次后重新打开文件
     takes_value: true
   - long: pid
-    description: Terminate after process ID dies with -f
+    description:
+      en: Terminate after process ID dies with -f
+      zh: 与 -f 一起使用时，进程结束后终止
     takes_value: true
   - long: quiet
     short: q
-    description: Never output headers giving file names
+    description:
+      en: Never output headers giving file names
+      zh: 不输出文件名标题
   - long: silent
-    description: Never output headers giving file names
+    description:
+      en: Never output headers giving file names
+      zh: 不输出文件名标题
   - long: retry
-    description: Keep trying to open a file if it is inaccessible
+    description:
+      en: Keep trying to open a file if it is inaccessible
+      zh: 文件不可访问时持续尝试打开
   - long: sleep-interval
     short: s
-    description: Sleep for N seconds between iterations with -f
+    description:
+      en: Sleep for N seconds between iterations with -f
+      zh: 与 -f 一起使用时，每次迭代间隔 N 秒
     takes_value: true
   - long: verbose
     short: v
-    description: Always output headers giving file names
+    description:
+      en: Always output headers giving file names
+      zh: 始终输出文件名标题
   - long: zero-terminated
     short: z
-    description: Line delimiter is NUL, not newline
+    description:
+      en: Line delimiter is NUL, not newline
+      zh: 使用 NUL 作为行分隔符，而不是换行符
 is_path_completion: true

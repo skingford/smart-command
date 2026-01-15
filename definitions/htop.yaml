@@ -1,42 +1,68 @@
 name: htop
-description: Interactive process viewer
+description:
+  en: Interactive process viewer
+  zh: 交互式进程查看器
 flags:
   - long: delay
     short: d
-    description: Delay between updates in tenths of seconds
+    description:
+      en: Delay between updates in tenths of seconds
+      zh: 更新间隔（十分之一秒为单位）
     takes_value: true
   - long: filter
     short: F
-    description: Show only the commands matching the given filter
+    description:
+      en: Show only the commands matching the given filter
+      zh: 仅显示匹配过滤器的命令
     takes_value: true
   - long: highlight-changes
     short: H
-    description: Highlight new and old processes
+    description:
+      en: Highlight new and old processes
+      zh: 高亮显示新旧进程
     takes_value: true
   - long: no-color
     short: C
-    description: Start htop in monochrome mode
+    description:
+      en: Start htop in monochrome mode
+      zh: 以单色模式启动 htop
   - long: no-mouse
-    description: Disable mouse support
+    description:
+      en: Disable mouse support
+      zh: 禁用鼠标支持
   - long: no-unicode
-    description: Do not use unicode
+    description:
+      en: Do not use unicode
+      zh: 不使用 Unicode
   - long: pid
     short: p
-    description: Show only the given PIDs
+    description:
+      en: Show only the given PIDs
+      zh: 仅显示指定的进程 ID
     takes_value: true
   - long: sort-key
     short: s
-    description: Sort by this column
+    description:
+      en: Sort by this column
+      zh: 按此列排序
     takes_value: true
   - long: tree
     short: t
-    description: Show processes in tree view
+    description:
+      en: Show processes in tree view
+      zh: 以树形视图显示进程
   - long: user
     short: u
-    description: Show only processes of a given user
+    description:
+      en: Show only processes of a given user
+      zh: 仅显示指定用户的进程
     takes_value: true
   - long: readonly
-    description: Disable all system and process changing features
+    description:
+      en: Disable all system and process changing features
+      zh: 禁用所有系统和进程修改功能
   - long: version
     short: V
-    description: Output version information
+    description:
+      en: Output version information
+      zh: 输出版本信息

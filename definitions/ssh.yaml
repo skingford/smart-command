@@ -1,101 +1,181 @@
 name: ssh
-description: OpenSSH remote login client
+description:
+  en: OpenSSH remote login client
+  zh: OpenSSH 远程登录客户端
 flags:
   - long: verbose
     short: v
-    description: Verbose mode
+    description:
+      en: Verbose mode
+      zh: 详细模式
   - short: p
-    description: Port to connect to
+    description:
+      en: Port to connect to
+      zh: 连接端口
     takes_value: true
   - short: i
-    description: Identity file (private key)
+    description:
+      en: Identity file (private key)
+      zh: 身份文件（私钥）
     takes_value: true
   - short: l
-    description: Login name
+    description:
+      en: Login name
+      zh: 登录用户名
     takes_value: true
   - short: o
-    description: SSH option
+    description:
+      en: SSH option
+      zh: SSH 选项
     takes_value: true
   - short: F
-    description: Config file
+    description:
+      en: Config file
+      zh: 配置文件
     takes_value: true
   - short: N
-    description: Do not execute remote command
+    description:
+      en: Do not execute remote command
+      zh: 不执行远程命令
   - short: T
-    description: Disable pseudo-terminal allocation
+    description:
+      en: Disable pseudo-terminal allocation
+      zh: 禁用伪终端分配
   - short: t
-    description: Force pseudo-terminal allocation
+    description:
+      en: Force pseudo-terminal allocation
+      zh: 强制分配伪终端
   - short: f
-    description: Go to background before command execution
+    description:
+      en: Go to background before command execution
+      zh: 命令执行前转入后台
   - short: n
-    description: Redirect stdin from /dev/null
+    description:
+      en: Redirect stdin from /dev/null
+      zh: 从 /dev/null 重定向标准输入
   - short: q
-    description: Quiet mode
+    description:
+      en: Quiet mode
+      zh: 静默模式
   - short: C
-    description: Enable compression
+    description:
+      en: Enable compression
+      zh: 启用压缩
   - short: X
-    description: Enable X11 forwarding
+    description:
+      en: Enable X11 forwarding
+      zh: 启用 X11 转发
   - short: x
-    description: Disable X11 forwarding
+    description:
+      en: Disable X11 forwarding
+      zh: 禁用 X11 转发
   - short: A
-    description: Enable forwarding of authentication agent
+    description:
+      en: Enable forwarding of authentication agent
+      zh: 启用认证代理转发
   - short: a
-    description: Disable forwarding of authentication agent
+    description:
+      en: Disable forwarding of authentication agent
+      zh: 禁用认证代理转发
   - short: L
-    description: Local port forwarding (port:host:hostport)
+    description:
+      en: Local port forwarding (port:host:hostport)
+      zh: 本地端口转发（端口:主机:主机端口）
     takes_value: true
   - short: R
-    description: Remote port forwarding (port:host:hostport)
+    description:
+      en: Remote port forwarding (port:host:hostport)
+      zh: 远程端口转发（端口:主机:主机端口）
     takes_value: true
   - short: D
-    description: Dynamic port forwarding (SOCKS proxy)
+    description:
+      en: Dynamic port forwarding (SOCKS proxy)
+      zh: 动态端口转发（SOCKS 代理）
     takes_value: true
   - short: W
-    description: Forward stdin and stdout to host:port
+    description:
+      en: Forward stdin and stdout to host:port
+      zh: 将标准输入输出转发到主机:端口
     takes_value: true
   - short: J
-    description: Jump host
+    description:
+      en: Jump host
+      zh: 跳板主机
     takes_value: true
   - short: g
-    description: Allow remote hosts to connect to forwarded ports
+    description:
+      en: Allow remote hosts to connect to forwarded ports
+      zh: 允许远程主机连接到转发端口
   - short: K
-    description: Enable GSSAPI authentication
+    description:
+      en: Enable GSSAPI authentication
+      zh: 启用 GSSAPI 认证
   - short: k
-    description: Disable GSSAPI credential forwarding
+    description:
+      en: Disable GSSAPI credential forwarding
+      zh: 禁用 GSSAPI 凭证转发
   - short: Y
-    description: Enable trusted X11 forwarding
+    description:
+      en: Enable trusted X11 forwarding
+      zh: 启用可信 X11 转发
   - short: c
-    description: Cipher spec
+    description:
+      en: Cipher spec
+      zh: 加密算法规格
     takes_value: true
   - short: m
-    description: MAC spec
+    description:
+      en: MAC spec
+      zh: MAC 算法规格
     takes_value: true
   - short: e
-    description: Escape character
+    description:
+      en: Escape character
+      zh: 转义字符
     takes_value: true
   - short: w
-    description: Request tun device forwarding
+    description:
+      en: Request tun device forwarding
+      zh: 请求 tun 设备转发
     takes_value: true
   - short: O
-    description: Control multiplexed connection (check, forward, cancel, exit, stop)
+    description:
+      en: Control multiplexed connection (check, forward, cancel, exit, stop)
+      zh: 控制多路复用连接（check、forward、cancel、exit、stop）
     takes_value: true
   - short: S
-    description: Control socket path
+    description:
+      en: Control socket path
+      zh: 控制套接字路径
     takes_value: true
   - short: M
-    description: Place ssh client in master mode for connection sharing
+    description:
+      en: Place ssh client in master mode for connection sharing
+      zh: 将 SSH 客户端置于主模式以共享连接
   - short: B
-    description: Bind address for connection
+    description:
+      en: Bind address for connection
+      zh: 连接绑定地址
     takes_value: true
   - short: E
-    description: Log file
+    description:
+      en: Log file
+      zh: 日志文件
     takes_value: true
   - short: 1
-    description: Force protocol version 1
+    description:
+      en: Force protocol version 1
+      zh: 强制使用协议版本 1
   - short: 2
-    description: Force protocol version 2
+    description:
+      en: Force protocol version 2
+      zh: 强制使用协议版本 2
   - short: 4
-    description: Use IPv4 addresses only
+    description:
+      en: Use IPv4 addresses only
+      zh: 仅使用 IPv4 地址
   - short: 6
-    description: Use IPv6 addresses only
+    description:
+      en: Use IPv6 addresses only
+      zh: 仅使用 IPv6 地址
 is_path_completion: true

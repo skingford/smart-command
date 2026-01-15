@@ -1,18 +1,28 @@
 name: mkdir
-description: Create directories
+description:
+  en: Create directories
+  zh: 创建目录
 flags:
   - long: mode
     short: m
-    description: Set file mode (as in chmod)
+    description:
+      en: Set file mode (as in chmod)
+      zh: 设置目录权限（类似 chmod）
     takes_value: true
   - long: parents
     short: p
-    description: Make parent directories as needed, no error if existing
+    description:
+      en: Make parent directories as needed, no error if existing
+      zh: 按需创建父目录，已存在时不报错
   - long: verbose
     short: v
-    description: Print a message for each created directory
+    description:
+      en: Print a message for each created directory
+      zh: 为每个创建的目录打印信息
   - long: context
     short: Z
-    description: Set SELinux security context of each created directory
+    description:
+      en: Set SELinux security context of each created directory
+      zh: 设置每个创建目录的 SELinux 安全上下文
     takes_value: true
 is_path_completion: true

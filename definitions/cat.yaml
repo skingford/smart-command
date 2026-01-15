@@ -1,31 +1,53 @@
 name: cat
-description: Concatenate files and print on the standard output
+description:
+  en: Concatenate files and print on the standard output
+  zh: 连接文件并输出到标准输出
 flags:
   - long: show-all
     short: A
-    description: Equivalent to -vET
+    description:
+      en: Equivalent to -vET
+      zh: 等同于 -vET
   - long: number-nonblank
     short: b
-    description: Number nonempty output lines
+    description:
+      en: Number nonempty output lines
+      zh: 为非空行编号
   - short: e
-    description: Equivalent to -vE
+    description:
+      en: Equivalent to -vE
+      zh: 等同于 -vE
   - long: show-ends
     short: E
-    description: Display $ at end of each line
+    description:
+      en: Display $ at end of each line
+      zh: 在每行末尾显示 $
   - long: number
     short: n
-    description: Number all output lines
+    description:
+      en: Number all output lines
+      zh: 为所有行编号
   - long: squeeze-blank
     short: s
-    description: Suppress repeated empty output lines
+    description:
+      en: Suppress repeated empty output lines
+      zh: 压缩连续的空行
   - short: t
-    description: Equivalent to -vT
+    description:
+      en: Equivalent to -vT
+      zh: 等同于 -vT
   - long: show-tabs
     short: T
-    description: Display TAB characters as ^I
+    description:
+      en: Display TAB characters as ^I
+      zh: 将制表符显示为 ^I
   - short: u
-    description: (ignored)
+    description:
+      en: (ignored)
+      zh: （忽略）
   - long: show-nonprinting
     short: v
-    description: Use ^ and M- notation, except for LFD and TAB
+    description:
+      en: Use ^ and M- notation, except for LFD and TAB
+      zh: 使用 ^ 和 M- 标记，换行和制表符除外
 is_path_completion: true

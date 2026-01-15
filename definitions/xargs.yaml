@@ -1,67 +1,107 @@
 name: xargs
-description: Build and execute command lines from standard input
+description:
+  en: Build and execute command lines from standard input
+  zh: 从标准输入构建并执行命令行
 flags:
   - long: null
     short: "0"
-    description: Input items are terminated by null character
+    description:
+      en: Input items are terminated by null character
+      zh: 输入项以空字符结尾
   - long: arg-file
     short: a
-    description: Read items from file instead of standard input
+    description:
+      en: Read items from file instead of standard input
+      zh: 从文件而非标准输入读取项目
     takes_value: true
   - long: delimiter
     short: d
-    description: Input items are terminated by delimiter character
+    description:
+      en: Input items are terminated by delimiter character
+      zh: 输入项以指定分隔符结尾
     takes_value: true
   - long: eof
     short: E
-    description: Set logical EOF string
+    description:
+      en: Set logical EOF string
+      zh: 设置逻辑文件结束字符串
     takes_value: true
   - short: e
-    description: Set logical EOF string
+    description:
+      en: Set logical EOF string
+      zh: 设置逻辑文件结束字符串
     takes_value: true
   - long: replace
     short: I
-    description: Replace occurrences of replstr in the initial-arguments
+    description:
+      en: Replace occurrences of replstr in the initial-arguments
+      zh: 替换初始参数中的替换字符串
     takes_value: true
   - short: i
-    description: Replace {} in the initial-arguments
+    description:
+      en: Replace {} in the initial-arguments
+      zh: 替换初始参数中的 {}
     takes_value: true
   - long: max-lines
     short: L
-    description: Use at most max-lines nonblank input lines per command line
+    description:
+      en: Use at most max-lines nonblank input lines per command line
+      zh: 每个命令行最多使用指定数量的非空输入行
     takes_value: true
   - short: l
-    description: Use at most max-lines nonblank input lines per command line
+    description:
+      en: Use at most max-lines nonblank input lines per command line
+      zh: 每个命令行最多使用指定数量的非空输入行
     takes_value: true
   - long: max-args
     short: n
-    description: Use at most max-args arguments per command line
+    description:
+      en: Use at most max-args arguments per command line
+      zh: 每个命令行最多使用指定数量的参数
     takes_value: true
   - long: open-tty
     short: o
-    description: Reopen stdin as /dev/tty
+    description:
+      en: Reopen stdin as /dev/tty
+      zh: 将标准输入重新打开为 /dev/tty
   - long: interactive
     short: p
-    description: Prompt before executing each command line
+    description:
+      en: Prompt before executing each command line
+      zh: 执行每个命令行前提示确认
   - long: no-run-if-empty
     short: r
-    description: If stdin is empty, do not run the command
+    description:
+      en: If stdin is empty, do not run the command
+      zh: 如果标准输入为空，则不运行命令
   - long: max-chars
     short: s
-    description: Use at most max-chars per command line
+    description:
+      en: Use at most max-chars per command line
+      zh: 每个命令行最多使用指定数量的字符
     takes_value: true
   - long: verbose
     short: t
-    description: Print the command line before executing it
+    description:
+      en: Print the command line before executing it
+      zh: 执行前打印命令行
   - long: exit
     short: x
-    description: Exit if the size is exceeded
+    description:
+      en: Exit if the size is exceeded
+      zh: 如果超出大小限制则退出
   - long: max-procs
     short: P
-    description: Run up to max-procs processes at a time
+    description:
+      en: Run up to max-procs processes at a time
+      zh: 同时运行的最大进程数
     takes_value: true
   - long: process-slot-var
-    description: Set environment variable to slot number
+    description:
+      en: Set environment variable to slot number
+      zh: 将环境变量设置为槽位编号
     takes_value: true
   - long: show-limits
-    description: Show limits on the command-line length
+    description:
+      en: Show limits on the command-line length
+      zh: 显示命令行长度限制

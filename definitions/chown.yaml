@@ -1,39 +1,69 @@
 name: chown
-description: Change file owner and group
+description:
+  en: Change file owner and group
+  zh: 修改文件所有者和组
 flags:
   - long: recursive
     short: R
-    description: Operate on files and directories recursively
+    description:
+      en: Operate on files and directories recursively
+      zh: 递归操作文件和目录
   - long: changes
     short: c
-    description: Report only when a change is made
+    description:
+      en: Report only when a change is made
+      zh: 仅在发生更改时报告
   - long: silent
     short: f
-    description: Suppress most error messages
+    description:
+      en: Suppress most error messages
+      zh: 抑制大部分错误消息
   - long: quiet
-    description: Suppress most error messages
+    description:
+      en: Suppress most error messages
+      zh: 抑制大部分错误消息
   - long: verbose
     short: v
-    description: Output for every file processed
+    description:
+      en: Output for every file processed
+      zh: 为每个处理的文件输出信息
   - long: dereference
-    description: Affect the referent of each symbolic link
+    description:
+      en: Affect the referent of each symbolic link
+      zh: 影响符号链接指向的文件
   - long: no-dereference
     short: h
-    description: Affect symbolic links instead of referenced file
+    description:
+      en: Affect symbolic links instead of referenced file
+      zh: 影响符号链接本身而非引用的文件
   - long: from
-    description: Change owner/group only if they currently match
+    description:
+      en: Change owner/group only if they currently match
+      zh: 仅当当前所有者/组匹配时才更改
     takes_value: true
   - long: no-preserve-root
-    description: Do not treat '/' specially
+    description:
+      en: Do not treat '/' specially
+      zh: 不特殊处理根目录 '/'
   - long: preserve-root
-    description: Fail to operate recursively on '/'
+    description:
+      en: Fail to operate recursively on '/'
+      zh: 拒绝递归操作根目录 '/'
   - long: reference
-    description: Use reference file's owner and group
+    description:
+      en: Use reference file's owner and group
+      zh: 使用参考文件的所有者和组
     takes_value: true
   - short: H
-    description: If a command line argument is a symlink, traverse it
+    description:
+      en: If a command line argument is a symlink, traverse it
+      zh: 如果命令行参数是符号链接则解析它
   - short: L
-    description: Traverse every symbolic link
+    description:
+      en: Traverse every symbolic link
+      zh: 解析所有符号链接
   - short: P
-    description: Do not traverse any symbolic links (default)
+    description:
+      en: Do not traverse any symbolic links (default)
+      zh: 不解析任何符号链接（默认）
 is_path_completion: true

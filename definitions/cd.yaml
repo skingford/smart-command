@@ -1,3 +1,5 @@
 name: cd
-description: Change the shell working directory
+description:
+  en: Change the shell working directory
+  zh: 切换工作目录
 is_path_completion: true

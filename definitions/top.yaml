@@ -1,46 +1,82 @@
 name: top
-description: Display Linux processes
+description:
+  en: Display Linux processes
+  zh: 显示 Linux 进程
 flags:
   - short: b
-    description: Batch mode operation
+    description:
+      en: Batch mode operation
+      zh: 批处理模式运行
   - short: c
-    description: Command-line/Program-name toggle
+    description:
+      en: Command-line/Program-name toggle
+      zh: 命令行/程序名切换
   - short: d
-    description: Delay time interval (seconds)
+    description:
+      en: Delay time interval (seconds)
+      zh: 延迟时间间隔（秒）
     takes_value: true
   - short: E
-    description: Summary area memory scale (k, m, g, t, p, e)
+    description:
+      en: Summary area memory scale (k, m, g, t, p, e)
+      zh: 摘要区内存单位（k, m, g, t, p, e）
     takes_value: true
   - short: e
-    description: Task area memory scale (k, m, g, t, p, e)
+    description:
+      en: Task area memory scale (k, m, g, t, p, e)
+      zh: 任务区内存单位（k, m, g, t, p, e）
     takes_value: true
   - short: H
-    description: Threads mode operation
+    description:
+      en: Threads mode operation
+      zh: 线程模式运行
   - short: i
-    description: Idle-process toggle
+    description:
+      en: Idle-process toggle
+      zh: 空闲进程切换
   - short: n
-    description: Number of iterations
+    description:
+      en: Number of iterations
+      zh: 迭代次数
     takes_value: true
   - short: o
-    description: Override-sort-field
+    description:
+      en: Override-sort-field
+      zh: 覆盖排序字段
     takes_value: true
   - short: O
-    description: Output-field-names
+    description:
+      en: Output-field-names
+      zh: 输出字段名
   - short: p
-    description: Monitor-PIDs mode
+    description:
+      en: Monitor-PIDs mode
+      zh: 监控指定 PID 模式
     takes_value: true
   - short: s
-    description: Secure mode operation
+    description:
+      en: Secure mode operation
+      zh: 安全模式运行
   - short: S
-    description: Cumulative-time toggle
+    description:
+      en: Cumulative-time toggle
+      zh: 累计时间切换
   - short: u
-    description: Monitor only user
+    description:
+      en: Monitor only user
+      zh: 只监控指定用户
     takes_value: true
   - short: U
-    description: Monitor only user
+    description:
+      en: Monitor only user
+      zh: 只监控指定用户
     takes_value: true
   - short: w
-    description: Output width
+    description:
+      en: Output width
+      zh: 输出宽度
     takes_value: true
   - short: "1"
-    description: Single/Separate CPU states toggle
+    description:
+      en: Single/Separate CPU states toggle
+      zh: 单一/分离 CPU 状态切换

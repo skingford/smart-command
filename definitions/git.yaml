@@ -9,391 +9,681 @@ subcommands:
       zh: 创建一个空的 Git 仓库
     flags:
       - long: bare
-        description: Create a bare repository
+        description:
+          en: Create a bare repository
+          zh: 创建一个裸仓库
   - name: clone
-    description: Clone a repository into a new directory
+    description:
+      en: Clone a repository into a new directory
+      zh: 克隆仓库到新目录
     flags:
       - long: depth
-        description: Create a shallow clone with limited history
+        description:
+          en: Create a shallow clone with limited history
+          zh: 创建一个有限历史记录的浅克隆
         takes_value: true
       - long: branch
         short: b
-        description: Clone specific branch
+        description:
+          en: Clone specific branch
+          zh: 克隆指定分支
         takes_value: true
       - long: recursive
-        description: Initialize submodules in the clone
+        description:
+          en: Initialize submodules in the clone
+          zh: 在克隆中初始化子模块
   - name: add
-    description: Add file contents to the index
+    description:
+      en: Add file contents to the index
+      zh: 将文件内容添加到索引
     flags:
       - long: all
         short: A
-        description: Add all files
+        description:
+          en: Add all files
+          zh: 添加所有文件
       - long: patch
         short: p
-        description: Interactively choose hunks to stage
+        description:
+          en: Interactively choose hunks to stage
+          zh: 交互式选择要暂存的代码块
       - long: update
         short: u
-        description: Update tracked files
+        description:
+          en: Update tracked files
+          zh: 更新已跟踪的文件
     is_path_completion: true
   - name: commit
-    description: Record changes to the repository
+    description:
+      en: Record changes to the repository
+      zh: 记录对仓库的更改
     flags:
       - long: message
         short: m
-        description: Commit message
+        description:
+          en: Commit message
+          zh: 提交信息
         takes_value: true
       - long: all
         short: a
-        description: Stage all modified and deleted paths
+        description:
+          en: Stage all modified and deleted paths
+          zh: 暂存所有修改和删除的文件
       - long: amend
-        description: Amend the previous commit
+        description:
+          en: Amend the previous commit
+          zh: 修改上一次提交
       - long: no-edit
-        description: Use previous commit message without editing
+        description:
+          en: Use previous commit message without editing
+          zh: 使用上一次提交信息而不编辑
       - long: allow-empty
-        description: Allow empty commit
+        description:
+          en: Allow empty commit
+          zh: 允许空提交
   - name: status
-    description: Show the working tree status
+    description:
+      en: Show the working tree status
+      zh: 显示工作区状态
     flags:
       - long: short
         short: s
-        description: Give output in short format
+        description:
+          en: Give output in short format
+          zh: 以简短格式输出
       - long: branch
         short: b
-        description: Show branch information
+        description:
+          en: Show branch information
+          zh: 显示分支信息
   - name: diff
-    description: Show changes between commits, commit and working tree, etc
+    description:
+      en: Show changes between commits, commit and working tree, etc
+      zh: 显示提交之间、提交与工作区之间的差异等
     flags:
       - long: staged
-        description: Show staged changes
+        description:
+          en: Show staged changes
+          zh: 显示已暂存的更改
       - long: cached
-        description: Alias for --staged
+        description:
+          en: Alias for --staged
+          zh: --staged 的别名
       - long: stat
-        description: Show diffstat
+        description:
+          en: Show diffstat
+          zh: 显示差异统计
       - long: name-only
-        description: Show only names of changed files
+        description:
+          en: Show only names of changed files
+          zh: 仅显示更改文件的名称
     is_path_completion: true
   - name: log
-    description: Show commit logs
+    description:
+      en: Show commit logs
+      zh: 显示提交日志
     flags:
       - long: oneline
-        description: One line per commit
+        description:
+          en: One line per commit
+          zh: 每个提交显示一行
       - long: graph
-        description: Draw a text-based graph of commits
+        description:
+          en: Draw a text-based graph of commits
+          zh: 绘制基于文本的提交图
       - long: all
-        description: Show all refs
+        description:
+          en: Show all refs
+          zh: 显示所有引用
       - long: author
-        description: Filter by author
+        description:
+          en: Filter by author
+          zh: 按作者过滤
         takes_value: true
       - long: since
-        description: Show commits after date
+        description:
+          en: Show commits after date
+          zh: 显示指定日期之后的提交
         takes_value: true
       - long: until
-        description: Show commits before date
+        description:
+          en: Show commits before date
+          zh: 显示指定日期之前的提交
         takes_value: true
       - short: n
-        description: Limit number of commits
+        description:
+          en: Limit number of commits
+          zh: 限制提交数量
         takes_value: true
   - name: show
-    description: Show various types of objects
+    description:
+      en: Show various types of objects
+      zh: 显示各种类型的对象
     flags:
       - long: stat
-        description: Show diffstat
+        description:
+          en: Show diffstat
+          zh: 显示差异统计
       - long: name-only
-        description: Show only names of changed files
+        description:
+          en: Show only names of changed files
+          zh: 仅显示更改文件的名称
   - name: checkout
-    description: Switch branches or restore working tree files
+    description:
+      en: Switch branches or restore working tree files
+      zh: 切换分支或恢复工作区文件
     flags:
       - long: branch
         short: b
-        description: Create and checkout a new branch
+        description:
+          en: Create and checkout a new branch
+          zh: 创建并切换到新分支
       - long: force
         short: f
-        description: Force checkout
+        description:
+          en: Force checkout
+          zh: 强制切换
       - long: track
         short: t
-        description: Set up tracking mode
+        description:
+          en: Set up tracking mode
+          zh: 设置跟踪模式
     is_path_completion: true
   - name: switch
-    description: Switch branches
+    description:
+      en: Switch branches
+      zh: 切换分支
     flags:
       - long: create
         short: c
-        description: Create a new branch
+        description:
+          en: Create a new branch
+          zh: 创建新分支
       - long: detach
         short: d
-        description: Detach HEAD at named commit
+        description:
+          en: Detach HEAD at named commit
+          zh: 在指定提交处分离 HEAD
   - name: branch
-    description: List, create, or delete branches
+    description:
+      en: List, create, or delete branches
+      zh: 列出、创建或删除分支
     flags:
       - long: delete
         short: d
-        description: Delete a branch
+        description:
+          en: Delete a branch
+          zh: 删除分支
       - long: force
         short: D
-        description: Force delete a branch
+        description:
+          en: Force delete a branch
+          zh: 强制删除分支
       - long: move
         short: m
-        description: Move/rename a branch
+        description:
+          en: Move/rename a branch
+          zh: 移动/重命名分支
       - long: all
         short: a
-        description: List both remote and local branches
+        description:
+          en: List both remote and local branches
+          zh: 列出远程和本地分支
       - long: remote
         short: r
-        description: List remote branches
+        description:
+          en: List remote branches
+          zh: 列出远程分支
       - long: verbose
         short: v
-        description: Show sha1 and commit subject line
+        description:
+          en: Show sha1 and commit subject line
+          zh: 显示 sha1 和提交主题行
   - name: merge
-    description: Join two or more development histories together
+    description:
+      en: Join two or more development histories together
+      zh: 合并两个或多个开发历史
     flags:
       - long: no-ff
-        description: Create a merge commit even when fast-forward is possible
+        description:
+          en: Create a merge commit even when fast-forward is possible
+          zh: 即使可以快进也创建合并提交
       - long: squash
-        description: Squash commits into a single commit
+        description:
+          en: Squash commits into a single commit
+          zh: 将提交压缩为单个提交
       - long: abort
-        description: Abort the current merge
+        description:
+          en: Abort the current merge
+          zh: 中止当前合并
       - long: continue
-        description: Continue the current merge
+        description:
+          en: Continue the current merge
+          zh: 继续当前合并
   - name: rebase
-    description: Reapply commits on top of another base tip
+    description:
+      en: Reapply commits on top of another base tip
+      zh: 在另一个基础提交之上重新应用提交
     flags:
       - long: interactive
         short: i
-        description: Interactive rebase
+        description:
+          en: Interactive rebase
+          zh: 交互式变基
       - long: onto
-        description: Rebase onto a given branch
+        description:
+          en: Rebase onto a given branch
+          zh: 变基到指定分支
         takes_value: true
       - long: abort
-        description: Abort the current rebase
+        description:
+          en: Abort the current rebase
+          zh: 中止当前变基
       - long: continue
-        description: Continue the current rebase
+        description:
+          en: Continue the current rebase
+          zh: 继续当前变基
       - long: skip
-        description: Skip current patch
+        description:
+          en: Skip current patch
+          zh: 跳过当前补丁
   - name: reset
-    description: Reset current HEAD to the specified state
+    description:
+      en: Reset current HEAD to the specified state
+      zh: 重置当前 HEAD 到指定状态
     flags:
       - long: soft
-        description: Keep changes staged
+        description:
+          en: Keep changes staged
+          zh: 保留已暂存的更改
       - long: mixed
-        description: Keep changes unstaged (default)
+        description:
+          en: Keep changes unstaged (default)
+          zh: 保留未暂存的更改（默认）
       - long: hard
-        description: Discard all changes
+        description:
+          en: Discard all changes
+          zh: 丢弃所有更改
     is_path_completion: true
   - name: revert
-    description: Revert some existing commits
+    description:
+      en: Revert some existing commits
+      zh: 撤销一些现有提交
     flags:
       - long: no-commit
         short: n
-        description: Revert without committing
+        description:
+          en: Revert without committing
+          zh: 撤销但不提交
       - long: mainline
         short: m
-        description: Parent number for merge commit
+        description:
+          en: Parent number for merge commit
+          zh: 合并提交的父编号
         takes_value: true
   - name: stash
-    description: Stash the changes in a dirty working directory away
+    description:
+      en: Stash the changes in a dirty working directory away
+      zh: 将脏工作目录中的更改储藏起来
     subcommands:
       - name: push
-        description: Save local modifications to a new stash
+        description:
+          en: Save local modifications to a new stash
+          zh: 将本地修改保存到新的储藏
         flags:
           - long: message
             short: m
-            description: Stash message
+            description:
+              en: Stash message
+              zh: 储藏信息
             takes_value: true
           - long: keep-index
             short: k
-            description: Keep staged changes
+            description:
+              en: Keep staged changes
+              zh: 保留已暂存的更改
       - name: pop
-        description: Remove and apply a single stash
+        description:
+          en: Remove and apply a single stash
+          zh: 移除并应用单个储藏
       - name: apply
-        description: Apply a stash without removing it
+        description:
+          en: Apply a stash without removing it
+          zh: 应用储藏但不移除
       - name: list
-        description: List stashes
+        description:
+          en: List stashes
+          zh: 列出储藏
       - name: drop
-        description: Remove a single stash
+        description:
+          en: Remove a single stash
+          zh: 移除单个储藏
       - name: clear
-        description: Remove all stashes
+        description:
+          en: Remove all stashes
+          zh: 移除所有储藏
       - name: show
-        description: Show changes in a stash
+        description:
+          en: Show changes in a stash
+          zh: 显示储藏中的更改
   - name: push
-    description: Update remote refs along with associated objects
+    description:
+      en: Update remote refs along with associated objects
+      zh: 更新远程引用及关联对象
     flags:
       - long: force
         short: f
-        description: Force push
+        description:
+          en: Force push
+          zh: 强制推送
       - long: force-with-lease
-        description: Safer force push
+        description:
+          en: Safer force push
+          zh: 更安全的强制推送
       - long: set-upstream
         short: u
-        description: Set upstream for the branch
+        description:
+          en: Set upstream for the branch
+          zh: 为分支设置上游
       - long: tags
-        description: Push all tags
+        description:
+          en: Push all tags
+          zh: 推送所有标签
       - long: delete
         short: d
-        description: Delete remote branch
+        description:
+          en: Delete remote branch
+          zh: 删除远程分支
       - long: all
-        description: Push all branches
+        description:
+          en: Push all branches
+          zh: 推送所有分支
   - name: pull
-    description: Fetch from and integrate with another repository
+    description:
+      en: Fetch from and integrate with another repository
+      zh: 从另一个仓库获取并合并
     flags:
       - long: rebase
         short: r
-        description: Rebase instead of merge
+        description:
+          en: Rebase instead of merge
+          zh: 使用变基而不是合并
       - long: no-rebase
-        description: Merge instead of rebase
+        description:
+          en: Merge instead of rebase
+          zh: 使用合并而不是变基
       - long: force
         short: f
-        description: Force pull
+        description:
+          en: Force pull
+          zh: 强制拉取
   - name: fetch
-    description: Download objects and refs from another repository
+    description:
+      en: Download objects and refs from another repository
+      zh: 从另一个仓库下载对象和引用
     flags:
       - long: all
-        description: Fetch all remotes
+        description:
+          en: Fetch all remotes
+          zh: 获取所有远程仓库
       - long: prune
         short: p
-        description: Remove remote-tracking references that no longer exist
+        description:
+          en: Remove remote-tracking references that no longer exist
+          zh: 移除不再存在的远程跟踪引用
       - long: tags
         short: t
-        description: Fetch all tags
+        description:
+          en: Fetch all tags
+          zh: 获取所有标签
   - name: remote
-    description: Manage set of tracked repositories
+    description:
+      en: Manage set of tracked repositories
+      zh: 管理跟踪的仓库集合
     subcommands:
       - name: add
-        description: Add a new remote
+        description:
+          en: Add a new remote
+          zh: 添加新的远程仓库
       - name: remove
-        description: Remove a remote
+        description:
+          en: Remove a remote
+          zh: 移除远程仓库
       - name: rename
-        description: Rename a remote
+        description:
+          en: Rename a remote
+          zh: 重命名远程仓库
       - name: show
-        description: Show information about a remote
+        description:
+          en: Show information about a remote
+          zh: 显示远程仓库的信息
       - name: prune
-        description: Remove stale remote-tracking branches
+        description:
+          en: Remove stale remote-tracking branches
+          zh: 移除过时的远程跟踪分支
       - name: set-url
-        description: Change URL for a remote
+        description:
+          en: Change URL for a remote
+          zh: 更改远程仓库的 URL
     flags:
       - long: verbose
         short: v
-        description: Be verbose
+        description:
+          en: Be verbose
+          zh: 显示详细信息
   - name: tag
-    description: Create, list, delete or verify tags
+    description:
+      en: Create, list, delete or verify tags
+      zh: 创建、列出、删除或验证标签
     flags:
       - long: annotate
         short: a
-        description: Make an annotated tag
+        description:
+          en: Make an annotated tag
+          zh: 创建带注释的标签
       - long: message
         short: m
-        description: Tag message
+        description:
+          en: Tag message
+          zh: 标签信息
         takes_value: true
       - long: delete
         short: d
-        description: Delete tags
+        description:
+          en: Delete tags
+          zh: 删除标签
       - long: list
         short: l
-        description: List tags
+        description:
+          en: List tags
+          zh: 列出标签
       - long: force
         short: f
-        description: Replace existing tag
+        description:
+          en: Replace existing tag
+          zh: 替换现有标签
   - name: cherry-pick
-    description: Apply the changes introduced by some existing commits
+    description:
+      en: Apply the changes introduced by some existing commits
+      zh: 应用某些现有提交引入的更改
     flags:
       - long: no-commit
         short: n
-        description: Apply changes without committing
+        description:
+          en: Apply changes without committing
+          zh: 应用更改但不提交
       - long: edit
         short: e
-        description: Edit the commit message
+        description:
+          en: Edit the commit message
+          zh: 编辑提交信息
       - long: abort
-        description: Abort the current operation
+        description:
+          en: Abort the current operation
+          zh: 中止当前操作
       - long: continue
-        description: Continue the current operation
+        description:
+          en: Continue the current operation
+          zh: 继续当前操作
   - name: clean
-    description: Remove untracked files from the working tree
+    description:
+      en: Remove untracked files from the working tree
+      zh: 从工作区移除未跟踪的文件
     flags:
       - long: force
         short: f
-        description: Force clean
+        description:
+          en: Force clean
+          zh: 强制清理
       - long: dry-run
         short: n
-        description: Show what would be done
+        description:
+          en: Show what would be done
+          zh: 显示将要执行的操作
       - long: directories
         short: d
-        description: Remove untracked directories
+        description:
+          en: Remove untracked directories
+          zh: 移除未跟踪的目录
       - long: ignored
         short: x
-        description: Remove ignored files as well
+        description:
+          en: Remove ignored files as well
+          zh: 同时移除被忽略的文件
   - name: bisect
-    description: Use binary search to find the commit that introduced a bug
+    description:
+      en: Use binary search to find the commit that introduced a bug
+      zh: 使用二分搜索找出引入错误的提交
     subcommands:
       - name: start
-        description: Start bisecting
+        description:
+          en: Start bisecting
+          zh: 开始二分搜索
       - name: good
-        description: Mark commit as good
+        description:
+          en: Mark commit as good
+          zh: 标记提交为正常
       - name: bad
-        description: Mark commit as bad
+        description:
+          en: Mark commit as bad
+          zh: 标记提交为有问题
       - name: reset
-        description: Finish bisecting
+        description:
+          en: Finish bisecting
+          zh: 结束二分搜索
       - name: skip
-        description: Skip current commit
+        description:
+          en: Skip current commit
+          zh: 跳过当前提交
   - name: blame
-    description: Show what revision and author last modified each line
+    description:
+      en: Show what revision and author last modified each line
+      zh: 显示每行最后修改的版本和作者
     flags:
       - long: line-porcelain
         short: L
-        description: Show in a format designed for machine consumption
+        description:
+          en: Show in a format designed for machine consumption
+          zh: 以机器可读的格式显示
     is_path_completion: true
   - name: restore
-    description: Restore working tree files
+    description:
+      en: Restore working tree files
+      zh: 恢复工作区文件
     flags:
       - long: staged
         short: S
-        description: Restore staged content
+        description:
+          en: Restore staged content
+          zh: 恢复已暂存的内容
       - long: worktree
         short: W
-        description: Restore working tree
+        description:
+          en: Restore working tree
+          zh: 恢复工作区
       - long: source
         short: s
-        description: Restore from source
+        description:
+          en: Restore from source
+          zh: 从源恢复
         takes_value: true
     is_path_completion: true
   - name: config
-    description: Get and set repository or global options
+    description:
+      en: Get and set repository or global options
+      zh: 获取和设置仓库或全局选项
     flags:
       - long: global
-        description: Use global config file
+        description:
+          en: Use global config file
+          zh: 使用全局配置文件
       - long: local
-        description: Use repository config file
+        description:
+          en: Use repository config file
+          zh: 使用仓库配置文件
       - long: list
         short: l
-        description: List all variables
+        description:
+          en: List all variables
+          zh: 列出所有变量
       - long: edit
         short: e
-        description: Open config in editor
+        description:
+          en: Open config in editor
+          zh: 在编辑器中打开配置
   - name: submodule
-    description: Initialize, update or inspect submodules
+    description:
+      en: Initialize, update or inspect submodules
+      zh: 初始化、更新或检查子模块
     subcommands:
       - name: add
-        description: Add a new submodule
+        description:
+          en: Add a new submodule
+          zh: 添加新子模块
       - name: init
-        description: Initialize submodules
+        description:
+          en: Initialize submodules
+          zh: 初始化子模块
       - name: update
-        description: Update submodules
+        description:
+          en: Update submodules
+          zh: 更新子模块
         flags:
           - long: init
-            description: Initialize submodules if needed
+            description:
+              en: Initialize submodules if needed
+              zh: 如果需要则初始化子模块
           - long: recursive
-            description: Update nested submodules
+            description:
+              en: Update nested submodules
+              zh: 更新嵌套的子模块
       - name: status
-        description: Show status of submodules
+        description:
+          en: Show status of submodules
+          zh: 显示子模块状态
       - name: foreach
-        description: Run command in each submodule
+        description:
+          en: Run command in each submodule
+          zh: 在每个子模块中运行命令
   - name: worktree
-    description: Manage multiple working trees
+    description:
+      en: Manage multiple working trees
+      zh: 管理多个工作区
     subcommands:
       - name: add
-        description: Create a new working tree
+        description:
+          en: Create a new working tree
+          zh: 创建新工作区
         is_path_completion: true
       - name: list
-        description: List working trees
+        description:
+          en: List working trees
+          zh: 列出工作区
       - name: remove
-        description: Remove a working tree
+        description:
+          en: Remove a working tree
+          zh: 移除工作区
       - name: prune
-        description: Prune working tree information
+        description:
+          en: Prune working tree information
+          zh: 清理工作区信息

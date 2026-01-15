@@ -1,183 +1,323 @@
 name: find
-description: Search for files in a directory hierarchy
+description:
+  en: Search for files in a directory hierarchy
+  zh: 在目录层次结构中搜索文件
 flags:
   - long: name
-    description: Match filename (case sensitive)
+    description:
+      en: Match filename (case sensitive)
+      zh: 匹配文件名（区分大小写）
     takes_value: true
   - long: iname
-    description: Match filename (case insensitive)
+    description:
+      en: Match filename (case insensitive)
+      zh: 匹配文件名（不区分大小写）
     takes_value: true
   - long: path
-    description: Match path
+    description:
+      en: Match path
+      zh: 匹配路径
     takes_value: true
   - long: ipath
-    description: Match path (case insensitive)
+    description:
+      en: Match path (case insensitive)
+      zh: 匹配路径（不区分大小写）
     takes_value: true
   - long: regex
-    description: Match path using regex
+    description:
+      en: Match path using regex
+      zh: 使用正则表达式匹配路径
     takes_value: true
   - long: iregex
-    description: Match path using regex (case insensitive)
+    description:
+      en: Match path using regex (case insensitive)
+      zh: 使用正则表达式匹配路径（不区分大小写）
     takes_value: true
   - long: type
-    description: File type (f=file, d=dir, l=link, b=block, c=char, p=pipe, s=socket)
+    description:
+      en: File type (f=file, d=dir, l=link, b=block, c=char, p=pipe, s=socket)
+      zh: 文件类型（f=文件, d=目录, l=链接, b=块设备, c=字符设备, p=管道, s=套接字）
     takes_value: true
   - long: xtype
-    description: Type for symbolic link target
+    description:
+      en: Type for symbolic link target
+      zh: 符号链接目标的类型
     takes_value: true
   - long: size
-    description: File size (+N=larger, -N=smaller, Nc/k/M/G)
+    description:
+      en: File size (+N=larger, -N=smaller, Nc/k/M/G)
+      zh: 文件大小（+N=大于, -N=小于, Nc/k/M/G）
     takes_value: true
   - long: empty
-    description: Match empty files or directories
+    description:
+      en: Match empty files or directories
+      zh: 匹配空文件或空目录
   - long: newer
-    description: Match files newer than reference
+    description:
+      en: Match files newer than reference
+      zh: 匹配比参考文件更新的文件
     takes_value: true
   - long: newermt
-    description: Match files newer than timestamp
+    description:
+      en: Match files newer than timestamp
+      zh: 匹配比指定时间戳更新的文件
     takes_value: true
   - long: mtime
-    description: File modified time in days (+N/-N/N)
+    description:
+      en: File modified time in days (+N/-N/N)
+      zh: 文件修改时间（天）（+N/-N/N）
     takes_value: true
   - long: mmin
-    description: File modified time in minutes (+N/-N/N)
+    description:
+      en: File modified time in minutes (+N/-N/N)
+      zh: 文件修改时间（分钟）（+N/-N/N）
     takes_value: true
   - long: atime
-    description: File access time in days (+N/-N/N)
+    description:
+      en: File access time in days (+N/-N/N)
+      zh: 文件访问时间（天）（+N/-N/N）
     takes_value: true
   - long: amin
-    description: File access time in minutes (+N/-N/N)
+    description:
+      en: File access time in minutes (+N/-N/N)
+      zh: 文件访问时间（分钟）（+N/-N/N）
     takes_value: true
   - long: ctime
-    description: File status change time in days (+N/-N/N)
+    description:
+      en: File status change time in days (+N/-N/N)
+      zh: 文件状态变更时间（天）（+N/-N/N）
     takes_value: true
   - long: cmin
-    description: File status change time in minutes (+N/-N/N)
+    description:
+      en: File status change time in minutes (+N/-N/N)
+      zh: 文件状态变更时间（分钟）（+N/-N/N）
     takes_value: true
   - long: user
-    description: Match by owner username
+    description:
+      en: Match by owner username
+      zh: 按所有者用户名匹配
     takes_value: true
   - long: uid
-    description: Match by owner UID
+    description:
+      en: Match by owner UID
+      zh: 按所有者UID匹配
     takes_value: true
   - long: group
-    description: Match by group name
+    description:
+      en: Match by group name
+      zh: 按组名匹配
     takes_value: true
   - long: gid
-    description: Match by group GID
+    description:
+      en: Match by group GID
+      zh: 按组GID匹配
     takes_value: true
   - long: nouser
-    description: Match files with no known user
+    description:
+      en: Match files with no known user
+      zh: 匹配没有已知用户的文件
   - long: nogroup
-    description: Match files with no known group
+    description:
+      en: Match files with no known group
+      zh: 匹配没有已知组的文件
   - long: perm
-    description: Match by permissions (mode, -mode, /mode)
+    description:
+      en: Match by permissions (mode, -mode, /mode)
+      zh: 按权限匹配（mode, -mode, /mode）
     takes_value: true
   - long: readable
-    description: Match readable files
+    description:
+      en: Match readable files
+      zh: 匹配可读文件
   - long: writable
-    description: Match writable files
+    description:
+      en: Match writable files
+      zh: 匹配可写文件
   - long: executable
-    description: Match executable files
+    description:
+      en: Match executable files
+      zh: 匹配可执行文件
   - long: maxdepth
-    description: Maximum search depth
+    description:
+      en: Maximum search depth
+      zh: 最大搜索深度
     takes_value: true
   - long: mindepth
-    description: Minimum search depth
+    description:
+      en: Minimum search depth
+      zh: 最小搜索深度
     takes_value: true
   - long: depth
-    description: Process directory contents before directory
+    description:
+      en: Process directory contents before directory
+      zh: 先处理目录内容再处理目录本身
   - short: d
-    description: Process directory contents before directory
+    description:
+      en: Process directory contents before directory
+      zh: 先处理目录内容再处理目录本身
   - long: mount
-    description: Do not descend into other filesystems
+    description:
+      en: Do not descend into other filesystems
+      zh: 不进入其他文件系统
   - long: xdev
-    description: Do not descend into other filesystems
+    description:
+      en: Do not descend into other filesystems
+      zh: 不进入其他文件系统
   - short: x
-    description: Do not descend into other filesystems
+    description:
+      en: Do not descend into other filesystems
+      zh: 不进入其他文件系统
   - long: prune
-    description: Do not descend into matched directory
+    description:
+      en: Do not descend into matched directory
+      zh: 不进入匹配的目录
   - long: ignore_readdir_race
-    description: Ignore errors from racing with file removal
+    description:
+      en: Ignore errors from racing with file removal
+      zh: 忽略与文件删除竞争产生的错误
   - long: noignore_readdir_race
-    description: Do not ignore errors from racing with file removal
+    description:
+      en: Do not ignore errors from racing with file removal
+      zh: 不忽略与文件删除竞争产生的错误
   - long: follow
     short: L
-    description: Follow symbolic links
+    description:
+      en: Follow symbolic links
+      zh: 跟随符号链接
   - short: H
-    description: Follow symbolic links on command line only
+    description:
+      en: Follow symbolic links on command line only
+      zh: 仅跟随命令行上的符号链接
   - short: P
-    description: Never follow symbolic links (default)
+    description:
+      en: Never follow symbolic links (default)
+      zh: 从不跟随符号链接（默认）
   - long: print
-    description: Print matched file path
+    description:
+      en: Print matched file path
+      zh: 打印匹配的文件路径
   - long: print0
-    description: Print matched file path with null terminator
+    description:
+      en: Print matched file path with null terminator
+      zh: 打印匹配的文件路径（以空字符结尾）
   - long: fprint
-    description: Print matched file path to file
+    description:
+      en: Print matched file path to file
+      zh: 将匹配的文件路径打印到文件
     takes_value: true
   - long: fprint0
-    description: Print matched file path to file with null terminator
+    description:
+      en: Print matched file path to file with null terminator
+      zh: 将匹配的文件路径打印到文件（以空字符结尾）
     takes_value: true
   - long: printf
-    description: Print formatted output
+    description:
+      en: Print formatted output
+      zh: 打印格式化输出
     takes_value: true
   - long: fprintf
-    description: Print formatted output to file
+    description:
+      en: Print formatted output to file
+      zh: 将格式化输出打印到文件
     takes_value: true
   - long: ls
-    description: List matched files in ls -dils format
+    description:
+      en: List matched files in ls -dils format
+      zh: 以ls -dils格式列出匹配的文件
   - long: fls
-    description: List matched files to file in ls -dils format
+    description:
+      en: List matched files to file in ls -dils format
+      zh: 以ls -dils格式将匹配的文件列表写入文件
     takes_value: true
   - long: exec
-    description: Execute command on matched files
+    description:
+      en: Execute command on matched files
+      zh: 对匹配的文件执行命令
     takes_value: true
   - long: execdir
-    description: Execute command in directory of matched files
+    description:
+      en: Execute command in directory of matched files
+      zh: 在匹配文件所在目录执行命令
     takes_value: true
   - long: ok
-    description: Execute command with confirmation
+    description:
+      en: Execute command with confirmation
+      zh: 确认后执行命令
     takes_value: true
   - long: okdir
-    description: Execute command in directory with confirmation
+    description:
+      en: Execute command in directory with confirmation
+      zh: 确认后在目录中执行命令
     takes_value: true
   - long: delete
-    description: Delete matched files
+    description:
+      en: Delete matched files
+      zh: 删除匹配的文件
   - long: quit
-    description: Exit immediately after first match
-  - long: true
-    description: Always true
-  - long: false
-    description: Always false
+    description:
+      en: Exit immediately after first match
+      zh: 首次匹配后立即退出
+  - long: "true"
+    description:
+      en: Always true
+      zh: 始终为真
+  - long: "false"
+    description:
+      en: Always false
+      zh: 始终为假
   - long: and
     short: a
-    description: AND operator (default)
+    description:
+      en: AND operator (default)
+      zh: AND运算符（默认）
   - long: or
     short: o
-    description: OR operator
+    description:
+      en: OR operator
+      zh: OR运算符
   - long: not
-    description: NOT operator
+    description:
+      en: NOT operator
+      zh: NOT运算符
   - long: daystart
-    description: Measure times from start of today
+    description:
+      en: Measure times from start of today
+      zh: 从今天开始计算时间
   - long: warn
-    description: Enable warnings
+    description:
+      en: Enable warnings
+      zh: 启用警告
   - long: nowarn
-    description: Disable warnings
+    description:
+      en: Disable warnings
+      zh: 禁用警告
   - long: noleaf
-    description: Do not optimize by assuming directory link count
+    description:
+      en: Do not optimize by assuming directory link count
+      zh: 不根据目录链接数进行优化
   - long: samefile
-    description: Match files with same inode
+    description:
+      en: Match files with same inode
+      zh: 匹配具有相同inode的文件
     takes_value: true
   - long: inum
-    description: Match by inode number
+    description:
+      en: Match by inode number
+      zh: 按inode号匹配
     takes_value: true
   - long: links
-    description: Match by number of hard links
+    description:
+      en: Match by number of hard links
+      zh: 按硬链接数匹配
     takes_value: true
   - long: fstype
-    description: Match by filesystem type
+    description:
+      en: Match by filesystem type
+      zh: 按文件系统类型匹配
     takes_value: true
   - long: context
-    description: Match by SELinux context
+    description:
+      en: Match by SELinux context
+      zh: 按SELinux上下文匹配
     takes_value: true
 is_path_completion: true

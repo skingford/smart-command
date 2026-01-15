@@ -1,38 +1,60 @@
 name: uniq
-description: Report or omit repeated lines
+description:
+  en: Report or omit repeated lines
+  zh: 报告或忽略重复的行
 flags:
   - long: count
     short: c
-    description: Prefix lines by the number of occurrences
+    description:
+      en: Prefix lines by the number of occurrences
+      zh: 在行前添加出现次数
   - long: repeated
     short: d
-    description: Only print duplicate lines, one for each group
+    description:
+      en: Only print duplicate lines, one for each group
+      zh: 仅打印重复的行，每组一个
   - long: all-repeated
     short: D
-    description: Print all duplicate lines (none, prepend, separate)
+    description:
+      en: Print all duplicate lines (none, prepend, separate)
+      zh: 打印所有重复的行（none、prepend、separate）
     takes_value: true
   - long: skip-fields
     short: f
-    description: Avoid comparing the first N fields
+    description:
+      en: Avoid comparing the first N fields
+      zh: 跳过前 N 个字段不进行比较
     takes_value: true
   - long: group
-    description: Show all items, separating groups (separate, prepend, append, both)
+    description:
+      en: Show all items, separating groups (separate, prepend, append, both)
+      zh: 显示所有项目，分隔各组（separate、prepend、append、both）
     takes_value: true
   - long: ignore-case
     short: i
-    description: Ignore differences in case when comparing
+    description:
+      en: Ignore differences in case when comparing
+      zh: 比较时忽略大小写差异
   - long: skip-chars
     short: s
-    description: Avoid comparing the first N characters
+    description:
+      en: Avoid comparing the first N characters
+      zh: 跳过前 N 个字符不进行比较
     takes_value: true
   - long: unique
     short: u
-    description: Only print unique lines
+    description:
+      en: Only print unique lines
+      zh: 仅打印唯一的行
   - long: zero-terminated
     short: z
-    description: Line delimiter is NUL, not newline
+    description:
+      en: Line delimiter is NUL, not newline
+      zh: 行分隔符为 NUL 而非换行符
   - long: check-chars
     short: w
-    description: Compare no more than N characters in lines
+    description:
+      en: Compare no more than N characters in lines
+      zh: 最多比较行中的 N 个字符
     takes_value: true
 is_path_completion: true

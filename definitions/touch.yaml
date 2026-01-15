@@ -1,33 +1,57 @@
 name: touch
-description: Change file timestamps
+description:
+  en: Change file timestamps
+  zh: 修改文件时间戳
 flags:
   - long: no-create
     short: c
-    description: Do not create any files
+    description:
+      en: Do not create any files
+      zh: 不创建任何文件
   - long: date
     short: d
-    description: Parse STRING and use it instead of current time
+    description:
+      en: Parse STRING and use it instead of current time
+      zh: 解析字符串并使用它代替当前时间
     takes_value: true
   - short: f
-    description: (ignored)
+    description:
+      en: (ignored)
+      zh: （忽略）
   - short: h
-    description: Affect each symbolic link instead of any referenced file
+    description:
+      en: Affect each symbolic link instead of any referenced file
+      zh: 影响符号链接本身而非引用的文件
   - long: no-dereference
-    description: Affect each symbolic link instead of any referenced file
+    description:
+      en: Affect each symbolic link instead of any referenced file
+      zh: 影响符号链接本身而非引用的文件
   - short: m
-    description: Change only the modification time
+    description:
+      en: Change only the modification time
+      zh: 只修改修改时间
   - short: r
-    description: Use this file's times instead of current time
+    description:
+      en: Use this file's times instead of current time
+      zh: 使用此文件的时间代替当前时间
     takes_value: true
   - long: reference
-    description: Use this file's times instead of current time
+    description:
+      en: Use this file's times instead of current time
+      zh: 使用此文件的时间代替当前时间
     takes_value: true
   - short: t
-    description: Use [[CC]YY]MMDDhhmm[.ss] instead of current time
+    description:
+      en: Use [[CC]YY]MMDDhhmm[.ss] instead of current time
+      zh: 使用 [[CC]YY]MMDDhhmm[.ss] 格式代替当前时间
     takes_value: true
   - long: time
-    description: Change the specified time (atime, access, use, mtime, modify)
+    description:
+      en: Change the specified time (atime, access, use, mtime, modify)
+      zh: 修改指定时间类型（atime, access, use, mtime, modify）
     takes_value: true
   - short: a
-    description: Change only the access time
+    description:
+      en: Change only the access time
+      zh: 只修改访问时间
 is_path_completion: true

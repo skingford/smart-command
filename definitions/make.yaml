@@ -1,114 +1,190 @@
 name: make
-description: GNU make utility to maintain groups of programs
+description:
+  en: GNU make utility to maintain groups of programs
+  zh: GNU make 工具，用于维护程序组
 flags:
   - long: file
     short: f
-    description: Read FILE as a makefile
+    description:
+      en: Read FILE as a makefile
+      zh: 读取 FILE 作为 makefile
     takes_value: true
   - long: directory
     short: C
-    description: Change to DIRECTORY before doing anything
+    description:
+      en: Change to DIRECTORY before doing anything
+      zh: 执行任何操作前切换到 DIRECTORY
     takes_value: true
   - long: debug
     short: d
-    description: Print debugging information
+    description:
+      en: Print debugging information
+      zh: 打印调试信息
   - long: environment-overrides
     short: e
-    description: Environment variables override makefiles
+    description:
+      en: Environment variables override makefiles
+      zh: 环境变量覆盖 makefile 中的定义
   - short: E
-    description: Environment variables override makefiles
+    description:
+      en: Environment variables override makefiles
+      zh: 环境变量覆盖 makefile 中的定义
   - long: eval
-    description: Evaluate STRING as a makefile statement
+    description:
+      en: Evaluate STRING as a makefile statement
+      zh: 将 STRING 作为 makefile 语句执行
     takes_value: true
   - long: ignore-errors
     short: i
-    description: Ignore errors from recipes
+    description:
+      en: Ignore errors from recipes
+      zh: 忽略命令执行中的错误
   - long: include-dir
     short: I
-    description: Search DIRECTORY for included makefiles
+    description:
+      en: Search DIRECTORY for included makefiles
+      zh: 在 DIRECTORY 中搜索包含的 makefile
     takes_value: true
   - long: jobs
     short: j
-    description: Allow N jobs at once; infinite with no arg
+    description:
+      en: Allow N jobs at once; infinite with no arg
+      zh: 允许同时执行 N 个任务；无参数时不限制
     takes_value: true
   - long: keep-going
     short: k
-    description: Keep going when some targets can't be made
+    description:
+      en: Keep going when some targets can't be made
+      zh: 当某些目标无法构建时继续执行
   - long: load-average
     short: l
-    description: Don't start multiple jobs unless load is below N
+    description:
+      en: Don't start multiple jobs unless load is below N
+      zh: 除非负载低于 N，否则不启动多个任务
     takes_value: true
   - long: check-symlink-times
     short: L
-    description: Use the latest mtime between symlinks and target
+    description:
+      en: Use the latest mtime between symlinks and target
+      zh: 使用符号链接和目标之间的最新修改时间
   - long: just-print
     short: n
-    description: Don't actually run any recipe; just print
+    description:
+      en: Don't actually run any recipe; just print
+      zh: 不实际执行命令，只打印
   - long: dry-run
-    description: Don't actually run any recipe; just print
+    description:
+      en: Don't actually run any recipe; just print
+      zh: 不实际执行命令，只打印
   - long: recon
-    description: Don't actually run any recipe; just print
+    description:
+      en: Don't actually run any recipe; just print
+      zh: 不实际执行命令，只打印
   - long: old-file
     short: o
-    description: Consider FILE to be very old
+    description:
+      en: Consider FILE to be very old
+      zh: 将 FILE 视为非常旧的文件
     takes_value: true
   - long: assume-old
-    description: Consider FILE to be very old
+    description:
+      en: Consider FILE to be very old
+      zh: 将 FILE 视为非常旧的文件
     takes_value: true
   - long: output-sync
     short: O
-    description: Synchronize output (none, line, target, recurse)
+    description:
+      en: Synchronize output (none, line, target, recurse)
+      zh: 同步输出（none、line、target、recurse）
     takes_value: true
   - long: print-data-base
     short: p
-    description: Print make's internal database
+    description:
+      en: Print make's internal database
+      zh: 打印 make 的内部数据库
   - long: question
     short: q
-    description: Run no recipe; exit status says if up to date
+    description:
+      en: Run no recipe; exit status says if up to date
+      zh: 不执行命令；退出状态指示是否已是最新
   - long: no-builtin-rules
     short: r
-    description: Disable the built-in implicit rules
+    description:
+      en: Disable the built-in implicit rules
+      zh: 禁用内置隐式规则
   - long: no-builtin-variables
     short: R
-    description: Disable the built-in variable settings
+    description:
+      en: Disable the built-in variable settings
+      zh: 禁用内置变量设置
   - long: silent
     short: s
-    description: Don't echo recipes
+    description:
+      en: Don't echo recipes
+      zh: 不显示执行的命令
   - long: quiet
-    description: Don't echo recipes
+    description:
+      en: Don't echo recipes
+      zh: 不显示执行的命令
   - long: no-silent
-    description: Echo recipes
+    description:
+      en: Echo recipes
+      zh: 显示执行的命令
   - long: no-keep-going
     short: S
-    description: Turns off -k
+    description:
+      en: Turns off -k
+      zh: 关闭 -k 选项
   - long: stop
-    description: Turns off -k
+    description:
+      en: Turns off -k
+      zh: 关闭 -k 选项
   - long: touch
     short: t
-    description: Touch targets instead of remaking them
+    description:
+      en: Touch targets instead of remaking them
+      zh: 更新目标时间戳而不是重新构建
   - long: trace
-    description: Print tracing information
+    description:
+      en: Print tracing information
+      zh: 打印跟踪信息
   - long: version
     short: v
-    description: Print version information
+    description:
+      en: Print version information
+      zh: 打印版本信息
   - long: print-directory
     short: w
-    description: Print the current directory
+    description:
+      en: Print the current directory
+      zh: 打印当前目录
   - long: no-print-directory
-    description: Turn off -w
+    description:
+      en: Turn off -w
+      zh: 关闭 -w 选项
   - long: what-if
     short: W
-    description: Consider FILE to be infinitely new
+    description:
+      en: Consider FILE to be infinitely new
+      zh: 将 FILE 视为无限新的文件
     takes_value: true
   - long: new-file
-    description: Consider FILE to be infinitely new
+    description:
+      en: Consider FILE to be infinitely new
+      zh: 将 FILE 视为无限新的文件
     takes_value: true
   - long: assume-new
-    description: Consider FILE to be infinitely new
+    description:
+      en: Consider FILE to be infinitely new
+      zh: 将 FILE 视为无限新的文件
     takes_value: true
   - long: warn-undefined-variables
-    description: Warn when an undefined variable is referenced
+    description:
+      en: Warn when an undefined variable is referenced
+      zh: 引用未定义变量时发出警告
   - long: shuffle
-    description: Randomize dependency order (random, reverse, seed, none)
+    description:
+      en: Randomize dependency order (random, reverse, seed, none)
+      zh: 随机化依赖顺序（random、reverse、seed、none）
     takes_value: true
 is_path_completion: true

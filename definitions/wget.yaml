@@ -1,365 +1,619 @@
 name: wget
-description: The non-interactive network downloader
+description:
+  en: The non-interactive network downloader
+  zh: 非交互式网络下载器
 flags:
   - long: version
     short: V
-    description: Display the version of Wget
+    description:
+      en: Display the version of Wget
+      zh: 显示 Wget 版本
   - long: help
     short: h
-    description: Print this help
+    description:
+      en: Print this help
+      zh: 打印此帮助
   - long: background
     short: b
-    description: Go to background after startup
+    description:
+      en: Go to background after startup
+      zh: 启动后转入后台
   - long: execute
     short: e
-    description: Execute .wgetrc command
+    description:
+      en: Execute .wgetrc command
+      zh: 执行 .wgetrc 命令
     takes_value: true
   - long: output-file
     short: o
-    description: Log all messages to logfile
+    description:
+      en: Log all messages to logfile
+      zh: 将所有消息记录到日志文件
     takes_value: true
   - long: append-output
     short: a
-    description: Append messages to logfile
+    description:
+      en: Append messages to logfile
+      zh: 将消息追加到日志文件
     takes_value: true
   - long: debug
     short: d
-    description: Print lots of debugging information
+    description:
+      en: Print lots of debugging information
+      zh: 打印大量调试信息
   - long: quiet
     short: q
-    description: Quiet (no output)
+    description:
+      en: Quiet (no output)
+      zh: 静默（无输出）
   - long: verbose
     short: v
-    description: Be verbose (default)
+    description:
+      en: Be verbose (default)
+      zh: 详细模式（默认）
   - long: no-verbose
-    description: Turn off verboseness
+    description:
+      en: Turn off verboseness
+      zh: 关闭详细模式
   - long: report-speed
-    description: Report download speed as TYPE (bits)
+    description:
+      en: Report download speed as TYPE (bits)
+      zh: 以 TYPE 报告下载速度（比特）
     takes_value: true
   - long: input-file
     short: i
-    description: Download URLs found in local or external FILE
+    description:
+      en: Download URLs found in local or external FILE
+      zh: 下载在本地或外部 FILE 中找到的 URL
     takes_value: true
   - long: force-html
     short: F
-    description: Treat input file as HTML
+    description:
+      en: Treat input file as HTML
+      zh: 将输入文件视为 HTML
   - long: base
     short: B
-    description: Resolves HTML input-file links relative to URL
+    description:
+      en: Resolves HTML input-file links relative to URL
+      zh: 相对于 URL 解析 HTML 输入文件链接
     takes_value: true
   - long: config
-    description: Specify config file to use
+    description:
+      en: Specify config file to use
+      zh: 指定要使用的配置文件
     takes_value: true
   - long: no-config
-    description: Do not read any config file
+    description:
+      en: Do not read any config file
+      zh: 不读取任何配置文件
   - long: rejected-log
-    description: Log reasons for URL rejection to FILE
+    description:
+      en: Log reasons for URL rejection to FILE
+      zh: 将 URL 拒绝原因记录到 FILE
     takes_value: true
   - long: tries
     short: t
-    description: Set number of retries to NUMBER
+    description:
+      en: Set number of retries to NUMBER
+      zh: 设置重试次数为 NUMBER
     takes_value: true
   - long: retry-connrefused
-    description: Retry even if connection is refused
+    description:
+      en: Retry even if connection is refused
+      zh: 即使连接被拒绝也重试
   - long: output-document
     short: O
-    description: Write documents to FILE
+    description:
+      en: Write documents to FILE
+      zh: 将文档写入 FILE
     takes_value: true
   - long: no-clobber
-    description: Skip downloads that would overwrite files
+    description:
+      en: Skip downloads that would overwrite files
+      zh: 跳过会覆盖文件的下载
   - long: no-netrc
-    description: Don't try to obtain credentials from .netrc
+    description:
+      en: Don't try to obtain credentials from .netrc
+      zh: 不尝试从 .netrc 获取凭证
   - long: continue
     short: c
-    description: Resume getting a partially-downloaded file
+    description:
+      en: Resume getting a partially-downloaded file
+      zh: 继续下载部分下载的文件
   - long: start-pos
-    description: Start downloading from position
+    description:
+      en: Start downloading from position
+      zh: 从指定位置开始下载
     takes_value: true
   - long: progress
-    description: Select progress gauge type (bar, dot)
+    description:
+      en: Select progress gauge type (bar, dot)
+      zh: 选择进度显示类型（bar、dot）
     takes_value: true
   - long: show-progress
-    description: Force showing progress bar
+    description:
+      en: Force showing progress bar
+      zh: 强制显示进度条
   - long: no-show-progress
-    description: Do not show progress bar
+    description:
+      en: Do not show progress bar
+      zh: 不显示进度条
   - long: timestamping
     short: N
-    description: Don't re-retrieve files unless newer
+    description:
+      en: Don't re-retrieve files unless newer
+      zh: 除非更新否则不重新获取文件
   - long: no-if-modified-since
-    description: Don't use conditional if-modified-since
+    description:
+      en: Don't use conditional if-modified-since
+      zh: 不使用条件 if-modified-since
   - long: no-use-server-timestamps
-    description: Don't set local file's timestamp
+    description:
+      en: Don't set local file's timestamp
+      zh: 不设置本地文件的时间戳
   - long: server-response
     short: S
-    description: Print server response
+    description:
+      en: Print server response
+      zh: 打印服务器响应
   - long: spider
-    description: Don't download anything
+    description:
+      en: Don't download anything
+      zh: 不下载任何内容
   - long: timeout
     short: T
-    description: Set all timeout values to SECONDS
+    description:
+      en: Set all timeout values to SECONDS
+      zh: 将所有超时值设置为 SECONDS
     takes_value: true
   - long: dns-timeout
-    description: Set the DNS lookup timeout
+    description:
+      en: Set the DNS lookup timeout
+      zh: 设置 DNS 查询超时
     takes_value: true
   - long: connect-timeout
-    description: Set the connect timeout
+    description:
+      en: Set the connect timeout
+      zh: 设置连接超时
     takes_value: true
   - long: read-timeout
-    description: Set the read timeout
+    description:
+      en: Set the read timeout
+      zh: 设置读取超时
     takes_value: true
   - long: wait
     short: w
-    description: Wait SECONDS between retrievals
+    description:
+      en: Wait SECONDS between retrievals
+      zh: 在检索之间等待 SECONDS
     takes_value: true
   - long: waitretry
-    description: Wait 1..SECONDS between retries of a retrieval
+    description:
+      en: Wait 1..SECONDS between retries of a retrieval
+      zh: 在重试之间等待 1..SECONDS
     takes_value: true
   - long: random-wait
-    description: Wait from 0.5*WAIT to 1.5*WAIT secs between retrievals
+    description:
+      en: Wait from 0.5*WAIT to 1.5*WAIT secs between retrievals
+      zh: 在检索之间等待 0.5*WAIT 到 1.5*WAIT 秒
   - long: no-proxy
-    description: Explicitly turn off proxy
+    description:
+      en: Explicitly turn off proxy
+      zh: 明确关闭代理
   - long: quota
     short: Q
-    description: Set retrieval quota to NUMBER
+    description:
+      en: Set retrieval quota to NUMBER
+      zh: 设置检索配额为 NUMBER
     takes_value: true
   - long: bind-address
-    description: Bind to ADDRESS on local host
+    description:
+      en: Bind to ADDRESS on local host
+      zh: 绑定到本地主机的 ADDRESS
     takes_value: true
   - long: limit-rate
-    description: Limit download rate
+    description:
+      en: Limit download rate
+      zh: 限制下载速率
     takes_value: true
   - long: no-dns-cache
-    description: Disable caching DNS lookups
+    description:
+      en: Disable caching DNS lookups
+      zh: 禁用 DNS 查询缓存
   - long: restrict-file-names
-    description: Restrict chars in file names (OS-specific)
+    description:
+      en: Restrict chars in file names (OS-specific)
+      zh: 限制文件名中的字符（操作系统相关）
     takes_value: true
   - long: ignore-case
-    description: Ignore case when matching files/directories
+    description:
+      en: Ignore case when matching files/directories
+      zh: 匹配文件/目录时忽略大小写
   - long: inet4-only
     short: "4"
-    description: Connect only to IPv4 addresses
+    description:
+      en: Connect only to IPv4 addresses
+      zh: 仅连接到 IPv4 地址
   - long: inet6-only
     short: "6"
-    description: Connect only to IPv6 addresses
+    description:
+      en: Connect only to IPv6 addresses
+      zh: 仅连接到 IPv6 地址
   - long: prefer-family
-    description: Connect first to specified family (IPv4, IPv6, none)
+    description:
+      en: Connect first to specified family (IPv4, IPv6, none)
+      zh: 首先连接到指定协议族（IPv4、IPv6、none）
     takes_value: true
   - long: user
-    description: Set both ftp and http user
+    description:
+      en: Set both ftp and http user
+      zh: 设置 ftp 和 http 用户名
     takes_value: true
   - long: password
-    description: Set both ftp and http password
+    description:
+      en: Set both ftp and http password
+      zh: 设置 ftp 和 http 密码
     takes_value: true
   - long: ask-password
-    description: Prompt for passwords
+    description:
+      en: Prompt for passwords
+      zh: 提示输入密码
   - long: use-askpass
-    description: Specify credential handler
+    description:
+      en: Specify credential handler
+      zh: 指定凭证处理程序
     takes_value: true
   - long: no-iri
-    description: Turn off IRI support
+    description:
+      en: Turn off IRI support
+      zh: 关闭 IRI 支持
   - long: local-encoding
-    description: Use ENC as local encoding for IRIs
+    description:
+      en: Use ENC as local encoding for IRIs
+      zh: 使用 ENC 作为 IRI 的本地编码
     takes_value: true
   - long: remote-encoding
-    description: Use ENC as remote encoding for IRIs
+    description:
+      en: Use ENC as remote encoding for IRIs
+      zh: 使用 ENC 作为 IRI 的远程编码
     takes_value: true
   - long: unlink
-    description: Remove file before clobber
+    description:
+      en: Remove file before clobber
+      zh: 覆盖前删除文件
   - long: xattr
-    description: Turn on storage of metadata in xattrs
+    description:
+      en: Turn on storage of metadata in xattrs
+      zh: 开启在扩展属性中存储元数据
   - long: directory-prefix
     short: P
-    description: Save files to PREFIX/...
+    description:
+      en: Save files to PREFIX/...
+      zh: 将文件保存到 PREFIX/...
     takes_value: true
   - long: cut-dirs
-    description: Ignore NUMBER remote directory components
+    description:
+      en: Ignore NUMBER remote directory components
+      zh: 忽略 NUMBER 个远程目录组件
     takes_value: true
   - long: http-user
-    description: Set http user
+    description:
+      en: Set http user
+      zh: 设置 http 用户名
     takes_value: true
   - long: http-password
-    description: Set http password
+    description:
+      en: Set http password
+      zh: 设置 http 密码
     takes_value: true
   - long: no-cache
-    description: Disallow server-cached data
+    description:
+      en: Disallow server-cached data
+      zh: 禁止服务器缓存数据
   - long: default-page
-    description: Change the default page name (index.html)
+    description:
+      en: Change the default page name (index.html)
+      zh: 更改默认页面名称（index.html）
     takes_value: true
   - long: adjust-extension
     short: E
-    description: Save HTML/CSS documents with proper extensions
+    description:
+      en: Save HTML/CSS documents with proper extensions
+      zh: 以正确的扩展名保存 HTML/CSS 文档
   - long: ignore-length
-    description: Ignore Content-Length header field
+    description:
+      en: Ignore Content-Length header field
+      zh: 忽略 Content-Length 头字段
   - long: header
-    description: Insert STRING among the headers
+    description:
+      en: Insert STRING among the headers
+      zh: 在头部中插入 STRING
     takes_value: true
   - long: max-redirect
-    description: Maximum redirections allowed per page
+    description:
+      en: Maximum redirections allowed per page
+      zh: 每个页面允许的最大重定向次数
     takes_value: true
   - long: proxy-user
-    description: Set USERNAME as proxy username
+    description:
+      en: Set USERNAME as proxy username
+      zh: 设置 USERNAME 为代理用户名
     takes_value: true
   - long: proxy-password
-    description: Set PASSWORD as proxy password
+    description:
+      en: Set PASSWORD as proxy password
+      zh: 设置 PASSWORD 为代理密码
     takes_value: true
   - long: referer
-    description: "Include Referer: URL header in HTTP request"
+    description:
+      en: "Include Referer: URL header in HTTP request"
+      zh: "在 HTTP 请求中包含 Referer: URL 头"
     takes_value: true
   - long: save-headers
-    description: Save the HTTP headers to file
+    description:
+      en: Save the HTTP headers to file
+      zh: 将 HTTP 头保存到文件
   - long: user-agent
     short: U
-    description: Identify as AGENT instead of Wget/VERSION
+    description:
+      en: Identify as AGENT instead of Wget/VERSION
+      zh: 使用 AGENT 标识而非 Wget/VERSION
     takes_value: true
   - long: no-http-keep-alive
-    description: Disable HTTP keep-alive
+    description:
+      en: Disable HTTP keep-alive
+      zh: 禁用 HTTP keep-alive
   - long: no-cookies
-    description: Don't use cookies
+    description:
+      en: Don't use cookies
+      zh: 不使用 cookies
   - long: load-cookies
-    description: Load cookies from FILE before session
+    description:
+      en: Load cookies from FILE before session
+      zh: 在会话前从 FILE 加载 cookies
     takes_value: true
   - long: save-cookies
-    description: Save cookies to FILE after session
+    description:
+      en: Save cookies to FILE after session
+      zh: 在会话后将 cookies 保存到 FILE
     takes_value: true
   - long: keep-session-cookies
-    description: Load and save session cookies
+    description:
+      en: Load and save session cookies
+      zh: 加载和保存会话 cookies
   - long: post-data
-    description: Use the POST method with data
+    description:
+      en: Use the POST method with data
+      zh: 使用 POST 方法发送数据
     takes_value: true
   - long: post-file
-    description: Use the POST method with file contents
+    description:
+      en: Use the POST method with file contents
+      zh: 使用 POST 方法发送文件内容
     takes_value: true
   - long: method
-    description: Use HTTP method
+    description:
+      en: Use HTTP method
+      zh: 使用 HTTP 方法
     takes_value: true
   - long: body-data
-    description: Send STRING as data
+    description:
+      en: Send STRING as data
+      zh: 发送 STRING 作为数据
     takes_value: true
   - long: body-file
-    description: Send contents of FILE
+    description:
+      en: Send contents of FILE
+      zh: 发送 FILE 的内容
     takes_value: true
   - long: content-disposition
-    description: Honor the Content-Disposition header
+    description:
+      en: Honor the Content-Disposition header
+      zh: 遵循 Content-Disposition 头
   - long: content-on-error
-    description: Output the received content on server errors
+    description:
+      en: Output the received content on server errors
+      zh: 在服务器错误时输出接收的内容
   - long: auth-no-challenge
-    description: Send Basic HTTP auth info without challenge
+    description:
+      en: Send Basic HTTP auth info without challenge
+      zh: 不等待质询直接发送 Basic HTTP 认证信息
   - long: secure-protocol
-    description: Choose secure protocol (auto, SSLv2, SSLv3, TLSv1, TLSv1_1, TLSv1_2, TLSv1_3, PFS)
+    description:
+      en: Choose secure protocol (auto, SSLv2, SSLv3, TLSv1, TLSv1_1, TLSv1_2, TLSv1_3, PFS)
+      zh: 选择安全协议（auto、SSLv2、SSLv3、TLSv1、TLSv1_1、TLSv1_2、TLSv1_3、PFS）
     takes_value: true
   - long: https-only
-    description: Only follow secure HTTPS links
+    description:
+      en: Only follow secure HTTPS links
+      zh: 仅跟随安全的 HTTPS 链接
   - long: no-check-certificate
-    description: Don't validate the server's certificate
+    description:
+      en: Don't validate the server's certificate
+      zh: 不验证服务器证书
   - long: certificate
-    description: Client certificate file
+    description:
+      en: Client certificate file
+      zh: 客户端证书文件
     takes_value: true
   - long: certificate-type
-    description: Client certificate type (PEM or DER)
+    description:
+      en: Client certificate type (PEM or DER)
+      zh: 客户端证书类型（PEM 或 DER）
     takes_value: true
   - long: private-key
-    description: Private key file
+    description:
+      en: Private key file
+      zh: 私钥文件
     takes_value: true
   - long: private-key-type
-    description: Private key type (PEM or DER)
+    description:
+      en: Private key type (PEM or DER)
+      zh: 私钥类型（PEM 或 DER）
     takes_value: true
   - long: ca-certificate
-    description: File with the bundle of CAs
+    description:
+      en: File with the bundle of CAs
+      zh: CA 证书包文件
     takes_value: true
   - long: ca-directory
-    description: Directory where hash list of CAs is stored
+    description:
+      en: Directory where hash list of CAs is stored
+      zh: 存储 CA 哈希列表的目录
     takes_value: true
   - long: crl-file
-    description: File with bundle of CRLs
+    description:
+      en: File with bundle of CRLs
+      zh: CRL 证书吊销列表文件
     takes_value: true
   - long: pinnedpubkey
-    description: Public key to verify peer against
+    description:
+      en: Public key to verify peer against
+      zh: 用于验证对等方的公钥
     takes_value: true
   - long: random-file
-    description: File with random data for seeding the SSL PRNG
+    description:
+      en: File with random data for seeding the SSL PRNG
+      zh: 用于 SSL PRNG 种子的随机数据文件
     takes_value: true
   - long: ciphers
-    description: Set the priority string for ciphers
+    description:
+      en: Set the priority string for ciphers
+      zh: 设置加密套件优先级字符串
     takes_value: true
   - long: no-hsts
-    description: Disable HSTS
+    description:
+      en: Disable HSTS
+      zh: 禁用 HSTS
   - long: hsts-file
-    description: Path of HSTS database
+    description:
+      en: Path of HSTS database
+      zh: HSTS 数据库路径
     takes_value: true
   - long: recursive
     short: r
-    description: Specify recursive download
+    description:
+      en: Specify recursive download
+      zh: 指定递归下载
   - long: level
     short: l
-    description: Maximum recursion depth (inf or 0 for infinite)
+    description:
+      en: Maximum recursion depth (inf or 0 for infinite)
+      zh: 最大递归深度（inf 或 0 表示无限）
     takes_value: true
   - long: delete-after
-    description: Delete files locally after downloading them
+    description:
+      en: Delete files locally after downloading them
+      zh: 下载后删除本地文件
   - long: convert-links
     short: k
-    description: Make links in downloaded HTML point to local files
+    description:
+      en: Make links in downloaded HTML point to local files
+      zh: 使下载的 HTML 中的链接指向本地文件
   - long: backup-converted
     short: K
-    description: Before converting file X, back up as X.orig
+    description:
+      en: Before converting file X, back up as X.orig
+      zh: 转换文件 X 前，备份为 X.orig
   - long: mirror
     short: m
-    description: Shortcut for -N -r -l inf --no-remove-listing
+    description:
+      en: Shortcut for -N -r -l inf --no-remove-listing
+      zh: -N -r -l inf --no-remove-listing 的快捷方式
   - long: page-requisites
     short: p
-    description: Get all images, etc. needed to display HTML page
+    description:
+      en: Get all images, etc. needed to display HTML page
+      zh: 获取显示 HTML 页面所需的所有图片等
   - long: strict-comments
-    description: Turn on strict HTML comment handling
+    description:
+      en: Turn on strict HTML comment handling
+      zh: 开启严格 HTML 注释处理
   - long: accept
     short: A
-    description: Comma-separated list of accepted extensions
+    description:
+      en: Comma-separated list of accepted extensions
+      zh: 逗号分隔的接受扩展名列表
     takes_value: true
   - long: reject
     short: R
-    description: Comma-separated list of rejected extensions
+    description:
+      en: Comma-separated list of rejected extensions
+      zh: 逗号分隔的拒绝扩展名列表
     takes_value: true
   - long: accept-regex
-    description: Regex matching accepted URLs
+    description:
+      en: Regex matching accepted URLs
+      zh: 匹配接受 URL 的正则表达式
     takes_value: true
   - long: reject-regex
-    description: Regex matching rejected URLs
+    description:
+      en: Regex matching rejected URLs
+      zh: 匹配拒绝 URL 的正则表达式
     takes_value: true
   - long: regex-type
-    description: Regex type (posix or pcre)
+    description:
+      en: Regex type (posix or pcre)
+      zh: 正则表达式类型（posix 或 pcre）
     takes_value: true
   - long: domains
     short: D
-    description: Comma-separated list of accepted domains
+    description:
+      en: Comma-separated list of accepted domains
+      zh: 逗号分隔的接受域名列表
     takes_value: true
   - long: exclude-domains
-    description: Comma-separated list of rejected domains
+    description:
+      en: Comma-separated list of rejected domains
+      zh: 逗号分隔的拒绝域名列表
     takes_value: true
   - long: follow-ftp
-    description: Follow FTP links from HTML documents
+    description:
+      en: Follow FTP links from HTML documents
+      zh: 跟随 HTML 文档中的 FTP 链接
   - long: follow-tags
-    description: Comma-separated list of followed HTML tags
+    description:
+      en: Comma-separated list of followed HTML tags
+      zh: 逗号分隔的跟随 HTML 标签列表
     takes_value: true
   - long: ignore-tags
-    description: Comma-separated list of ignored HTML tags
+    description:
+      en: Comma-separated list of ignored HTML tags
+      zh: 逗号分隔的忽略 HTML 标签列表
     takes_value: true
   - long: span-hosts
     short: H
-    description: Go to foreign hosts when recursive
+    description:
+      en: Go to foreign hosts when recursive
+      zh: 递归时访问外部主机
   - long: relative
     short: L
-    description: Follow relative links only
+    description:
+      en: Follow relative links only
+      zh: 仅跟随相对链接
   - long: include-directories
     short: I
-    description: List of allowed directories
+    description:
+      en: List of allowed directories
+      zh: 允许的目录列表
     takes_value: true
   - long: exclude-directories
     short: X
-    description: List of excluded directories
+    description:
+      en: List of excluded directories
+      zh: 排除的目录列表
     takes_value: true
   - long: no-host-directories
-    description: Don't create host directories
+    description:
+      en: Don't create host directories
+      zh: 不创建主机目录
   - long: no-parent
-    description: Don't ascend to the parent directory
+    description:
+      en: Don't ascend to the parent directory
+      zh: 不上升到父目录
   - long: robots
-    description: "Honor robots.txt (default: on)"
+    description:
+      en: "Honor robots.txt (default: on)"
+      zh: 遵循 robots.txt（默认：开启）
     takes_value: true
 is_path_completion: true

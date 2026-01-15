@@ -1,9 +1,17 @@
 name: echo
-description: Display a line of text
+description:
+  en: Display a line of text
+  zh: 显示一行文本
 flags:
   - short: n
-    description: Do not output the trailing newline
+    description:
+      en: Do not output the trailing newline
+      zh: 不输出末尾换行符
   - short: e
-    description: Enable interpretation of backslash escapes
+    description:
+      en: Enable interpretation of backslash escapes
+      zh: 启用反斜杠转义解释
   - short: E
-    description: Disable interpretation of backslash escapes (default)
+    description:
+      en: Disable interpretation of backslash escapes (default)
+      zh: 禁用反斜杠转义解释（默认）

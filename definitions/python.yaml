@@ -1,53 +1,99 @@
 name: python
-description: Python interpreter
+description:
+  en: Python interpreter
+  zh: Python 解释器
 flags:
   - short: c
-    description: Execute Python code directly
+    description:
+      en: Execute Python code directly
+      zh: 直接执行 Python 代码
     takes_value: true
   - short: m
-    description: Run library module as a script
+    description:
+      en: Run library module as a script
+      zh: 将库模块作为脚本运行
     takes_value: true
   - short: i
-    description: Inspect interactively after running script
+    description:
+      en: Inspect interactively after running script
+      zh: 运行脚本后进入交互式检查模式
   - short: O
-    description: Optimize bytecode (remove asserts)
+    description:
+      en: Optimize bytecode (remove asserts)
+      zh: 优化字节码（移除断言）
   - short: B
-    description: Don't write .pyc files
+    description:
+      en: Don't write .pyc files
+      zh: 不生成 .pyc 文件
   - short: s
-    description: Don't add user site directory to sys.path
+    description:
+      en: Don't add user site directory to sys.path
+      zh: 不将用户站点目录添加到 sys.path
   - short: S
-    description: Don't run 'import site' on initialization
+    description:
+      en: Don't run 'import site' on initialization
+      zh: 初始化时不运行 'import site'
   - short: E
-    description: Ignore PYTHON* environment variables
+    description:
+      en: Ignore PYTHON* environment variables
+      zh: 忽略 PYTHON* 环境变量
   - short: I
-    description: Isolate Python from the user's environment
+    description:
+      en: Isolate Python from the user's environment
+      zh: 将 Python 与用户环境隔离
   - short: P
-    description: Don't prepend working directory to sys.path
+    description:
+      en: Don't prepend working directory to sys.path
+      zh: 不将工作目录添加到 sys.path 前面
   - short: v
-    description: Verbose (trace import statements)
+    description:
+      en: Verbose (trace import statements)
+      zh: 详细模式（跟踪 import 语句）
   - short: V
-    description: Print the Python version number
+    description:
+      en: Print the Python version number
+      zh: 打印 Python 版本号
   - long: version
-    description: Print the Python version number
+    description:
+      en: Print the Python version number
+      zh: 打印 Python 版本号
   - short: W
-    description: Warning control (error, ignore, always, default, module, once)
+    description:
+      en: Warning control (error, ignore, always, default, module, once)
+      zh: 警告控制（error、ignore、always、default、module、once）
     takes_value: true
   - short: X
-    description: Set implementation-specific option
+    description:
+      en: Set implementation-specific option
+      zh: 设置特定实现选项
     takes_value: true
   - short: q
-    description: Quiet (don't print version at startup)
+    description:
+      en: Quiet (don't print version at startup)
+      zh: 静默模式（启动时不打印版本）
   - short: u
-    description: Force unbuffered stdout and stderr
+    description:
+      en: Force unbuffered stdout and stderr
+      zh: 强制标准输出和标准错误无缓冲
   - short: x
-    description: Skip first line of source
+    description:
+      en: Skip first line of source
+      zh: 跳过源文件的第一行
   - short: h
-    description: Print help message
+    description:
+      en: Print help message
+      zh: 打印帮助信息
   - long: help
-    description: Print help message
+    description:
+      en: Print help message
+      zh: 打印帮助信息
   - short: d
-    description: Debug output from parser
+    description:
+      en: Debug output from parser
+      zh: 解析器调试输出
   - long: check-hash-based-pycs
-    description: Control hash-based .pyc validation (default, always, never)
+    description:
+      en: Control hash-based .pyc validation (default, always, never)
+      zh: 控制基于哈希的 .pyc 验证（default、always、never）
     takes_value: true
 is_path_completion: true

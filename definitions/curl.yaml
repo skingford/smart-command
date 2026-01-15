@@ -1,306 +1,510 @@
 name: curl
-description: Transfer data from or to a server
+description:
+  en: Transfer data from or to a server
+  zh: 从服务器传输数据或向服务器传输数据
 flags:
   - long: request
     short: X
-    description: HTTP method (GET, POST, PUT, DELETE, PATCH, etc.)
+    description:
+      en: HTTP method (GET, POST, PUT, DELETE, PATCH, etc.)
+      zh: HTTP方法（GET、POST、PUT、DELETE、PATCH等）
     takes_value: true
   - long: data
     short: d
-    description: HTTP POST data
+    description:
+      en: HTTP POST data
+      zh: HTTP POST数据
     takes_value: true
   - long: data-raw
-    description: HTTP POST data (without @ interpretation)
+    description:
+      en: HTTP POST data (without @ interpretation)
+      zh: HTTP POST数据（不解释@符号）
     takes_value: true
   - long: data-urlencode
-    description: HTTP POST data URL encoded
+    description:
+      en: HTTP POST data URL encoded
+      zh: URL编码的HTTP POST数据
     takes_value: true
   - long: data-binary
-    description: HTTP POST binary data
+    description:
+      en: HTTP POST binary data
+      zh: HTTP POST二进制数据
     takes_value: true
   - long: form
     short: F
-    description: Multipart form data
+    description:
+      en: Multipart form data
+      zh: 多部分表单数据
     takes_value: true
   - long: header
     short: H
-    description: HTTP header
+    description:
+      en: HTTP header
+      zh: HTTP头
     takes_value: true
   - long: include
     short: i
-    description: Include HTTP response headers
+    description:
+      en: Include HTTP response headers
+      zh: 包含HTTP响应头
   - long: head
     short: I
-    description: Fetch headers only
+    description:
+      en: Fetch headers only
+      zh: 仅获取头信息
   - long: output
     short: o
-    description: Write output to file
+    description:
+      en: Write output to file
+      zh: 将输出写入文件
     takes_value: true
   - long: remote-name
     short: O
-    description: Write output to file named like remote file
+    description:
+      en: Write output to file named like remote file
+      zh: 将输出写入与远程文件同名的文件
   - long: location
     short: L
-    description: Follow redirects
+    description:
+      en: Follow redirects
+      zh: 跟随重定向
   - long: max-redirs
-    description: Maximum number of redirects
+    description:
+      en: Maximum number of redirects
+      zh: 最大重定向次数
     takes_value: true
   - long: silent
     short: s
-    description: Silent mode
+    description:
+      en: Silent mode
+      zh: 静默模式
   - long: show-error
     short: S
-    description: Show error even with silent mode
+    description:
+      en: Show error even with silent mode
+      zh: 即使在静默模式下也显示错误
   - long: fail
     short: f
-    description: Fail silently on server errors
+    description:
+      en: Fail silently on server errors
+      zh: 服务器错误时静默失败
   - long: fail-with-body
-    description: Fail with body on server errors
+    description:
+      en: Fail with body on server errors
+      zh: 服务器错误时带响应体失败
   - long: verbose
     short: v
-    description: Verbose output
+    description:
+      en: Verbose output
+      zh: 详细输出
   - long: trace
-    description: Enable full trace dump
+    description:
+      en: Enable full trace dump
+      zh: 启用完整跟踪转储
     takes_value: true
   - long: trace-ascii
-    description: Enable full trace dump in ASCII
+    description:
+      en: Enable full trace dump in ASCII
+      zh: 以ASCII格式启用完整跟踪转储
     takes_value: true
   - long: user
     short: u
-    description: User and password
+    description:
+      en: User and password
+      zh: 用户名和密码
     takes_value: true
   - long: basic
-    description: Use HTTP Basic authentication
+    description:
+      en: Use HTTP Basic authentication
+      zh: 使用HTTP Basic认证
   - long: digest
-    description: Use HTTP Digest authentication
+    description:
+      en: Use HTTP Digest authentication
+      zh: 使用HTTP Digest认证
   - long: ntlm
-    description: Use HTTP NTLM authentication
+    description:
+      en: Use HTTP NTLM authentication
+      zh: 使用HTTP NTLM认证
   - long: negotiate
-    description: Use HTTP Negotiate authentication
+    description:
+      en: Use HTTP Negotiate authentication
+      zh: 使用HTTP Negotiate认证
   - long: oauth2-bearer
-    description: OAuth 2.0 Bearer Token
+    description:
+      en: OAuth 2.0 Bearer Token
+      zh: OAuth 2.0 Bearer令牌
     takes_value: true
   - long: aws-sigv4
-    description: Use AWS V4 signature authentication
+    description:
+      en: Use AWS V4 signature authentication
+      zh: 使用AWS V4签名认证
     takes_value: true
   - long: cookie
     short: b
-    description: Send cookie
+    description:
+      en: Send cookie
+      zh: 发送cookie
     takes_value: true
   - long: cookie-jar
     short: c
-    description: Save cookies to file
+    description:
+      en: Save cookies to file
+      zh: 将cookie保存到文件
     takes_value: true
   - long: user-agent
     short: A
-    description: User-Agent header
+    description:
+      en: User-Agent header
+      zh: User-Agent头
     takes_value: true
   - long: referer
     short: e
-    description: Referer URL
+    description:
+      en: Referer URL
+      zh: Referer URL
     takes_value: true
   - long: compressed
-    description: Request compressed response
+    description:
+      en: Request compressed response
+      zh: 请求压缩响应
   - long: connect-timeout
-    description: Maximum time for connection
+    description:
+      en: Maximum time for connection
+      zh: 连接最大超时时间
     takes_value: true
   - long: max-time
     short: m
-    description: Maximum time for transfer
+    description:
+      en: Maximum time for transfer
+      zh: 传输最大超时时间
     takes_value: true
   - long: retry
-    description: Number of retries
+    description:
+      en: Number of retries
+      zh: 重试次数
     takes_value: true
   - long: retry-delay
-    description: Time between retries
+    description:
+      en: Time between retries
+      zh: 重试间隔时间
     takes_value: true
   - long: retry-max-time
-    description: Maximum time for retries
+    description:
+      en: Maximum time for retries
+      zh: 重试最大时间
     takes_value: true
   - long: retry-all-errors
-    description: Retry on all errors
+    description:
+      en: Retry on all errors
+      zh: 所有错误都重试
   - long: limit-rate
-    description: Limit transfer rate
+    description:
+      en: Limit transfer rate
+      zh: 限制传输速率
     takes_value: true
   - long: speed-limit
     short: Y
-    description: Stop if below speed limit
+    description:
+      en: Stop if below speed limit
+      zh: 低于速度限制时停止
     takes_value: true
   - long: speed-time
     short: y
-    description: Trigger speed limit after this time
+    description:
+      en: Trigger speed limit after this time
+      zh: 此时间后触发速度限制
     takes_value: true
   - long: cacert
-    description: CA certificate file
+    description:
+      en: CA certificate file
+      zh: CA证书文件
     takes_value: true
   - long: capath
-    description: CA certificate directory
+    description:
+      en: CA certificate directory
+      zh: CA证书目录
     takes_value: true
   - long: cert
     short: E
-    description: Client certificate file
+    description:
+      en: Client certificate file
+      zh: 客户端证书文件
     takes_value: true
   - long: cert-type
-    description: Certificate type (PEM, DER, ENG, P12)
+    description:
+      en: Certificate type (PEM, DER, ENG, P12)
+      zh: 证书类型（PEM、DER、ENG、P12）
     takes_value: true
   - long: key
-    description: Private key file
+    description:
+      en: Private key file
+      zh: 私钥文件
     takes_value: true
   - long: key-type
-    description: Private key type
+    description:
+      en: Private key type
+      zh: 私钥类型
     takes_value: true
   - long: insecure
     short: k
-    description: Allow insecure connections
+    description:
+      en: Allow insecure connections
+      zh: 允许不安全的连接
   - long: proxy
     short: x
-    description: Use proxy
+    description:
+      en: Use proxy
+      zh: 使用代理
     takes_value: true
   - long: proxy-user
     short: U
-    description: Proxy authentication
+    description:
+      en: Proxy authentication
+      zh: 代理认证
     takes_value: true
   - long: noproxy
-    description: List of hosts to bypass proxy
+    description:
+      en: List of hosts to bypass proxy
+      zh: 绕过代理的主机列表
     takes_value: true
   - long: socks4
-    description: SOCKS4 proxy
+    description:
+      en: SOCKS4 proxy
+      zh: SOCKS4代理
     takes_value: true
   - long: socks4a
-    description: SOCKS4a proxy
+    description:
+      en: SOCKS4a proxy
+      zh: SOCKS4a代理
     takes_value: true
   - long: socks5
-    description: SOCKS5 proxy
+    description:
+      en: SOCKS5 proxy
+      zh: SOCKS5代理
     takes_value: true
   - long: socks5-hostname
-    description: SOCKS5 proxy with hostname resolution
+    description:
+      en: SOCKS5 proxy with hostname resolution
+      zh: 带主机名解析的SOCKS5代理
     takes_value: true
   - long: resolve
-    description: Resolve host to IP
+    description:
+      en: Resolve host to IP
+      zh: 将主机解析为IP
     takes_value: true
   - long: interface
-    description: Use network interface
+    description:
+      en: Use network interface
+      zh: 使用网络接口
     takes_value: true
   - long: local-port
-    description: Local port range
+    description:
+      en: Local port range
+      zh: 本地端口范围
     takes_value: true
   - long: upload-file
     short: T
-    description: Transfer local file to URL
+    description:
+      en: Transfer local file to URL
+      zh: 上传本地文件到URL
     takes_value: true
   - long: range
     short: r
-    description: Byte range to retrieve
+    description:
+      en: Byte range to retrieve
+      zh: 要获取的字节范围
     takes_value: true
   - long: continue-at
     short: C
-    description: Resume transfer offset
+    description:
+      en: Resume transfer offset
+      zh: 续传偏移量
     takes_value: true
   - long: remote-time
     short: R
-    description: Set remote file's time on local output
+    description:
+      en: Set remote file's time on local output
+      zh: 将远程文件的时间设置到本地输出
   - long: time-cond
     short: z
-    description: Request file newer than date
+    description:
+      en: Request file newer than date
+      zh: 请求比指定日期更新的文件
     takes_value: true
   - long: create-dirs
-    description: Create necessary local directories
+    description:
+      en: Create necessary local directories
+      zh: 创建必要的本地目录
   - long: progress-bar
-    description: Display progress bar
+    description:
+      en: Display progress bar
+      zh: 显示进度条
   - long: no-progress-meter
-    description: Do not show progress meter
+    description:
+      en: Do not show progress meter
+      zh: 不显示进度计
   - long: write-out
     short: w
-    description: Define output format
+    description:
+      en: Define output format
+      zh: 定义输出格式
     takes_value: true
   - long: config
     short: K
-    description: Config file to read
+    description:
+      en: Config file to read
+      zh: 要读取的配置文件
     takes_value: true
   - long: url
-    description: URL to work with
+    description:
+      en: URL to work with
+      zh: 要操作的URL
     takes_value: true
   - long: next
-    description: Use next URL
+    description:
+      en: Use next URL
+      zh: 使用下一个URL
   - long: parallel
     short: Z
-    description: Perform transfers in parallel
+    description:
+      en: Perform transfers in parallel
+      zh: 并行执行传输
   - long: parallel-max
-    description: Maximum parallel transfers
+    description:
+      en: Maximum parallel transfers
+      zh: 最大并行传输数
     takes_value: true
   - long: parallel-immediate
-    description: Do not wait for multiplexing
+    description:
+      en: Do not wait for multiplexing
+      zh: 不等待多路复用
   - long: proto
-    description: Enable/disable protocols
+    description:
+      en: Enable/disable protocols
+      zh: 启用/禁用协议
     takes_value: true
   - long: proto-default
-    description: Default protocol
+    description:
+      en: Default protocol
+      zh: 默认协议
     takes_value: true
   - long: proto-redir
-    description: Enable/disable protocols on redirect
+    description:
+      en: Enable/disable protocols on redirect
+      zh: 重定向时启用/禁用协议
     takes_value: true
   - long: http0.9
-    description: Allow HTTP/0.9 responses
+    description:
+      en: Allow HTTP/0.9 responses
+      zh: 允许HTTP/0.9响应
   - long: http1.0
     short: "0"
-    description: Use HTTP/1.0
+    description:
+      en: Use HTTP/1.0
+      zh: 使用HTTP/1.0
   - long: http1.1
-    description: Use HTTP/1.1
+    description:
+      en: Use HTTP/1.1
+      zh: 使用HTTP/1.1
   - long: http2
-    description: Use HTTP/2
+    description:
+      en: Use HTTP/2
+      zh: 使用HTTP/2
   - long: http2-prior-knowledge
-    description: Use HTTP/2 without upgrade
+    description:
+      en: Use HTTP/2 without upgrade
+      zh: 不升级直接使用HTTP/2
   - long: http3
-    description: Use HTTP/3
+    description:
+      en: Use HTTP/3
+      zh: 使用HTTP/3
   - long: json
-    description: HTTP POST JSON data
+    description:
+      en: HTTP POST JSON data
+      zh: HTTP POST JSON数据
     takes_value: true
   - long: url-query
-    description: Add URL query parameter
+    description:
+      en: Add URL query parameter
+      zh: 添加URL查询参数
     takes_value: true
   - long: get
     short: G
-    description: Use GET request
+    description:
+      en: Use GET request
+      zh: 使用GET请求
   - long: globoff
     short: g
-    description: Disable URL globbing
+    description:
+      en: Disable URL globbing
+      zh: 禁用URL通配符
   - long: ipv4
     short: "4"
-    description: Use IPv4
+    description:
+      en: Use IPv4
+      zh: 使用IPv4
   - long: ipv6
     short: "6"
-    description: Use IPv6
+    description:
+      en: Use IPv6
+      zh: 使用IPv6
   - long: path-as-is
-    description: Do not squash .. in URL path
+    description:
+      en: Do not squash .. in URL path
+      zh: 不压缩URL路径中的..
   - long: no-keepalive
-    description: Disable keepalive
+    description:
+      en: Disable keepalive
+      zh: 禁用keepalive
   - long: keepalive-time
-    description: Interval for keepalive probes
+    description:
+      en: Interval for keepalive probes
+      zh: keepalive探测间隔
     takes_value: true
   - long: tcp-fastopen
-    description: Use TCP Fast Open
+    description:
+      en: Use TCP Fast Open
+      zh: 使用TCP快速打开
   - long: tcp-nodelay
-    description: Use TCP_NODELAY option
+    description:
+      en: Use TCP_NODELAY option
+      zh: 使用TCP_NODELAY选项
   - long: no-buffer
     short: N
-    description: Disable output buffering
+    description:
+      en: Disable output buffering
+      zh: 禁用输出缓冲
   - long: no-sessionid
-    description: Disable SSL session reuse
+    description:
+      en: Disable SSL session reuse
+      zh: 禁用SSL会话重用
   - long: stderr
-    description: Where to redirect stderr
+    description:
+      en: Where to redirect stderr
+      zh: 重定向stderr的位置
     takes_value: true
   - long: styled-output
-    description: Enable styled output
+    description:
+      en: Enable styled output
+      zh: 启用样式化输出
   - long: dump-header
     short: D
-    description: Dump headers to file
+    description:
+      en: Dump headers to file
+      zh: 将头信息转储到文件
     takes_value: true
   - long: netrc
     short: n
-    description: Read .netrc for credentials
+    description:
+      en: Read .netrc for credentials
+      zh: 从.netrc读取凭据
   - long: netrc-file
-    description: Netrc file to use
+    description:
+      en: Netrc file to use
+      zh: 要使用的netrc文件
     takes_value: true
   - long: netrc-optional
-    description: Use netrc if present
+    description:
+      en: Use netrc if present
+      zh: 如果存在则使用netrc
 is_path_completion: true

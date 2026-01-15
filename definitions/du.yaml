@@ -1,83 +1,145 @@
 name: du
-description: Estimate file space usage
+description:
+  en: Estimate file space usage
+  zh: 估算文件空间使用量
 flags:
   - long: null
     short: "0"
-    description: End each output line with NUL, not newline
+    description:
+      en: End each output line with NUL, not newline
+      zh: 每行输出以 NUL 结尾，而不是换行符
   - long: all
     short: a
-    description: Write counts for all files, not just directories
+    description:
+      en: Write counts for all files, not just directories
+      zh: 为所有文件显示计数，不仅仅是目录
   - long: apparent-size
-    description: Print apparent sizes, rather than disk usage
+    description:
+      en: Print apparent sizes, rather than disk usage
+      zh: 打印表观大小而不是磁盘使用量
   - long: block-size
     short: B
-    description: Scale sizes by SIZE
+    description:
+      en: Scale sizes by SIZE
+      zh: 按 SIZE 缩放大小
     takes_value: true
   - short: b
-    description: Equivalent to --apparent-size --block-size=1
+    description:
+      en: Equivalent to --apparent-size --block-size=1
+      zh: 等同于 --apparent-size --block-size=1
   - long: bytes
-    description: Equivalent to --apparent-size --block-size=1
+    description:
+      en: Equivalent to --apparent-size --block-size=1
+      zh: 等同于 --apparent-size --block-size=1
   - long: total
     short: c
-    description: Produce a grand total
+    description:
+      en: Produce a grand total
+      zh: 显示总计
   - short: D
-    description: Dereference only symlinks that are listed on the command line
+    description:
+      en: Dereference only symlinks that are listed on the command line
+      zh: 仅解析命令行中列出的符号链接
   - long: dereference-args
-    description: Dereference only symlinks that are listed on the command line
+    description:
+      en: Dereference only symlinks that are listed on the command line
+      zh: 仅解析命令行中列出的符号链接
   - long: max-depth
     short: d
-    description: Print total for a directory only if it is N levels below
+    description:
+      en: Print total for a directory only if it is N levels below
+      zh: 仅当目录深度小于等于 N 时打印总计
     takes_value: true
   - long: files0-from
-    description: Summarize disk usage of NUL-terminated file names in FILE
+    description:
+      en: Summarize disk usage of NUL-terminated file names in FILE
+      zh: 汇总 FILE 中以 NUL 结尾的文件名的磁盘使用量
     takes_value: true
   - short: H
-    description: Equivalent to --dereference-args
+    description:
+      en: Equivalent to --dereference-args
+      zh: 等同于 --dereference-args
   - short: h
-    description: Print sizes in human readable format (e.g., 1K 234M 2G)
+    description:
+      en: Print sizes in human readable format (e.g., 1K 234M 2G)
+      zh: 以人类可读格式打印大小（如 1K 234M 2G）
   - long: human-readable
-    description: Print sizes in human readable format
+    description:
+      en: Print sizes in human readable format
+      zh: 以人类可读格式打印大小
   - long: inodes
-    description: List inode usage information instead of block usage
+    description:
+      en: List inode usage information instead of block usage
+      zh: 显示 inode 使用信息而不是块使用量
   - short: k
-    description: Like --block-size=1K
+    description:
+      en: Like --block-size=1K
+      zh: 等同于 --block-size=1K
   - long: dereference
     short: L
-    description: Dereference all symbolic links
+    description:
+      en: Dereference all symbolic links
+      zh: 解析所有符号链接
   - short: l
-    description: Count sizes many times if hard linked
+    description:
+      en: Count sizes many times if hard linked
+      zh: 如果有硬链接则多次计数
   - long: count-links
-    description: Count sizes many times if hard linked
+    description:
+      en: Count sizes many times if hard linked
+      zh: 如果有硬链接则多次计数
   - short: m
-    description: Like --block-size=1M
+    description:
+      en: Like --block-size=1M
+      zh: 等同于 --block-size=1M
   - long: no-dereference
     short: P
-    description: Don't follow any symbolic links (default)
+    description:
+      en: Don't follow any symbolic links (default)
+      zh: 不解析任何符号链接（默认）
   - long: summarize
     short: s
-    description: Display only a total for each argument
+    description:
+      en: Display only a total for each argument
+      zh: 仅显示每个参数的总计
   - long: separate-dirs
     short: S
-    description: Do not include size of subdirectories
+    description:
+      en: Do not include size of subdirectories
+      zh: 不包含子目录的大小
   - long: si
-    description: Like -h, but use powers of 1000 not 1024
+    description:
+      en: Like -h, but use powers of 1000 not 1024
+      zh: 类似 -h，但使用 1000 进制
   - long: time
-    description: Show time of the last modification
+    description:
+      en: Show time of the last modification
+      zh: 显示最后修改时间
   - long: time-style
-    description: Show times using STYLE (full-iso, long-iso, iso, +FORMAT)
+    description:
+      en: Show times using STYLE (full-iso, long-iso, iso, +FORMAT)
+      zh: 使用指定样式显示时间（full-iso, long-iso, iso, +FORMAT）
     takes_value: true
   - long: exclude
-    description: Exclude files that match any pattern in PATTERN
+    description:
+      en: Exclude files that match any pattern in PATTERN
+      zh: 排除匹配 PATTERN 的文件
     takes_value: true
   - long: exclude-from
     short: X
-    description: Exclude files that match any pattern in FILE
+    description:
+      en: Exclude files that match any pattern in FILE
+      zh: 排除匹配 FILE 中任何模式的文件
     takes_value: true
   - long: one-file-system
     short: x
-    description: Skip directories on different file systems
+    description:
+      en: Skip directories on different file systems
+      zh: 跳过不同文件系统上的目录
   - long: threshold
     short: t
-    description: Exclude entries smaller than SIZE
+    description:
+      en: Exclude entries smaller than SIZE
+      zh: 排除小于 SIZE 的条目
     takes_value: true
 is_path_completion: true

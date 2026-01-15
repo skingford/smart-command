@@ -1,49 +1,81 @@
 name: ln
-description: Make links between files
+description:
+  en: Make links between files
+  zh: 创建文件链接
 flags:
   - long: backup
     short: b
-    description: Make a backup of each existing destination file
+    description:
+      en: Make a backup of each existing destination file
+      zh: 为每个已存在的目标文件创建备份
     takes_value: true
   - short: d
-    description: Allow the superuser to attempt to hard link directories
+    description:
+      en: Allow the superuser to attempt to hard link directories
+      zh: 允许超级用户尝试硬链接目录
   - long: directory
-    description: Allow the superuser to attempt to hard link directories
+    description:
+      en: Allow the superuser to attempt to hard link directories
+      zh: 允许超级用户尝试硬链接目录
   - short: F
-    description: Allow the superuser to attempt to hard link directories
+    description:
+      en: Allow the superuser to attempt to hard link directories
+      zh: 允许超级用户尝试硬链接目录
   - long: force
     short: f
-    description: Remove existing destination files
+    description:
+      en: Remove existing destination files
+      zh: 删除已存在的目标文件
   - long: interactive
     short: i
-    description: Prompt whether to remove destinations
+    description:
+      en: Prompt whether to remove destinations
+      zh: 提示是否删除目标文件
   - long: logical
     short: L
-    description: Dereference TARGETs that are symbolic links
+    description:
+      en: Dereference TARGETs that are symbolic links
+      zh: 解析作为符号链接的目标
   - long: no-dereference
     short: n
-    description: Treat LINK_NAME as a normal file
+    description:
+      en: Treat LINK_NAME as a normal file
+      zh: 将链接名视为普通文件
   - long: physical
     short: P
-    description: Make hard links directly to symbolic links
+    description:
+      en: Make hard links directly to symbolic links
+      zh: 直接对符号链接创建硬链接
   - long: relative
     short: r
-    description: Create symbolic links relative to link location
+    description:
+      en: Create symbolic links relative to link location
+      zh: 创建相对于链接位置的符号链接
   - long: symbolic
     short: s
-    description: Make symbolic links instead of hard links
+    description:
+      en: Make symbolic links instead of hard links
+      zh: 创建符号链接而不是硬链接
   - long: suffix
     short: S
-    description: Override the usual backup suffix
+    description:
+      en: Override the usual backup suffix
+      zh: 覆盖默认的备份后缀
     takes_value: true
   - long: target-directory
     short: t
-    description: Specify the DIRECTORY in which to create the links
+    description:
+      en: Specify the DIRECTORY in which to create the links
+      zh: 指定创建链接的目录
     takes_value: true
   - long: no-target-directory
     short: T
-    description: Treat LINK_NAME as a normal file always
+    description:
+      en: Treat LINK_NAME as a normal file always
+      zh: 始终将链接名视为普通文件
   - long: verbose
     short: v
-    description: Print name of each linked file
+    description:
+      en: Print name of each linked file
+      zh: 打印每个链接的文件名
 is_path_completion: true

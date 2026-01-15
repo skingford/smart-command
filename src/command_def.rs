@@ -87,6 +87,7 @@ impl CommandSpec {
         self
     }
     
+    #[allow(dead_code)]
     pub fn example(mut self, example: Example) -> Self {
         self.examples.push(example);
         self

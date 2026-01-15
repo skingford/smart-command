@@ -1,57 +1,103 @@
 name: scp
-description: OpenSSH secure file copy
+description:
+  en: OpenSSH secure file copy
+  zh: OpenSSH 安全文件复制
 flags:
   - short: r
-    description: Recursively copy entire directories
+    description:
+      en: Recursively copy entire directories
+      zh: 递归复制整个目录
   - short: p
-    description: Preserve modification times, access times, and modes
+    description:
+      en: Preserve modification times, access times, and modes
+      zh: 保留修改时间、访问时间和权限模式
   - short: q
-    description: Quiet mode
+    description:
+      en: Quiet mode
+      zh: 静默模式
   - short: C
-    description: Enable compression
+    description:
+      en: Enable compression
+      zh: 启用压缩
   - short: P
-    description: Port to connect to
+    description:
+      en: Port to connect to
+      zh: 连接端口
     takes_value: true
   - short: i
-    description: Identity file (private key)
+    description:
+      en: Identity file (private key)
+      zh: 身份文件（私钥）
     takes_value: true
   - short: l
-    description: Limit bandwidth (Kbit/s)
+    description:
+      en: Limit bandwidth (Kbit/s)
+      zh: 限制带宽（Kbit/s）
     takes_value: true
   - short: o
-    description: SSH option
+    description:
+      en: SSH option
+      zh: SSH 选项
     takes_value: true
   - short: F
-    description: Config file
+    description:
+      en: Config file
+      zh: 配置文件
     takes_value: true
   - short: S
-    description: Program to use for encrypted connection
+    description:
+      en: Program to use for encrypted connection
+      zh: 用于加密连接的程序
     takes_value: true
   - short: c
-    description: Cipher to use
+    description:
+      en: Cipher to use
+      zh: 使用的加密算法
     takes_value: true
   - short: v
-    description: Verbose mode
+    description:
+      en: Verbose mode
+      zh: 详细模式
   - short: B
-    description: Batch mode (prevents password prompts)
+    description:
+      en: Batch mode (prevents password prompts)
+      zh: 批处理模式（禁止密码提示）
   - short: 3
-    description: Copy through local host
+    description:
+      en: Copy through local host
+      zh: 通过本地主机复制
   - short: 4
-    description: Use IPv4 addresses only
+    description:
+      en: Use IPv4 addresses only
+      zh: 仅使用 IPv4 地址
   - short: 6
-    description: Use IPv6 addresses only
+    description:
+      en: Use IPv6 addresses only
+      zh: 仅使用 IPv6 地址
   - short: A
-    description: Allow forwarding of authentication agent
+    description:
+      en: Allow forwarding of authentication agent
+      zh: 允许转发认证代理
   - short: J
-    description: Jump host
+    description:
+      en: Jump host
+      zh: 跳板主机
     takes_value: true
   - short: O
-    description: Use legacy SCP protocol
+    description:
+      en: Use legacy SCP protocol
+      zh: 使用传统 SCP 协议
   - short: s
-    description: Use SFTP protocol
+    description:
+      en: Use SFTP protocol
+      zh: 使用 SFTP 协议
   - short: T
-    description: Disable strict filename checking
+    description:
+      en: Disable strict filename checking
+      zh: 禁用严格文件名检查
   - short: D
-    description: Connect to SFTP server program directly
+    description:
+      en: Connect to SFTP server program directly
+      zh: 直接连接到 SFTP 服务器程序
     takes_value: true
 is_path_completion: true

@@ -1,133 +1,239 @@
 name: awk
-description: Pattern scanning and processing language
+description:
+  en: Pattern scanning and processing language
+  zh: 模式扫描和处理语言
 flags:
   - short: F
-    description: Sets the field separator
+    description:
+      en: Sets the field separator
+      zh: 设置字段分隔符
     takes_value: true
   - long: field-separator
-    description: Sets the field separator
+    description:
+      en: Sets the field separator
+      zh: 设置字段分隔符
     takes_value: true
   - short: v
-    description: Assign variable
+    description:
+      en: Assign variable
+      zh: 赋值变量
     takes_value: true
   - long: assign
-    description: Assign variable
+    description:
+      en: Assign variable
+      zh: 赋值变量
     takes_value: true
   - short: f
-    description: Read program from file
+    description:
+      en: Read program from file
+      zh: 从文件读取程序
     takes_value: true
   - long: file
-    description: Read program from file
+    description:
+      en: Read program from file
+      zh: 从文件读取程序
     takes_value: true
   - short: c
-    description: Run syntax check on program and exit
+    description:
+      en: Run syntax check on program and exit
+      zh: 对程序运行语法检查并退出
   - long: lint
-    description: Warn about dubious or non-portable constructs
+    description:
+      en: Warn about dubious or non-portable constructs
+      zh: 警告可疑或不可移植的结构
     takes_value: true
   - long: lint-old
-    description: Warn about constructs not available in original awk
+    description:
+      en: Warn about constructs not available in original awk
+      zh: 警告原始 awk 中不可用的结构
   - short: V
-    description: Print version information
+    description:
+      en: Print version information
+      zh: 打印版本信息
   - long: version
-    description: Print version information
+    description:
+      en: Print version information
+      zh: 打印版本信息
   - short: b
-    description: Use binary mode for all file I/O
+    description:
+      en: Use binary mode for all file I/O
+      zh: 对所有文件 I/O 使用二进制模式
   - long: characters-as-bytes
-    description: Treat all input data as single-byte characters
+    description:
+      en: Treat all input data as single-byte characters
+      zh: 将所有输入数据视为单字节字符
   - short: C
-    description: Turn on compatibility mode
+    description:
+      en: Turn on compatibility mode
+      zh: 开启兼容模式
   - long: copyright
-    description: Print short copyright information
+    description:
+      en: Print short copyright information
+      zh: 打印简短版权信息
   - short: d
-    description: Dump variables to file
+    description:
+      en: Dump variables to file
+      zh: 将变量转储到文件
     takes_value: true
   - long: dump-variables
-    description: Dump variables to file
+    description:
+      en: Dump variables to file
+      zh: 将变量转储到文件
     takes_value: true
   - short: D
-    description: Run in debugger mode
+    description:
+      en: Run in debugger mode
+      zh: 以调试模式运行
     takes_value: true
   - long: debug
-    description: Run in debugger mode
+    description:
+      en: Run in debugger mode
+      zh: 以调试模式运行
     takes_value: true
   - short: e
-    description: Program text
+    description:
+      en: Program text
+      zh: 程序文本
     takes_value: true
   - long: source
-    description: Program text
+    description:
+      en: Program text
+      zh: 程序文本
     takes_value: true
   - short: E
-    description: Like -f, but also ends option processing
+    description:
+      en: Like -f, but also ends option processing
+      zh: 类似 -f，但同时结束选项处理
     takes_value: true
   - long: exec
-    description: Like -f, but also ends option processing
+    description:
+      en: Like -f, but also ends option processing
+      zh: 类似 -f，但同时结束选项处理
     takes_value: true
   - short: g
-    description: Don't add file to ARGV
+    description:
+      en: Don't add file to ARGV
+      zh: 不将文件添加到 ARGV
   - long: gen-pot
-    description: Scan and parse program, generate .pot file
+    description:
+      en: Scan and parse program, generate .pot file
+      zh: 扫描并解析程序，生成 .pot 文件
   - short: i
-    description: Include source library
+    description:
+      en: Include source library
+      zh: 包含源代码库
     takes_value: true
   - long: include
-    description: Include source library
+    description:
+      en: Include source library
+      zh: 包含源代码库
     takes_value: true
   - short: I
-    description: Source library search path
+    description:
+      en: Source library search path
+      zh: 源代码库搜索路径
     takes_value: true
   - short: l
-    description: Load shared library
+    description:
+      en: Load shared library
+      zh: 加载共享库
     takes_value: true
   - long: load
-    description: Load shared library
+    description:
+      en: Load shared library
+      zh: 加载共享库
     takes_value: true
   - short: L
-    description: Shared library search path
+    description:
+      en: Shared library search path
+      zh: 共享库搜索路径
     takes_value: true
   - short: M
-    description: Force use of arbitrary precision arithmetic
+    description:
+      en: Force use of arbitrary precision arithmetic
+      zh: 强制使用任意精度算术
   - long: bignum
-    description: Force use of arbitrary precision arithmetic
+    description:
+      en: Force use of arbitrary precision arithmetic
+      zh: 强制使用任意精度算术
   - short: N
-    description: Use locale decimal point character
+    description:
+      en: Use locale decimal point character
+      zh: 使用本地小数点字符
   - long: use-lc-numeric
-    description: Use locale decimal point character
+    description:
+      en: Use locale decimal point character
+      zh: 使用本地小数点字符
   - short: n
-    description: Non-decimal input
+    description:
+      en: Non-decimal input
+      zh: 非十进制输入
   - long: non-decimal-data
-    description: Non-decimal input
+    description:
+      en: Non-decimal input
+      zh: 非十进制输入
   - short: o
-    description: Pretty print program
+    description:
+      en: Pretty print program
+      zh: 美化打印程序
     takes_value: true
   - long: pretty-print
-    description: Pretty print program
+    description:
+      en: Pretty print program
+      zh: 美化打印程序
     takes_value: true
   - short: O
-    description: Enable optimizations
+    description:
+      en: Enable optimizations
+      zh: 启用优化
   - long: optimize
-    description: Enable optimizations
+    description:
+      en: Enable optimizations
+      zh: 启用优化
   - short: p
-    description: Profile program
+    description:
+      en: Profile program
+      zh: 分析程序性能
     takes_value: true
   - long: profile
-    description: Profile program
+    description:
+      en: Profile program
+      zh: 分析程序性能
     takes_value: true
   - short: P
-    description: Enable POSIX compatibility
+    description:
+      en: Enable POSIX compatibility
+      zh: 启用 POSIX 兼容性
   - long: posix
-    description: Enable POSIX compatibility
+    description:
+      en: Enable POSIX compatibility
+      zh: 启用 POSIX 兼容性
   - short: r
-    description: Enable interval expressions
+    description:
+      en: Enable interval expressions
+      zh: 启用区间表达式
   - long: re-interval
-    description: Enable interval expressions
+    description:
+      en: Enable interval expressions
+      zh: 启用区间表达式
   - short: s
-    description: Sandbox mode
+    description:
+      en: Sandbox mode
+      zh: 沙箱模式
   - long: sandbox
-    description: Sandbox mode
+    description:
+      en: Sandbox mode
+      zh: 沙箱模式
   - short: S
-    description: Use extended features of regular expressions
+    description:
+      en: Use extended features of regular expressions
+      zh: 使用正则表达式的扩展功能
   - short: t
-    description: Traditional Unix awk compatibility
+    description:
+      en: Traditional Unix awk compatibility
+      zh: 传统 Unix awk 兼容性
   - long: traditional
-    description: Traditional Unix awk compatibility
+    description:
+      en: Traditional Unix awk compatibility
+      zh: 传统 Unix awk 兼容性
 is_path_completion: true

@@ -1,1004 +1,1650 @@
 name: kubectl
-description: Kubernetes command-line tool
+description:
+  en: Kubernetes command-line tool
+  zh: Kubernetes 命令行工具
 subcommands:
   - name: get
-    description: Display one or many resources
+    description:
+      en: Display one or many resources
+      zh: 显示一个或多个资源
     flags:
       - long: output
         short: o
-        description: Output format (json, yaml, wide, name, custom-columns, jsonpath)
+        description:
+          en: Output format (json, yaml, wide, name, custom-columns, jsonpath)
+          zh: 输出格式 (json, yaml, wide, name, custom-columns, jsonpath)
         takes_value: true
       - long: all-namespaces
         short: A
-        description: List across all namespaces
+        description:
+          en: List across all namespaces
+          zh: 列出所有命名空间中的资源
       - long: namespace
         short: n
-        description: Namespace to use
+        description:
+          en: Namespace to use
+          zh: 要使用的命名空间
         takes_value: true
       - long: selector
         short: l
-        description: Label selector
+        description:
+          en: Label selector
+          zh: 标签选择器
         takes_value: true
       - long: field-selector
-        description: Field selector
+        description:
+          en: Field selector
+          zh: 字段选择器
         takes_value: true
       - long: watch
         short: w
-        description: Watch for changes
+        description:
+          en: Watch for changes
+          zh: 监视变化
       - long: show-labels
-        description: Show labels
+        description:
+          en: Show labels
+          zh: 显示标签
       - long: sort-by
-        description: Sort list types
+        description:
+          en: Sort list types
+          zh: 排序列表类型
         takes_value: true
       - long: no-headers
-        description: Don't print headers
+        description:
+          en: Don't print headers
+          zh: 不打印表头
   - name: describe
-    description: Show details of a specific resource
+    description:
+      en: Show details of a specific resource
+      zh: 显示特定资源的详细信息
     flags:
       - long: namespace
         short: n
-        description: Namespace to use
+        description:
+          en: Namespace to use
+          zh: 要使用的命名空间
         takes_value: true
       - long: selector
         short: l
-        description: Label selector
+        description:
+          en: Label selector
+          zh: 标签选择器
         takes_value: true
       - long: all-namespaces
         short: A
-        description: All namespaces
+        description:
+          en: All namespaces
+          zh: 所有命名空间
       - long: show-events
-        description: Show events related to object
+        description:
+          en: Show events related to object
+          zh: 显示与对象相关的事件
   - name: create
-    description: Create a resource from a file or stdin
+    description:
+      en: Create a resource from a file or stdin
+      zh: 从文件或标准输入创建资源
     flags:
       - long: filename
         short: f
-        description: Filename, directory, or URL to files
+        description:
+          en: Filename, directory, or URL to files
+          zh: 文件名、目录或文件的 URL
         takes_value: true
       - long: namespace
         short: n
-        description: Namespace to use
+        description:
+          en: Namespace to use
+          zh: 要使用的命名空间
         takes_value: true
       - long: dry-run
-        description: Must be none, server, or client
+        description:
+          en: Must be none, server, or client
+          zh: 必须是 none、server 或 client
         takes_value: true
       - long: output
         short: o
-        description: Output format
+        description:
+          en: Output format
+          zh: 输出格式
         takes_value: true
       - long: save-config
-        description: Save the configuration of current object
+        description:
+          en: Save the configuration of current object
+          zh: 保存当前对象的配置
     is_path_completion: true
   - name: apply
-    description: Apply a configuration to a resource
+    description:
+      en: Apply a configuration to a resource
+      zh: 将配置应用到资源
     flags:
       - long: filename
         short: f
-        description: Filename, directory, or URL to files
+        description:
+          en: Filename, directory, or URL to files
+          zh: 文件名、目录或文件的 URL
         takes_value: true
       - long: recursive
         short: R
-        description: Process the directory used in -f recursively
+        description:
+          en: Process the directory used in -f recursively
+          zh: 递归处理 -f 中使用的目录
       - long: namespace
         short: n
-        description: Namespace to use
+        description:
+          en: Namespace to use
+          zh: 要使用的命名空间
         takes_value: true
       - long: dry-run
-        description: Must be none, server, or client
+        description:
+          en: Must be none, server, or client
+          zh: 必须是 none、server 或 client
         takes_value: true
       - long: selector
         short: l
-        description: Label selector
+        description:
+          en: Label selector
+          zh: 标签选择器
         takes_value: true
       - long: prune
-        description: Prune resources not in the configs
+        description:
+          en: Prune resources not in the configs
+          zh: 删除不在配置中的资源
       - long: force
-        description: Delete and re-create resource
+        description:
+          en: Delete and re-create resource
+          zh: 删除并重新创建资源
       - long: server-side
-        description: Use server-side apply
+        description:
+          en: Use server-side apply
+          zh: 使用服务器端应用
       - long: field-manager
-        description: Field manager name
+        description:
+          en: Field manager name
+          zh: 字段管理器名称
         takes_value: true
     is_path_completion: true
   - name: delete
-    description: Delete resources
+    description:
+      en: Delete resources
+      zh: 删除资源
     flags:
       - long: filename
         short: f
-        description: Filename, directory, or URL to files
+        description:
+          en: Filename, directory, or URL to files
+          zh: 文件名、目录或文件的 URL
         takes_value: true
       - long: namespace
         short: n
-        description: Namespace to use
+        description:
+          en: Namespace to use
+          zh: 要使用的命名空间
         takes_value: true
       - long: selector
         short: l
-        description: Label selector
+        description:
+          en: Label selector
+          zh: 标签选择器
         takes_value: true
       - long: all
-        description: Delete all resources
+        description:
+          en: Delete all resources
+          zh: 删除所有资源
       - long: cascade
-        description: Cascade delete to dependents
+        description:
+          en: Cascade delete to dependents
+          zh: 级联删除依赖项
         takes_value: true
       - long: force
-        description: Force deletion
+        description:
+          en: Force deletion
+          zh: 强制删除
       - long: grace-period
-        description: Period of time to wait before deletion
+        description:
+          en: Period of time to wait before deletion
+          zh: 删除前等待的时间段
         takes_value: true
       - long: now
-        description: Immediate deletion
+        description:
+          en: Immediate deletion
+          zh: 立即删除
       - long: wait
-        description: Wait for deletion to complete
+        description:
+          en: Wait for deletion to complete
+          zh: 等待删除完成
       - long: dry-run
-        description: Must be none, server, or client
+        description:
+          en: Must be none, server, or client
+          zh: 必须是 none、server 或 client
         takes_value: true
     is_path_completion: true
   - name: edit
-    description: Edit a resource
+    description:
+      en: Edit a resource
+      zh: 编辑资源
     flags:
       - long: filename
         short: f
-        description: Filename, directory, or URL to files
+        description:
+          en: Filename, directory, or URL to files
+          zh: 文件名、目录或文件的 URL
         takes_value: true
       - long: namespace
         short: n
-        description: Namespace to use
+        description:
+          en: Namespace to use
+          zh: 要使用的命名空间
         takes_value: true
       - long: output
         short: o
-        description: Output format
+        description:
+          en: Output format
+          zh: 输出格式
         takes_value: true
     is_path_completion: true
   - name: exec
-    description: Execute a command in a container
+    description:
+      en: Execute a command in a container
+      zh: 在容器中执行命令
     flags:
       - long: container
         short: c
-        description: Container name
+        description:
+          en: Container name
+          zh: 容器名称
         takes_value: true
       - long: namespace
         short: n
-        description: Namespace to use
+        description:
+          en: Namespace to use
+          zh: 要使用的命名空间
         takes_value: true
       - long: stdin
         short: i
-        description: Pass stdin to the container
+        description:
+          en: Pass stdin to the container
+          zh: 将标准输入传递给容器
       - long: tty
         short: t
-        description: Stdin is a TTY
+        description:
+          en: Stdin is a TTY
+          zh: 标准输入是 TTY
   - name: logs
-    description: Print the logs for a container
+    description:
+      en: Print the logs for a container
+      zh: 打印容器的日志
     flags:
       - long: container
         short: c
-        description: Container name
+        description:
+          en: Container name
+          zh: 容器名称
         takes_value: true
       - long: namespace
         short: n
-        description: Namespace to use
+        description:
+          en: Namespace to use
+          zh: 要使用的命名空间
         takes_value: true
       - long: follow
         short: f
-        description: Follow the log output
+        description:
+          en: Follow the log output
+          zh: 跟踪日志输出
       - long: previous
         short: p
-        description: Print previous instance logs
+        description:
+          en: Print previous instance logs
+          zh: 打印上一个实例的日志
       - long: tail
-        description: Number of lines from the end
+        description:
+          en: Number of lines from the end
+          zh: 从末尾开始的行数
         takes_value: true
       - long: since
-        description: Only return logs newer than duration
+        description:
+          en: Only return logs newer than duration
+          zh: 仅返回比指定时间段新的日志
         takes_value: true
       - long: since-time
-        description: Only return logs after a specific date
+        description:
+          en: Only return logs after a specific date
+          zh: 仅返回特定日期之后的日志
         takes_value: true
       - long: timestamps
-        description: Include timestamps on each line
+        description:
+          en: Include timestamps on each line
+          zh: 在每行包含时间戳
       - long: all-containers
-        description: Get logs from all containers
+        description:
+          en: Get logs from all containers
+          zh: 获取所有容器的日志
       - long: selector
         short: l
-        description: Label selector
+        description:
+          en: Label selector
+          zh: 标签选择器
         takes_value: true
   - name: port-forward
-    description: Forward local ports to a pod
+    description:
+      en: Forward local ports to a pod
+      zh: 将本地端口转发到 Pod
     flags:
       - long: namespace
         short: n
-        description: Namespace to use
+        description:
+          en: Namespace to use
+          zh: 要使用的命名空间
         takes_value: true
       - long: address
-        description: Addresses to listen on
+        description:
+          en: Addresses to listen on
+          zh: 监听的地址
         takes_value: true
   - name: proxy
-    description: Run a proxy to the Kubernetes API server
+    description:
+      en: Run a proxy to the Kubernetes API server
+      zh: 运行到 Kubernetes API 服务器的代理
     flags:
       - long: port
         short: p
-        description: Port to run the proxy on
+        description:
+          en: Port to run the proxy on
+          zh: 运行代理的端口
         takes_value: true
       - long: address
-        description: Address to listen on
+        description:
+          en: Address to listen on
+          zh: 监听的地址
         takes_value: true
       - long: api-prefix
-        description: Prefix to serve proxy API under
+        description:
+          en: Prefix to serve proxy API under
+          zh: 代理 API 的前缀
         takes_value: true
       - long: disable-filter
-        description: Disable request filtering
+        description:
+          en: Disable request filtering
+          zh: 禁用请求过滤
       - long: www
         short: w
-        description: Static file directory to serve
+        description:
+          en: Static file directory to serve
+          zh: 要提供的静态文件目录
         takes_value: true
   - name: run
-    description: Run a particular image on the cluster
+    description:
+      en: Run a particular image on the cluster
+      zh: 在集群上运行特定镜像
     flags:
       - long: image
-        description: Container image to run
+        description:
+          en: Container image to run
+          zh: 要运行的容器镜像
         takes_value: true
       - long: namespace
         short: n
-        description: Namespace to use
+        description:
+          en: Namespace to use
+          zh: 要使用的命名空间
         takes_value: true
       - long: env
-        description: Environment variables
+        description:
+          en: Environment variables
+          zh: 环境变量
         takes_value: true
       - long: port
-        description: Port to expose
+        description:
+          en: Port to expose
+          zh: 要暴露的端口
         takes_value: true
       - long: labels
         short: l
-        description: Labels to apply
+        description:
+          en: Labels to apply
+          zh: 要应用的标签
         takes_value: true
       - long: restart
-        description: Restart policy
+        description:
+          en: Restart policy
+          zh: 重启策略
         takes_value: true
       - long: command
-        description: Run this command
+        description:
+          en: Run this command
+          zh: 运行此命令
       - long: stdin
         short: i
-        description: Keep stdin open
+        description:
+          en: Keep stdin open
+          zh: 保持标准输入打开
       - long: tty
         short: t
-        description: Allocate a TTY
+        description:
+          en: Allocate a TTY
+          zh: 分配一个 TTY
       - long: rm
-        description: Delete pod after completion
+        description:
+          en: Delete pod after completion
+          zh: 完成后删除 Pod
       - long: dry-run
-        description: Must be none, server, or client
+        description:
+          en: Must be none, server, or client
+          zh: 必须是 none、server 或 client
         takes_value: true
       - long: output
         short: o
-        description: Output format
+        description:
+          en: Output format
+          zh: 输出格式
         takes_value: true
   - name: expose
-    description: Expose a resource as a new Kubernetes service
+    description:
+      en: Expose a resource as a new Kubernetes service
+      zh: 将资源暴露为新的 Kubernetes 服务
     flags:
       - long: namespace
         short: n
-        description: Namespace to use
+        description:
+          en: Namespace to use
+          zh: 要使用的命名空间
         takes_value: true
       - long: port
-        description: Port that the service should serve on
+        description:
+          en: Port that the service should serve on
+          zh: 服务应该提供服务的端口
         takes_value: true
       - long: target-port
-        description: Port on the container
+        description:
+          en: Port on the container
+          zh: 容器上的端口
         takes_value: true
       - long: protocol
-        description: Network protocol
+        description:
+          en: Network protocol
+          zh: 网络协议
         takes_value: true
       - long: name
-        description: Name for the service
+        description:
+          en: Name for the service
+          zh: 服务的名称
         takes_value: true
       - long: selector
-        description: Label selector
+        description:
+          en: Label selector
+          zh: 标签选择器
         takes_value: true
       - long: type
-        description: Type of service (ClusterIP, NodePort, LoadBalancer)
+        description:
+          en: Type of service (ClusterIP, NodePort, LoadBalancer)
+          zh: 服务类型 (ClusterIP, NodePort, LoadBalancer)
         takes_value: true
       - long: dry-run
-        description: Must be none, server, or client
+        description:
+          en: Must be none, server, or client
+          zh: 必须是 none、server 或 client
         takes_value: true
       - long: output
         short: o
-        description: Output format
+        description:
+          en: Output format
+          zh: 输出格式
         takes_value: true
   - name: scale
-    description: Set a new size for a deployment, replica set, or replication controller
+    description:
+      en: Set a new size for a deployment, replica set, or replication controller
+      zh: 为 Deployment、ReplicaSet 或 ReplicationController 设置新的大小
     flags:
       - long: namespace
         short: n
-        description: Namespace to use
+        description:
+          en: Namespace to use
+          zh: 要使用的命名空间
         takes_value: true
       - long: replicas
-        description: Number of replicas
+        description:
+          en: Number of replicas
+          zh: 副本数量
         takes_value: true
       - long: current-replicas
-        description: Precondition for current size
+        description:
+          en: Precondition for current size
+          zh: 当前大小的前提条件
         takes_value: true
       - long: resource-version
-        description: Precondition for resource version
+        description:
+          en: Precondition for resource version
+          zh: 资源版本的前提条件
         takes_value: true
       - long: timeout
-        description: Time to wait before giving up
+        description:
+          en: Time to wait before giving up
+          zh: 放弃前等待的时间
         takes_value: true
       - long: dry-run
-        description: Must be none, server, or client
+        description:
+          en: Must be none, server, or client
+          zh: 必须是 none、server 或 client
         takes_value: true
   - name: rollout
-    description: Manage the rollout of a resource
+    description:
+      en: Manage the rollout of a resource
+      zh: 管理资源的滚动更新
     subcommands:
       - name: history
-        description: View rollout history
+        description:
+          en: View rollout history
+          zh: 查看滚动更新历史
         flags:
           - long: namespace
             short: n
-            description: Namespace to use
+            description:
+              en: Namespace to use
+              zh: 要使用的命名空间
             takes_value: true
           - long: revision
-            description: Revision number
+            description:
+              en: Revision number
+              zh: 修订版本号
             takes_value: true
       - name: pause
-        description: Pause the rollout
+        description:
+          en: Pause the rollout
+          zh: 暂停滚动更新
         flags:
           - long: namespace
             short: n
-            description: Namespace to use
+            description:
+              en: Namespace to use
+              zh: 要使用的命名空间
             takes_value: true
       - name: restart
-        description: Restart a resource
+        description:
+          en: Restart a resource
+          zh: 重启资源
         flags:
           - long: namespace
             short: n
-            description: Namespace to use
+            description:
+              en: Namespace to use
+              zh: 要使用的命名空间
             takes_value: true
       - name: resume
-        description: Resume a paused rollout
+        description:
+          en: Resume a paused rollout
+          zh: 恢复已暂停的滚动更新
         flags:
           - long: namespace
             short: n
-            description: Namespace to use
+            description:
+              en: Namespace to use
+              zh: 要使用的命名空间
             takes_value: true
       - name: status
-        description: Show the status of the rollout
+        description:
+          en: Show the status of the rollout
+          zh: 显示滚动更新的状态
         flags:
           - long: namespace
             short: n
-            description: Namespace to use
+            description:
+              en: Namespace to use
+              zh: 要使用的命名空间
             takes_value: true
           - long: watch
             short: w
-            description: Watch the status
+            description:
+              en: Watch the status
+              zh: 监视状态
           - long: timeout
-            description: Timeout for watch
+            description:
+              en: Timeout for watch
+              zh: 监视超时时间
             takes_value: true
       - name: undo
-        description: Undo a previous rollout
+        description:
+          en: Undo a previous rollout
+          zh: 撤销之前的滚动更新
         flags:
           - long: namespace
             short: n
-            description: Namespace to use
+            description:
+              en: Namespace to use
+              zh: 要使用的命名空间
             takes_value: true
           - long: to-revision
-            description: Revision to roll back to
+            description:
+              en: Revision to roll back to
+              zh: 要回滚到的修订版本
             takes_value: true
           - long: dry-run
-            description: Must be none, server, or client
+            description:
+              en: Must be none, server, or client
+              zh: 必须是 none、server 或 client
             takes_value: true
   - name: set
-    description: Set specific features on objects
+    description:
+      en: Set specific features on objects
+      zh: 设置对象的特定功能
     subcommands:
       - name: env
-        description: Update environment variables
+        description:
+          en: Update environment variables
+          zh: 更新环境变量
         flags:
           - long: namespace
             short: n
-            description: Namespace to use
+            description:
+              en: Namespace to use
+              zh: 要使用的命名空间
             takes_value: true
           - long: env
             short: e
-            description: Environment variable
+            description:
+              en: Environment variable
+              zh: 环境变量
             takes_value: true
           - long: from
-            description: Get env from resource
+            description:
+              en: Get env from resource
+              zh: 从资源获取环境变量
             takes_value: true
           - long: prefix
-            description: Prefix to prepend
+            description:
+              en: Prefix to prepend
+              zh: 要添加的前缀
             takes_value: true
           - long: containers
             short: c
-            description: Container names
+            description:
+              en: Container names
+              zh: 容器名称
             takes_value: true
       - name: image
-        description: Update container image
+        description:
+          en: Update container image
+          zh: 更新容器镜像
         flags:
           - long: namespace
             short: n
-            description: Namespace to use
+            description:
+              en: Namespace to use
+              zh: 要使用的命名空间
             takes_value: true
           - long: all
-            description: Select all resources
+            description:
+              en: Select all resources
+              zh: 选择所有资源
           - long: selector
             short: l
-            description: Label selector
+            description:
+              en: Label selector
+              zh: 标签选择器
             takes_value: true
           - long: dry-run
-            description: Must be none, server, or client
+            description:
+              en: Must be none, server, or client
+              zh: 必须是 none、server 或 client
             takes_value: true
       - name: resources
-        description: Update resource requests/limits
+        description:
+          en: Update resource requests/limits
+          zh: 更新资源请求/限制
         flags:
           - long: namespace
             short: n
-            description: Namespace to use
+            description:
+              en: Namespace to use
+              zh: 要使用的命名空间
             takes_value: true
           - long: limits
-            description: Resource limits
+            description:
+              en: Resource limits
+              zh: 资源限制
             takes_value: true
           - long: requests
-            description: Resource requests
+            description:
+              en: Resource requests
+              zh: 资源请求
             takes_value: true
           - long: containers
             short: c
-            description: Container names
+            description:
+              en: Container names
+              zh: 容器名称
             takes_value: true
       - name: selector
-        description: Set the selector on a resource
+        description:
+          en: Set the selector on a resource
+          zh: 设置资源的选择器
         flags:
           - long: namespace
             short: n
-            description: Namespace to use
+            description:
+              en: Namespace to use
+              zh: 要使用的命名空间
             takes_value: true
           - long: all
-            description: Select all resources
+            description:
+              en: Select all resources
+              zh: 选择所有资源
       - name: serviceaccount
-        description: Update service account of a resource
+        description:
+          en: Update service account of a resource
+          zh: 更新资源的服务账户
         flags:
           - long: namespace
             short: n
-            description: Namespace to use
+            description:
+              en: Namespace to use
+              zh: 要使用的命名空间
             takes_value: true
           - long: dry-run
-            description: Must be none, server, or client
+            description:
+              en: Must be none, server, or client
+              zh: 必须是 none、server 或 client
             takes_value: true
       - name: subject
-        description: Update user, group or service account
+        description:
+          en: Update user, group or service account
+          zh: 更新用户、组或服务账户
         flags:
           - long: namespace
             short: n
-            description: Namespace to use
+            description:
+              en: Namespace to use
+              zh: 要使用的命名空间
             takes_value: true
           - long: user
-            description: Usernames to bind
+            description:
+              en: Usernames to bind
+              zh: 要绑定的用户名
             takes_value: true
           - long: group
-            description: Groups to bind
+            description:
+              en: Groups to bind
+              zh: 要绑定的组
             takes_value: true
           - long: serviceaccount
-            description: Service accounts to bind
+            description:
+              en: Service accounts to bind
+              zh: 要绑定的服务账户
             takes_value: true
   - name: label
-    description: Update the labels on a resource
+    description:
+      en: Update the labels on a resource
+      zh: 更新资源上的标签
     flags:
       - long: namespace
         short: n
-        description: Namespace to use
+        description:
+          en: Namespace to use
+          zh: 要使用的命名空间
         takes_value: true
       - long: selector
         short: l
-        description: Label selector
+        description:
+          en: Label selector
+          zh: 标签选择器
         takes_value: true
       - long: all
-        description: Select all resources
+        description:
+          en: Select all resources
+          zh: 选择所有资源
       - long: overwrite
-        description: Overwrite existing labels
+        description:
+          en: Overwrite existing labels
+          zh: 覆盖现有标签
       - long: dry-run
-        description: Must be none, server, or client
+        description:
+          en: Must be none, server, or client
+          zh: 必须是 none、server 或 client
         takes_value: true
       - long: output
         short: o
-        description: Output format
+        description:
+          en: Output format
+          zh: 输出格式
         takes_value: true
   - name: annotate
-    description: Update the annotations on a resource
+    description:
+      en: Update the annotations on a resource
+      zh: 更新资源上的注解
     flags:
       - long: namespace
         short: n
-        description: Namespace to use
+        description:
+          en: Namespace to use
+          zh: 要使用的命名空间
         takes_value: true
       - long: selector
         short: l
-        description: Label selector
+        description:
+          en: Label selector
+          zh: 标签选择器
         takes_value: true
       - long: all
-        description: Select all resources
+        description:
+          en: Select all resources
+          zh: 选择所有资源
       - long: overwrite
-        description: Overwrite existing annotations
+        description:
+          en: Overwrite existing annotations
+          zh: 覆盖现有注解
       - long: dry-run
-        description: Must be none, server, or client
+        description:
+          en: Must be none, server, or client
+          zh: 必须是 none、server 或 client
         takes_value: true
       - long: output
         short: o
-        description: Output format
+        description:
+          en: Output format
+          zh: 输出格式
         takes_value: true
   - name: patch
-    description: Update fields of a resource
+    description:
+      en: Update fields of a resource
+      zh: 更新资源的字段
     flags:
       - long: namespace
         short: n
-        description: Namespace to use
+        description:
+          en: Namespace to use
+          zh: 要使用的命名空间
         takes_value: true
       - long: patch
         short: p
-        description: Patch to be applied
+        description:
+          en: Patch to be applied
+          zh: 要应用的补丁
         takes_value: true
       - long: patch-file
-        description: File containing patch
+        description:
+          en: File containing patch
+          zh: 包含补丁的文件
         takes_value: true
       - long: type
-        description: Patch type (json, merge, strategic)
+        description:
+          en: Patch type (json, merge, strategic)
+          zh: 补丁类型 (json, merge, strategic)
         takes_value: true
       - long: dry-run
-        description: Must be none, server, or client
+        description:
+          en: Must be none, server, or client
+          zh: 必须是 none、server 或 client
         takes_value: true
       - long: output
         short: o
-        description: Output format
+        description:
+          en: Output format
+          zh: 输出格式
         takes_value: true
     is_path_completion: true
   - name: replace
-    description: Replace a resource by file or stdin
+    description:
+      en: Replace a resource by file or stdin
+      zh: 通过文件或标准输入替换资源
     flags:
       - long: filename
         short: f
-        description: Filename, directory, or URL to files
+        description:
+          en: Filename, directory, or URL to files
+          zh: 文件名、目录或文件的 URL
         takes_value: true
       - long: namespace
         short: n
-        description: Namespace to use
+        description:
+          en: Namespace to use
+          zh: 要使用的命名空间
         takes_value: true
       - long: force
-        description: Delete and re-create resource
+        description:
+          en: Delete and re-create resource
+          zh: 删除并重新创建资源
       - long: cascade
-        description: Cascade delete to dependents
+        description:
+          en: Cascade delete to dependents
+          zh: 级联删除依赖项
         takes_value: true
       - long: grace-period
-        description: Grace period for deletion
+        description:
+          en: Grace period for deletion
+          zh: 删除的宽限期
         takes_value: true
       - long: dry-run
-        description: Must be none, server, or client
+        description:
+          en: Must be none, server, or client
+          zh: 必须是 none、server 或 client
         takes_value: true
       - long: output
         short: o
-        description: Output format
+        description:
+          en: Output format
+          zh: 输出格式
         takes_value: true
     is_path_completion: true
   - name: cp
-    description: Copy files and directories to and from containers
+    description:
+      en: Copy files and directories to and from containers
+      zh: 在容器之间复制文件和目录
     flags:
       - long: container
         short: c
-        description: Container name
+        description:
+          en: Container name
+          zh: 容器名称
         takes_value: true
       - long: namespace
         short: n
-        description: Namespace to use
+        description:
+          en: Namespace to use
+          zh: 要使用的命名空间
         takes_value: true
       - long: no-preserve
-        description: Do not preserve file ownership and permissions
+        description:
+          en: Do not preserve file ownership and permissions
+          zh: 不保留文件所有权和权限
     is_path_completion: true
   - name: attach
-    description: Attach to a running container
+    description:
+      en: Attach to a running container
+      zh: 连接到正在运行的容器
     flags:
       - long: container
         short: c
-        description: Container name
+        description:
+          en: Container name
+          zh: 容器名称
         takes_value: true
       - long: namespace
         short: n
-        description: Namespace to use
+        description:
+          en: Namespace to use
+          zh: 要使用的命名空间
         takes_value: true
       - long: stdin
         short: i
-        description: Pass stdin to the container
+        description:
+          en: Pass stdin to the container
+          zh: 将标准输入传递给容器
       - long: tty
         short: t
-        description: Stdin is a TTY
+        description:
+          en: Stdin is a TTY
+          zh: 标准输入是 TTY
   - name: top
-    description: Display resource usage
+    description:
+      en: Display resource usage
+      zh: 显示资源使用情况
     subcommands:
       - name: node
-        description: Display resource usage of nodes
+        description:
+          en: Display resource usage of nodes
+          zh: 显示节点的资源使用情况
         flags:
           - long: selector
             short: l
-            description: Label selector
+            description:
+              en: Label selector
+              zh: 标签选择器
             takes_value: true
           - long: sort-by
-            description: Sort by field
+            description:
+              en: Sort by field
+              zh: 按字段排序
             takes_value: true
           - long: no-headers
-            description: Don't print headers
+            description:
+              en: Don't print headers
+              zh: 不打印表头
       - name: pod
-        description: Display resource usage of pods
+        description:
+          en: Display resource usage of pods
+          zh: 显示 Pod 的资源使用情况
         flags:
           - long: namespace
             short: n
-            description: Namespace to use
+            description:
+              en: Namespace to use
+              zh: 要使用的命名空间
             takes_value: true
           - long: all-namespaces
             short: A
-            description: All namespaces
+            description:
+              en: All namespaces
+              zh: 所有命名空间
           - long: containers
-            description: Print containers stats
+            description:
+              en: Print containers stats
+              zh: 打印容器统计信息
           - long: selector
             short: l
-            description: Label selector
+            description:
+              en: Label selector
+              zh: 标签选择器
             takes_value: true
           - long: sort-by
-            description: Sort by field
+            description:
+              en: Sort by field
+              zh: 按字段排序
             takes_value: true
           - long: no-headers
-            description: Don't print headers
+            description:
+              en: Don't print headers
+              zh: 不打印表头
   - name: cordon
-    description: Mark node as unschedulable
+    description:
+      en: Mark node as unschedulable
+      zh: 将节点标记为不可调度
     flags:
       - long: selector
         short: l
-        description: Label selector
+        description:
+          en: Label selector
+          zh: 标签选择器
         takes_value: true
       - long: dry-run
-        description: Must be none, server, or client
+        description:
+          en: Must be none, server, or client
+          zh: 必须是 none、server 或 client
         takes_value: true
   - name: uncordon
-    description: Mark node as schedulable
+    description:
+      en: Mark node as schedulable
+      zh: 将节点标记为可调度
     flags:
       - long: selector
         short: l
-        description: Label selector
+        description:
+          en: Label selector
+          zh: 标签选择器
         takes_value: true
       - long: dry-run
-        description: Must be none, server, or client
+        description:
+          en: Must be none, server, or client
+          zh: 必须是 none、server 或 client
         takes_value: true
   - name: drain
-    description: Drain node in preparation for maintenance
+    description:
+      en: Drain node in preparation for maintenance
+      zh: 排空节点以准备维护
     flags:
       - long: force
-        description: Continue even if there are pods not managed by a controller
+        description:
+          en: Continue even if there are pods not managed by a controller
+          zh: 即使存在不受控制器管理的 Pod 也继续
       - long: grace-period
-        description: Grace period for deletion
+        description:
+          en: Grace period for deletion
+          zh: 删除的宽限期
         takes_value: true
       - long: ignore-daemonsets
-        description: Ignore DaemonSet pods
+        description:
+          en: Ignore DaemonSet pods
+          zh: 忽略 DaemonSet Pod
       - long: delete-emptydir-data
-        description: Delete pods using emptyDir
+        description:
+          en: Delete pods using emptyDir
+          zh: 删除使用 emptyDir 的 Pod
       - long: selector
         short: l
-        description: Label selector
+        description:
+          en: Label selector
+          zh: 标签选择器
         takes_value: true
       - long: timeout
-        description: Time to wait before giving up
+        description:
+          en: Time to wait before giving up
+          zh: 放弃前等待的时间
         takes_value: true
       - long: dry-run
-        description: Must be none, server, or client
+        description:
+          en: Must be none, server, or client
+          zh: 必须是 none、server 或 client
         takes_value: true
   - name: taint
-    description: Update the taints on one or more nodes
+    description:
+      en: Update the taints on one or more nodes
+      zh: 更新一个或多个节点上的污点
     flags:
       - long: selector
         short: l
-        description: Label selector
+        description:
+          en: Label selector
+          zh: 标签选择器
         takes_value: true
       - long: all
-        description: Select all nodes
+        description:
+          en: Select all nodes
+          zh: 选择所有节点
       - long: overwrite
-        description: Overwrite existing taints
+        description:
+          en: Overwrite existing taints
+          zh: 覆盖现有污点
       - long: dry-run
-        description: Must be none, server, or client
+        description:
+          en: Must be none, server, or client
+          zh: 必须是 none、server 或 client
         takes_value: true
       - long: output
         short: o
-        description: Output format
+        description:
+          en: Output format
+          zh: 输出格式
         takes_value: true
   - name: cluster-info
-    description: Display cluster information
+    description:
+      en: Display cluster information
+      zh: 显示集群信息
     subcommands:
       - name: dump
-        description: Dump cluster state for debugging
+        description:
+          en: Dump cluster state for debugging
+          zh: 转储集群状态以供调试
         flags:
           - long: all-namespaces
             short: A
-            description: All namespaces
+            description:
+              en: All namespaces
+              zh: 所有命名空间
           - long: namespaces
-            description: Namespaces to dump
+            description:
+              en: Namespaces to dump
+              zh: 要转储的命名空间
             takes_value: true
           - long: output-directory
-            description: Output directory
+            description:
+              en: Output directory
+              zh: 输出目录
             takes_value: true
   - name: config
-    description: Modify kubeconfig files
+    description:
+      en: Modify kubeconfig files
+      zh: 修改 kubeconfig 文件
     subcommands:
       - name: current-context
-        description: Display the current context
+        description:
+          en: Display the current context
+          zh: 显示当前上下文
       - name: delete-cluster
-        description: Delete a cluster from kubeconfig
+        description:
+          en: Delete a cluster from kubeconfig
+          zh: 从 kubeconfig 中删除集群
       - name: delete-context
-        description: Delete a context from kubeconfig
+        description:
+          en: Delete a context from kubeconfig
+          zh: 从 kubeconfig 中删除上下文
       - name: delete-user
-        description: Delete a user from kubeconfig
+        description:
+          en: Delete a user from kubeconfig
+          zh: 从 kubeconfig 中删除用户
       - name: get-clusters
-        description: Display clusters defined in kubeconfig
+        description:
+          en: Display clusters defined in kubeconfig
+          zh: 显示 kubeconfig 中定义的集群
       - name: get-contexts
-        description: Display contexts from kubeconfig
+        description:
+          en: Display contexts from kubeconfig
+          zh: 显示 kubeconfig 中的上下文
         flags:
           - long: output
             short: o
-            description: Output format
+            description:
+              en: Output format
+              zh: 输出格式
             takes_value: true
           - long: no-headers
-            description: Don't print headers
+            description:
+              en: Don't print headers
+              zh: 不打印表头
       - name: get-users
-        description: Display users defined in kubeconfig
+        description:
+          en: Display users defined in kubeconfig
+          zh: 显示 kubeconfig 中定义的用户
       - name: rename-context
-        description: Rename a context
+        description:
+          en: Rename a context
+          zh: 重命名上下文
       - name: set
-        description: Set an individual value in kubeconfig
+        description:
+          en: Set an individual value in kubeconfig
+          zh: 在 kubeconfig 中设置单个值
       - name: set-cluster
-        description: Set a cluster entry in kubeconfig
+        description:
+          en: Set a cluster entry in kubeconfig
+          zh: 在 kubeconfig 中设置集群条目
         flags:
           - long: server
-            description: Server URL
+            description:
+              en: Server URL
+              zh: 服务器 URL
             takes_value: true
           - long: certificate-authority
-            description: CA cert file path
+            description:
+              en: CA cert file path
+              zh: CA 证书文件路径
             takes_value: true
           - long: insecure-skip-tls-verify
-            description: Skip TLS verification
+            description:
+              en: Skip TLS verification
+              zh: 跳过 TLS 验证
       - name: set-context
-        description: Set a context entry in kubeconfig
+        description:
+          en: Set a context entry in kubeconfig
+          zh: 在 kubeconfig 中设置上下文条目
         flags:
           - long: cluster
-            description: Cluster to use
+            description:
+              en: Cluster to use
+              zh: 要使用的集群
             takes_value: true
           - long: user
-            description: User to use
+            description:
+              en: User to use
+              zh: 要使用的用户
             takes_value: true
           - long: namespace
-            description: Default namespace
+            description:
+              en: Default namespace
+              zh: 默认命名空间
             takes_value: true
       - name: set-credentials
-        description: Set a user entry in kubeconfig
+        description:
+          en: Set a user entry in kubeconfig
+          zh: 在 kubeconfig 中设置用户条目
         flags:
           - long: client-certificate
-            description: Client cert file path
+            description:
+              en: Client cert file path
+              zh: 客户端证书文件路径
             takes_value: true
           - long: client-key
-            description: Client key file path
+            description:
+              en: Client key file path
+              zh: 客户端密钥文件路径
             takes_value: true
           - long: token
-            description: Bearer token
+            description:
+              en: Bearer token
+              zh: Bearer 令牌
             takes_value: true
           - long: username
-            description: Username
+            description:
+              en: Username
+              zh: 用户名
             takes_value: true
           - long: password
-            description: Password
+            description:
+              en: Password
+              zh: 密码
             takes_value: true
       - name: unset
-        description: Unset an individual value in kubeconfig
+        description:
+          en: Unset an individual value in kubeconfig
+          zh: 取消设置 kubeconfig 中的单个值
       - name: use-context
-        description: Set the current context
+        description:
+          en: Set the current context
+          zh: 设置当前上下文
       - name: view
-        description: Display merged kubeconfig settings
+        description:
+          en: Display merged kubeconfig settings
+          zh: 显示合并的 kubeconfig 设置
         flags:
           - long: minify
-            description: Remove unused information
+            description:
+              en: Remove unused information
+              zh: 删除未使用的信息
           - long: flatten
-            description: Flatten resulting kubeconfig
+            description:
+              en: Flatten resulting kubeconfig
+              zh: 扁平化结果 kubeconfig
           - long: raw
-            description: Display raw byte data
+            description:
+              en: Display raw byte data
+              zh: 显示原始字节数据
           - long: output
             short: o
-            description: Output format
+            description:
+              en: Output format
+              zh: 输出格式
             takes_value: true
   - name: api-resources
-    description: Print supported API resources
+    description:
+      en: Print supported API resources
+      zh: 打印支持的 API 资源
     flags:
       - long: output
         short: o
-        description: Output format (wide, name)
+        description:
+          en: Output format (wide, name)
+          zh: 输出格式 (wide, name)
         takes_value: true
       - long: namespaced
-        description: Filter by namespaced scope
+        description:
+          en: Filter by namespaced scope
+          zh: 按命名空间范围过滤
       - long: verbs
-        description: Filter by verb
+        description:
+          en: Filter by verb
+          zh: 按动词过滤
         takes_value: true
       - long: api-group
-        description: Filter by API group
+        description:
+          en: Filter by API group
+          zh: 按 API 组过滤
         takes_value: true
       - long: sort-by
-        description: Sort by name or kind
+        description:
+          en: Sort by name or kind
+          zh: 按名称或类型排序
         takes_value: true
       - long: no-headers
-        description: Don't print headers
+        description:
+          en: Don't print headers
+          zh: 不打印表头
   - name: api-versions
-    description: Print supported API versions
+    description:
+      en: Print supported API versions
+      zh: 打印支持的 API 版本
   - name: version
-    description: Print the client and server version information
+    description:
+      en: Print the client and server version information
+      zh: 打印客户端和服务器版本信息
     flags:
       - long: client
-        description: Show only client version
+        description:
+          en: Show only client version
+          zh: 仅显示客户端版本
       - long: short
-        description: Print just the version number
+        description:
+          en: Print just the version number
+          zh: 仅打印版本号
       - long: output
         short: o
-        description: Output format
+        description:
+          en: Output format
+          zh: 输出格式
         takes_value: true
   - name: diff
-    description: Diff the live version against a potential apply
+    description:
+      en: Diff the live version against a potential apply
+      zh: 对比实时版本与潜在应用
     flags:
       - long: filename
         short: f
-        description: Filename, directory, or URL to files
+        description:
+          en: Filename, directory, or URL to files
+          zh: 文件名、目录或文件的 URL
         takes_value: true
       - long: recursive
         short: R
-        description: Process the directory used in -f recursively
+        description:
+          en: Process the directory used in -f recursively
+          zh: 递归处理 -f 中使用的目录
       - long: selector
         short: l
-        description: Label selector
+        description:
+          en: Label selector
+          zh: 标签选择器
         takes_value: true
       - long: server-side
-        description: Use server-side apply
+        description:
+          en: Use server-side apply
+          zh: 使用服务器端应用
       - long: field-manager
-        description: Field manager name
+        description:
+          en: Field manager name
+          zh: 字段管理器名称
         takes_value: true
     is_path_completion: true
   - name: wait
-    description: Wait for a specific condition on one or many resources
+    description:
+      en: Wait for a specific condition on one or many resources
+      zh: 等待一个或多个资源达到特定条件
     flags:
       - long: namespace
         short: n
-        description: Namespace to use
+        description:
+          en: Namespace to use
+          zh: 要使用的命名空间
         takes_value: true
       - long: for
-        description: Condition to wait for
+        description:
+          en: Condition to wait for
+          zh: 要等待的条件
         takes_value: true
       - long: timeout
-        description: Time to wait before giving up
+        description:
+          en: Time to wait before giving up
+          zh: 放弃前等待的时间
         takes_value: true
       - long: selector
         short: l
-        description: Label selector
+        description:
+          en: Label selector
+          zh: 标签选择器
         takes_value: true
       - long: all
-        description: Select all resources
+        description:
+          en: Select all resources
+          zh: 选择所有资源
       - long: all-namespaces
         short: A
-        description: All namespaces
+        description:
+          en: All namespaces
+          zh: 所有命名空间
   - name: auth
-    description: Inspect authorization
+    description:
+      en: Inspect authorization
+      zh: 检查授权
     subcommands:
       - name: can-i
-        description: Check whether an action is allowed
+        description:
+          en: Check whether an action is allowed
+          zh: 检查是否允许某个操作
         flags:
           - long: namespace
             short: n
-            description: Namespace to use
+            description:
+              en: Namespace to use
+              zh: 要使用的命名空间
             takes_value: true
           - long: all-namespaces
             short: A
-            description: Check in all namespaces
+            description:
+              en: Check in all namespaces
+              zh: 在所有命名空间中检查
           - long: list
-            description: List all allowed actions
+            description:
+              en: List all allowed actions
+              zh: 列出所有允许的操作
           - long: quiet
             short: q
-            description: Suppress output
+            description:
+              en: Suppress output
+              zh: 抑制输出
           - long: subresource
-            description: SubResource to check
+            description:
+              en: SubResource to check
+              zh: 要检查的子资源
             takes_value: true
       - name: reconcile
-        description: Reconciles rules for RBAC role, role binding, cluster role, and cluster role binding objects
+        description:
+          en: Reconciles rules for RBAC role, role binding, cluster role, and cluster role binding objects
+          zh: 协调 RBAC 角色、角色绑定、集群角色和集群角色绑定对象的规则
         flags:
           - long: filename
             short: f
-            description: Filename, directory, or URL to files
+            description:
+              en: Filename, directory, or URL to files
+              zh: 文件名、目录或文件的 URL
             takes_value: true
           - long: dry-run
-            description: Must be none, server, or client
+            description:
+              en: Must be none, server, or client
+              zh: 必须是 none、server 或 client
             takes_value: true
           - long: remove-extra-permissions
-            description: Remove extra permissions
+            description:
+              en: Remove extra permissions
+              zh: 删除额外权限
           - long: remove-extra-subjects
-            description: Remove extra subjects
+            description:
+              en: Remove extra subjects
+              zh: 删除额外主体
       - name: whoami
-        description: "Experimental: Check self subject attributes"
+        description:
+          en: "Experimental: Check self subject attributes"
+          zh: "实验性: 检查自身主体属性"
         flags:
           - long: output
             short: o
-            description: Output format
+            description:
+              en: Output format
+              zh: 输出格式
             takes_value: true
   - name: certificate
-    description: Modify certificate resources
+    description:
+      en: Modify certificate resources
+      zh: 修改证书资源
     subcommands:
       - name: approve
-        description: Approve a certificate signing request
+        description:
+          en: Approve a certificate signing request
+          zh: 批准证书签名请求
         flags:
           - long: force
-            description: Update even if resource has been modified
+            description:
+              en: Update even if resource has been modified
+              zh: 即使资源已被修改也更新
       - name: deny
-        description: Deny a certificate signing request
+        description:
+          en: Deny a certificate signing request
+          zh: 拒绝证书签名请求
         flags:
           - long: force
-            description: Update even if resource has been modified
+            description:
+              en: Update even if resource has been modified
+              zh: 即使资源已被修改也更新
   - name: debug
-    description: Create debugging sessions for troubleshooting workloads and nodes
+    description:
+      en: Create debugging sessions for troubleshooting workloads and nodes
+      zh: 创建调试会话以排查工作负载和节点问题
     flags:
       - long: namespace
         short: n
-        description: Namespace to use
+        description:
+          en: Namespace to use
+          zh: 要使用的命名空间
         takes_value: true
       - long: image
-        description: Container image to use for debug container
+        description:
+          en: Container image to use for debug container
+          zh: 用于调试容器的容器镜像
         takes_value: true
       - long: container
         short: c
-        description: Container name to use for debug container
+        description:
+          en: Container name to use for debug container
+          zh: 用于调试容器的容器名称
         takes_value: true
       - long: stdin
         short: i
-        description: Keep stdin open
+        description:
+          en: Keep stdin open
+          zh: 保持标准输入打开
       - long: tty
         short: t
-        description: Allocate a TTY
+        description:
+          en: Allocate a TTY
+          zh: 分配一个 TTY
       - long: copy-to
-        description: Name for the copied pod
+        description:
+          en: Name for the copied pod
+          zh: 复制的 Pod 的名称
         takes_value: true
       - long: target
-        description: Target container to attach debugger
+        description:
+          en: Target container to attach debugger
+          zh: 要附加调试器的目标容器
         takes_value: true
       - long: share-processes
-        description: Enable process namespace sharing
+        description:
+          en: Enable process namespace sharing
+          zh: 启用进程命名空间共享
 flags:
   - long: kubeconfig
-    description: Path to the kubeconfig file
+    description:
+      en: Path to the kubeconfig file
+      zh: kubeconfig 文件的路径
     takes_value: true
   - long: context
-    description: Name of the kubeconfig context to use
+    description:
+      en: Name of the kubeconfig context to use
+      zh: 要使用的 kubeconfig 上下文的名称
     takes_value: true
   - long: cluster
-    description: Name of the kubeconfig cluster to use
+    description:
+      en: Name of the kubeconfig cluster to use
+      zh: 要使用的 kubeconfig 集群的名称
     takes_value: true
   - long: namespace
     short: n
-    description: Namespace to use
+    description:
+      en: Namespace to use
+      zh: 要使用的命名空间
     takes_value: true
   - long: server
     short: s
-    description: Address of the Kubernetes API server
+    description:
+      en: Address of the Kubernetes API server
+      zh: Kubernetes API 服务器的地址
     takes_value: true
   - long: insecure-skip-tls-verify
-    description: Skip server certificate verification
+    description:
+      en: Skip server certificate verification
+      zh: 跳过服务器证书验证
   - long: client-certificate
-    description: Path to client certificate file
+    description:
+      en: Path to client certificate file
+      zh: 客户端证书文件的路径
     takes_value: true
   - long: client-key
-    description: Path to client private key file
+    description:
+      en: Path to client private key file
+      zh: 客户端私钥文件的路径
     takes_value: true
   - long: token
-    description: Bearer token for authentication
+    description:
+      en: Bearer token for authentication
+      zh: 用于身份验证的 Bearer 令牌
     takes_value: true
   - long: as
-    description: Username to impersonate
+    description:
+      en: Username to impersonate
+      zh: 要模拟的用户名
     takes_value: true
   - long: as-group
-    description: Group to impersonate
+    description:
+      en: Group to impersonate
+      zh: 要模拟的组
     takes_value: true
   - long: as-uid
-    description: UID to impersonate
+    description:
+      en: UID to impersonate
+      zh: 要模拟的 UID
     takes_value: true
   - long: request-timeout
-    description: Timeout for single server request
+    description:
+      en: Timeout for single server request
+      zh: 单个服务器请求的超时时间
     takes_value: true
   - long: verbose
     short: v
-    description: Verbosity level
+    description:
+      en: Verbosity level
+      zh: 详细程度级别
     takes_value: true

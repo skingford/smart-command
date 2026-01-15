@@ -1,153 +1,255 @@
 name: grep
-description: Search for patterns in files
+description:
+  en: Search for patterns in files
+  zh: 打印匹配模式的行
 flags:
   - long: extended-regexp
     short: E
-    description: Use extended regular expressions
+    description:
+      en: Use extended regular expressions
+      zh: 使用扩展正则表达式
   - long: fixed-strings
     short: F
-    description: Use fixed strings instead of patterns
+    description:
+      en: Use fixed strings instead of patterns
+      zh: 使用固定字符串而非模式
   - long: basic-regexp
     short: G
-    description: Use basic regular expressions (default)
+    description:
+      en: Use basic regular expressions (default)
+      zh: 使用基本正则表达式（默认）
   - long: perl-regexp
     short: P
-    description: Use Perl-compatible regular expressions
+    description:
+      en: Use Perl-compatible regular expressions
+      zh: 使用Perl兼容正则表达式
   - long: regexp
     short: e
-    description: Pattern to match
+    description:
+      en: Pattern to match
+      zh: 要匹配的模式
     takes_value: true
   - long: file
     short: f
-    description: Read patterns from file
+    description:
+      en: Read patterns from file
+      zh: 从文件读取模式
     takes_value: true
   - long: ignore-case
     short: i
-    description: Case insensitive matching
+    description:
+      en: Case insensitive matching
+      zh: 不区分大小写匹配
   - long: no-ignore-case
-    description: Case sensitive matching
+    description:
+      en: Case sensitive matching
+      zh: 区分大小写匹配
   - long: word-regexp
     short: w
-    description: Match whole words only
+    description:
+      en: Match whole words only
+      zh: 仅匹配整个单词
   - long: line-regexp
     short: x
-    description: Match whole lines only
+    description:
+      en: Match whole lines only
+      zh: 仅匹配整行
   - short: z
-    description: Treat data as null-terminated lines
+    description:
+      en: Treat data as null-terminated lines
+      zh: 将数据视为以空字符结尾的行
   - long: null-data
-    description: Treat data as null-terminated lines
+    description:
+      en: Treat data as null-terminated lines
+      zh: 将数据视为以空字符结尾的行
   - long: count
     short: c
-    description: Print only count of matching lines
+    description:
+      en: Print only count of matching lines
+      zh: 仅打印匹配行数
   - long: color
-    description: Colorize matching text (always, never, auto)
+    description:
+      en: Colorize matching text (always, never, auto)
+      zh: 着色匹配文本（always、never、auto）
     takes_value: true
   - long: colour
-    description: Colorize matching text (always, never, auto)
+    description:
+      en: Colorize matching text (always, never, auto)
+      zh: 着色匹配文本（always、never、auto）
     takes_value: true
   - long: files-with-matches
     short: l
-    description: Print only names of files with matches
+    description:
+      en: Print only names of files with matches
+      zh: 仅打印包含匹配的文件名
   - long: files-without-match
     short: L
-    description: Print only names of files without matches
+    description:
+      en: Print only names of files without matches
+      zh: 仅打印不包含匹配的文件名
   - long: max-count
     short: m
-    description: Stop after NUM matches
+    description:
+      en: Stop after NUM matches
+      zh: 达到NUM个匹配后停止
     takes_value: true
   - long: only-matching
     short: o
-    description: Print only matching parts of lines
+    description:
+      en: Print only matching parts of lines
+      zh: 仅打印行中匹配的部分
   - long: quiet
     short: q
-    description: Suppress all output
+    description:
+      en: Suppress all output
+      zh: 抑制所有输出
   - long: silent
-    description: Suppress all output
+    description:
+      en: Suppress all output
+      zh: 抑制所有输出
   - long: no-messages
     short: s
-    description: Suppress error messages
+    description:
+      en: Suppress error messages
+      zh: 抑制错误消息
   - long: invert-match
     short: v
-    description: Select non-matching lines
+    description:
+      en: Select non-matching lines
+      zh: 选择不匹配的行
   - long: byte-offset
     short: b
-    description: Print byte offset with output
+    description:
+      en: Print byte offset with output
+      zh: 输出时打印字节偏移
   - long: with-filename
     short: H
-    description: Print filename with output
+    description:
+      en: Print filename with output
+      zh: 输出时打印文件名
   - long: no-filename
     short: h
-    description: Suppress filename prefix
+    description:
+      en: Suppress filename prefix
+      zh: 抑制文件名前缀
   - long: label
-    description: Label for stdin
+    description:
+      en: Label for stdin
+      zh: stdin的标签
     takes_value: true
   - long: line-number
     short: n
-    description: Print line number with output
+    description:
+      en: Print line number with output
+      zh: 输出时打印行号
   - long: initial-tab
     short: T
-    description: Align output with tabs
+    description:
+      en: Align output with tabs
+      zh: 使用制表符对齐输出
   - long: unix-byte-offsets
     short: u
-    description: Report offsets as if CRs were not there
-  - long: null
+    description:
+      en: Report offsets as if CRs were not there
+      zh: 报告偏移时忽略CR字符
+  - long: "null"
     short: Z
-    description: Print null byte after filename
+    description:
+      en: Print null byte after filename
+      zh: 在文件名后打印空字节
   - long: after-context
     short: A
-    description: Print NUM lines after match
+    description:
+      en: Print NUM lines after match
+      zh: 打印匹配后NUM行
     takes_value: true
   - long: before-context
     short: B
-    description: Print NUM lines before match
+    description:
+      en: Print NUM lines before match
+      zh: 打印匹配前NUM行
     takes_value: true
   - long: context
     short: C
-    description: Print NUM lines before and after match
+    description:
+      en: Print NUM lines before and after match
+      zh: 打印匹配前后NUM行
     takes_value: true
   - long: text
     short: a
-    description: Process binary files as text
+    description:
+      en: Process binary files as text
+      zh: 将二进制文件作为文本处理
   - long: binary-files
-    description: Set binary file handling (binary, text, without-match)
+    description:
+      en: Set binary file handling (binary, text, without-match)
+      zh: 设置二进制文件处理方式（binary、text、without-match）
     takes_value: true
   - short: I
-    description: Ignore binary files
+    description:
+      en: Ignore binary files
+      zh: 忽略二进制文件
   - long: devices
     short: D
-    description: How to handle devices (read, skip)
+    description:
+      en: How to handle devices (read, skip)
+      zh: 如何处理设备（read、skip）
     takes_value: true
   - long: directories
     short: d
-    description: How to handle directories (read, skip, recurse)
+    description:
+      en: How to handle directories (read, skip, recurse)
+      zh: 如何处理目录（read、skip、recurse）
     takes_value: true
   - long: exclude
-    description: Skip files matching pattern
+    description:
+      en: Skip files matching pattern
+      zh: 跳过匹配模式的文件
     takes_value: true
   - long: exclude-from
-    description: Skip files matching patterns in file
+    description:
+      en: Skip files matching patterns in file
+      zh: 跳过匹配文件中模式的文件
     takes_value: true
   - long: exclude-dir
-    description: Skip directories matching pattern
+    description:
+      en: Skip directories matching pattern
+      zh: 跳过匹配模式的目录
     takes_value: true
   - long: include
-    description: Search only files matching pattern
+    description:
+      en: Search only files matching pattern
+      zh: 仅搜索匹配模式的文件
     takes_value: true
   - long: recursive
     short: r
-    description: Recursively search directories
+    description:
+      en: Recursively search directories
+      zh: 递归搜索目录
   - short: R
-    description: Recursively search directories following symlinks
+    description:
+      en: Recursively search directories following symlinks
+      zh: 递归搜索目录并跟随符号链接
   - long: dereference-recursive
-    description: Follow all symbolic links
+    description:
+      en: Follow all symbolic links
+      zh: 跟随所有符号链接
   - long: line-buffered
-    description: Use line buffering
+    description:
+      en: Use line buffering
+      zh: 使用行缓冲
   - long: binary
     short: U
-    description: Do not strip CR characters
+    description:
+      en: Do not strip CR characters
+      zh: 不去除CR字符
   - long: group-separator
-    description: Print separator between groups
+    description:
+      en: Print separator between groups
+      zh: 在组之间打印分隔符
     takes_value: true
   - long: no-group-separator
-    description: Do not print separator between groups
+    description:
+      en: Do not print separator between groups
+      zh: 不在组之间打印分隔符
 is_path_completion: true
