@@ -3,11 +3,21 @@ use crate::command_def::CommandSpec;
 use crate::definitions;
 use std::collections::HashMap;
 use std::sync::{Arc, RwLock};
+use fuzzy_matcher::FuzzyMatcher;
+use fuzzy_matcher::skim::SkimMatcherV2;
 
-#[derive(Clone)]
 pub struct SmartCompleter {
     commands: HashMap<String, CommandSpec>,
     current_lang: Arc<RwLock<String>>,
+}
+
+impl Clone for SmartCompleter {
+    fn clone(&self) -> Self {
+        Self {
+            commands: self.commands.clone(),
+            current_lang: self.current_lang.clone(),
+        }
+    }
 }
 
 impl SmartCompleter {
@@ -16,22 +26,29 @@ impl SmartCompleter {
         for cmd in loaded_commands {
             commands.insert(cmd.name.clone(), cmd);
         }
-        
+
         for cmd in definitions::other_specs() {
             if !commands.contains_key(&cmd.name) {
                 commands.insert(cmd.name.clone(), cmd);
             }
         }
 
-        Self { commands, current_lang }
+        Self {
+            commands,
+            current_lang,
+        }
     }
 
-    fn fuzzy_match(&self, input: &str, target: &str) -> bool {
+    /// True fuzzy match - allows non-contiguous character matching
+    /// e.g., "cm" matches "commit", "gco" matches "git checkout"
+    fn fuzzy_match(&self, input: &str, target: &str) -> Option<i64> {
+        let matcher = SkimMatcherV2::default();
+        matcher.fuzzy_match(target, input)
+    }
+
+    /// Prefix match for backward compatibility (faster for Tab completion)
+    fn prefix_match(&self, input: &str, target: &str) -> bool {
         target.to_lowercase().starts_with(&input.to_lowercase())
-    }
-
-    fn contains_keyword(&self, input: &str, target: &str) -> bool {
-        target.to_lowercase().contains(&input.to_lowercase())
     }
 
     fn get_lang(&self) -> String {
@@ -39,13 +56,22 @@ impl SmartCompleter {
     }
 
     fn search_commands(&self, query: &str, lang: &str) -> Vec<(String, String, String)> {
-        let mut results = Vec::new();
+        let mut results: Vec<(i64, String, String, String)> = Vec::new(); // (score, cmd, desc, match_type)
 
         for cmd in self.commands.values() {
             self.search_command_recursive(cmd, query, lang, &cmd.name, &mut results);
         }
 
+        // Sort by score (higher is better)
+        results.sort_by(|a, b| b.0.cmp(&a.0));
+
+        // Remove duplicates and return without scores
+        let mut seen = std::collections::HashSet::new();
         results
+            .into_iter()
+            .filter(|(_, cmd, _, _)| seen.insert(cmd.clone()))
+            .map(|(_, cmd, desc, match_type)| (cmd, desc, match_type))
+            .collect()
     }
 
     fn search_command_recursive(
@@ -54,32 +80,35 @@ impl SmartCompleter {
         query: &str,
         lang: &str,
         full_cmd: &str,
-        results: &mut Vec<(String, String, String)>,
+        results: &mut Vec<(i64, String, String, String)>,
     ) {
-        // Search in command name
-        if self.contains_keyword(query, &cmd.name) {
+        // Search in command name using fuzzy matching
+        if let Some(score) = self.fuzzy_match(query, &cmd.name) {
             results.push((
+                score + 100, // Boost command name matches
                 full_cmd.to_string(),
                 cmd.description.get(lang).to_string(),
                 format!("Command: {}", cmd.name),
             ));
         }
 
-        // Search in description
+        // Search in description using fuzzy matching
         let desc = cmd.description.get(lang);
-        if self.contains_keyword(query, desc) {
+        if let Some(score) = self.fuzzy_match(query, desc) {
             results.push((
+                score,
                 full_cmd.to_string(),
                 desc.to_string(),
-                "Description match".to_string(),
+                "Description".to_string(),
             ));
         }
 
         // Search in examples
         for example in &cmd.examples {
             let scenario = example.scenario.get(lang);
-            if self.contains_keyword(query, scenario) {
+            if let Some(score) = self.fuzzy_match(query, scenario) {
                 results.push((
+                    score - 10, // Slightly lower priority for examples
                     example.cmd.clone(),
                     format!("{} - {}", scenario, example.cmd),
                     "Example".to_string(),
@@ -97,6 +126,11 @@ impl SmartCompleter {
     pub fn search(&self, query: &str) -> Vec<(String, String, String)> {
         let lang = self.get_lang();
         self.search_commands(query, &lang)
+    }
+
+    /// Get all command names for syntax highlighting
+    pub fn get_command_names(&self) -> Vec<String> {
+        self.commands.keys().cloned().collect()
     }
 }
 
@@ -136,8 +170,8 @@ impl Completer for SmartCompleter {
                 })
                 .collect();
 
-            // Add system commands
-            if self.contains_keyword(query, "config") {
+            // Add system commands if they match
+            if self.fuzzy_match(query, "config").is_some() {
                 suggestions.push(Suggestion {
                     value: "config".to_string(),
                     description: Some("[System] Configure shell settings".to_string()),
@@ -148,7 +182,7 @@ impl Completer for SmartCompleter {
                 });
             }
 
-            if self.contains_keyword(query, "exit") {
+            if self.fuzzy_match(query, "exit").is_some() {
                 suggestions.push(Suggestion {
                     value: "exit".to_string(),
                     description: Some("[System] Exit the shell".to_string()),
@@ -164,17 +198,23 @@ impl Completer for SmartCompleter {
 
         if parts.is_empty() || (parts.len() == 1 && !line.ends_with(' ')) {
              let query = parts.first().unwrap_or(&"");
-             return self.commands.values()
-                .filter(|cmd| self.fuzzy_match(query, &cmd.name))
-                .map(|cmd| Suggestion {
+             let mut suggestions: Vec<(i64, Suggestion)> = self.commands.values()
+                .filter_map(|cmd| {
+                    self.fuzzy_match(query, &cmd.name).map(|score| (score, cmd))
+                })
+                .map(|(score, cmd)| (score, Suggestion {
                     value: cmd.name.clone(),
                     description: Some(cmd.description.get(&lang).to_string()),
                     extra: None,
                     span: Span { start: pos - query.len(), end: pos },
                     append_whitespace: true,
                     style: None,
-                })
+                }))
                 .collect();
+
+             // Sort by fuzzy score (higher is better)
+             suggestions.sort_by(|a, b| b.0.cmp(&a.0));
+             return suggestions.into_iter().map(|(_, s)| s).collect();
         }
 
         if let Some(cmd_name) = parts.first() {
@@ -201,9 +241,9 @@ impl Completer for SmartCompleter {
                 let start_idx = if is_new_arg { pos } else { pos - query.len() };
                 
                 // 1. Subcommand completion
-                // Suggest subcommands of the CURRENT spec
+                // Suggest subcommands of the CURRENT spec (use prefix match for speed in tab completion)
                 let sub_suggestions: Vec<Suggestion> = current_spec.subcommands.iter()
-                    .filter(|sub| self.fuzzy_match(query, &sub.name))
+                    .filter(|sub| self.prefix_match(query, &sub.name))
                     .map(|sub| Suggestion {
                         value: sub.name.clone(),
                         description: Some(sub.description.get(&lang).to_string()),
