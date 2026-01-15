@@ -44,7 +44,14 @@ impl Completer for SmartCompleter {
             let query = &line[1..pos]; // skip the slash
             let span_start = pos - query.len() - 1; // encompass the slash
             
-            return self.commands.values()
+            // Default behavior: Show system commands
+            let mut suggestions = Vec::new();
+            
+            // System commands (manually defined for now)
+            let system_cmds = vec!["config", "exit"]; // 'exit' is handled in main loop
+            
+            suggestions.extend(self.commands.values()
+                .filter(|cmd| system_cmds.contains(&cmd.name.as_str()))
                 .filter(|cmd| self.fuzzy_match(query, &cmd.name))
                 .map(|cmd| Suggestion {
                     value: cmd.name.clone(),
@@ -53,8 +60,21 @@ impl Completer for SmartCompleter {
                     span: Span { start: span_start, end: pos },
                     append_whitespace: true,
                     style: None,
-                })
-                .collect();
+                }));
+
+            // Also add 'exit' manually if it's not in definitions (it isn't)
+            if self.fuzzy_match(query, "exit") {
+                 suggestions.push(Suggestion {
+                    value: "exit".to_string(),
+                    description: Some("Exit the shell".to_string()),
+                    extra: None,
+                    span: Span { start: span_start, end: pos },
+                    append_whitespace: true,
+                    style: None,
+                });
+            }
+
+            return suggestions;
         }
 
         if parts.is_empty() || (parts.len() == 1 && !line.ends_with(' ')) {

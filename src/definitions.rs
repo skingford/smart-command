@@ -7,5 +7,11 @@ pub fn other_specs() -> Vec<CommandSpec> {
             .field("is_path_completion", true),
         CommandSpec::new("cd", "Change the shell working directory")
             .field("is_path_completion", true),
+        CommandSpec::new("config", "System configuration")
+            .subcommand(
+                CommandSpec::new("set-lang", "Set display language")
+                    .subcommand(CommandSpec::new("en", "English"))
+                    .subcommand(CommandSpec::new("zh", "Chinese"))
+            ),
     ]
 }

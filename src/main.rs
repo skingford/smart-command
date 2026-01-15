@@ -71,6 +71,7 @@ fn main() -> reedline::Result<()> {
 
                 let parts: Vec<&str> = trimmed.split_whitespace().collect();
                 if let Some(cmd) = parts.first() {
+                     // eprintln!("Debug: cmd=[{}]", cmd);
                      if *cmd == "cd" {
                          if let Some(path) = parts.get(1) {
                              if let Err(e) = std::env::set_current_dir(path) {
@@ -95,7 +96,6 @@ fn main() -> reedline::Result<()> {
                          } else {
                              println!("Usage: config set-lang <lang>");
                          }
-                         continue;
                      }
 
                      let status = Command::new("sh")
@@ -104,7 +104,7 @@ fn main() -> reedline::Result<()> {
                         .status();
                     
                      match status {
-                         Ok(_) => {},
+                         Ok(_) => { println!(""); },
                          Err(e) => eprintln!("Error executing command: {}", e),
                      }
                 }
