@@ -4,6 +4,7 @@ use crate::definitions;
 use std::collections::HashMap;
 use std::sync::{Arc, RwLock};
 
+#[derive(Clone)]
 pub struct SmartCompleter {
     commands: HashMap<String, CommandSpec>,
     current_lang: Arc<RwLock<String>>,
@@ -29,8 +30,73 @@ impl SmartCompleter {
         target.to_lowercase().starts_with(&input.to_lowercase())
     }
 
+    fn contains_keyword(&self, input: &str, target: &str) -> bool {
+        target.to_lowercase().contains(&input.to_lowercase())
+    }
+
     fn get_lang(&self) -> String {
         self.current_lang.read().unwrap().clone()
+    }
+
+    fn search_commands(&self, query: &str, lang: &str) -> Vec<(String, String, String)> {
+        let mut results = Vec::new();
+
+        for cmd in self.commands.values() {
+            self.search_command_recursive(cmd, query, lang, &cmd.name, &mut results);
+        }
+
+        results
+    }
+
+    fn search_command_recursive(
+        &self,
+        cmd: &CommandSpec,
+        query: &str,
+        lang: &str,
+        full_cmd: &str,
+        results: &mut Vec<(String, String, String)>,
+    ) {
+        // Search in command name
+        if self.contains_keyword(query, &cmd.name) {
+            results.push((
+                full_cmd.to_string(),
+                cmd.description.get(lang).to_string(),
+                format!("Command: {}", cmd.name),
+            ));
+        }
+
+        // Search in description
+        let desc = cmd.description.get(lang);
+        if self.contains_keyword(query, desc) {
+            results.push((
+                full_cmd.to_string(),
+                desc.to_string(),
+                "Description match".to_string(),
+            ));
+        }
+
+        // Search in examples
+        for example in &cmd.examples {
+            let scenario = example.scenario.get(lang);
+            if self.contains_keyword(query, scenario) {
+                results.push((
+                    example.cmd.clone(),
+                    format!("{} - {}", scenario, example.cmd),
+                    "Example".to_string(),
+                ));
+            }
+        }
+
+        // Search in subcommands
+        for sub in &cmd.subcommands {
+            let sub_full_cmd = format!("{} {}", full_cmd, sub.name);
+            self.search_command_recursive(sub, query, lang, &sub_full_cmd, results);
+        }
+    }
+
+    pub fn search(&self, query: &str) -> Vec<(String, String, String)> {
+        let lang = self.get_lang();
+        self.search_commands(query, &lang)
     }
 }
 
@@ -42,34 +108,53 @@ impl Completer for SmartCompleter {
         
         if line.starts_with('/') {
             let query = &line[1..pos]; // skip the slash
-            let span_start = pos - query.len() - 1; // encompass the slash
-            
-            // Default behavior: Show system commands
-            let mut suggestions = Vec::new();
-            
-            // System commands (manually defined for now)
-            let system_cmds = vec!["config", "exit"]; // 'exit' is handled in main loop
-            
-            suggestions.extend(self.commands.values()
-                .filter(|cmd| system_cmds.contains(&cmd.name.as_str()))
-                .filter(|cmd| self.fuzzy_match(query, &cmd.name))
-                .map(|cmd| Suggestion {
-                    value: cmd.name.clone(),
-                    description: Some(cmd.description.get(&lang).to_string()),
-                    extra: None,
-                    span: Span { start: span_start, end: pos },
-                    append_whitespace: true,
-                    style: None,
-                }));
 
-            // Also add 'exit' manually if it's not in definitions (it isn't)
-            if self.fuzzy_match(query, "exit") {
-                 suggestions.push(Suggestion {
-                    value: "exit".to_string(),
-                    description: Some("Exit the shell".to_string()),
+            // If query is empty, show a hint
+            if query.is_empty() {
+                return vec![Suggestion {
+                    value: "/".to_string(),
+                    description: Some("Type to search commands (e.g., /压缩 for compression)".to_string()),
                     extra: None,
-                    span: Span { start: span_start, end: pos },
-                    append_whitespace: true,
+                    span: Span { start: 0, end: pos },
+                    append_whitespace: false,
+                    style: None,
+                }];
+            }
+
+            // Search across all commands, descriptions, and examples
+            let search_results = self.search_commands(query, &lang);
+
+            let mut suggestions: Vec<Suggestion> = search_results
+                .into_iter()
+                .map(|(cmd, desc, match_type)| Suggestion {
+                    value: cmd.clone(),
+                    description: Some(format!("[{}] {}", match_type, desc)),
+                    extra: None,
+                    span: Span { start: 0, end: pos },
+                    append_whitespace: false,
+                    style: None,
+                })
+                .collect();
+
+            // Add system commands
+            if self.contains_keyword(query, "config") {
+                suggestions.push(Suggestion {
+                    value: "config".to_string(),
+                    description: Some("[System] Configure shell settings".to_string()),
+                    extra: None,
+                    span: Span { start: 0, end: pos },
+                    append_whitespace: false,
+                    style: None,
+                });
+            }
+
+            if self.contains_keyword(query, "exit") {
+                suggestions.push(Suggestion {
+                    value: "exit".to_string(),
+                    description: Some("[System] Exit the shell".to_string()),
+                    extra: None,
+                    span: Span { start: 0, end: pos },
+                    append_whitespace: false,
                     style: None,
                 });
             }
