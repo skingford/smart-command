@@ -10,9 +10,12 @@ mod loader;
 
 use completer::SmartCompleter;
 
+use std::sync::{Arc, RwLock};
+
 fn main() -> reedline::Result<()> {
     let commands = loader::load_commands("definitions");
-    let completer = Box::new(SmartCompleter::new(commands));
+    let current_lang = Arc::new(RwLock::new("en".to_string()));
+    let completer = Box::new(SmartCompleter::new(commands, current_lang.clone()));
     let completion_menu = Box::new(ColumnarMenu::default().with_name("completion_menu"));
 
     let mut keybindings = default_emacs_keybindings();
@@ -56,7 +59,7 @@ fn main() -> reedline::Result<()> {
 
     let prompt = DefaultPrompt::default();
 
-    println!("Welcome to Smart Command! \nType 'git <tab>' to see magic. Press Ctrl-C or type 'exit' to quit.");
+    println!("Welcome to Smart Command! \nType 'git <tab>' to see magic. Press Ctrl-C or type 'exit' to quit.\nType 'config set-lang <lang>' to change language (e.g. 'zh').");
 
     loop {
         let sig = line_editor.read_line(&prompt)?;
@@ -75,6 +78,22 @@ fn main() -> reedline::Result<()> {
                              }
                          } else if let Some(home) = dirs::home_dir() {
                                  let _ = std::env::set_current_dir(home);
+                         }
+                         continue;
+                     } else if *cmd == "config" {
+                         if let Some(sub) = parts.get(1) {
+                             if *sub == "set-lang" {
+                                 if let Some(lang) = parts.get(2) {
+                                     *current_lang.write().unwrap() = lang.to_string();
+                                     println!("Language switching to: {}", lang);
+                                 } else {
+                                     println!("Usage: config set-lang <lang>");
+                                 }
+                             } else {
+                                 println!("Unknown config subcommand: {}", sub);
+                             }
+                         } else {
+                             println!("Usage: config set-lang <lang>");
                          }
                          continue;
                      }

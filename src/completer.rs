@@ -2,23 +2,19 @@ use reedline::{Completer, Span, Suggestion};
 use crate::command_def::CommandSpec;
 use crate::definitions;
 use std::collections::HashMap;
+use std::sync::{Arc, RwLock};
 
 pub struct SmartCompleter {
     commands: HashMap<String, CommandSpec>,
+    current_lang: Arc<RwLock<String>>,
 }
 
 impl SmartCompleter {
-    pub fn new(loaded_commands: Vec<CommandSpec>) -> Self {
+    pub fn new(loaded_commands: Vec<CommandSpec>, current_lang: Arc<RwLock<String>>) -> Self {
         let mut commands = HashMap::new();
         for cmd in loaded_commands {
             commands.insert(cmd.name.clone(), cmd);
         }
-        
-        // Add built-in defaults if not present or as extra
-        // For now, assume everything comes from YAML or we can mix
-        // Let's keep ls/cd manual if they are not in YAML yet, or move them to YAML.
-        // For this step, I'll keep the hardcoded ones from `definitions::other_specs` 
-        // IF they are not already loaded, or just add them.
         
         for cmd in definitions::other_specs() {
             if !commands.contains_key(&cmd.name) {
@@ -26,16 +22,21 @@ impl SmartCompleter {
             }
         }
 
-        Self { commands }
+        Self { commands, current_lang }
     }
 
     fn fuzzy_match(&self, input: &str, target: &str) -> bool {
         target.to_lowercase().starts_with(&input.to_lowercase())
     }
+
+    fn get_lang(&self) -> String {
+        self.current_lang.read().unwrap().clone()
+    }
 }
 
 impl Completer for SmartCompleter {
     fn complete(&mut self, line: &str, pos: usize) -> Vec<Suggestion> {
+        let lang = self.get_lang();
         let input = &line[0..pos];
         let parts: Vec<&str> = input.trim_start().split_whitespace().collect();
         
@@ -47,7 +48,7 @@ impl Completer for SmartCompleter {
                 .filter(|cmd| self.fuzzy_match(query, &cmd.name))
                 .map(|cmd| Suggestion {
                     value: cmd.name.clone(),
-                    description: Some(cmd.description.clone()),
+                    description: Some(cmd.description.get(&lang).to_string()),
                     extra: None,
                     span: Span { start: span_start, end: pos },
                     append_whitespace: true,
@@ -62,7 +63,7 @@ impl Completer for SmartCompleter {
                 .filter(|cmd| self.fuzzy_match(query, &cmd.name))
                 .map(|cmd| Suggestion {
                     value: cmd.name.clone(),
-                    description: Some(cmd.description.clone()),
+                    description: Some(cmd.description.get(&lang).to_string()),
                     extra: None,
                     span: Span { start: pos - query.len(), end: pos },
                     append_whitespace: true,
@@ -85,13 +86,6 @@ impl Completer for SmartCompleter {
                          current_spec = sub;
                      } else {
                          // User typed something that isn't a known subcommand. 
-                         // It might be a flag, a file arg, or nonsense. 
-                         // We stop descending here. 
-                         // Note: We might want to clear current_spec if we hit a wall?
-                         // But practically, "git commit -m msg" -> "msg" shouldn't reset us to root.
-                         // We stay at "commit", so flags/path completion still work for "msg".
-                         // However, if we typed "git invalid sub", we probably shouldn't suggest "commit" flags for "sub".
-                         // But for now, sticking to the last valid parent is a safe heuristic.
                          break;
                      }
                 }
@@ -107,7 +101,7 @@ impl Completer for SmartCompleter {
                     .filter(|sub| self.fuzzy_match(query, &sub.name))
                     .map(|sub| Suggestion {
                         value: sub.name.clone(),
-                        description: Some(sub.description.clone()),
+                        description: Some(sub.description.get(&lang).to_string()),
                         extra: None,
                         span: Span { start: start_idx, end: pos },
                         append_whitespace: true,
@@ -124,7 +118,6 @@ impl Completer for SmartCompleter {
                     let used_chars: Vec<char> = if is_short_chain { query.chars().skip(1).collect() } else { vec![] };
                     
                     // Simple check: if we are in short chain and last char takes value, don't suggest more flags?
-                    // Re-implementing concise logic
                      let stop_flagging = if is_short_chain {
                         if let Some(last_char) = query.chars().last() {
                              current_spec.flags.iter().any(|f| f.short == Some(last_char) && f.takes_value)
@@ -141,7 +134,7 @@ impl Completer for SmartCompleter {
                             if match_short && short.is_some() {
                                  flag_suggestions.push(Suggestion {
                                     value: short.clone().unwrap(),
-                                    description: Some(flag.description.clone()),
+                                    description: Some(flag.description.get(&lang).to_string()),
                                     extra: None,
                                     span: Span { start: start_idx, end: pos },
                                     append_whitespace: true,
@@ -151,7 +144,7 @@ impl Completer for SmartCompleter {
                             if match_long && long.is_some() {
                                  flag_suggestions.push(Suggestion {
                                     value: long.clone().unwrap(),
-                                    description: Some(flag.description.clone()),
+                                    description: Some(flag.description.get(&lang).to_string()),
                                     extra: None,
                                     span: Span { start: start_idx, end: pos },
                                     append_whitespace: true,
@@ -165,7 +158,7 @@ impl Completer for SmartCompleter {
                                      if !used_chars.contains(&c) {
                                          flag_suggestions.push(Suggestion {
                                             value: format!("{}{}", query, c),
-                                            description: Some(format!("{} (+{})", flag.description, c)),
+                                            description: Some(format!("{} (+{})", flag.description.get(&lang), c)),
                                             extra: None,
                                             span: Span { start: start_idx, end: pos },
                                             append_whitespace: true,
@@ -188,9 +181,6 @@ impl Completer for SmartCompleter {
                 if current_spec.is_path_completion {
                    // Fall through to path completion below
                 } else {
-                   // If not path completion, and we found no suggestions, return empty.
-                   // UNLESS we want to be permissive.
-                   // But generally, return empty.
                    return vec![];
                 }
             }

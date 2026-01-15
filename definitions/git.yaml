@@ -1,8 +1,12 @@
 name: git
-description: Distributed version control system
+description:
+  en: Distributed version control system
+  zh: 分布式版本控制系统
 subcommands:
   - name: init
-    description: Create an empty Git repository
+    description:
+      en: Create an empty Git repository
+      zh: 创建一个空的 Git 仓库
     flags:
       - long: bare
         description: Create a bare repository
