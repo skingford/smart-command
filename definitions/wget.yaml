@@ -617,3 +617,32 @@ flags:
       zh: 遵循 robots.txt（默认：开启）
     takes_value: true
 is_path_completion: true
+examples:
+  - cmd: 'wget [url]'
+    scenario:
+      en: Download file
+      zh: 下载文件
+  - cmd: 'wget -O [filename] [url]'
+    scenario:
+      en: Download with custom filename
+      zh: 下载并指定文件名
+  - cmd: 'wget -c [url]'
+    scenario:
+      en: Resume interrupted download
+      zh: 断点续传
+  - cmd: 'wget -r -np [url]'
+    scenario:
+      en: Download website recursively
+      zh: 递归下载网站
+  - cmd: 'wget -b [url]'
+    scenario:
+      en: Download in background
+      zh: 后台下载
+  - cmd: 'wget --limit-rate=1m [url]'
+    scenario:
+      en: Limit download speed to 1MB/s
+      zh: 限速 1MB/s 下载
+  - cmd: 'wget -i [url_list.txt]'
+    scenario:
+      en: Download from URL list file
+      zh: 从 URL 列表文件下载

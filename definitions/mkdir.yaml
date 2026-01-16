@@ -26,3 +26,20 @@ flags:
       zh: 设置每个创建目录的 SELinux 安全上下文
     takes_value: true
 is_path_completion: true
+examples:
+  - cmd: 'mkdir [directory]'
+    scenario:
+      en: Create directory
+      zh: 创建目录
+  - cmd: 'mkdir -p [path/to/directory]'
+    scenario:
+      en: Create nested directories
+      zh: 创建嵌套目录
+  - cmd: 'mkdir -m 755 [directory]'
+    scenario:
+      en: Create with specific permissions
+      zh: 创建并设置权限
+  - cmd: 'mkdir dir1 dir2 dir3'
+    scenario:
+      en: Create multiple directories
+      zh: 创建多个目录

@@ -208,3 +208,24 @@ flags:
       zh: 颜色调色板
     takes_value: true
 is_path_completion: true
+examples:
+  - cmd: 'diff [file1] [file2]'
+    scenario:
+      en: Compare two files
+      zh: 比较两个文件
+  - cmd: 'diff -u [file1] [file2]'
+    scenario:
+      en: Unified diff format
+      zh: 统一 diff 格式
+  - cmd: 'diff -r [dir1] [dir2]'
+    scenario:
+      en: Compare directories recursively
+      zh: 递归比较目录
+  - cmd: 'diff -y [file1] [file2]'
+    scenario:
+      en: Side by side comparison
+      zh: 并排比较
+  - cmd: 'diff --color [file1] [file2]'
+    scenario:
+      en: Colorized diff output
+      zh: 彩色 diff 输出

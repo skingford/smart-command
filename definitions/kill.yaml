@@ -37,3 +37,24 @@ flags:
     description:
       en: SIGKILL
       zh: SIGKILL（强制终止信号）
+examples:
+  - cmd: 'kill [pid]'
+    scenario:
+      en: Terminate process (SIGTERM)
+      zh: 终止进程（SIGTERM）
+  - cmd: 'kill -9 [pid]'
+    scenario:
+      en: Force kill process (SIGKILL)
+      zh: 强制终止进程（SIGKILL）
+  - cmd: 'kill -HUP [pid]'
+    scenario:
+      en: Reload process configuration
+      zh: 重新加载进程配置
+  - cmd: 'killall [process_name]'
+    scenario:
+      en: Kill all processes by name
+      zh: 按名称终止所有进程
+  - cmd: 'pkill -f [pattern]'
+    scenario:
+      en: Kill processes matching pattern
+      zh: 终止匹配模式的进程

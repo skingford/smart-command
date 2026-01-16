@@ -19,3 +19,16 @@ flags:
     description:
       en: Print the physical directory, without any symbolic links
       zh: 打印物理目录，不解析符号链接
+examples:
+  - cmd: 'pwd'
+    scenario:
+      en: Print current directory
+      zh: 打印当前目录
+  - cmd: 'pwd -P'
+    scenario:
+      en: Print physical path (resolve symlinks)
+      zh: 打印物理路径（解析符号链接）
+  - cmd: 'pwd -L'
+    scenario:
+      en: Print logical path
+      zh: 打印逻辑路径

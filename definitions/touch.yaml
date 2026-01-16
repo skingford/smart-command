@@ -55,3 +55,20 @@ flags:
       en: Change only the access time
       zh: 只修改访问时间
 is_path_completion: true
+examples:
+  - cmd: 'touch [file]'
+    scenario:
+      en: Create empty file or update timestamp
+      zh: 创建空文件或更新时间戳
+  - cmd: 'touch file1 file2 file3'
+    scenario:
+      en: Create multiple files
+      zh: 创建多个文件
+  - cmd: 'touch -d "2024-01-01" [file]'
+    scenario:
+      en: Set specific date
+      zh: 设置指定日期
+  - cmd: 'touch -r [ref_file] [file]'
+    scenario:
+      en: Copy timestamp from reference file
+      zh: 从参考文件复制时间戳

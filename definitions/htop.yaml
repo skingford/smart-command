@@ -66,3 +66,20 @@ flags:
     description:
       en: Output version information
       zh: 输出版本信息
+examples:
+  - cmd: 'htop'
+    scenario:
+      en: Interactive process viewer
+      zh: 交互式进程查看器
+  - cmd: 'htop -u [user]'
+    scenario:
+      en: Show only user processes
+      zh: 仅显示用户进程
+  - cmd: 'htop -p [pid1,pid2]'
+    scenario:
+      en: Monitor specific processes
+      zh: 监控指定进程
+  - cmd: 'htop -t'
+    scenario:
+      en: Tree view mode
+      zh: 树形视图模式

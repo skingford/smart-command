@@ -484,3 +484,36 @@ flags:
     short: f
     description: URL or path to HTML page with links to packages
     takes_value: true
+examples:
+  - cmd: 'pip install [package]'
+    scenario:
+      en: Install a package
+      zh: 安装包
+  - cmd: 'pip install -r requirements.txt'
+    scenario:
+      en: Install from requirements file
+      zh: 从 requirements 文件安装
+  - cmd: 'pip install --upgrade [package]'
+    scenario:
+      en: Upgrade a package
+      zh: 升级包
+  - cmd: 'pip uninstall [package]'
+    scenario:
+      en: Uninstall a package
+      zh: 卸载包
+  - cmd: 'pip list'
+    scenario:
+      en: List installed packages
+      zh: 列出已安装的包
+  - cmd: 'pip freeze > requirements.txt'
+    scenario:
+      en: Export installed packages
+      zh: 导出已安装的包
+  - cmd: 'pip show [package]'
+    scenario:
+      en: Show package info
+      zh: 显示包信息
+  - cmd: 'pip search [keyword]'
+    scenario:
+      en: Search packages
+      zh: 搜索包

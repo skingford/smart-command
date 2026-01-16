@@ -51,3 +51,24 @@ flags:
       en: Use ^ and M- notation, except for LFD and TAB
       zh: 使用 ^ 和 M- 标记，换行和制表符除外
 is_path_completion: true
+examples:
+  - cmd: 'cat [file]'
+    scenario:
+      en: Display file content
+      zh: 显示文件内容
+  - cmd: 'cat -n [file]'
+    scenario:
+      en: Display with line numbers
+      zh: 显示并带行号
+  - cmd: 'cat file1 file2 > combined'
+    scenario:
+      en: Concatenate files
+      zh: 合并文件
+  - cmd: 'cat >> [file]'
+    scenario:
+      en: Append to file
+      zh: 追加到文件
+  - cmd: 'cat -A [file]'
+    scenario:
+      en: Show all characters including hidden
+      zh: 显示所有字符包括隐藏字符

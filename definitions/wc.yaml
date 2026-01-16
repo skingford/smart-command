@@ -34,3 +34,24 @@ flags:
       en: Print the word counts
       zh: 打印单词数
 is_path_completion: true
+examples:
+  - cmd: 'wc [file]'
+    scenario:
+      en: Count lines, words, and bytes
+      zh: 统计行数、字数和字节数
+  - cmd: 'wc -l [file]'
+    scenario:
+      en: Count lines only
+      zh: 仅统计行数
+  - cmd: 'wc -w [file]'
+    scenario:
+      en: Count words only
+      zh: 仅统计字数
+  - cmd: 'wc -c [file]'
+    scenario:
+      en: Count bytes only
+      zh: 仅统计字节数
+  - cmd: 'wc -l *.txt'
+    scenario:
+      en: Count lines in all txt files
+      zh: 统计所有 txt 文件的行数

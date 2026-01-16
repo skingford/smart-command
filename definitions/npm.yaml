@@ -609,3 +609,52 @@ flags:
   - long: global
     short: g
     description: Operate in global mode
+examples:
+  - cmd: 'npm init -y'
+    scenario:
+      en: Initialize new project with defaults
+      zh: 使用默认值初始化项目
+  - cmd: 'npm install'
+    scenario:
+      en: Install all dependencies
+      zh: 安装所有依赖
+  - cmd: 'npm install [package]'
+    scenario:
+      en: Install a package
+      zh: 安装包
+  - cmd: 'npm install -D [package]'
+    scenario:
+      en: Install as dev dependency
+      zh: 安装为开发依赖
+  - cmd: 'npm install -g [package]'
+    scenario:
+      en: Install globally
+      zh: 全局安装
+  - cmd: 'npm run [script]'
+    scenario:
+      en: Run npm script
+      zh: 运行 npm 脚本
+  - cmd: 'npm start'
+    scenario:
+      en: Start the application
+      zh: 启动应用
+  - cmd: 'npm test'
+    scenario:
+      en: Run tests
+      zh: 运行测试
+  - cmd: 'npm update'
+    scenario:
+      en: Update all packages
+      zh: 更新所有包
+  - cmd: 'npm outdated'
+    scenario:
+      en: Check for outdated packages
+      zh: 检查过时的包
+  - cmd: 'npm uninstall [package]'
+    scenario:
+      en: Uninstall a package
+      zh: 卸载包
+  - cmd: 'npm list --depth=0'
+    scenario:
+      en: List installed packages
+      zh: 列出已安装的包

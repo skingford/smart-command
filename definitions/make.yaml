@@ -188,3 +188,32 @@ flags:
       zh: 随机化依赖顺序（random、reverse、seed、none）
     takes_value: true
 is_path_completion: true
+examples:
+  - cmd: 'make'
+    scenario:
+      en: Build default target
+      zh: 构建默认目标
+  - cmd: 'make [target]'
+    scenario:
+      en: Build specific target
+      zh: 构建指定目标
+  - cmd: 'make -j4'
+    scenario:
+      en: Build with 4 parallel jobs
+      zh: 使用 4 个并行任务构建
+  - cmd: 'make clean'
+    scenario:
+      en: Clean build artifacts
+      zh: 清理构建产物
+  - cmd: 'make install'
+    scenario:
+      en: Install the built program
+      zh: 安装已构建的程序
+  - cmd: 'make -n'
+    scenario:
+      en: Dry run (show commands)
+      zh: 预演（显示命令）
+  - cmd: 'make -B'
+    scenario:
+      en: Force rebuild all
+      zh: 强制重新构建

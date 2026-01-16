@@ -253,3 +253,40 @@ flags:
       en: Do not print separator between groups
       zh: 不在组之间打印分隔符
 is_path_completion: true
+examples:
+  - cmd: 'grep "[pattern]" [file]'
+    scenario:
+      en: Search pattern in file
+      zh: 在文件中搜索模式
+  - cmd: 'grep -r "[pattern]" [directory]'
+    scenario:
+      en: Search recursively in directory
+      zh: 在目录中递归搜索
+  - cmd: 'grep -i "[pattern]" [file]'
+    scenario:
+      en: Case insensitive search
+      zh: 忽略大小写搜索
+  - cmd: 'grep -n "[pattern]" [file]'
+    scenario:
+      en: Show line numbers
+      zh: 显示行号
+  - cmd: 'grep -v "[pattern]" [file]'
+    scenario:
+      en: Invert match (exclude pattern)
+      zh: 反向匹配（排除模式）
+  - cmd: 'grep -l "[pattern]" *'
+    scenario:
+      en: List files containing pattern
+      zh: 列出包含模式的文件
+  - cmd: 'grep -c "[pattern]" [file]'
+    scenario:
+      en: Count matching lines
+      zh: 统计匹配行数
+  - cmd: 'grep -A 3 -B 3 "[pattern]" [file]'
+    scenario:
+      en: Show 3 lines before and after match
+      zh: 显示匹配前后各 3 行
+  - cmd: 'grep -E "[regex]" [file]'
+    scenario:
+      en: Extended regex search
+      zh: 扩展正则表达式搜索

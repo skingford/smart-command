@@ -147,3 +147,28 @@ flags:
       zh: 设置目标文件的 SELinux 安全上下文
     takes_value: true
 is_path_completion: true
+examples:
+  - cmd: 'cp [source] [dest]'
+    scenario:
+      en: Copy file
+      zh: 复制文件
+  - cmd: 'cp -r [source_dir] [dest_dir]'
+    scenario:
+      en: Copy directory recursively
+      zh: 递归复制目录
+  - cmd: 'cp -i [source] [dest]'
+    scenario:
+      en: Copy with confirmation prompt
+      zh: 复制时提示确认
+  - cmd: 'cp -p [source] [dest]'
+    scenario:
+      en: Copy preserving attributes
+      zh: 复制并保留属性
+  - cmd: 'cp -a [source] [dest]'
+    scenario:
+      en: Archive copy (preserve all)
+      zh: 归档复制（保留所有属性）
+  - cmd: 'cp *.txt [dest_dir]'
+    scenario:
+      en: Copy all txt files to directory
+      zh: 复制所有 txt 文件到目录

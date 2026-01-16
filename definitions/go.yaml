@@ -874,3 +874,44 @@ flags:
     description:
       en: Print work directory name
       zh: 打印工作目录名称
+examples:
+  - cmd: 'go mod init [module]'
+    scenario:
+      en: Initialize new module
+      zh: 初始化新模块
+  - cmd: 'go build'
+    scenario:
+      en: Build current package
+      zh: 构建当前包
+  - cmd: 'go run [file.go]'
+    scenario:
+      en: Compile and run Go program
+      zh: 编译并运行 Go 程序
+  - cmd: 'go test'
+    scenario:
+      en: Run tests
+      zh: 运行测试
+  - cmd: 'go test -v'
+    scenario:
+      en: Run tests with verbose output
+      zh: 运行测试并显示详细输出
+  - cmd: 'go test -cover'
+    scenario:
+      en: Run tests with coverage
+      zh: 运行测试并显示覆盖率
+  - cmd: 'go get [package]'
+    scenario:
+      en: Download and install package
+      zh: 下载并安装包
+  - cmd: 'go mod tidy'
+    scenario:
+      en: Clean up module dependencies
+      zh: 清理模块依赖
+  - cmd: 'go fmt ./...'
+    scenario:
+      en: Format all Go files
+      zh: 格式化所有 Go 文件
+  - cmd: 'go vet ./...'
+    scenario:
+      en: Check for errors
+      zh: 检查错误

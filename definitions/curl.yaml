@@ -508,3 +508,52 @@ flags:
       en: Use netrc if present
       zh: 如果存在则使用netrc
 is_path_completion: true
+examples:
+  - cmd: 'curl [url]'
+    scenario:
+      en: Fetch URL content
+      zh: 获取 URL 内容
+  - cmd: 'curl -o [file] [url]'
+    scenario:
+      en: Download file
+      zh: 下载文件
+  - cmd: 'curl -O [url]'
+    scenario:
+      en: Download with remote filename
+      zh: 使用远程文件名下载
+  - cmd: 'curl -I [url]'
+    scenario:
+      en: Fetch headers only
+      zh: 仅获取头信息
+  - cmd: 'curl -X POST -d "data" [url]'
+    scenario:
+      en: Send POST request with data
+      zh: 发送带数据的 POST 请求
+  - cmd: 'curl -X POST -H "Content-Type: application/json" -d ''{"key":"value"}'' [url]'
+    scenario:
+      en: Send JSON POST request
+      zh: 发送 JSON POST 请求
+  - cmd: 'curl -u user:pass [url]'
+    scenario:
+      en: Request with basic auth
+      zh: 使用基本认证请求
+  - cmd: 'curl -H "Authorization: Bearer [token]" [url]'
+    scenario:
+      en: Request with bearer token
+      zh: 使用 Bearer 令牌请求
+  - cmd: 'curl -L [url]'
+    scenario:
+      en: Follow redirects
+      zh: 跟随重定向
+  - cmd: 'curl -sS [url]'
+    scenario:
+      en: Silent mode but show errors
+      zh: 静默模式但显示错误
+  - cmd: 'curl -x proxy:port [url]'
+    scenario:
+      en: Use proxy
+      zh: 使用代理
+  - cmd: 'curl -k [url]'
+    scenario:
+      en: Allow insecure SSL
+      zh: 允许不安全的 SSL

@@ -58,3 +58,24 @@ flags:
       zh: 最多比较行中的 N 个字符
     takes_value: true
 is_path_completion: true
+examples:
+  - cmd: 'uniq [file]'
+    scenario:
+      en: Remove consecutive duplicates
+      zh: 删除连续重复行
+  - cmd: 'sort [file] | uniq'
+    scenario:
+      en: Remove all duplicates
+      zh: 删除所有重复行
+  - cmd: 'uniq -c [file]'
+    scenario:
+      en: Count occurrences
+      zh: 统计出现次数
+  - cmd: 'uniq -d [file]'
+    scenario:
+      en: Show only duplicates
+      zh: 仅显示重复行
+  - cmd: 'uniq -u [file]'
+    scenario:
+      en: Show only unique lines
+      zh: 仅显示唯一行

@@ -321,3 +321,36 @@ flags:
       zh: 按SELinux上下文匹配
     takes_value: true
 is_path_completion: true
+examples:
+  - cmd: 'find . -name "[filename]"'
+    scenario:
+      en: Find file by name
+      zh: 按名称查找文件
+  - cmd: 'find . -name "*.txt"'
+    scenario:
+      en: Find all txt files
+      zh: 查找所有 txt 文件
+  - cmd: 'find . -type d -name "[dirname]"'
+    scenario:
+      en: Find directory by name
+      zh: 按名称查找目录
+  - cmd: 'find . -type f -mtime -7'
+    scenario:
+      en: Find files modified in last 7 days
+      zh: 查找最近 7 天修改的文件
+  - cmd: 'find . -type f -size +100M'
+    scenario:
+      en: Find files larger than 100MB
+      zh: 查找大于 100MB 的文件
+  - cmd: 'find . -name "*.log" -delete'
+    scenario:
+      en: Find and delete log files
+      zh: 查找并删除日志文件
+  - cmd: 'find . -type f -exec chmod 644 {} \;'
+    scenario:
+      en: Find files and change permissions
+      zh: 查找文件并修改权限
+  - cmd: 'find . -empty'
+    scenario:
+      en: Find empty files and directories
+      zh: 查找空文件和目录

@@ -179,3 +179,32 @@ flags:
       en: Use IPv6 addresses only
       zh: 仅使用 IPv6 地址
 is_path_completion: true
+examples:
+  - cmd: 'ssh [user]@[host]'
+    scenario:
+      en: Connect to remote host
+      zh: 连接到远程主机
+  - cmd: 'ssh -p [port] [user]@[host]'
+    scenario:
+      en: Connect with specific port
+      zh: 使用指定端口连接
+  - cmd: 'ssh -i [key_file] [user]@[host]'
+    scenario:
+      en: Connect with private key
+      zh: 使用私钥连接
+  - cmd: 'ssh -L 8080:localhost:80 [user]@[host]'
+    scenario:
+      en: Local port forwarding
+      zh: 本地端口转发
+  - cmd: 'ssh -R 8080:localhost:80 [user]@[host]'
+    scenario:
+      en: Remote port forwarding
+      zh: 远程端口转发
+  - cmd: 'ssh -D 1080 [user]@[host]'
+    scenario:
+      en: SOCKS proxy
+      zh: SOCKS 代理
+  - cmd: 'ssh -t [user]@[host] "command"'
+    scenario:
+      en: Run command on remote host
+      zh: 在远程主机运行命令

@@ -289,3 +289,32 @@ flags:
       en: End each output line with NUL
       zh: 每行输出以 NUL 结尾
 is_path_completion: true
+examples:
+  - cmd: 'ls -la'
+    scenario:
+      en: List all files with details
+      zh: 列出所有文件的详细信息
+  - cmd: 'ls -lh'
+    scenario:
+      en: List with human-readable sizes
+      zh: 以易读的大小格式列出
+  - cmd: 'ls -ltr'
+    scenario:
+      en: List by time, oldest first
+      zh: 按时间排序，最旧的在前
+  - cmd: 'ls -lS'
+    scenario:
+      en: List by size, largest first
+      zh: 按大小排序，最大的在前
+  - cmd: 'ls -R'
+    scenario:
+      en: List recursively
+      zh: 递归列出
+  - cmd: 'ls -d */'
+    scenario:
+      en: List directories only
+      zh: 仅列出目录
+  - cmd: 'ls -1'
+    scenario:
+      en: List one file per line
+      zh: 每行一个文件

@@ -148,3 +148,28 @@ flags:
       en: Line delimiter is NUL, not newline
       zh: 行分隔符为 NUL 而非换行符
 is_path_completion: true
+examples:
+  - cmd: 'sort [file]'
+    scenario:
+      en: Sort lines alphabetically
+      zh: 按字母顺序排序
+  - cmd: 'sort -n [file]'
+    scenario:
+      en: Sort numerically
+      zh: 按数字排序
+  - cmd: 'sort -r [file]'
+    scenario:
+      en: Sort in reverse order
+      zh: 反向排序
+  - cmd: 'sort -u [file]'
+    scenario:
+      en: Sort and remove duplicates
+      zh: 排序并去重
+  - cmd: 'sort -k2 [file]'
+    scenario:
+      en: Sort by second column
+      zh: 按第二列排序
+  - cmd: 'sort -t: -k3 -n [file]'
+    scenario:
+      en: Sort by 3rd field with delimiter
+      zh: 使用分隔符按第三列数字排序

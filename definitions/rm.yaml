@@ -54,3 +54,24 @@ flags:
       en: Explain what is being done
       zh: 显示正在执行的操作
 is_path_completion: true
+examples:
+  - cmd: 'rm [file]'
+    scenario:
+      en: Remove file
+      zh: 删除文件
+  - cmd: 'rm -r [directory]'
+    scenario:
+      en: Remove directory recursively
+      zh: 递归删除目录
+  - cmd: 'rm -rf [directory]'
+    scenario:
+      en: Force remove directory
+      zh: 强制删除目录
+  - cmd: 'rm -i [file]'
+    scenario:
+      en: Remove with confirmation
+      zh: 删除时提示确认
+  - cmd: 'rm *.log'
+    scenario:
+      en: Remove all log files
+      zh: 删除所有日志文件

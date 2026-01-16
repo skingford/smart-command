@@ -497,3 +497,28 @@ flags:
       en: Show this help
       zh: 显示此帮助
 is_path_completion: true
+examples:
+  - cmd: 'rsync -av [source] [dest]'
+    scenario:
+      en: Sync with archive mode and verbose
+      zh: 归档模式同步并显示详情
+  - cmd: 'rsync -avz [source] [user]@[host]:[path]'
+    scenario:
+      en: Sync to remote with compression
+      zh: 压缩同步到远程
+  - cmd: 'rsync -avz --delete [source] [dest]'
+    scenario:
+      en: Sync and delete extra files in dest
+      zh: 同步并删除目标中的多余文件
+  - cmd: 'rsync -av --progress [source] [dest]'
+    scenario:
+      en: Sync with progress bar
+      zh: 显示进度同步
+  - cmd: 'rsync -av --exclude="*.log" [source] [dest]'
+    scenario:
+      en: Sync excluding log files
+      zh: 同步时排除日志文件
+  - cmd: 'rsync -av --dry-run [source] [dest]'
+    scenario:
+      en: Dry run (preview changes)
+      zh: 预演（预览更改）

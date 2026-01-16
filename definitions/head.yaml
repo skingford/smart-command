@@ -35,3 +35,20 @@ flags:
       en: Line delimiter is NUL, not newline
       zh: 使用 NUL 作为行分隔符，而不是换行符
 is_path_completion: true
+examples:
+  - cmd: 'head [file]'
+    scenario:
+      en: Show first 10 lines
+      zh: 显示前 10 行
+  - cmd: 'head -n 20 [file]'
+    scenario:
+      en: Show first 20 lines
+      zh: 显示前 20 行
+  - cmd: 'head -c 100 [file]'
+    scenario:
+      en: Show first 100 bytes
+      zh: 显示前 100 字节
+  - cmd: 'head -n -5 [file]'
+    scenario:
+      en: Show all except last 5 lines
+      zh: 显示除最后 5 行外的所有内容

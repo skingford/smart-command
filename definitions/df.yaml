@@ -84,3 +84,20 @@ flags:
       zh: 排除指定类型的文件系统
     takes_value: true
 is_path_completion: true
+examples:
+  - cmd: 'df -h'
+    scenario:
+      en: Show disk usage in human-readable format
+      zh: 以易读格式显示磁盘使用情况
+  - cmd: 'df -hT'
+    scenario:
+      en: Show with filesystem type
+      zh: 显示并带文件系统类型
+  - cmd: 'df -h [path]'
+    scenario:
+      en: Show disk usage for specific path
+      zh: 显示指定路径的磁盘使用情况
+  - cmd: 'df -i'
+    scenario:
+      en: Show inode usage
+      zh: 显示 inode 使用情况

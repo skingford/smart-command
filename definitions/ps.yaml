@@ -122,3 +122,28 @@ flags:
       en: Select by real group
       zh: 按真实组选择
     takes_value: true
+examples:
+  - cmd: 'ps aux'
+    scenario:
+      en: List all processes
+      zh: 列出所有进程
+  - cmd: 'ps aux | grep [process]'
+    scenario:
+      en: Find specific process
+      zh: 查找指定进程
+  - cmd: 'ps -ef'
+    scenario:
+      en: List all processes (full format)
+      zh: 列出所有进程（完整格式）
+  - cmd: 'ps aux --sort=-%mem | head'
+    scenario:
+      en: Top processes by memory
+      zh: 按内存排序的进程
+  - cmd: 'ps aux --sort=-%cpu | head'
+    scenario:
+      en: Top processes by CPU
+      zh: 按 CPU 排序的进程
+  - cmd: 'ps -p [pid]'
+    scenario:
+      en: Show specific process
+      zh: 显示指定进程

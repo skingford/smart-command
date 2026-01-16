@@ -67,3 +67,20 @@ flags:
       en: Do not traverse any symbolic links (default)
       zh: 不解析任何符号链接（默认）
 is_path_completion: true
+examples:
+  - cmd: 'chown [user] [file]'
+    scenario:
+      en: Change file owner
+      zh: 更改文件所有者
+  - cmd: 'chown [user]:[group] [file]'
+    scenario:
+      en: Change owner and group
+      zh: 更改所有者和组
+  - cmd: 'chown -R [user]:[group] [directory]'
+    scenario:
+      en: Change recursively
+      zh: 递归更改
+  - cmd: 'chown --reference=[ref_file] [file]'
+    scenario:
+      en: Copy ownership from reference file
+      zh: 从参考文件复制所有权

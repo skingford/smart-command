@@ -80,3 +80,24 @@ flags:
     description:
       en: Single/Separate CPU states toggle
       zh: 单一/分离 CPU 状态切换
+examples:
+  - cmd: 'top'
+    scenario:
+      en: Show real-time process monitor
+      zh: 显示实时进程监控
+  - cmd: 'top -o %MEM'
+    scenario:
+      en: Sort by memory usage
+      zh: 按内存使用排序
+  - cmd: 'top -o %CPU'
+    scenario:
+      en: Sort by CPU usage
+      zh: 按 CPU 使用排序
+  - cmd: 'top -p [pid]'
+    scenario:
+      en: Monitor specific process
+      zh: 监控指定进程
+  - cmd: 'top -u [user]'
+    scenario:
+      en: Monitor user processes
+      zh: 监控用户进程

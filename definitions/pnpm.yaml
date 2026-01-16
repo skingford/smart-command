@@ -503,3 +503,44 @@ flags:
   - long: config
     description: Config file
     takes_value: true
+examples:
+  - cmd: 'pnpm init'
+    scenario:
+      en: Initialize new project
+      zh: 初始化项目
+  - cmd: 'pnpm install'
+    scenario:
+      en: Install all dependencies
+      zh: 安装所有依赖
+  - cmd: 'pnpm add [package]'
+    scenario:
+      en: Add a package
+      zh: 添加包
+  - cmd: 'pnpm add -D [package]'
+    scenario:
+      en: Add as dev dependency
+      zh: 添加为开发依赖
+  - cmd: 'pnpm add -g [package]'
+    scenario:
+      en: Install globally
+      zh: 全局安装
+  - cmd: 'pnpm run [script]'
+    scenario:
+      en: Run pnpm script
+      zh: 运行 pnpm 脚本
+  - cmd: 'pnpm start'
+    scenario:
+      en: Start the application
+      zh: 启动应用
+  - cmd: 'pnpm test'
+    scenario:
+      en: Run tests
+      zh: 运行测试
+  - cmd: 'pnpm update'
+    scenario:
+      en: Update all packages
+      zh: 更新所有包
+  - cmd: 'pnpm remove [package]'
+    scenario:
+      en: Remove a package
+      zh: 移除包

@@ -105,3 +105,24 @@ flags:
     description:
       en: Show limits on the command-line length
       zh: 显示命令行长度限制
+examples:
+  - cmd: 'find . -name "*.txt" | xargs rm'
+    scenario:
+      en: Delete all found txt files
+      zh: 删除所有找到的 txt 文件
+  - cmd: 'cat urls.txt | xargs curl -O'
+    scenario:
+      en: Download all URLs in file
+      zh: 下载文件中的所有 URL
+  - cmd: 'find . -name "*.log" | xargs -I {} mv {} /tmp/'
+    scenario:
+      en: Move all log files to /tmp
+      zh: 移动所有日志文件到 /tmp
+  - cmd: 'echo "a b c" | xargs -n1'
+    scenario:
+      en: Process one argument at a time
+      zh: 每次处理一个参数
+  - cmd: 'cat list.txt | xargs -P 4 -I {} cmd {}'
+    scenario:
+      en: Run 4 commands in parallel
+      zh: 并行运行 4 个命令

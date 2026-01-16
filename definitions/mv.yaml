@@ -66,3 +66,20 @@ flags:
       zh: 设置目标文件的 SELinux 安全上下文
     takes_value: true
 is_path_completion: true
+examples:
+  - cmd: 'mv [source] [dest]'
+    scenario:
+      en: Move or rename file
+      zh: 移动或重命名文件
+  - cmd: 'mv -i [source] [dest]'
+    scenario:
+      en: Move with confirmation prompt
+      zh: 移动时提示确认
+  - cmd: 'mv *.txt [dest_dir]'
+    scenario:
+      en: Move all txt files to directory
+      zh: 移动所有 txt 文件到目录
+  - cmd: 'mv [old_name] [new_name]'
+    scenario:
+      en: Rename file
+      zh: 重命名文件

@@ -3,3 +3,24 @@ description:
   en: Change the shell working directory
   zh: 切换工作目录
 is_path_completion: true
+examples:
+  - cmd: 'cd [directory]'
+    scenario:
+      en: Change to directory
+      zh: 切换到目录
+  - cmd: 'cd ~'
+    scenario:
+      en: Go to home directory
+      zh: 切换到主目录
+  - cmd: 'cd -'
+    scenario:
+      en: Go to previous directory
+      zh: 切换到上一个目录
+  - cmd: 'cd ..'
+    scenario:
+      en: Go to parent directory
+      zh: 切换到上级目录
+  - cmd: 'cd /'
+    scenario:
+      en: Go to root directory
+      zh: 切换到根目录

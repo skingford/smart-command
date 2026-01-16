@@ -472,3 +472,44 @@ flags:
   - long: network-timeout
     description: Request timeout
     takes_value: true
+examples:
+  - cmd: 'yarn init -y'
+    scenario:
+      en: Initialize new project with defaults
+      zh: 使用默认值初始化项目
+  - cmd: 'yarn'
+    scenario:
+      en: Install all dependencies
+      zh: 安装所有依赖
+  - cmd: 'yarn add [package]'
+    scenario:
+      en: Add a package
+      zh: 添加包
+  - cmd: 'yarn add -D [package]'
+    scenario:
+      en: Add as dev dependency
+      zh: 添加为开发依赖
+  - cmd: 'yarn global add [package]'
+    scenario:
+      en: Install globally
+      zh: 全局安装
+  - cmd: 'yarn [script]'
+    scenario:
+      en: Run yarn script
+      zh: 运行 yarn 脚本
+  - cmd: 'yarn start'
+    scenario:
+      en: Start the application
+      zh: 启动应用
+  - cmd: 'yarn test'
+    scenario:
+      en: Run tests
+      zh: 运行测试
+  - cmd: 'yarn upgrade'
+    scenario:
+      en: Upgrade all packages
+      zh: 升级所有包
+  - cmd: 'yarn remove [package]'
+    scenario:
+      en: Remove a package
+      zh: 移除包

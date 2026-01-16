@@ -101,3 +101,24 @@ flags:
       zh: 直接连接到 SFTP 服务器程序
     takes_value: true
 is_path_completion: true
+examples:
+  - cmd: 'scp [file] [user]@[host]:[path]'
+    scenario:
+      en: Copy file to remote host
+      zh: 复制文件到远程主机
+  - cmd: 'scp [user]@[host]:[path] [local_path]'
+    scenario:
+      en: Copy file from remote host
+      zh: 从远程主机复制文件
+  - cmd: 'scp -r [directory] [user]@[host]:[path]'
+    scenario:
+      en: Copy directory recursively
+      zh: 递归复制目录
+  - cmd: 'scp -P [port] [file] [user]@[host]:[path]'
+    scenario:
+      en: Copy with specific port
+      zh: 使用指定端口复制
+  - cmd: 'scp -i [key_file] [file] [user]@[host]:[path]'
+    scenario:
+      en: Copy with private key
+      zh: 使用私钥复制

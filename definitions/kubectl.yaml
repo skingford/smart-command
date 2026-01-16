@@ -1648,3 +1648,56 @@ flags:
       en: Verbosity level
       zh: 详细程度级别
     takes_value: true
+examples:
+  - cmd: 'kubectl get pods'
+    scenario:
+      en: List all pods in current namespace
+      zh: 列出当前命名空间的所有 Pod
+  - cmd: 'kubectl get pods -A'
+    scenario:
+      en: List all pods in all namespaces
+      zh: 列出所有命名空间的 Pod
+  - cmd: 'kubectl get pods -o wide'
+    scenario:
+      en: List pods with more details
+      zh: 列出 Pod 的详细信息
+  - cmd: 'kubectl describe pod [pod-name]'
+    scenario:
+      en: Show pod details
+      zh: 显示 Pod 详情
+  - cmd: 'kubectl logs -f [pod-name]'
+    scenario:
+      en: Follow pod logs
+      zh: 跟踪 Pod 日志
+  - cmd: 'kubectl exec -it [pod-name] -- /bin/bash'
+    scenario:
+      en: Execute shell in pod
+      zh: 在 Pod 中执行 shell
+  - cmd: 'kubectl apply -f [file.yaml]'
+    scenario:
+      en: Apply configuration from file
+      zh: 从文件应用配置
+  - cmd: 'kubectl delete pod [pod-name]'
+    scenario:
+      en: Delete a pod
+      zh: 删除 Pod
+  - cmd: 'kubectl scale deployment [name] --replicas=3'
+    scenario:
+      en: Scale deployment to 3 replicas
+      zh: 将部署扩展到 3 个副本
+  - cmd: 'kubectl rollout restart deployment [name]'
+    scenario:
+      en: Restart deployment
+      zh: 重启部署
+  - cmd: 'kubectl port-forward [pod] 8080:80'
+    scenario:
+      en: Forward local port to pod
+      zh: 将本地端口转发到 Pod
+  - cmd: 'kubectl config get-contexts'
+    scenario:
+      en: List all contexts
+      zh: 列出所有上下文
+  - cmd: 'kubectl config use-context [context]'
+    scenario:
+      en: Switch context
+      zh: 切换上下文

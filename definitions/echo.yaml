@@ -15,3 +15,24 @@ flags:
     description:
       en: Disable interpretation of backslash escapes (default)
       zh: 禁用反斜杠转义解释（默认）
+examples:
+  - cmd: 'echo "Hello World"'
+    scenario:
+      en: Print text
+      zh: 打印文本
+  - cmd: 'echo -n "no newline"'
+    scenario:
+      en: Print without newline
+      zh: 打印不换行
+  - cmd: 'echo -e "line1\nline2"'
+    scenario:
+      en: Print with escape sequences
+      zh: 使用转义序列打印
+  - cmd: 'echo $PATH'
+    scenario:
+      en: Print environment variable
+      zh: 打印环境变量
+  - cmd: 'echo "text" >> [file]'
+    scenario:
+      en: Append text to file
+      zh: 追加文本到文件

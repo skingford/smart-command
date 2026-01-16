@@ -64,3 +64,24 @@ flags:
       en: Line delimiter is NUL, not newline
       zh: 使用 NUL 作为行分隔符，而不是换行符
 is_path_completion: true
+examples:
+  - cmd: 'tail [file]'
+    scenario:
+      en: Show last 10 lines
+      zh: 显示最后 10 行
+  - cmd: 'tail -n 20 [file]'
+    scenario:
+      en: Show last 20 lines
+      zh: 显示最后 20 行
+  - cmd: 'tail -f [file]'
+    scenario:
+      en: Follow file changes in real-time
+      zh: 实时跟踪文件变化
+  - cmd: 'tail -f -n 100 [file]'
+    scenario:
+      en: Show last 100 lines and follow
+      zh: 显示最后 100 行并跟踪
+  - cmd: 'tail -n +5 [file]'
+    scenario:
+      en: Show from line 5 onwards
+      zh: 从第 5 行开始显示

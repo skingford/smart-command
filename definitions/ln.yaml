@@ -79,3 +79,20 @@ flags:
       en: Print name of each linked file
       zh: 打印每个链接的文件名
 is_path_completion: true
+examples:
+  - cmd: 'ln -s [target] [link_name]'
+    scenario:
+      en: Create symbolic link
+      zh: 创建符号链接
+  - cmd: 'ln [target] [link_name]'
+    scenario:
+      en: Create hard link
+      zh: 创建硬链接
+  - cmd: 'ln -sf [target] [link_name]'
+    scenario:
+      en: Force create/update symbolic link
+      zh: 强制创建/更新符号链接
+  - cmd: 'ln -sn [target] [link_name]'
+    scenario:
+      en: Don't dereference existing symlink
+      zh: 不解引用现有符号链接

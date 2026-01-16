@@ -41,3 +41,28 @@ flags:
       zh: 使用参考文件的权限而不是指定值
     takes_value: true
 is_path_completion: true
+examples:
+  - cmd: 'chmod 755 [file]'
+    scenario:
+      en: Set rwxr-xr-x permissions
+      zh: 设置 rwxr-xr-x 权限
+  - cmd: 'chmod 644 [file]'
+    scenario:
+      en: Set rw-r--r-- permissions
+      zh: 设置 rw-r--r-- 权限
+  - cmd: 'chmod +x [file]'
+    scenario:
+      en: Add execute permission
+      zh: 添加执行权限
+  - cmd: 'chmod -R 755 [directory]'
+    scenario:
+      en: Set permissions recursively
+      zh: 递归设置权限
+  - cmd: 'chmod u+x [file]'
+    scenario:
+      en: Add execute for owner
+      zh: 为所有者添加执行权限
+  - cmd: 'chmod go-w [file]'
+    scenario:
+      en: Remove write for group and others
+      zh: 移除组和其他用户的写权限

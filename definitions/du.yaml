@@ -143,3 +143,20 @@ flags:
       zh: 排除小于 SIZE 的条目
     takes_value: true
 is_path_completion: true
+examples:
+  - cmd: 'du -sh *'
+    scenario:
+      en: Show size of each item
+      zh: 显示每个项目的大小
+  - cmd: 'du -sh [directory]'
+    scenario:
+      en: Show total size of directory
+      zh: 显示目录总大小
+  - cmd: 'du -h --max-depth=1'
+    scenario:
+      en: Show size of subdirectories
+      zh: 显示子目录大小
+  - cmd: 'du -ah | sort -rh | head -20'
+    scenario:
+      en: Show 20 largest files/directories
+      zh: 显示最大的 20 个文件/目录

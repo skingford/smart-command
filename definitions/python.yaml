@@ -97,3 +97,28 @@ flags:
       zh: 控制基于哈希的 .pyc 验证（default、always、never）
     takes_value: true
 is_path_completion: true
+examples:
+  - cmd: 'python [script.py]'
+    scenario:
+      en: Run Python script
+      zh: 运行 Python 脚本
+  - cmd: 'python -m venv [venv]'
+    scenario:
+      en: Create virtual environment
+      zh: 创建虚拟环境
+  - cmd: 'python -c "[code]"'
+    scenario:
+      en: Execute Python code
+      zh: 执行 Python 代码
+  - cmd: 'python -m http.server 8000'
+    scenario:
+      en: Start simple HTTP server
+      zh: 启动简单 HTTP 服务器
+  - cmd: 'python -m json.tool [file.json]'
+    scenario:
+      en: Pretty print JSON file
+      zh: 格式化输出 JSON 文件
+  - cmd: 'python -i [script.py]'
+    scenario:
+      en: Run script and enter interactive mode
+      zh: 运行脚本并进入交互模式

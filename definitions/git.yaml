@@ -687,3 +687,108 @@ subcommands:
         description:
           en: Prune working tree information
           zh: 清理工作区信息
+examples:
+  - cmd: 'git clone [url]'
+    scenario:
+      en: Clone a repository
+      zh: 克隆仓库
+  - cmd: 'git clone --depth 1 [url]'
+    scenario:
+      en: Shallow clone with only latest commit
+      zh: 浅克隆，仅包含最新提交
+  - cmd: 'git add .'
+    scenario:
+      en: Stage all changes
+      zh: 暂存所有更改
+  - cmd: 'git commit -m "[message]"'
+    scenario:
+      en: Commit with message
+      zh: 提交并附带信息
+  - cmd: 'git commit -am "[message]"'
+    scenario:
+      en: Stage all and commit
+      zh: 暂存所有更改并提交
+  - cmd: 'git push origin [branch]'
+    scenario:
+      en: Push branch to remote
+      zh: 推送分支到远程
+  - cmd: 'git push -u origin [branch]'
+    scenario:
+      en: Push and set upstream
+      zh: 推送并设置上游分支
+  - cmd: 'git pull --rebase'
+    scenario:
+      en: Pull with rebase
+      zh: 拉取并变基
+  - cmd: 'git checkout -b [branch]'
+    scenario:
+      en: Create and switch to new branch
+      zh: 创建并切换到新分支
+  - cmd: 'git switch -c [branch]'
+    scenario:
+      en: Create and switch to new branch (modern)
+      zh: 创建并切换到新分支（现代方式）
+  - cmd: 'git branch -d [branch]'
+    scenario:
+      en: Delete a branch
+      zh: 删除分支
+  - cmd: 'git merge [branch]'
+    scenario:
+      en: Merge branch into current
+      zh: 合并分支到当前分支
+  - cmd: 'git rebase [branch]'
+    scenario:
+      en: Rebase current branch onto another
+      zh: 将当前分支变基到另一分支
+  - cmd: 'git stash'
+    scenario:
+      en: Stash current changes
+      zh: 暂存当前更改
+  - cmd: 'git stash pop'
+    scenario:
+      en: Apply and remove latest stash
+      zh: 应用并移除最近的暂存
+  - cmd: 'git log --oneline -n 10'
+    scenario:
+      en: Show last 10 commits in one line
+      zh: 显示最近10条提交（单行）
+  - cmd: 'git log --oneline --graph --all'
+    scenario:
+      en: Show commit graph of all branches
+      zh: 显示所有分支的提交图
+  - cmd: 'git diff --staged'
+    scenario:
+      en: Show staged changes
+      zh: 显示已暂存的更改
+  - cmd: 'git reset --soft HEAD~1'
+    scenario:
+      en: Undo last commit, keep changes staged
+      zh: 撤销上次提交，保留暂存
+  - cmd: 'git reset --hard HEAD~1'
+    scenario:
+      en: Undo last commit and discard changes
+      zh: 撤销上次提交并丢弃更改
+  - cmd: 'git restore --staged [file]'
+    scenario:
+      en: Unstage a file
+      zh: 取消暂存文件
+  - cmd: 'git cherry-pick [commit]'
+    scenario:
+      en: Apply a specific commit
+      zh: 应用特定提交
+  - cmd: 'git remote -v'
+    scenario:
+      en: List remote repositories
+      zh: 列出远程仓库
+  - cmd: 'git tag -a [tag] -m "[message]"'
+    scenario:
+      en: Create annotated tag
+      zh: 创建带注释的标签
+  - cmd: 'git clean -fd'
+    scenario:
+      en: Remove untracked files and directories
+      zh: 删除未跟踪的文件和目录
+  - cmd: 'git blame [file]'
+    scenario:
+      en: Show who changed each line
+      zh: 显示每行的修改者

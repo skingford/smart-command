@@ -1324,3 +1324,48 @@ subcommands:
           en: Restart policy
           zh: 重启策略
         takes_value: true
+examples:
+  - cmd: 'docker run -it --rm [image] /bin/bash'
+    scenario:
+      en: Run interactive container and remove on exit
+      zh: 运行交互式容器，退出时删除
+  - cmd: 'docker run -d -p 8080:80 --name [name] [image]'
+    scenario:
+      en: Run container in background with port mapping
+      zh: 后台运行容器并映射端口
+  - cmd: 'docker run -d -v $(pwd):/app -w /app [image]'
+    scenario:
+      en: Run with volume mount and working directory
+      zh: 挂载卷并设置工作目录运行
+  - cmd: 'docker build -t [name:tag] .'
+    scenario:
+      en: Build image from current directory
+      zh: 从当前目录构建镜像
+  - cmd: 'docker ps -a'
+    scenario:
+      en: List all containers
+      zh: 列出所有容器
+  - cmd: 'docker exec -it [container] /bin/bash'
+    scenario:
+      en: Execute interactive shell in container
+      zh: 在容器中执行交互式 shell
+  - cmd: 'docker logs -f [container]'
+    scenario:
+      en: Follow container logs
+      zh: 跟踪容器日志
+  - cmd: 'docker stop $(docker ps -q)'
+    scenario:
+      en: Stop all running containers
+      zh: 停止所有运行中的容器
+  - cmd: 'docker system prune -af'
+    scenario:
+      en: Remove all unused data
+      zh: 删除所有未使用的数据
+  - cmd: 'docker compose up -d'
+    scenario:
+      en: Start services in background
+      zh: 后台启动服务
+  - cmd: 'docker compose down -v'
+    scenario:
+      en: Stop services and remove volumes
+      zh: 停止服务并删除卷

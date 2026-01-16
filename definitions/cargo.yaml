@@ -856,3 +856,52 @@ subcommands:
         description:
           en: Ignore warnings about metadata
           zh: 忽略关于元数据的警告
+examples:
+  - cmd: 'cargo new [project-name]'
+    scenario:
+      en: Create new binary project
+      zh: 创建新的二进制项目
+  - cmd: 'cargo new --lib [project-name]'
+    scenario:
+      en: Create new library project
+      zh: 创建新的库项目
+  - cmd: 'cargo build'
+    scenario:
+      en: Build project in debug mode
+      zh: 以调试模式构建项目
+  - cmd: 'cargo build --release'
+    scenario:
+      en: Build project in release mode
+      zh: 以发布模式构建项目
+  - cmd: 'cargo run'
+    scenario:
+      en: Build and run project
+      zh: 构建并运行项目
+  - cmd: 'cargo test'
+    scenario:
+      en: Run all tests
+      zh: 运行所有测试
+  - cmd: 'cargo check'
+    scenario:
+      en: Check for errors without building
+      zh: 检查错误但不构建
+  - cmd: 'cargo clippy'
+    scenario:
+      en: Run lints
+      zh: 运行代码检查
+  - cmd: 'cargo fmt'
+    scenario:
+      en: Format code
+      zh: 格式化代码
+  - cmd: 'cargo add [crate]'
+    scenario:
+      en: Add dependency
+      zh: 添加依赖
+  - cmd: 'cargo update'
+    scenario:
+      en: Update dependencies
+      zh: 更新依赖
+  - cmd: 'cargo doc --open'
+    scenario:
+      en: Generate and open documentation
+      zh: 生成并打开文档

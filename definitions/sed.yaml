@@ -108,3 +108,32 @@ flags:
       en: Separate lines by NUL characters
       zh: 使用 NUL 字符分隔行
 is_path_completion: true
+examples:
+  - cmd: 'sed "s/old/new/" [file]'
+    scenario:
+      en: Replace first occurrence per line
+      zh: 替换每行第一个匹配
+  - cmd: 'sed "s/old/new/g" [file]'
+    scenario:
+      en: Replace all occurrences
+      zh: 替换所有匹配
+  - cmd: 'sed -i "s/old/new/g" [file]'
+    scenario:
+      en: Replace in place
+      zh: 原地替换
+  - cmd: 'sed -n "5,10p" [file]'
+    scenario:
+      en: Print lines 5 to 10
+      zh: 打印第 5-10 行
+  - cmd: 'sed "/pattern/d" [file]'
+    scenario:
+      en: Delete lines matching pattern
+      zh: 删除匹配的行
+  - cmd: 'sed "1d" [file]'
+    scenario:
+      en: Delete first line
+      zh: 删除第一行
+  - cmd: 'sed -n "/pattern/p" [file]'
+    scenario:
+      en: Print lines matching pattern
+      zh: 打印匹配的行
