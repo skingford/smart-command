@@ -21,6 +21,20 @@ dirs = "5.0"
 serde_yaml = "0.9.34"
 fuzzy-matcher = "0.3"
 
+# CLI Framework with shell completion support
+clap = { version = "4.5", features = ["derive", "env"] }
+clap_complete = "4.5"
+
+# Configuration management
+config = "0.14"
+
+# Logging/Tracing
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Better error handling
+thiserror = "2.0"
+
 [[bin]]
 name = "smart-command"
 path = "src/main.rs"

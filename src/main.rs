@@ -1,39 +1,62 @@
 use reedline::{
-    default_emacs_keybindings, ColumnarMenu, Reedline, ReedlineEvent, ReedlineMenu, Signal, ExampleHighlighter, Emacs, MenuBuilder,
-    FileBackedHistory, Prompt, PromptEditMode, PromptHistorySearch, PromptHistorySearchStatus,
+    default_emacs_keybindings, ColumnarMenu, Emacs, ExampleHighlighter, FileBackedHistory,
+    MenuBuilder, Prompt, PromptEditMode, PromptHistorySearch, PromptHistorySearchStatus, Reedline,
+    ReedlineEvent, ReedlineMenu, Signal,
 };
 use std::borrow::Cow;
-use std::process::Command;
+use std::io::{self, Write};
 use std::path::PathBuf;
+use std::process::Command;
 use std::sync::Mutex;
-
-mod command_def;
-mod definitions;
-mod completer;
-mod loader;
-
-use completer::SmartCompleter;
-
 use std::sync::{Arc, RwLock};
+use tracing::{debug, info, warn};
+use tracing_subscriber::EnvFilter;
+
+mod cli;
+mod command_def;
+mod completer;
+mod config;
+mod definitions;
+mod error;
+mod loader;
+mod output;
+
+use cli::{Cli, Commands, ConfigAction};
+use completer::SmartCompleter;
+use config::AppConfig;
+use output::Output;
 
 // Track previous directory for `cd -`
 static OLDPWD: Mutex<Option<PathBuf>> = Mutex::new(None);
 
+/// Application state
+#[allow(dead_code)]
+struct AppState {
+    config: AppConfig,
+    danger_protection: bool,
+}
+
 /// Custom prompt showing current directory and git branch
-struct SmartPrompt;
+struct SmartPrompt {
+    config: AppConfig,
+}
 
 impl SmartPrompt {
+    fn new(config: AppConfig) -> Self {
+        Self { config }
+    }
+
     fn get_cwd_display() -> String {
         std::env::current_dir()
             .ok()
             .and_then(|cwd| {
-                // Try to shorten path by replacing home with ~
-                dirs::home_dir().and_then(|home| {
-                    cwd.strip_prefix(&home)
-                        .ok()
-                        .map(|rel| format!("~/{}", rel.display()))
-                })
-                .or_else(|| Some(cwd.display().to_string()))
+                dirs::home_dir()
+                    .and_then(|home| {
+                        cwd.strip_prefix(&home)
+                            .ok()
+                            .map(|rel| format!("~/{}", rel.display()))
+                    })
+                    .or_else(|| Some(cwd.display().to_string()))
             })
             .unwrap_or_else(|| "?".to_string())
     }
@@ -58,12 +81,22 @@ impl SmartPrompt {
 
 impl Prompt for SmartPrompt {
     fn render_prompt_left(&self) -> Cow<'_, str> {
-        let cwd = Self::get_cwd_display();
-        let branch_info = Self::get_git_branch()
-            .map(|b| format!(" ({})", b))
-            .unwrap_or_default();
+        let mut parts = Vec::new();
 
-        Cow::Owned(format!("{}{}", cwd, branch_info))
+        if self.config.prompt.show_cwd {
+            parts.push(Self::get_cwd_display());
+        }
+
+        if self.config.prompt.show_git_branch {
+            if let Some(branch) = Self::get_git_branch() {
+                parts.push(format!("({})", branch));
+            }
+        }
+
+        Cow::Owned(output::Output::prompt(
+            &parts.join(" "),
+            Self::get_git_branch().as_deref(),
+        ))
     }
 
     fn render_prompt_right(&self) -> Cow<'_, str> {
@@ -71,7 +104,7 @@ impl Prompt for SmartPrompt {
     }
 
     fn render_prompt_indicator(&self, _edit_mode: PromptEditMode) -> Cow<'_, str> {
-        Cow::Borrowed("\n❯ ")
+        Cow::Owned(format!("\n{} ", self.config.prompt.indicator))
     }
 
     fn render_prompt_multiline_indicator(&self) -> Cow<'_, str> {
@@ -98,9 +131,128 @@ enum ShellState {
     SelectingSearchResult(Vec<(String, String, String)>),
 }
 
-fn main() -> reedline::Result<()> {
-    let commands = loader::load_commands("definitions");
-    let current_lang = Arc::new(RwLock::new("en".to_string()));
+fn main() -> anyhow::Result<()> {
+    // Parse CLI arguments
+    let cli = Cli::parse_args();
+
+    // Load configuration
+    let mut config = AppConfig::load().unwrap_or_else(|e| {
+        Output::warn(&format!("Failed to load config: {}, using defaults", e));
+        AppConfig::default()
+    });
+
+    // CLI overrides
+    if let Some(lang) = &cli.lang {
+        config.lang = lang.clone();
+    }
+    if let Some(definitions_dir) = &cli.definitions {
+        config.definitions_dir = Some(definitions_dir.clone());
+    }
+    if cli.no_danger_protection {
+        config.danger_protection = false;
+    }
+
+    // Initialize tracing
+    let log_level = if cli.verbose {
+        "debug"
+    } else {
+        &config.log_level
+    };
+    tracing_subscriber::fmt()
+        .with_env_filter(
+            EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new(log_level)),
+        )
+        .with_target(false)
+        .init();
+
+    info!("Starting Smart Command v{}", env!("CARGO_PKG_VERSION"));
+
+    // Handle subcommands
+    if let Some(subcommand) = cli.subcommand {
+        return handle_subcommand(subcommand, &config);
+    }
+
+    // Handle single command execution
+    if let Some(cmd) = cli.command {
+        let current_lang = Arc::new(RwLock::new(config.lang.clone()));
+        let state = AppState {
+            config: config.clone(),
+            danger_protection: config.danger_protection,
+        };
+        execute_command(&cmd, &current_lang, &state);
+        return Ok(());
+    }
+
+    // Start REPL
+    run_repl(config)
+}
+
+fn handle_subcommand(cmd: Commands, config: &AppConfig) -> anyhow::Result<()> {
+    match cmd {
+        Commands::Completions { shell } => {
+            Cli::generate_completions(shell);
+            eprintln!();
+            cli::print_completion_instructions(shell);
+        }
+        Commands::Config { action } => match action {
+            ConfigAction::Show => {
+                Output::info("Current configuration:");
+                println!("{:#?}", config);
+            }
+            ConfigAction::Generate => {
+                println!("{}", config::generate_example_config());
+            }
+            ConfigAction::Path => {
+                Output::info(&format!(
+                    "Config file path: {}",
+                    AppConfig::config_file_path().display()
+                ));
+            }
+        },
+        Commands::Search { query } => {
+            let definitions_dir = config
+                .definitions_dir
+                .clone()
+                .unwrap_or_else(|| PathBuf::from("definitions"));
+            let commands = loader::load_commands(&definitions_dir);
+            let current_lang = Arc::new(RwLock::new(config.lang.clone()));
+            let completer = SmartCompleter::new(commands, current_lang);
+
+            let results = completer.search(&query);
+            if results.is_empty() {
+                Output::warn(&format!("No results found for: {}", query));
+            } else {
+                Output::info(&format!("Search results for '{}':", query));
+                for (i, (cmd, desc, match_type)) in results.iter().enumerate() {
+                    Output::search_result(i + 1, cmd, match_type, desc);
+                }
+            }
+        }
+        Commands::List => {
+            let definitions_dir = config
+                .definitions_dir
+                .clone()
+                .unwrap_or_else(|| PathBuf::from("definitions"));
+            let commands = loader::load_commands(&definitions_dir);
+            let current_lang = Arc::new(RwLock::new(config.lang.clone()));
+            let completer = SmartCompleter::new(commands, current_lang);
+
+            Output::info("Available commands:");
+            for name in completer.get_command_names() {
+                println!("  {}", Output::command(&name));
+            }
+        }
+    }
+    Ok(())
+}
+
+fn run_repl(config: AppConfig) -> anyhow::Result<()> {
+    let definitions_dir = config
+        .definitions_dir
+        .clone()
+        .unwrap_or_else(|| PathBuf::from("definitions"));
+    let commands = loader::load_commands(&definitions_dir);
+    let current_lang = Arc::new(RwLock::new(config.lang.clone()));
     let completer = SmartCompleter::new(commands, current_lang.clone());
     let completer_for_editor = Box::new(completer.clone());
     let completion_menu = Box::new(ColumnarMenu::default().with_name("completion_menu"));
@@ -115,25 +267,18 @@ fn main() -> reedline::Result<()> {
         ]),
     );
 
-    // Add Alt+H for history (placeholder as user requested)
     keybindings.add_binding(
         reedline::KeyModifiers::ALT,
         reedline::KeyCode::Char('h'),
         ReedlineEvent::Menu("history_menu".to_string()),
     );
 
-    // Dynamic highlighter based on loaded commands
     let command_names: Vec<String> = completer.get_command_names();
     let highlighter = Box::new(ExampleHighlighter::new(command_names));
 
     let edit_mode = Box::new(Emacs::new(keybindings));
 
-    // Setup history persistence
-    let history_path = dirs::home_dir()
-        .map(|h| h.join(".smart_command_history"))
-        .unwrap_or_else(|| PathBuf::from(".smart_command_history"));
-
-    let history = FileBackedHistory::with_file(1000, history_path.clone())
+    let history = FileBackedHistory::with_file(config.history_size, config.history_path.clone())
         .expect("Failed to create history file");
 
     let mut line_editor = Reedline::create()
@@ -143,15 +288,24 @@ fn main() -> reedline::Result<()> {
         .with_edit_mode(edit_mode)
         .with_history(Box::new(history));
 
-    let prompt = SmartPrompt;
+    let prompt = SmartPrompt::new(config.clone());
     let mut shell_state = ShellState::Normal;
 
-    println!("Welcome to Smart Command!");
-    println!("  • Type 'git <tab>' to see completions");
-    println!("  • Type '/<keyword>' to search commands (e.g. '/commit')");
-    println!("  • Type 'config set-lang <lang>' to change language (zh/en)");
-    println!("  • Press Ctrl-D or type 'exit' to quit");
-    println!("  • History saved to: {}", history_path.display());
+    let state = AppState {
+        config: config.clone(),
+        danger_protection: config.danger_protection,
+    };
+
+    // Welcome message
+    Output::bold("Welcome to Smart Command!");
+    Output::dim("  Tab         - trigger completion menu");
+    Output::dim("  /<keyword>  - search commands (e.g., /commit)");
+    Output::dim("  config      - shell configuration");
+    Output::dim("  Ctrl-D/exit - quit");
+    Output::dim(&format!("  History: {}", config.history_path.display()));
+    println!();
+
+    debug!("REPL started with config: {:?}", config);
 
     loop {
         let sig = line_editor.read_line(&prompt)?;
@@ -161,76 +315,79 @@ fn main() -> reedline::Result<()> {
 
                 match &shell_state {
                     ShellState::Normal => {
-                        // Check if this is a search command
                         if trimmed.starts_with('/') && trimmed.len() > 1 {
-                            let query = &trimmed[1..]; // Remove '/' prefix
+                            let query = &trimmed[1..];
                             let results = completer.search(query);
 
                             if results.is_empty() {
-                                println!("No results found for: {}", query);
+                                Output::warn(&format!("No results found for: {}", query));
                             } else {
-                                println!("\nSearch results for '{}':", query);
+                                println!();
+                                Output::info(&format!("Search results for '{}':", query));
                                 for (i, (cmd, desc, match_type)) in results.iter().enumerate() {
-                                    println!("{}. [{}] {}", i + 1, match_type, cmd);
-                                    println!("   {}", desc);
+                                    Output::search_result(i + 1, cmd, match_type, desc);
                                 }
-                                println!("\nType a number to execute, 'e<num>' to edit (e.g. 'e1'), or Enter to cancel:");
+                                Output::dim("\nType a number to execute, 'e<num>' to edit, or Enter to cancel:");
                                 shell_state = ShellState::SelectingSearchResult(results);
                             }
                             continue;
                         }
 
-                        // Normal command handling
-                        if trimmed == "exit" { break; }
-                        if trimmed.is_empty() { continue; }
+                        if trimmed == "exit" {
+                            break;
+                        }
+                        if trimmed.is_empty() {
+                            continue;
+                        }
 
-                        execute_command(trimmed, &current_lang);
+                        execute_command(trimmed, &current_lang, &state);
                     }
 
                     ShellState::SelectingSearchResult(results) => {
-                        // Handle 'e<num>' for edit mode hint
                         if trimmed.starts_with('e') || trimmed.starts_with('E') {
                             if let Ok(num) = trimmed[1..].trim().parse::<usize>() {
                                 if num > 0 && num <= results.len() {
                                     let selected = &results[num - 1].0;
-                                    println!("\n💡 Command to edit: {}", selected);
-                                    println!("   (Type the command with your modifications)");
+                                    Output::info(&format!("Command to edit: {}", selected));
+                                    Output::dim("   (Type the command with your modifications)");
                                     shell_state = ShellState::Normal;
                                     continue;
                                 }
                             }
-                            println!("Invalid edit selection. Try 'e1', 'e2', etc.");
+                            Output::error("Invalid edit selection. Try 'e1', 'e2', etc.");
                             continue;
                         }
 
-                        // Handle number selection - execute directly
                         if let Ok(num) = trimmed.parse::<usize>() {
                             if num > 0 && num <= results.len() {
                                 let selected = &results[num - 1].0;
-                                println!("\n→ Executing: {}", selected);
-                                execute_command(selected, &current_lang);
+                                Output::info(&format!("Executing: {}", selected));
+                                execute_command(selected, &current_lang, &state);
                                 shell_state = ShellState::Normal;
                             } else {
-                                println!("Invalid selection. Try again (1-{}):", results.len());
+                                Output::error(&format!(
+                                    "Invalid selection. Try again (1-{}):",
+                                    results.len()
+                                ));
                             }
                         } else if trimmed.is_empty() {
-                            println!("Search cancelled.");
+                            Output::dim("Search cancelled.");
                             shell_state = ShellState::Normal;
                         } else {
-                            println!("Please enter a number (1-{}), 'e<num>' to edit, or Enter to cancel:", results.len());
+                            Output::error(&format!(
+                                "Please enter a number (1-{}), 'e<num>' to edit, or Enter to cancel:",
+                                results.len()
+                            ));
                         }
                     }
                 }
             }
             Signal::CtrlC => {
-                // Ctrl+C: Clear current input, continue REPL
                 println!("^C");
                 shell_state = ShellState::Normal;
-                // Continue the loop, don't exit
             }
             Signal::CtrlD => {
-                // Ctrl+D: Exit shell
-                println!("\nGoodbye!");
+                Output::success("Goodbye!");
                 break;
             }
         }
@@ -240,7 +397,7 @@ fn main() -> reedline::Result<()> {
 }
 
 /// Execute a command and handle special built-in commands
-fn execute_command(command: &str, current_lang: &Arc<RwLock<String>>) {
+fn execute_command(command: &str, current_lang: &Arc<RwLock<String>>, state: &AppState) {
     let parts: Vec<&str> = command.split_whitespace().collect();
 
     if let Some(cmd) = parts.first() {
@@ -256,21 +413,42 @@ fn execute_command(command: &str, current_lang: &Arc<RwLock<String>>) {
             return;
         }
 
+        // Check for dangerous commands
+        if state.danger_protection {
+            if let Some(warning) = output::get_danger_warning(command) {
+                warn!("Dangerous command detected: {}", command);
+                Output::warn(&warning);
+                print!("Are you sure you want to execute this command? [y/N] ");
+                io::stdout().flush().ok();
+
+                let mut input = String::new();
+                if io::stdin().read_line(&mut input).is_ok() {
+                    let response = input.trim().to_lowercase();
+                    if response != "y" && response != "yes" {
+                        Output::dim("Command cancelled.");
+                        return;
+                    }
+                } else {
+                    Output::dim("Command cancelled.");
+                    return;
+                }
+            }
+        }
+
+        debug!("Executing command: {}", command);
+
         // Execute external command
-        let status = Command::new("sh")
-            .arg("-c")
-            .arg(command)
-            .status();
+        let status = Command::new("sh").arg("-c").arg(command).status();
 
         match status {
             Ok(exit_status) => {
                 match exit_status.code() {
-                    Some(0) => {}, // Success, silent
-                    Some(code) => eprintln!("Exit: {}", code),
-                    None => eprintln!("Process terminated by signal"),
+                    Some(0) => {} // Success, silent
+                    Some(code) => Output::exit_code(code),
+                    None => Output::error("Process terminated by signal"),
                 }
-            },
-            Err(e) => eprintln!("Error executing command: {}", e),
+            }
+            Err(e) => Output::error(&format!("Error executing command: {}", e)),
         }
     }
 }
@@ -281,40 +459,34 @@ fn handle_cd(parts: &[&str]) {
 
     let target_path: Option<PathBuf> = if let Some(path) = parts.get(1) {
         if *path == "-" {
-            // cd - : go to previous directory
             let old = OLDPWD.lock().unwrap().clone();
             if let Some(ref old_path) = old {
-                println!("{}", old_path.display());
+                Output::dim(&old_path.display().to_string());
                 Some(old_path.clone())
             } else {
-                eprintln!("cd: OLDPWD not set");
+                Output::error("cd: OLDPWD not set");
                 None
             }
         } else if path.starts_with('~') {
-            // Expand ~ to home directory
             dirs::home_dir().map(|home| {
                 if *path == "~" {
                     home
                 } else {
-                    home.join(&path[2..]) // Skip "~/"
+                    home.join(&path[2..])
                 }
             })
         } else {
             Some(PathBuf::from(path))
         }
     } else {
-        // cd with no args: go to home
         dirs::home_dir()
     };
 
     if let Some(target) = target_path {
         if let Err(e) = std::env::set_current_dir(&target) {
-            eprintln!("cd: {}: {}", target.display(), e);
-        } else {
-            // Update OLDPWD on successful cd
-            if let Some(old) = current_dir {
-                *OLDPWD.lock().unwrap() = Some(old);
-            }
+            Output::error(&format!("cd: {}: {}", target.display(), e));
+        } else if let Some(old) = current_dir {
+            *OLDPWD.lock().unwrap() = Some(old);
         }
     }
 }
@@ -325,16 +497,16 @@ fn handle_config(parts: &[&str], current_lang: &Arc<RwLock<String>>) {
         if *sub == "set-lang" {
             if let Some(lang) = parts.get(2) {
                 *current_lang.write().unwrap() = lang.to_string();
-                println!("Language switched to: {}", lang);
+                Output::success(&format!("Language switched to: {}", lang));
             } else {
-                println!("Usage: config set-lang <lang>");
-                println!("Available languages: en, zh");
+                Output::info("Usage: config set-lang <lang>");
+                Output::dim("Available languages: en, zh");
             }
         } else {
-            println!("Unknown config subcommand: {}", sub);
-            println!("Available: set-lang");
+            Output::error(&format!("Unknown config subcommand: {}", sub));
+            Output::dim("Available: set-lang");
         }
     } else {
-        println!("Usage: config set-lang <lang>");
+        Output::info("Usage: config set-lang <lang>");
     }
 }

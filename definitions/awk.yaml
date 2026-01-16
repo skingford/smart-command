@@ -238,15 +238,15 @@ flags:
       zh: 传统 Unix awk 兼容性
 is_path_completion: true
 examples:
-  - cmd: "awk '{print \$1}' [file]"
+  - cmd: "awk '{print $1}' [file]"
     scenario:
       en: Print first column
       zh: 打印第一列
-  - cmd: "awk -F: '{print \$1}' [file]"
+  - cmd: "awk -F: '{print $1}' [file]"
     scenario:
       en: Print first field with custom delimiter
       zh: 使用自定义分隔符打印第一列
-  - cmd: "awk '{sum+=\$1} END {print sum}' [file]"
+  - cmd: "awk '{sum+=$1} END {print sum}' [file]"
     scenario:
       en: Sum first column
       zh: 求第一列之和
@@ -262,7 +262,7 @@ examples:
     scenario:
       en: Remove empty lines
       zh: 删除空行
-  - cmd: "awk '{print NR, \$0}' [file]"
+  - cmd: "awk '{print NR, $0}' [file]"
     scenario:
       en: Print with line numbers
       zh: 打印并显示行号

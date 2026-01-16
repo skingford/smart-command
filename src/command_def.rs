@@ -12,12 +12,11 @@ impl I18nString {
     pub fn get(&self, lang: &str) -> &str {
         match self {
             I18nString::Simple(s) => s,
-            I18nString::Map(m) => {
-                m.get(lang)
-                 .or_else(|| m.get("en"))
-                 .map(|s| s.as_str())
-                 .unwrap_or("")
-            }
+            I18nString::Map(m) => m
+                .get(lang)
+                .or_else(|| m.get("en"))
+                .map(|s| s.as_str())
+                .unwrap_or(""),
         }
     }
 }
@@ -86,13 +85,13 @@ impl CommandSpec {
         self.flags.push(flag);
         self
     }
-    
+
     #[allow(dead_code)]
     pub fn example(mut self, example: Example) -> Self {
         self.examples.push(example);
         self
     }
-    
+
     pub fn field(mut self, name: &str, val: bool) -> Self {
         if name == "is_path_completion" {
             self.is_path_completion = val;

@@ -1,6 +1,6 @@
+use crate::command_def::CommandSpec;
 use std::fs;
 use std::path::{Path, PathBuf};
-use crate::command_def::CommandSpec;
 
 /// Find the definitions directory from multiple candidate paths
 fn find_definitions_dir() -> Option<PathBuf> {
@@ -8,7 +8,9 @@ fn find_definitions_dir() -> Option<PathBuf> {
         // 1. Current working directory
         std::env::current_dir().ok().map(|p| p.join("definitions")),
         // 2. Executable directory (for installed binaries)
-        std::env::current_exe().ok().and_then(|p| p.parent().map(|p| p.join("definitions"))),
+        std::env::current_exe()
+            .ok()
+            .and_then(|p| p.parent().map(|p| p.join("definitions"))),
         // 3. User config directory
         dirs::config_dir().map(|p| p.join("smart-command").join("definitions")),
         // 4. Home directory config
@@ -56,13 +58,17 @@ pub fn load_commands<P: AsRef<Path>>(fallback_dir: P) -> Vec<CommandSpec> {
     let mut commands = Vec::new();
 
     // Try to find definitions directory
-    let definitions_dir = find_definitions_dir()
-        .unwrap_or_else(|| fallback_dir.as_ref().to_path_buf());
+    let definitions_dir =
+        find_definitions_dir().unwrap_or_else(|| fallback_dir.as_ref().to_path_buf());
 
     if definitions_dir.exists() {
         let count = load_from_dir(&definitions_dir, &mut commands);
         if count > 0 {
-            println!("Loaded {} commands from: {}", count, definitions_dir.display());
+            println!(
+                "Loaded {} commands from: {}",
+                count,
+                definitions_dir.display()
+            );
         }
     } else {
         eprintln!("Warning: definitions directory not found.");
@@ -74,4 +80,3 @@ pub fn load_commands<P: AsRef<Path>>(fallback_dir: P) -> Vec<CommandSpec> {
 
     commands
 }
-

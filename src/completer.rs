@@ -1,10 +1,10 @@
-use reedline::{Completer, Span, Suggestion};
 use crate::command_def::CommandSpec;
 use crate::definitions;
+use fuzzy_matcher::skim::SkimMatcherV2;
+use fuzzy_matcher::FuzzyMatcher;
+use reedline::{Completer, Span, Suggestion};
 use std::collections::HashMap;
 use std::sync::{Arc, RwLock};
-use fuzzy_matcher::FuzzyMatcher;
-use fuzzy_matcher::skim::SkimMatcherV2;
 
 pub struct SmartCompleter {
     commands: HashMap<String, CommandSpec>,
@@ -139,7 +139,7 @@ impl Completer for SmartCompleter {
         let lang = self.get_lang();
         let input = &line[0..pos];
         let parts: Vec<&str> = input.trim_start().split_whitespace().collect();
-        
+
         if line.starts_with('/') {
             let query = &line[1..pos]; // skip the slash
 
@@ -147,7 +147,9 @@ impl Completer for SmartCompleter {
             if query.is_empty() {
                 return vec![Suggestion {
                     value: "/".to_string(),
-                    description: Some("Type to search commands (e.g., /压缩 for compression)".to_string()),
+                    description: Some(
+                        "Type to search commands (e.g., /压缩 for compression)".to_string(),
+                    ),
                     extra: None,
                     span: Span { start: 0, end: pos },
                     append_whitespace: false,
@@ -197,122 +199,168 @@ impl Completer for SmartCompleter {
         }
 
         if parts.is_empty() || (parts.len() == 1 && !line.ends_with(' ')) {
-             let query = parts.first().unwrap_or(&"");
-             let mut suggestions: Vec<(i64, Suggestion)> = self.commands.values()
-                .filter_map(|cmd| {
-                    self.fuzzy_match(query, &cmd.name).map(|score| (score, cmd))
+            let query = parts.first().unwrap_or(&"");
+            let mut suggestions: Vec<(i64, Suggestion)> = self
+                .commands
+                .values()
+                .filter_map(|cmd| self.fuzzy_match(query, &cmd.name).map(|score| (score, cmd)))
+                .map(|(score, cmd)| {
+                    (
+                        score,
+                        Suggestion {
+                            value: cmd.name.clone(),
+                            description: Some(cmd.description.get(&lang).to_string()),
+                            extra: None,
+                            span: Span {
+                                start: pos - query.len(),
+                                end: pos,
+                            },
+                            append_whitespace: true,
+                            style: None,
+                        },
+                    )
                 })
-                .map(|(score, cmd)| (score, Suggestion {
-                    value: cmd.name.clone(),
-                    description: Some(cmd.description.get(&lang).to_string()),
-                    extra: None,
-                    span: Span { start: pos - query.len(), end: pos },
-                    append_whitespace: true,
-                    style: None,
-                }))
                 .collect();
 
-             // Sort by fuzzy score (higher is better)
-             suggestions.sort_by(|a, b| b.0.cmp(&a.0));
-             return suggestions.into_iter().map(|(_, s)| s).collect();
+            // Sort by fuzzy score (higher is better)
+            suggestions.sort_by(|a, b| b.0.cmp(&a.0));
+            return suggestions.into_iter().map(|(_, s)| s).collect();
         }
 
         if let Some(cmd_name) = parts.first() {
             if let Some(root_spec) = self.commands.get(*cmd_name) {
                 // Determine which tokens are "completed" and can be used for descent
                 let is_new_arg = line.ends_with(' ');
-                let num_parts_to_descend = if is_new_arg { parts.len() } else { parts.len().saturating_sub(1) };
-                
+                let num_parts_to_descend = if is_new_arg {
+                    parts.len()
+                } else {
+                    parts.len().saturating_sub(1)
+                };
+
                 // Descend the tree
                 let mut current_spec = root_spec;
                 for i in 1..num_parts_to_descend {
                     let sub_name = parts[i];
-                     if let Some(sub) = current_spec.subcommands.iter().find(|s| s.name == sub_name) {
-                         current_spec = sub;
-                     } else {
-                         // User typed something that isn't a known subcommand. 
-                         break;
-                     }
+                    if let Some(sub) = current_spec.subcommands.iter().find(|s| s.name == sub_name)
+                    {
+                        current_spec = sub;
+                    } else {
+                        // User typed something that isn't a known subcommand.
+                        break;
+                    }
                 }
 
                 // Setup Query
                 let last_part = parts.last().unwrap_or(&"");
                 let query = if is_new_arg { "" } else { *last_part };
                 let start_idx = if is_new_arg { pos } else { pos - query.len() };
-                
+
                 // 1. Subcommand completion
                 // Suggest subcommands of the CURRENT spec (use prefix match for speed in tab completion)
-                let sub_suggestions: Vec<Suggestion> = current_spec.subcommands.iter()
+                let sub_suggestions: Vec<Suggestion> = current_spec
+                    .subcommands
+                    .iter()
                     .filter(|sub| self.prefix_match(query, &sub.name))
                     .map(|sub| Suggestion {
                         value: sub.name.clone(),
                         description: Some(sub.description.get(&lang).to_string()),
                         extra: None,
-                        span: Span { start: start_idx, end: pos },
+                        span: Span {
+                            start: start_idx,
+                            end: pos,
+                        },
                         append_whitespace: true,
                         style: None,
                     })
                     .collect();
-                
+
                 // 2. Flag completion
                 // Suggest flags of the CURRENT spec
                 let mut flag_suggestions = Vec::new();
                 if query.starts_with('-') || is_new_arg {
                     // Copied/Refined flag logic
                     let is_short_chain = query.starts_with('-') && !query.starts_with("--");
-                    let used_chars: Vec<char> = if is_short_chain { query.chars().skip(1).collect() } else { vec![] };
-                    
+                    let used_chars: Vec<char> = if is_short_chain {
+                        query.chars().skip(1).collect()
+                    } else {
+                        vec![]
+                    };
+
                     // Simple check: if we are in short chain and last char takes value, don't suggest more flags?
-                     let stop_flagging = if is_short_chain {
+                    let stop_flagging = if is_short_chain {
                         if let Some(last_char) = query.chars().last() {
-                             current_spec.flags.iter().any(|f| f.short == Some(last_char) && f.takes_value)
-                        } else { false }
-                    } else { false };
+                            current_spec
+                                .flags
+                                .iter()
+                                .any(|f| f.short == Some(last_char) && f.takes_value)
+                        } else {
+                            false
+                        }
+                    } else {
+                        false
+                    };
 
                     if !stop_flagging {
-                         for flag in &current_spec.flags {
+                        for flag in &current_spec.flags {
                             let short = flag.short.map(|c| format!("-{}", c));
                             let long = flag.long.as_ref().map(|s| format!("--{}", s));
-                            let match_short = short.as_ref().map(|s| s.starts_with(query)).unwrap_or(false);
-                            let match_long = long.as_ref().map(|s| s.starts_with(query)).unwrap_or(false);
+                            let match_short = short
+                                .as_ref()
+                                .map(|s| s.starts_with(query))
+                                .unwrap_or(false);
+                            let match_long =
+                                long.as_ref().map(|s| s.starts_with(query)).unwrap_or(false);
 
                             if match_short && short.is_some() {
-                                 flag_suggestions.push(Suggestion {
+                                flag_suggestions.push(Suggestion {
                                     value: short.clone().unwrap(),
                                     description: Some(flag.description.get(&lang).to_string()),
                                     extra: None,
-                                    span: Span { start: start_idx, end: pos },
+                                    span: Span {
+                                        start: start_idx,
+                                        end: pos,
+                                    },
                                     append_whitespace: true,
                                     style: None,
                                 });
                             }
                             if match_long && long.is_some() {
-                                 flag_suggestions.push(Suggestion {
+                                flag_suggestions.push(Suggestion {
                                     value: long.clone().unwrap(),
                                     description: Some(flag.description.get(&lang).to_string()),
                                     extra: None,
-                                    span: Span { start: start_idx, end: pos },
+                                    span: Span {
+                                        start: start_idx,
+                                        end: pos,
+                                    },
                                     append_whitespace: true,
                                     style: None,
                                 });
                             }
-                            
+
                             // Combined short flags
                             if is_short_chain {
-                                 if let Some(c) = flag.short {
-                                     if !used_chars.contains(&c) {
-                                         flag_suggestions.push(Suggestion {
+                                if let Some(c) = flag.short {
+                                    if !used_chars.contains(&c) {
+                                        flag_suggestions.push(Suggestion {
                                             value: format!("{}{}", query, c),
-                                            description: Some(format!("{} (+{})", flag.description.get(&lang), c)),
+                                            description: Some(format!(
+                                                "{} (+{})",
+                                                flag.description.get(&lang),
+                                                c
+                                            )),
                                             extra: None,
-                                            span: Span { start: start_idx, end: pos },
+                                            span: Span {
+                                                start: start_idx,
+                                                end: pos,
+                                            },
                                             append_whitespace: true,
-                                            style: None, 
-                                         });
-                                     }
-                                 }
+                                            style: None,
+                                        });
+                                    }
+                                }
                             }
-                         }
+                        }
                     }
                 }
 
@@ -337,13 +385,15 @@ impl Completer for SmartCompleter {
                 all_suggestions.extend(flag_suggestions);
                 all_suggestions.extend(example_suggestions);
 
-                if !all_suggestions.is_empty() { return all_suggestions; }
+                if !all_suggestions.is_empty() {
+                    return all_suggestions;
+                }
 
                 // Check for path completion trigger
                 if current_spec.is_path_completion {
-                   // Fall through to path completion below
+                    // Fall through to path completion below
                 } else {
-                   return vec![];
+                    return vec![];
                 }
             }
         }
@@ -353,27 +403,35 @@ impl Completer for SmartCompleter {
         let is_new_arg = line.ends_with(' ');
         let query = if is_new_arg { "" } else { *last_part };
         let start_idx = if is_new_arg { pos } else { pos - query.len() };
-        
+
         // Simple directory reader
         if let Ok(paths) = std::fs::read_dir(".") {
-             return paths.filter_map(|p| p.ok())
+            return paths
+                .filter_map(|p| p.ok())
                 .map(|p| {
-                   let name = p.file_name().to_string_lossy().to_string();
-                   let is_dir = p.file_type().map(|t| t.is_dir()).unwrap_or(false);
-                   (name, is_dir)
+                    let name = p.file_name().to_string_lossy().to_string();
+                    let is_dir = p.file_type().map(|t| t.is_dir()).unwrap_or(false);
+                    (name, is_dir)
                 })
                 .filter(|(name, _)| name.starts_with(query))
                 .map(|(name, is_dir)| Suggestion {
                     value: if is_dir { format!("{}/", name) } else { name },
-                    description: Some(if is_dir { "Dir".to_string() } else { "File".to_string() }),
+                    description: Some(if is_dir {
+                        "Dir".to_string()
+                    } else {
+                        "File".to_string()
+                    }),
                     extra: None,
-                    span: Span { start: start_idx, end: pos },
+                    span: Span {
+                        start: start_idx,
+                        end: pos,
+                    },
                     append_whitespace: true,
                     style: None,
                 })
                 .collect();
         }
-        
+
         vec![]
     }
 }
