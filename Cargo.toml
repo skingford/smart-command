@@ -2,6 +2,12 @@
 name = "smart-command"
 version = "0.1.0"
 edition = "2021"
+description = "An intelligent shell with context-aware command completion"
+authors = ["kingford"]
+license = "MIT"
+repository = "https://github.com/kingford/smart-command"
+keywords = ["shell", "cli", "completion", "terminal"]
+categories = ["command-line-utilities"]
 
 [dependencies]
 reedline = "0.38.0"
@@ -13,3 +19,8 @@ crossterm = "0.27"
 regex = "1.10"
 dirs = "5.0"
 serde_yaml = "0.9.34"
+fuzzy-matcher = "0.3"
+
+[[bin]]
+name = "smart-command"
+path = "src/main.rs"
