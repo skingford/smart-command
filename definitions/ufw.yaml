@@ -1,0 +1,504 @@
+name: ufw
+description:
+  en: Uncomplicated Firewall - program for managing a netfilter firewall
+  zh: 简单防火墙 - 用于管理 netfilter 防火墙的程序
+subcommands:
+  - name: enable
+    description:
+      en: Enable the firewall
+      zh: 启用防火墙
+    flags:
+      - long: force
+        description:
+          en: Force enable without prompting
+          zh: 强制启用，不提示
+  - name: disable
+    description:
+      en: Disable the firewall
+      zh: 禁用防火墙
+  - name: reload
+    description:
+      en: Reload firewall
+      zh: 重新加载防火墙
+  - name: status
+    description:
+      en: Show firewall status and rules
+      zh: 显示防火墙状态和规则
+    flags:
+      - long: verbose
+        short: v
+        description:
+          en: Show verbose output
+          zh: 显示详细输出
+      - long: numbered
+        short: n
+        description:
+          en: Show rules with numbers
+          zh: 显示带编号的规则
+  - name: allow
+    description:
+      en: Allow traffic through firewall
+      zh: 允许流量通过防火墙
+    flags:
+      - long: in
+        description:
+          en: Apply to incoming traffic
+          zh: 应用于传入流量
+      - long: out
+        description:
+          en: Apply to outgoing traffic
+          zh: 应用于传出流量
+      - long: routed
+        description:
+          en: Apply to routed traffic
+          zh: 应用于路由流量
+      - long: interface
+        short: i
+        description:
+          en: Specify network interface
+          zh: 指定网络接口
+        takes_value: true
+      - long: protocol
+        short: p
+        description:
+          en: Specify protocol (tcp/udp)
+          zh: 指定协议（tcp/udp）
+        takes_value: true
+      - long: from
+        description:
+          en: Source address
+          zh: 源地址
+        takes_value: true
+      - long: to
+        description:
+          en: Destination address
+          zh: 目标地址
+        takes_value: true
+      - long: port
+        description:
+          en: Specify port
+          zh: 指定端口
+        takes_value: true
+      - long: delete
+        description:
+          en: Delete rule
+          zh: 删除规则
+      - long: comment
+        description:
+          en: Add comment to rule
+          zh: 为规则添加注释
+        takes_value: true
+  - name: deny
+    description:
+      en: Deny traffic through firewall
+      zh: 拒绝流量通过防火墙
+    flags:
+      - long: in
+        description:
+          en: Apply to incoming traffic
+          zh: 应用于传入流量
+      - long: out
+        description:
+          en: Apply to outgoing traffic
+          zh: 应用于传出流量
+      - long: routed
+        description:
+          en: Apply to routed traffic
+          zh: 应用于路由流量
+      - long: interface
+        short: i
+        description:
+          en: Specify network interface
+          zh: 指定网络接口
+        takes_value: true
+      - long: protocol
+        short: p
+        description:
+          en: Specify protocol (tcp/udp)
+          zh: 指定协议（tcp/udp）
+        takes_value: true
+      - long: from
+        description:
+          en: Source address
+          zh: 源地址
+        takes_value: true
+      - long: to
+        description:
+          en: Destination address
+          zh: 目标地址
+        takes_value: true
+      - long: port
+        description:
+          en: Specify port
+          zh: 指定端口
+        takes_value: true
+      - long: delete
+        description:
+          en: Delete rule
+          zh: 删除规则
+      - long: comment
+        description:
+          en: Add comment to rule
+          zh: 为规则添加注释
+        takes_value: true
+  - name: reject
+    description:
+      en: Reject traffic through firewall
+      zh: 拒绝流量通过防火墙（带响应）
+    flags:
+      - long: in
+        description:
+          en: Apply to incoming traffic
+          zh: 应用于传入流量
+      - long: out
+        description:
+          en: Apply to outgoing traffic
+          zh: 应用于传出流量
+      - long: routed
+        description:
+          en: Apply to routed traffic
+          zh: 应用于路由流量
+      - long: interface
+        short: i
+        description:
+          en: Specify network interface
+          zh: 指定网络接口
+        takes_value: true
+      - long: protocol
+        short: p
+        description:
+          en: Specify protocol (tcp/udp)
+          zh: 指定协议（tcp/udp）
+        takes_value: true
+      - long: from
+        description:
+          en: Source address
+          zh: 源地址
+        takes_value: true
+      - long: to
+        description:
+          en: Destination address
+          zh: 目标地址
+        takes_value: true
+      - long: port
+        description:
+          en: Specify port
+          zh: 指定端口
+        takes_value: true
+      - long: delete
+        description:
+          en: Delete rule
+          zh: 删除规则
+      - long: comment
+        description:
+          en: Add comment to rule
+          zh: 为规则添加注释
+        takes_value: true
+  - name: limit
+    description:
+      en: Limit traffic through firewall
+      zh: 限制流量通过防火墙
+    flags:
+      - long: in
+        description:
+          en: Apply to incoming traffic
+          zh: 应用于传入流量
+      - long: out
+        description:
+          en: Apply to outgoing traffic
+          zh: 应用于传出流量
+      - long: interface
+        short: i
+        description:
+          en: Specify network interface
+          zh: 指定网络接口
+        takes_value: true
+      - long: protocol
+        short: p
+        description:
+          en: Specify protocol (tcp/udp)
+          zh: 指定协议（tcp/udp）
+        takes_value: true
+      - long: from
+        description:
+          en: Source address
+          zh: 源地址
+        takes_value: true
+      - long: to
+        description:
+          en: Destination address
+          zh: 目标地址
+        takes_value: true
+      - long: port
+        description:
+          en: Specify port
+          zh: 指定端口
+        takes_value: true
+      - long: delete
+        description:
+          en: Delete rule
+          zh: 删除规则
+      - long: comment
+        description:
+          en: Add comment to rule
+          zh: 为规则添加注释
+        takes_value: true
+  - name: delete
+    description:
+      en: Delete firewall rule
+      zh: 删除防火墙规则
+    flags:
+      - long: dry-run
+        description:
+          en: Show what would be deleted
+          zh: 显示将要删除的内容
+  - name: insert
+    description:
+      en: Insert rule at position
+      zh: 在指定位置插入规则
+    flags:
+      - long: dry-run
+        description:
+          en: Show what would be inserted
+          zh: 显示将要插入的内容
+  - name: reset
+    description:
+      en: Reset firewall to default settings
+      zh: 将防火墙重置为默认设置
+    flags:
+      - long: force
+        description:
+          en: Force reset without prompting
+          zh: 强制重置，不提示
+  - name: app
+    description:
+      en: Application firewall rules
+      zh: 应用防火墙规则
+    subcommands:
+      - name: list
+        description:
+          en: List application profiles
+          zh: 列出应用配置文件
+        flags:
+          - long: all
+            description:
+              en: List all profiles
+              zh: 列出所有配置文件
+      - name: info
+        description:
+          en: Show information about an application profile
+          zh: 显示应用配置文件的信息
+      - name: update
+        description:
+          en: Update application profile
+          zh: 更新应用配置文件
+        flags:
+          - long: add
+            short: a
+            description:
+              en: Add new profile
+              zh: 添加新配置文件
+          - long: remove
+            short: r
+            description:
+              en: Remove profile
+              zh: 移除配置文件
+      - name: default
+        description:
+          en: Set default policy for application
+          zh: 设置应用的默认策略
+        flags:
+          - long: allow
+            description:
+              en: Set default to allow
+              zh: 设置默认为允许
+          - long: deny
+            description:
+              en: Set default to deny
+              zh: 设置默认为拒绝
+          - long: reject
+            description:
+              en: Set default to reject
+              zh: 设置默认为拒绝（带响应）
+  - name: default
+    description:
+      en: Set default policy
+      zh: 设置默认策略
+    flags:
+      - long: allow
+        description:
+          en: Set default to allow
+          zh: 设置默认为允许
+      - long: deny
+        description:
+          en: Set default to deny
+          zh: 设置默认为拒绝
+      - long: reject
+        description:
+          en: Set default to reject
+          zh: 设置默认为拒绝（带响应）
+      - long: incoming
+        description:
+          en: Apply to incoming traffic
+          zh: 应用于传入流量
+      - long: outgoing
+        description:
+          en: Apply to outgoing traffic
+          zh: 应用于传出流量
+      - long: routed
+        description:
+          en: Apply to routed traffic
+          zh: 应用于路由流量
+  - name: logging
+    description:
+      en: Set logging level
+      zh: 设置日志级别
+    flags:
+      - long: on
+        description:
+          en: Enable logging
+          zh: 启用日志
+      - long: off
+        description:
+          en: Disable logging
+          zh: 禁用日志
+      - long: low
+        description:
+          en: Set logging to low
+          zh: 设置日志为低级别
+      - long: medium
+        description:
+          en: Set logging to medium
+          zh: 设置日志为中级别
+      - long: high
+        description:
+          en: Set logging to high
+          zh: 设置日志为高级别
+      - long: full
+        description:
+          en: Set logging to full
+          zh: 设置日志为完全
+  - name: show
+    description:
+      en: Show firewall rules
+      zh: 显示防火墙规则
+    flags:
+      - long: added
+        description:
+          en: Show added rules
+          zh: 显示已添加的规则
+      - long: raw
+        description:
+          en: Show raw rules
+          zh: 显示原始规则
+      - long: before-rules
+        description:
+          en: Show before rules
+          zh: 显示前置规则
+      - long: user-rules
+        description:
+          en: Show user rules
+          zh: 显示用户规则
+      - long: after-rules
+        description:
+          en: Show after rules
+          zh: 显示后置规则
+      - long: logging-rules
+        description:
+          en: Show logging rules
+          zh: 显示日志规则
+  - name: version
+    description:
+      en: Show version information
+      zh: 显示版本信息
+flags:
+  - long: help
+    short: h
+    description:
+      en: Show help message
+      zh: 显示帮助信息
+  - long: dry-run
+    description:
+      en: Show what would happen without making changes
+      zh: 显示将要执行的操作但不实际更改
+examples:
+  - cmd: 'ufw enable'
+    scenario:
+      en: Enable the firewall
+      zh: 启用防火墙
+  - cmd: 'ufw disable'
+    scenario:
+      en: Disable the firewall
+      zh: 禁用防火墙
+  - cmd: 'ufw status'
+    scenario:
+      en: Show firewall status
+      zh: 显示防火墙状态
+  - cmd: 'ufw status verbose'
+    scenario:
+      en: Show detailed firewall status
+      zh: 显示详细的防火墙状态
+  - cmd: 'ufw allow 22'
+    scenario:
+      en: Allow SSH on port 22
+      zh: 允许端口22的SSH连接
+  - cmd: 'ufw allow 80/tcp'
+    scenario:
+      en: Allow HTTP on port 80
+      zh: 允许端口80的HTTP连接
+  - cmd: 'ufw allow 443/tcp'
+    scenario:
+      en: Allow HTTPS on port 443
+      zh: 允许端口443的HTTPS连接
+  - cmd: 'ufw deny 23'
+    scenario:
+      en: Deny Telnet on port 23
+      zh: 拒绝端口23的Telnet连接
+  - cmd: 'ufw allow from 192.168.1.0/24'
+    scenario:
+      en: Allow traffic from specific subnet
+      zh: 允许来自特定子网的流量
+  - cmd: 'ufw allow from 192.168.1.100 to any port 22'
+    scenario:
+      en: Allow SSH from specific IP
+      zh: 允许来自特定IP的SSH连接
+  - cmd: 'ufw delete allow 22'
+    scenario:
+      en: Delete rule allowing port 22
+      zh: 删除允许端口22的规则
+  - cmd: 'ufw limit 22/tcp'
+    scenario:
+      en: Rate limit SSH connections
+      zh: 限制SSH连接速率
+  - cmd: 'ufw default deny incoming'
+    scenario:
+      en: Set default to deny incoming traffic
+      zh: 设置默认拒绝传入流量
+  - cmd: 'ufw default allow outgoing'
+    scenario:
+      en: Set default to allow outgoing traffic
+      zh: 设置默认允许传出流量
+  - cmd: 'ufw app list'
+    scenario:
+      en: List application profiles
+      zh: 列出应用配置文件
+  - cmd: 'ufw allow "Nginx Full"'
+    scenario:
+      en: Allow Nginx application profile
+      zh: 允许Nginx应用配置文件
+  - cmd: 'ufw logging on'
+    scenario:
+      en: Enable firewall logging
+      zh: 启用防火墙日志
+  - cmd: 'ufw logging medium'
+    scenario:
+      en: Set logging to medium level
+      zh: 设置日志为中级别
+  - cmd: 'ufw reload'
+    scenario:
+      en: Reload firewall rules
+      zh: 重新加载防火墙规则
+  - cmd: 'ufw reset'
+    scenario:
+      en: Reset firewall to defaults
+      zh: 将防火墙重置为默认设置
