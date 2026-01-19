@@ -1,0 +1,746 @@
+name: vim
+description:
+  en: Text editor with command mode and insert mode
+  zh: 具有命令模式和插入模式的文本编辑器
+flags:
+  - long: recovery
+    short: r
+    description:
+      en: Recovery mode
+      zh: 恢复模式
+  - long: read-only
+    short: R
+    description:
+      en: Read-only mode
+      zh: 只读模式
+  - long: binary
+    short: b
+    description:
+      en: Binary mode
+      zh: 二进制模式
+  - long: verbose
+    short: V
+    description:
+      en: Verbose mode
+      zh: 详细模式
+  - long: debug
+    short: D
+    description:
+      en: Debug mode
+      zh: 调试模式
+  - long: noplugin
+    description:
+      en: Don't load plugins
+      zh: 不加载插件
+  - long: clean
+    description:
+      en: Start with clean environment (no plugins, no settings, etc.)
+      zh: 以清洁环境启动（无插件、无设置等）
+  - long: literal
+    short: l
+    description:
+      en: Literal mode for next argument
+      zh: 下一个参数的字面模式
+  - long: not-a-term
+    description:
+      en: Skip warning when not in terminal
+      zh: 不在终端时跳过警告
+  - long: help
+    short: h
+    description:
+      en: Show help message
+      zh: 显示帮助信息
+  - long: version
+    description:
+      en: Show version information
+      zh: 显示版本信息
+  - long: servername
+    description:
+      en: Server name for Vim server
+      zh: Vim 服务器的服务器名称
+    takes_value: true
+  - long: remote
+    description:
+      en: Edit file in existing Vim server
+      zh: 在现有 Vim 服务器中编辑文件
+    takes_value: true
+  - long: remote-send
+    description:
+      en: Send keys to Vim server
+      zh: 向 Vim 服务器发送按键
+    takes_value: true
+  - long: remote-expr
+    description:
+      en: Evaluate expression in Vim server
+      zh: 在 Vim 服务器中计算表达式
+    takes_value: true
+  - long: remote-wait
+    description:
+      en: Wait for Vim server to finish
+      zh: 等待 Vim 服务器完成
+    takes_value: true
+  - long: serverlist
+    description:
+      en: List available Vim servers
+      zh: 列出可用的 Vim 服务器
+  - long: tag
+    short: t
+    description:
+      en: Jump to tag
+      zh: 跳转到标签
+    takes_value: true
+  - long: cmd
+    description:
+      en: Execute command after loading first file
+      zh: 加载第一个文件后执行命令
+    takes_value: true
+  - long: startuptime
+    description:
+      en: Write startup timing messages to file
+      zh: 将启动计时消息写入文件
+    takes_value: true
+subcommands:
+  - name: edit
+    description:
+      en: Edit a file in current window
+      zh: 在当前窗口编辑文件
+    is_path_completion: true
+  - name: new
+    description:
+      en: Create new window and edit file
+      zh: 创建新窗口并编辑文件
+    is_path_completion: true
+  - name: split
+    description:
+      en: Split window and edit file
+      zh: 分割窗口并编辑文件
+    is_path_completion: true
+  - name: vsplit
+    description:
+      en: Vertical split window and edit file
+      zh: 垂直分割窗口并编辑文件
+    is_path_completion: true
+  - name: tabedit
+    description:
+      en: Edit file in new tab
+      zh: 在新标签页中编辑文件
+    is_path_completion: true
+  - name: tabnew
+    description:
+      en: Create new tab with file
+      zh: 创建新标签页并编辑文件
+    is_path_completion: true
+  - name: view
+    description:
+      en: View file in read-only mode
+      zh: 以只读模式查看文件
+    is_path_completion: true
+  - name: diff
+    description:
+      en: Show diff between files
+      zh: 显示文件之间的差异
+    is_path_completion: true
+  - name: write
+    description:
+      en: Write file to disk (save)
+      zh: 将文件写入磁盘（保存）
+  - name: update
+    description:
+      en: Write file only if modified
+      zh: 仅在修改时写入文件
+  - name: quit
+    description:
+      en: Quit current window
+      zh: 退出当前窗口
+  - name: quitall
+    description:
+      en: Quit all windows
+      zh: 退出所有窗口
+  - name: wq
+    description:
+      en: Write and quit
+      zh: 保存并退出
+  - name: xit
+    description:
+      en: Write and quit (same as wq)
+      zh: 保存并退出（同 wq）
+  - name: exit
+    description:
+      en: Exit Vim
+      zh: 退出 Vim
+  - name: read
+    description:
+      en: Read file into buffer
+      zh: 将文件读入缓冲区
+    is_path_completion: true
+  - name: source
+    description:
+      en: Execute commands from file
+      zh: 从文件执行命令
+    is_path_completion: true
+  - name: make
+    description:
+      en: Run make and load error list
+      zh: 运行 make 并加载错误列表
+  - name: grep
+    description:
+      en: Run grep and load results
+      zh: 运行 grep 并加载结果
+  - name: vimgrep
+    description:
+      en: Search for pattern in files
+      zh: 在文件中搜索模式
+  - name: help
+    description:
+      en: Open help window
+      zh: 打开帮助窗口
+  - name: buffers
+    description:
+      en: List all buffers
+      zh: 列出所有缓冲区
+  - name: buffer
+    description:
+      en: Switch to buffer by number
+      zh: 按编号切换到缓冲区
+  - name: bnext
+    description:
+      en: Go to next buffer
+      zh: 转到下一个缓冲区
+  - name: bprevious
+    description:
+      en: Go to previous buffer
+      zh: 转到上一个缓冲区
+  - name: bfirst
+    description:
+      en: Go to first buffer
+      zh: 转到第一个缓冲区
+  - name: blast
+    description:
+      en: Go to last buffer
+      zh: 转到最后一个缓冲区
+  - name: bdelete
+    description:
+      en: Delete buffer
+      zh: 删除缓冲区
+  - name: bwipeout
+    description:
+      en: Completely delete buffer
+      zh: 完全删除缓冲区
+  - name: files
+    description:
+      en: List all files
+      zh: 列出所有文件
+  - name: args
+    description:
+      en: List argument list
+      zh: 列出参数列表
+  - name: next
+    description:
+      en: Go to next file in argument list
+      zh: 转到参数列表中的下一个文件
+  - name: previous
+    description:
+      en: Go to previous file in argument list
+      zh: 转到参数列表中的上一个文件
+  - name: first
+    description:
+      en: Go to first file in argument list
+      zh: 转到参数列表中的第一个文件
+  - name: last
+    description:
+      en: Go to last file in argument list
+      zh: 转到参数列表中的最后一个文件
+  - name: wn
+    description:
+      en: Write file and go to next
+      zh: 写入文件并转到下一个
+  - name: wp
+    description:
+      en: Write file and go to previous
+      zh: 写入文件并转到上一个
+  - name: mark
+    description:
+      en: Set a mark
+      zh: 设置标记
+  - name: jumps
+    description:
+      en: List jump list
+      zh: 列出跳转列表
+  - name: changes
+    description:
+      en: List change list
+      zh: 列出更改列表
+  - name: undolist
+    description:
+      en: List undo history
+      zh: 列出撤销历史
+  - name: redo
+    description:
+      en: Redo changes
+      zh: 重做更改
+  - name: undo
+    description:
+      en: Undo changes
+      zh: 撤销更改
+  - name: earlier
+    description:
+      en: Go to older text state
+      zh: 转到更早的文本状态
+  - name: later
+    description:
+      en: Go to newer text state
+      zh: 转到更新的文本状态
+  - name: map
+    description:
+      en: Show or create key mapping
+      zh: 显示或创建键映射
+  - name: unmap
+    description:
+      en: Remove key mapping
+      zh: 删除键映射
+  - name: noremap
+    description:
+      en: Create non-recursive key mapping
+      zh: 创建非递归键映射
+  - name: nmap
+    description:
+      en: Map key in normal mode
+      zh: 在普通模式下映射键
+  - name: imap
+    description:
+      en: Map key in insert mode
+      zh: 在插入模式下映射键
+  - name: vmap
+    description:
+      en: Map key in visual mode
+      zh: 在可视模式下映射键
+  - name: cmap
+    description:
+      en: Map key in command mode
+      zh: 在命令模式下映射键
+  - name: set
+    description:
+      en: Set option
+      zh: 设置选项
+  - name: setlocal
+    description:
+      en: Set local option
+      zh: 设置本地选项
+  - name: setglobal
+    description:
+      en: Set global option
+      zh: 设置全局选项
+  - name: let
+    description:
+      en: Set variable
+      zh: 设置变量
+  - name: unlet
+    description:
+      en: Unset variable
+      zh: 取消设置变量
+  - name: if
+    description:
+      en: Conditional statement
+      zh: 条件语句
+  - name: endif
+    description:
+      en: End conditional block
+      zh: 结束条件块
+  - name: function
+    description:
+      en: Define function
+      zh: 定义函数
+  - name: endfunction
+    description:
+      en: End function definition
+      zh: 结束函数定义
+  - name: call
+    description:
+      en: Call function
+      zh: 调用函数
+  - name: return
+    description:
+      en: Return from function
+      zh: 从函数返回
+  - name: echo
+    description:
+      en: Print message
+      zh: 打印消息
+  - name: echomsg
+    description:
+      en: Print message to message log
+      zh: 将消息打印到消息日志
+  - name: echoerr
+    description:
+      en: Print error message
+      zh: 打印错误消息
+  - name: execute
+    description:
+      en: Execute command string
+      zh: 执行命令字符串
+  - name: normal
+    description:
+      en: Execute normal mode commands
+      zh: 执行普通模式命令
+  - name: silent
+    description:
+      en: Execute command silently
+      zh: 静默执行命令
+  - name: syntax
+    description:
+      en: Syntax highlighting commands
+      zh: 语法高亮命令
+    subcommands:
+      - name: enable
+        description:
+          en: Enable syntax highlighting
+          zh: 启用语法高亮
+      - name: disable
+        description:
+          en: Disable syntax highlighting
+          zh: 禁用语法高亮
+      - name: on
+        description:
+          en: Turn on syntax highlighting
+          zh: 打开语法高亮
+      - name: off
+        description:
+          en: Turn off syntax highlighting
+          zh: 关闭语法高亮
+      - name: clear
+        description:
+          en: Clear syntax highlighting
+          zh: 清除语法高亮
+      - name: sync
+        description:
+          en: Sync syntax highlighting
+          zh: 同步语法高亮
+      - name: include
+        description:
+          en: Include syntax file
+          zh: 包含语法文件
+      - name: set
+        description:
+          en: Set syntax type
+          zh: 设置语法类型
+      - name: list
+        description:
+          en: List syntax groups
+          zh: 列出语法组
+  - name: filetype
+    description:
+      en: Filetype detection commands
+      zh: 文件类型检测命令
+    subcommands:
+      - name: detect
+        description:
+          en: Detect file type
+          zh: 检测文件类型
+      - name: plugin
+        description:
+          en: Enable filetype plugin
+          zh: 启用文件类型插件
+      - name: indent
+        description:
+          en: Enable filetype indent
+          zh: 启用文件类型缩进
+      - name: on
+        description:
+          en: Enable filetype detection
+          zh: 启用文件类型检测
+      - name: off
+        description:
+          en: Disable filetype detection
+          zh: 禁用文件类型检测
+  - name: highlight
+    description:
+      en: Syntax highlighting settings
+      zh: 语法高亮设置
+    subcommands:
+      - name: clear
+        description:
+          en: Clear all highlights
+          zh: 清除所有高亮
+      - name: link
+        description:
+          en: Link highlight groups
+          zh: 链接高亮组
+      - name: None
+        description:
+          en: Clear highlight
+          zh: 清除高亮
+      - name: Cursor
+        description:
+          en: Highlight cursor
+          zh: 高亮光标
+      - name: CursorLine
+        description:
+          en: Highlight cursor line
+          zh: 高亮光标行
+      - name: CursorColumn
+        description:
+          en: Highlight cursor column
+          zh: 高亮光标列
+      - name: Directory
+        description:
+          en: Highlight directory names
+          zh: 高亮目录名
+      - name: Error
+        description:
+          en: Highlight errors
+          zh: 高亮错误
+      - name: ErrorMsg
+        description:
+          en: Highlight error messages
+          zh: 高亮错误消息
+      - name: Search
+        description:
+          en: Highlight search matches
+          zh: 高亮搜索匹配
+      - name: IncSearch
+        description:
+          en: Highlight incremental search
+          zh: 高亮增量搜索
+      - name: StatusLine
+        description:
+          en: Highlight status line
+          zh: 高亮状态行
+      - name: StatusLineNC
+        description:
+          en: Highlight status line (non-current)
+          zh: 高亮状态行（非当前）
+      - name: VertSplit
+        description:
+          en: Highlight vertical split
+          zh: 高亮垂直分割
+      - name: Visual
+        description:
+          en: Highlight visual mode
+          zh: 高亮可视模式
+      - name: VisualNOS
+        description:
+          en: Highlight visual mode (no selection)
+          zh: 高亮可视模式（无选择）
+      - name: WildMenu
+        description:
+          en: Highlight wild menu
+          zh: 高亮通配菜单
+  - name: fold
+    description:
+      en: Folding commands
+      zh: 折叠命令
+    subcommands:
+      - name: open
+        description:
+          en: Open fold
+          zh: 打开折叠
+      - name: close
+        description:
+          en: Close fold
+          zh: 关闭折叠
+      - name: o
+        description:
+          en: Open fold (short)
+          zh: 打开折叠（短形式）
+      - name: c
+        description:
+          en: Close fold (short)
+          zh: 关闭折叠（短形式）
+      - name: Open
+        description:
+          en: Open all folds
+          zh: 打开所有折叠
+      - name: Close
+        description:
+          en: Close all folds
+          zh: 关闭所有折叠
+  - name: substitute
+    description:
+      en: Substitute text (search and replace)
+      zh: 替换文本（搜索和替换）
+  - name: global
+    description:
+      en: Execute command on matching lines
+      zh: 在匹配的行上执行命令
+  - name: vglobal
+    description:
+      en: Execute command on non-matching lines
+      zh: 在不匹配的行上执行命令
+  - name: sort
+    description:
+      en: Sort lines
+      zh: 对行排序
+  - name: move
+    description:
+      en: Move lines
+      zh: 移动行
+  - name: copy
+    description:
+      en: Copy lines
+      zh: 复制行
+  - name: delete
+    description:
+      en: Delete lines
+      zh: 删除行
+  - name: yank
+    description:
+      en: Yank (copy) lines
+      zh: 复制行
+  - name: put
+    description:
+      en: Put (paste) lines
+      zh: 粘贴行
+  - name: join
+    description:
+      en: Join lines
+      zh: 连接行
+  - name: center
+    description:
+      en: Center lines
+      zh: 居中行
+  - name: left
+    description:
+      en: Left align lines
+      zh: 左对齐行
+  - name: right
+    description:
+      en: Right align lines
+      zh: 右对齐行
+  - name: retab
+    description:
+      en: Replace tabs with spaces
+      zh: 用空格替换制表符
+  - name: shift
+    description:
+      en: Shift lines
+      zh: 移动行
+  - name: cd
+    description:
+      en: Change directory
+      zh: 更改目录
+  - name: pwd
+    description:
+      en: Print current directory
+      zh: 打印当前目录
+  - name: ls
+    description:
+      en: List files
+      zh: 列出文件
+  - name: shell
+    description:
+      en: Run shell command
+      zh: 运行 shell 命令
+  - name: suspend
+    description:
+      en: Suspend Vim
+      zh: 挂起 Vim
+  - name: stop
+    description:
+      en: Stop Vim (same as suspend)
+      zh: 停止 Vim（同挂起）
+  - name: nohlsearch
+    description:
+      en: Disable search highlighting
+      zh: 禁用搜索高亮
+  - name: hlsearch
+    description:
+      en: Enable search highlighting
+      zh: 启用搜索高亮
+  - name: hardcopy
+    description:
+      en: Print to file
+      zh: 打印到文件
+  - name: preserve
+    description:
+      en: Preserve current file
+      zh: 保留当前文件
+  - name: recover
+    description:
+      en: Recover from swap file
+      zh: 从交换文件恢复
+  - name: rewind
+    description:
+      en: Rewind to first file
+      zh: 倒带到第一个文件
+  - name: scriptnames
+    description:
+      en: List all sourced scripts
+      zh: 列出所有源脚本
+  - name: commands
+    description:
+      en: List all commands
+      zh: 列出所有命令
+  - name: clearjumps
+    description:
+      en: Clear jump list
+      zh: 清除跳转列表
+  - name: print
+    description:
+      en: Print lines
+      zh: 打印行
+  - name: list
+    description:
+      en: List lines (show unprintable characters)
+      zh: 列出行（显示不可打印字符）
+  - name: number
+    description:
+      en: Print lines with line numbers
+      zh: 打印带行号的行
+  - name: copy
+    description:
+      en: Copy lines to specified location
+      zh: 将行复制到指定位置
+examples:
+  - cmd: 'vim [file]'
+    scenario:
+      en: Edit file
+      zh: 编辑文件
+  - cmd: 'vim -R [file]'
+    scenario:
+      en: View file in read-only mode
+      zh: 以只读模式查看文件
+  - cmd: 'vim +10 [file]'
+    scenario:
+      en: Open file and go to line 10
+      zh: 打开文件并转到第 10 行
+  - cmd: 'vim +/pattern [file]'
+    scenario:
+      en: Open file and search for pattern
+      zh: 打开文件并搜索模式
+  - cmd: 'vim -p [file1] [file2]'
+    scenario:
+      en: Open files in tabs
+      zh: 在标签页中打开文件
+  - cmd: 'vim -o [file1] [file2]'
+    scenario:
+      en: Open files in horizontal split windows
+      zh: 在水平分割窗口中打开文件
+  - cmd: 'vim -O [file1] [file2]'
+    scenario:
+      en: Open files in vertical split windows
+      zh: 在垂直分割窗口中打开文件
+  - cmd: 'vim -d [file1] [file2]'
+    scenario:
+      en: Diff two files
+      zh: 比较两个文件的差异
+  - cmd: 'vim -x [file]'
+    scenario:
+      en: Edit encrypted file
+      zh: 编辑加密文件
+  - cmd: 'vim -c "command" [file]'
+    scenario:
+      en: Execute command after loading file
+      zh: 加载文件后执行命令
+  - cmd: 'vim -s [script] [file]'
+    scenario:
+      en: Execute script file on file
+      zh: 对文件执行脚本文件
+  - cmd: 'vim --servername [name]'
+    scenario:
+      en: Start Vim server with name
+      zh: 以指定名称启动 Vim 服务器
+  - cmd: 'vim --remote [file]'
+    scenario:
+      en: Open file in existing Vim server
+      zh: 在现有 Vim 服务器中打开文件
+is_path_completion: true
