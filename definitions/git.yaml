@@ -792,3 +792,11 @@ examples:
     scenario:
       en: Show who changed each line
       zh: 显示每行的修改者
+  - cmd: 'git remote add origin [repo-url]'
+    scenario:
+      en: Add a new remote repository named origin
+      zh: 添加名为 origin 的新远程仓库
+  - cmd: 'git remote set-url origin [repo-url]'
+    scenario:
+      en: Change the URL of the remote repository named origin
+      zh: 更改名为 origin 的远程仓库 URL
