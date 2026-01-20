@@ -1,0 +1,114 @@
+name: claude
+description: Claude Code CLI - AI programming assistant from Anthropic
+flags:
+  - long: help
+    description: Display help information
+  - long: version
+    short: v
+    description: Print version information
+subcommands:
+  - name: commit
+    description: Generate and create git commits automatically
+    flags:
+      - long: message
+        short: m
+        description: Specify commit message
+        takes_value: true
+      - long: all
+        short: a
+        description: Stage all modified files
+      - long: no-verify
+        description: Skip git hooks
+  - name: chat
+    description: Start an interactive chat session with Claude
+    flags:
+      - long: prompt
+        short: p
+        description: Initial prompt for the session
+        takes_value: true
+      - long: continue
+        short: c
+        description: Continue last session
+      - long: session
+        short: s
+        description: Session ID to continue
+        takes_value: true
+  - name: plan
+    description: Create a structured implementation plan
+    flags:
+      - long: file
+        short: f
+        description: Output plan to file
+        takes_value: true
+  - name: review
+    description: Review code changes and provide feedback
+    flags:
+      - long: file
+        short: f
+        description: File to review
+        takes_value: true
+      - long: diff
+        short: d
+        description: Review git diff
+  - name: test
+    description: Run tests and fix failures
+    flags:
+      - long: file
+        short: f
+        description: Test file to run
+        takes_value: true
+      - long: watch
+        short: w
+        description: Watch mode for tests
+  - name: explain
+    description: Explain code or concepts
+    flags:
+      - long: file
+        short: f
+        description: File to explain
+        takes_value: true
+      - long: detailed
+        short: d
+        description: Show detailed explanation
+  - name: refactor
+    description: Refactor code with best practices
+    flags:
+      - long: file
+        short: f
+        description: File to refactor
+        takes_value: true
+      - long: backup
+        short: b
+        description: Create backup before refactoring
+  - name: debug
+    description: Debug code issues
+    flags:
+      - long: file
+        short: f
+        description: File with bug
+        takes_value: true
+      - long: error
+        short: e
+        description: Error message to debug
+        takes_value: true
+  - name: generate
+    description: Generate code from description
+    flags:
+      - long: type
+        short: t
+        description: Type of code to generate
+        takes_value: true
+      - long: output
+        short: o
+        description: Output file path
+        takes_value: true
+  - name: docs
+    description: Generate documentation for code
+    flags:
+      - long: file
+        short: f
+        description: File to document
+        takes_value: true
+      - long: format
+        description: Documentation format (markdown, html, etc.)
+        takes_value: true

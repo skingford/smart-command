@@ -1,0 +1,236 @@
+name: opencode
+description: OpenCode CLI - Open-source AI coding agent
+flags:
+  - long: help
+    short: h
+    description: Display help information
+  - long: version
+    short: v
+    description: Print version information
+  - long: print-logs
+    description: Print logs to stderr
+  - long: log-level
+    description: Log level (DEBUG, INFO, WARN, ERROR)
+    takes_value: true
+subcommands:
+  - name: tui
+    description: Start the OpenCode terminal user interface
+    flags:
+      - long: continue
+        short: c
+        description: Continue the last session
+      - long: session
+        short: s
+        description: Session ID to continue
+        takes_value: true
+      - long: prompt
+        description: Prompt to use
+        takes_value: true
+      - long: model
+        short: m
+        description: Model to use in the form of provider/model
+        takes_value: true
+      - long: agent
+        description: Agent to use
+        takes_value: true
+      - long: port
+        description: Port to listen on
+        takes_value: true
+      - long: hostname
+        description: Hostname to listen on
+        takes_value: true
+  - name: run
+    description: Run opencode in non-interactive mode
+    flags:
+      - long: continue
+        short: c
+        description: Continue the last session
+      - long: session
+        short: s
+        description: Session ID to continue
+        takes_value: true
+      - long: share
+        description: Share the session
+      - long: model
+        short: m
+        description: Model to use in the form of provider/model
+        takes_value: true
+      - long: agent
+        description: Agent to use
+        takes_value: true
+      - long: file
+        short: f
+        description: File(s) to attach to message
+        takes_value: true
+      - long: format
+        description: Format: default (formatted) or json (raw JSON events)
+        takes_value: true
+      - long: title
+        description: Title for the session
+        takes_value: true
+      - long: attach
+        description: Attach to a running opencode server
+        takes_value: true
+      - long: port
+        description: Port for the local server
+        takes_value: true
+      - long: command
+        description: The command to run, use message for args
+        takes_value: true
+    is_path_completion: true
+  - name: agent
+    description: Manage agents for OpenCode
+    subcommands:
+      - name: create
+        description: Create a new agent with custom configuration
+      - name: list
+        description: List all available agents
+  - name: attach
+    description: Attach a terminal to a running OpenCode backend server
+    flags:
+      - long: dir
+        description: Working directory to start TUI in
+        takes_value: true
+      - long: session
+        short: s
+        description: Session ID to continue
+        takes_value: true
+    is_path_completion: true
+  - name: auth
+    description: Command to manage credentials and login for providers
+    subcommands:
+      - name: login
+        description: Login to a provider
+      - name: list
+        description: List all authenticated providers
+      - name: logout
+        description: Logout from a provider
+  - name: github
+    description: Manage the GitHub agent for repository automation
+    subcommands:
+      - name: install
+        description: Install the GitHub agent in your repository
+      - name: run
+        description: Run the GitHub agent
+        flags:
+          - long: event
+            description: GitHub mock event to run the agent for
+            takes_value: true
+          - long: token
+            description: GitHub personal access token
+            takes_value: true
+  - name: mcp
+    description: Manage Model Context Protocol servers
+    subcommands:
+      - name: add
+        description: Add an MCP server to your configuration
+      - name: list
+        description: List all configured MCP servers
+      - name: auth
+        description: Authenticate with an OAuth-enabled MCP server
+      - name: logout
+        description: Remove OAuth credentials for an MCP server
+      - name: debug
+        description: Debug OAuth connection issues for an MCP server
+  - name: models
+    description: List all available models from configured providers
+    flags:
+      - long: refresh
+        description: Refresh the models cache from models.dev
+      - long: verbose
+        description: Use more verbose model output (includes metadata like costs)
+  - name: serve
+    description: Start a headless OpenCode server for API access
+    flags:
+      - long: port
+        description: Port to listen on
+        takes_value: true
+      - long: hostname
+        description: Hostname to listen on
+        takes_value: true
+      - long: mdns
+        description: Enable mDNS discovery
+      - long: cors
+        description: Additional browser origin(s) to allow CORS
+        takes_value: true
+  - name: session
+    description: Manage OpenCode sessions
+    subcommands:
+      - name: list
+        description: List all OpenCode sessions
+        flags:
+          - long: max-count
+            short: n
+            description: Limit to N most recent sessions
+            takes_value: true
+          - long: format
+            description: Output format: table or json
+            takes_value: true
+  - name: stats
+    description: Show token usage and cost statistics
+    flags:
+      - long: days
+        description: Show stats for the last N days
+        takes_value: true
+      - long: tools
+        description: Number of tools to show
+        takes_value: true
+      - long: models
+        description: Show model usage breakdown
+        takes_value: true
+      - long: project
+        description: Filter by project
+        takes_value: true
+  - name: export
+    description: Export session data as JSON
+    is_path_completion: true
+  - name: import
+    description: Import session data from a JSON file or OpenCode share URL
+    is_path_completion: true
+  - name: web
+    description: Start a headless OpenCode server with a web interface
+    flags:
+      - long: port
+        description: Port to listen on
+        takes_value: true
+      - long: hostname
+        description: Hostname to listen on
+        takes_value: true
+      - long: mdns
+        description: Enable mDNS discovery
+      - long: cors
+        description: Additional browser origin(s) to allow CORS
+        takes_value: true
+  - name: acp
+    description: Start an ACP (Agent Client Protocol) server
+    flags:
+      - long: cwd
+        description: Working directory
+        takes_value: true
+      - long: port
+        description: Port to listen on
+        takes_value: true
+      - long: hostname
+        description: Hostname to listen on
+        takes_value: true
+  - name: uninstall
+    description: Uninstall OpenCode and remove all related files
+    flags:
+      - long: keep-config
+        short: c
+        description: Keep configuration files
+      - long: keep-data
+        short: d
+        description: Keep session data and snapshots
+      - long: dry-run
+        description: Show what would be removed without removing
+      - long: force
+        short: f
+        description: Skip confirmation prompts
+  - name: upgrade
+    description: Updates opencode to the latest version or a specific version
+    flags:
+      - long: method
+        short: m
+        description: The installation method that was used (curl, npm, pnpm, bun, brew)
+        takes_value: true

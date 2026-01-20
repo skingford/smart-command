@@ -1,0 +1,53 @@
+name: tree
+description: List directory contents in a tree-like format
+flags:
+  - long: all
+    short: a
+    description: Show all files (including hidden files starting with .)
+  - long: dirsfirst
+    short: d
+    description: List directories before files
+  - long: fullpath
+    short: f
+    description: Print full path prefix for each file
+  - long: level
+    short: L
+    description: Limit display depth to specified number of levels
+    takes_value: true
+  - long: permissions
+    short: p
+    description: Print file protections (permissions)
+  - long: size
+    short: s
+    description: Print file sizes in bytes
+  - long: human-readable
+    short: h
+    description: Print file sizes in human-readable format
+  - long: date
+    short: D
+    description: Print last modification date
+  - long: time
+    short: t
+    description: Sort files by last modification time
+  - long: reverse
+    short: r
+    description: Reverse sort order
+  - long: filesystem
+    short: x
+    description: Stay on current filesystem
+  - long: output
+    short: o
+    description: Output to file instead of stdout
+    takes_value: true
+  - long: ignore
+    short: I
+    description: Exclude files matching pattern
+    takes_value: true
+  - long: gitignore
+    description: Exclude files based on .gitignore
+  - long: help
+    description: Display help message
+  - long: version
+    short: V
+    description: Print version information
+is_path_completion: true

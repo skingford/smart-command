@@ -10,7 +10,8 @@
       "WebFetch(domain:raw.githubusercontent.com)",
       "Bash(cargo check:*)",
       "Bash(cargo clippy:*)",
-      "Bash(cargo run:*)"
+      "Bash(cargo run:*)",
+      "WebSearch"
     ]
   },
   "hooks": {
