@@ -792,11 +792,19 @@ examples:
     scenario:
       en: Show who changed each line
       zh: 显示每行的修改者
-  - cmd: 'git remote add origin [repo-url]'
+  - cmd: 'git remote add origin [repo].git'
     scenario:
       en: Add a new remote repository named origin
       zh: 添加名为 origin 的新远程仓库
-  - cmd: 'git remote set-url origin [repo-url]'
+  - cmd: 'git remote set-url origin [repo].git'
     scenario:
       en: Change the URL of the remote repository named origin
       zh: 更改名为 origin 的远程仓库 URL
+  - cmd: 'git clone --mirror [old-repo].git && cd [repo].git && git push --mirror [new-repo].git'
+    scenario:
+      en: Complete repository migration using mirror clone (all refs, branches, tags, commits)
+      zh: 使用镜像克隆完整迁移仓库（所有引用、分支、标签、提交）
+  - cmd: 'git clone --bare [old-repo].git [repo].git'
+    scenario:
+      en: Create a bare repository clone (without working directory)
+      zh: 创建裸仓库克隆（无工作目录）
