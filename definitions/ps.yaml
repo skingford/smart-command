@@ -125,25 +125,165 @@ flags:
 examples:
   - cmd: 'ps aux'
     scenario:
-      en: List all processes
-      zh: 列出所有进程
-  - cmd: 'ps aux | grep [process]'
-    scenario:
-      en: Find specific process
-      zh: 查找指定进程
+      en: List all processes for all users in BSD style
+      zh: 以 BSD 风格列出所有用户的所有进程
   - cmd: 'ps -ef'
     scenario:
-      en: List all processes (full format)
-      zh: 列出所有进程（完整格式）
-  - cmd: 'ps aux --sort=-%mem | head'
+      en: List all processes in full format (POSIX style)
+      zh: 以完整格式列出所有进程（POSIX 风格）
+  - cmd: 'ps aux | less'
     scenario:
-      en: Top processes by memory
-      zh: 按内存排序的进程
-  - cmd: 'ps aux --sort=-%cpu | head'
+      en: View all processes with pagination
+      zh: 分页查看所有进程
+  - cmd: 'ps aux | grep [pattern]'
     scenario:
-      en: Top processes by CPU
-      zh: 按 CPU 排序的进程
-  - cmd: 'ps -p [pid]'
+      en: Search for specific processes by name or pattern
+      zh: 按名称或模式搜索特定进程
+  - cmd: 'ps -ef | grep [process-name]'
     scenario:
-      en: Show specific process
-      zh: 显示指定进程
+      en: Find specific process using grep with full format
+      zh: 使用 grep 以完整格式查找特定进程
+  - cmd: 'ps aux | grep nginx'
+    scenario:
+      en: Find nginx processes
+      zh: 查找 nginx 进程
+  - cmd: 'ps aux | grep apache'
+    scenario:
+      en: Find Apache httpd processes
+      zh: 查找 Apache httpd 进程
+  - cmd: 'ps aux | grep mysql'
+    scenario:
+      en: Find MySQL/MariaDB processes
+      zh: 查找 MySQL/MariaDB 进程
+  - cmd: 'ps aux | grep -E "(apache|nginx)"'
+    scenario:
+      en: Find web server processes (apache or nginx)
+      zh: 查找 Web 服务器进程（apache 或 nginx）
+  - cmd: 'ps aux | grep -v grep | grep [process]'
+    scenario:
+      en: Search process excluding grep itself
+      zh: 搜索进程但排除 grep 自身
+  - cmd: 'ps -u [username]'
+    scenario:
+      en: Show processes for a specific user
+      zh: 显示特定用户的进程
+  - cmd: 'ps -p [PID]'
+    scenario:
+      en: Show information about a specific process by PID
+      zh: 按 PID 显示特定进程的信息
+  - cmd: 'ps --forest'
+    scenario:
+      en: Display process hierarchy in tree format
+      zh: 以树形格式显示进程层次结构
+  - cmd: 'ps aux --forest | grep [pattern]'
+    scenario:
+      en: Search processes with hierarchy display
+      zh: 搜索进程并显示层次结构
+  - cmd: 'ps -eo pid,ppid,cmd,%mem,%cpu'
+    scenario:
+      en: Show specific columns for all processes
+      zh: 显示所有进程的特定列
+  - cmd: 'ps -u root -U root'
+    scenario:
+      en: Show processes running as root user
+      zh: 显示以 root 用户运行的进程
+  - cmd: 'ps --sort=-%mem | head -n 10'
+    scenario:
+      en: Show top 10 processes by memory usage
+      zh: 显示内存使用率最高的前 10 个进程
+  - cmd: 'ps --sort=-%cpu | head -n 10'
+    scenario:
+      en: Show top 10 processes by CPU usage
+      zh: 显示 CPU 使用率最高的前 10 个进程
+  - cmd: 'ps -C [command-name]'
+    scenario:
+      en: Show processes by command name
+      zh: 按命令名称显示进程
+  - cmd: 'ps -T'
+    scenario:
+      en: Show all threads of all processes
+      zh: 显示所有进程的所有线程
+  - cmd: 'ps -eLf'
+    scenario:
+      en: Show all processes with thread information
+      zh: 显示所有进程及其线程信息
+  - cmd: 'ps -o pid,cmd,etime -p [PID]'
+    scenario:
+      en: Show process execution time by PID
+      zh: 按 PID 显示进程执行时间
+  - cmd: 'watch -n 1 "ps aux | grep [process]"'
+    scenario:
+      en: Monitor a specific process in real-time
+      zh: 实时监控特定进程
+  - cmd: 'ps -eo pid,tid,cls,rtprio,ni,pri,psr,pcpu,stat,wchan:14,comm'
+    scenario:
+      en: Show detailed real-time and scheduling information
+      zh: 显示详细的实时和调度信息
+  - cmd: "ps aux | awk '{print $3, $11}' | sort -n | tail -n 10"
+    scenario:
+      en: Find top 10 processes by CPU using awk
+      zh: 使用 awk 查找 CPU 使用率最高的前 10 个进程
+  - cmd: "kill $(ps aux | grep \"[process]\" | awk '{print $2}')"
+    scenario:
+      en: Kill all processes matching a pattern
+      zh: 终止匹配模式的所有进程
+  - cmd: 'ps -eo uname,pid,ppid,rss,vsz,cmd --sort=-rss | head -n 10'
+    scenario:
+      en: Show top 10 processes by memory consumption (RSS)
+      zh: 显示内存消耗最高的前 10 个进程（RSS）
+  - cmd: 'ps -e --ppid [PPID]'
+    scenario:
+      en: Show all child processes of a parent process
+      zh: 显示父进程的所有子进程
+  - cmd: 'ps -A'
+    scenario:
+      en: Display all processes (same as ps -e)
+      zh: 显示所有进程（与 ps -e 相同）
+  - cmd: 'ps -x'
+    scenario:
+      en: Show processes without controlling terminal
+      zh: 显示没有控制终端的进程
+  - cmd: 'ps -C sshd -o pid='
+    scenario:
+      en: Get only PID of sshd process
+      zh: 仅获取 sshd 进程的 PID
+  - cmd: "ps aux | grep nginx | grep -v grep | awk '{print $2}'"
+    scenario:
+      en: Extract PID of nginx process excluding grep
+      zh: 提取 nginx 进程的 PID（排除 grep）
+  - cmd: 'ps aux | grep java | grep -v grep'
+    scenario:
+      en: Find Java processes without grep showing in output
+      zh: 查找 Java 进程（输出中不包含 grep）
+  - cmd: 'ps aux | grep docker | grep -v grep'
+    scenario:
+      en: Find Docker processes
+      zh: 查找 Docker 进程
+  - cmd: 'ps aux | grep ssh'
+    scenario:
+      en: Find SSH related processes
+      zh: 查找 SSH 相关进程
+  - cmd: 'ps -ef | grep postgres'
+    scenario:
+      en: Find PostgreSQL processes in full format
+      zh: 以完整格式查找 PostgreSQL 进程
+  - cmd: 'ps aux | grep redis'
+    scenario:
+      en: Find Redis processes
+      zh: 查找 Redis 进程
+  - cmd: 'ps aux | grep node'
+    scenario:
+      en: Find Node.js processes
+      zh: 查找 Node.js 进程
+  - cmd: 'ps aux | grep python'
+    scenario:
+      en: Find Python processes
+      zh: 查找 Python 进程
+  - cmd: 'ps aux | grep systemd'
+    scenario:
+      en: Find systemd processes
+      zh: 查找 systemd 进程
+  - cmd: 'pgrep -f [process-name]'
+    scenario:
+      en: Alternative way to find process IDs by name
+      zh: 按名称查找进程 ID 的替代方法

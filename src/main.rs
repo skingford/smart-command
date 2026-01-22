@@ -296,8 +296,10 @@ fn run_repl(config: AppConfig) -> anyhow::Result<()> {
         danger_protection: config.danger_protection,
     };
 
+    // Display startup banner
+    output::Output::banner();
+
     // Welcome message
-    Output::bold("Welcome to Smart Command!");
     Output::dim("  Tab         - trigger completion menu");
     Output::dim("  /<keyword>  - search commands (e.g., /commit)");
     Output::dim("  config      - shell configuration");

@@ -7,6 +7,7 @@
 //! - Info: blue with info sign
 
 use nu_ansi_term::{Color, Style};
+use std::env;
 
 /// Output style definitions following skill standards
 pub struct Output;
@@ -42,10 +43,37 @@ impl Output {
         println!("{}", style.paint(msg));
     }
 
-    /// Bold output for emphasis
-    pub fn bold(msg: &str) {
-        let style = Style::new().bold();
-        println!("{}", style.paint(msg));
+    /// Display startup banner with ASCII art logo
+    pub fn banner() {
+        let logo_style = Style::new().fg(Color::Cyan).bold();
+        let version_style = Style::new().fg(Color::Green);
+        let dim_style = Style::new().fg(Color::DarkGray);
+        let cwd_style = Style::new().fg(Color::Yellow);
+
+        // ASCII art logo for Smart Command (terminal/shell theme)
+        let logo = r#"
+     ▗▄▄▄▖       ▗▄▄▄▖      ▗▄▄▄      ▄▄▄▖       ▄▄▄▖
+    ▐▛▀▀▘▜▀      ▐▛▀▀▘▜▀     ▐▛▀▀▙     ▐▛▀▀▘       ▐▛▀▀▘
+     ▐▙▄▄▟▐      ▐▙▄▄▟▐     ▐▙▄▄▛     ▐▙▄▄▖       ▐▙▄▄▖
+"#;
+
+        println!("{}", logo_style.paint(logo));
+        println!(
+            "  {} {}",
+            version_style.paint(format!("Smart Command v{}", env!("CARGO_PKG_VERSION"))),
+            dim_style.paint("· Intelligent Shell")
+        );
+
+        // Show current working directory
+        if let Ok(cwd) = env::current_dir() {
+            let cwd_display = dirs::home_dir()
+                .and_then(|home| cwd.strip_prefix(&home).ok())
+                .map(|rel| format!("~/{}", rel.display()))
+                .unwrap_or_else(|| cwd.display().to_string());
+            println!("  {}", cwd_style.paint(cwd_display));
+        }
+
+        println!();
     }
 
     /// Styled prompt display

@@ -608,6 +608,23 @@ subcommands:
           zh: 从源恢复
         takes_value: true
     is_path_completion: true
+  - name: credential
+    description:
+      en: Retrieve and store user credentials
+      zh: 检索和存储用户凭据
+    subcommands:
+      - name: fill
+        description:
+          en: Fill credentials from helper
+          zh: 从助手填充凭据
+      - name: approve
+        description:
+          en: Store approved credentials
+          zh: 存储已批准的凭据
+      - name: reject
+        description:
+          en: Reject credentials
+          zh: 拒绝凭据
   - name: config
     description:
       en: Get and set repository or global options
@@ -835,8 +852,8 @@ subcommands:
           zh: 将引用更新为新的 SHA-1
   - name: filter-branch
     description:
-      en: Rewrite branches
-      zh: 重写分支
+      en: "Rewrite branches (DEPRECATED: use git-filter-repo instead)"
+      zh: 重写分支（已弃用：请改用 git-filter-repo）
     flags:
       - long: env-filter
         description:
@@ -983,6 +1000,31 @@ subcommands:
         description:
           en: Print sizes in human readable format
           zh: 以人类可读格式打印大小
+  - name: credential-cache
+    description:
+      en: Helper to temporarily store passwords in memory
+      zh: 在内存中临时存储密码的助手
+    flags:
+      - long: timeout
+        description:
+          en: "Number of seconds to cache credentials (default: 900)"
+          zh: 缓存凭据的秒数（默认：900）
+        takes_value: true
+      - long: socket
+        description:
+          en: Use custom socket path for cache daemon
+          zh: 为缓存守护进程使用自定义套接字路径
+        takes_value: true
+  - name: credential-store
+    description:
+      en: Helper to store credentials on disk (unencrypted)
+      zh: 在磁盘上存储凭据的助手（未加密）
+    flags:
+      - long: file
+        description:
+          en: Use custom path for credentials file
+          zh: 使用自定义路径作为凭据文件
+        takes_value: true
   - name: instaweb
     description:
       en: Instantly browse your working repository in gitweb
@@ -1280,3 +1322,55 @@ examples:
     scenario:
       en: Show notes for the current commit
       zh: 显示当前提交的注释
+  - cmd: 'git config credential.helper store'
+    scenario:
+      en: Store credentials permanently on disk (unencrypted)
+      zh: 在磁盘上永久存储凭据（未加密）
+  - cmd: 'git config credential.helper ''cache --timeout=3600'''
+    scenario:
+      en: Cache credentials in memory for 1 hour
+      zh: 在内存中缓存凭据 1 小时
+  - cmd: 'git config credential.helper ''cache --timeout=7200'''
+    scenario:
+      en: Cache credentials in memory for 2 hours
+      zh: 在内存中缓存凭据 2 小时
+  - cmd: 'git credential-cache exit'
+    scenario:
+      en: Clear credential cache immediately
+      zh: 立即清除凭据缓存
+  - cmd: 'git config credential.helper store --file=/path/to/credentials'
+    scenario:
+      en: Store credentials in custom file path
+      zh: 将凭据存储到自定义文件路径
+  - cmd: 'git config --global credential.helper store'
+    scenario:
+      en: Store credentials globally for all repositories
+      zh: 全局存储凭据用于所有仓库
+  - cmd: "git config credential.helper 'cache --timeout=86400'"
+    scenario:
+      en: Cache credentials in memory for 24 hours
+      zh: 在内存中缓存凭据 24 小时
+  - cmd: "git config --global credential.helper 'cache --timeout=86400'"
+    scenario:
+      en: Cache credentials globally for 24 hours
+      zh: 全局在内存中缓存凭据 24 小时
+  - cmd: "git config credential.helper 'cache --timeout=300'"
+    scenario:
+      en: Cache credentials in memory for 5 minutes
+      zh: 在内存中缓存凭据 5 分钟
+  - cmd: "git config credential.helper 'cache --timeout=1800'"
+    scenario:
+      en: Cache credentials in memory for 30 minutes
+      zh: 在内存中缓存凭据 30 分钟
+  - cmd: 'git config --global credential.helper store'
+    scenario:
+      en: Save git username/password permanently (first push will prompt)
+      zh: 永久保存 git 用户名/密码（首次推送时提示输入）
+  - cmd: "git config --global credential.helper 'cache --timeout=3600'"
+    scenario:
+      en: Save git credentials in memory cache for 1 hour
+      zh: 在内存缓存中保存 git 凭据 1 小时
+  - cmd: 'git config --global --unset credential.helper'
+    scenario:
+      en: Remove/disable credential storage
+      zh: 移除/禁用凭据存储

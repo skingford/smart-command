@@ -290,3 +290,263 @@ examples:
     scenario:
       en: Extended regex search
       zh: 扩展正则表达式搜索
+  - cmd: 'grep -w "[pattern]" [file]'
+    scenario:
+      en: Match whole words only
+      zh: 仅匹配整个单词
+  - cmd: 'grep -x "[pattern]" [file]'
+    scenario:
+      en: Match whole lines only
+      zh: 仅匹配整行
+  - cmd: 'grep -o "[pattern]" [file]'
+    scenario:
+      en: Print only matched parts
+      zh: 仅打印匹配的部分
+  - cmd: 'grep -m 5 "[pattern]" [file]'
+    scenario:
+      en: Stop after 5 matches
+      zh: 匹配 5 次后停止
+  - cmd: 'grep -C 2 "[pattern]" [file]'
+    scenario:
+      en: Show 2 lines of context around match
+      zh: 显示匹配前后各 2 行
+  - cmd: 'grep -e "pattern1" -e "pattern2" [file]'
+    scenario:
+      en: Search for multiple patterns
+      zh: 搜索多个模式
+  - cmd: 'grep -f [patterns_file] [file]'
+    scenario:
+      en: Read patterns from file
+      zh: 从文件读取模式
+  - cmd: 'grep -F "[pattern]" [file]'
+    scenario:
+      en: Fixed string search (no regex)
+      zh: 固定字符串搜索（无正则）
+  - cmd: 'grep -P "[regex]" [file]'
+    scenario:
+      en: Perl-compatible regex search
+      zh: Perl 兼容正则表达式搜索
+  - cmd: 'grep -n "[pattern]" [file1] [file2]'
+    scenario:
+      en: Search in multiple files with line numbers
+      zh: 在多个文件中搜索并显示行号
+  - cmd: 'grep -H "[pattern]" [file]'
+    scenario:
+      en: Always show filename
+      zh: 始终显示文件名
+  - cmd: 'grep -h "[pattern]" *'
+    scenario:
+      en: Suppress filename prefix
+      zh: 抑制文件名前缀
+  - cmd: 'grep -b "[pattern]" [file]'
+    scenario:
+      en: Show byte offset
+      zh: 显示字节偏移
+  - cmd: 'grep -L "[pattern]" *'
+    scenario:
+      en: List files NOT containing pattern
+      zh: 列出不包含模式的文件
+  - cmd: 'grep --color=always "[pattern]" [file]'
+    scenario:
+      en: Always highlight matches
+      zh: 始终高亮显示匹配
+  - cmd: 'grep --color=never "[pattern]" [file]'
+    scenario:
+      en: Never highlight matches
+      zh: 从不高亮显示匹配
+  - cmd: 'grep -r "[pattern]" . --exclude-dir=".git"'
+    scenario:
+      en: Search recursively excluding .git directory
+      zh: 递归搜索但排除 .git 目录
+  - cmd: 'grep -r "[pattern]" . --include="*.py"'
+    scenario:
+      en: Search only in Python files
+      zh: 仅在 Python 文件中搜索
+  - cmd: 'grep -r "[pattern]" . --exclude="*.log"'
+    scenario:
+      en: Search excluding log files
+      zh: 搜索但排除日志文件
+  - cmd: 'grep -I "[pattern]" [file]'
+    scenario:
+      en: Ignore binary files
+      zh: 忽略二进制文件
+  - cmd: 'grep -a "[pattern]" [file]'
+    scenario:
+      en: Process binary files as text
+      zh: 将二进制文件作为文本处理
+  - cmd: 'grep -q "[pattern]" [file]'
+    scenario:
+      en: Quiet mode (exit status only)
+      zh: 静默模式（仅返回退出状态）
+  - cmd: 'grep -s "[pattern]" [file]'
+    scenario:
+      en: Suppress error messages
+      zh: 抑制错误消息
+  - cmd: 'grep -R "[pattern]" [directory]'
+    scenario:
+      en: Recursive search following symlinks
+      zh: 递归搜索并跟随符号链接
+  - cmd: 'grep --line-buffered "[pattern]" [file]'
+    scenario:
+      en: Use line buffering (for piped output)
+      zh: 使用行缓冲（用于管道输出）
+  - cmd: 'grep -Z "[pattern]" [file]'
+    scenario:
+      en: Print null byte after filename
+      zh: 在文件名后打印空字节
+  - cmd: 'grep -T "[pattern]" [file]'
+    scenario:
+      en: Align output with tabs
+      zh: 使用制表符对齐输出
+  - cmd: 'grep -n "[pattern]" [file] | head -20'
+    scenario:
+      en: Show first 20 matches with line numbers
+      zh: 显示前 20 个匹配及行号
+  - cmd: 'grep -c -v "^$" [file]'
+    scenario:
+      en: Count non-empty lines
+      zh: 统计非空行数
+  - cmd: 'grep -E "error|warning|fail" [file]'
+    scenario:
+      en: Search for multiple patterns with OR
+      zh: 使用 OR 搜索多个模式
+  - cmd: 'grep -v "^#" [file]'
+    scenario:
+      en: Exclude comment lines
+      zh: 排除注释行
+  - cmd: 'grep -v "^$" [file]'
+    scenario:
+      en: Exclude empty lines
+      zh: 排除空行
+  - cmd: 'grep -rn "[pattern]" .'
+    scenario:
+      en: Recursive search with line numbers in current directory
+      zh: 在当前目录递归搜索并显示行号
+  - cmd: 'grep -rl "[pattern]" .'
+    scenario:
+      en: List files containing pattern recursively
+      zh: 递归列出包含模式的文件
+  - cmd: 'grep -rni "[pattern]" .'
+    scenario:
+      en: Recursive case-insensitive search with line numbers
+      zh: 递归不区分大小写搜索并显示行号
+  - cmd: 'grep -B 5 -A 5 "[pattern]" [file]'
+    scenario:
+      en: Show 5 lines before and after match
+      zh: 显示匹配前后各 5 行
+  - cmd: 'grep --exclude-dir={node_modules,vendor} -r "[pattern]" .'
+    scenario:
+      en: Search excluding multiple directories
+      zh: 搜索时排除多个目录
+  - cmd: 'grep -o "[pattern]" [file] | sort -u'
+    scenario:
+      en: Extract unique patterns from file
+      zh: 从文件中提取唯一的模式
+  - cmd: 'grep -c "[pattern]" [file1] [file2] [file3]'
+    scenario:
+      en: Count matches in multiple files
+      zh: 统计多个文件中的匹配数
+  - cmd: 'grep "[0-9]\{3\}" [file]'
+    scenario:
+      en: Search for 3-digit numbers (basic regex)
+      zh: 搜索 3 位数字（基本正则）
+  - cmd: 'grep -E "[0-9]{3}" [file]'
+    scenario:
+      en: Search for 3-digit numbers (extended regex)
+      zh: 搜索 3 位数字（扩展正则）
+  - cmd: 'grep -i "TODO\|FIXME\|XXX" [file]'
+    scenario:
+      en: Find common code markers
+      zh: 查找常见的代码标记
+  - cmd: 'grep -w "TODO\|FIXME" [file]'
+    scenario:
+      en: Find whole word markers
+      zh: 查找完整单词标记
+  - cmd: 'grep -rn "import " . --include="*.py"'
+    scenario:
+      en: Find Python imports recursively
+      zh: 递归查找 Python 导入语句
+  - cmd: 'grep -rn "function\|const\|let" . --include="*.js"'
+    scenario:
+      en: Find JavaScript definitions recursively
+      zh: 递归查找 JavaScript 定义
+  - cmd: 'grep -rn "class\|def\|import" . --include="*.py"'
+    scenario:
+      en: Find Python class/function/import recursively
+      zh: 递归查找 Python 类/函数/导入
+  - cmd: 'grep -v "^$" [file] | grep -v "^#"'
+    scenario:
+      en: Remove empty and comment lines
+      zh: 删除空行和注释行
+  - cmd: 'grep -E "^[[:space:]]*#" [file]'
+    scenario:
+      en: Find comment lines (with optional whitespace)
+      zh: 查找注释行（包括可选空白）
+  - cmd: 'grep -E "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" [file]'
+    scenario:
+      en: Find email addresses
+      zh: 查找电子邮件地址
+  - cmd: 'grep -E "https?://[^[:space:]]+" [file]'
+    scenario:
+      en: Find HTTP/HTTPS URLs
+      zh: 查找 HTTP/HTTPS URL
+  - cmd: 'grep -E "^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$" [file]'
+    scenario:
+      en: Find IP addresses
+      zh: 查找 IP 地址
+  - cmd: 'grep --group-separator="===" -A 2 "[pattern]" [file]'
+    scenario:
+      en: Show context with custom separator
+      zh: 显示上下文并使用自定义分隔符
+  - cmd: 'grep -l "[pattern]" *.txt | xargs rm'
+    scenario:
+      en: Find and remove files containing pattern (use with caution)
+      zh: 查找并删除包含模式的文件（谨慎使用）
+  - cmd: 'grep -l "ERROR" *.log | xargs -I {} mv {} errors/'
+    scenario:
+      en: Move files containing ERROR to errors directory
+      zh: 将包含 ERROR 的文件移动到 errors 目录
+  - cmd: 'grep -o "[pattern]" [file] | wc -l'
+    scenario:
+      en: Count total occurrences (not lines)
+      zh: 统计总出现次数（非行数）
+  - cmd: 'grep -P "\x{汉字}" [file]'
+    scenario:
+      en: Search for Chinese characters (PCRE)
+      zh: 搜索汉字（PCRE）
+  - cmd: 'grep -P "\p{Han}" [file]'
+    scenario:
+      en: Search for Chinese characters using Unicode property
+      zh: 使用 Unicode 属性搜索汉字
+  - cmd: 'grep -rn "TODO\|FIXME" . --include="*.rs"'
+    scenario:
+      en: Find TODO/FIXME in Rust files
+      zh: 在 Rust 文件中查找 TODO/FIXME
+  - cmd: 'grep -rn "use\|mod\|fn" . --include="*.rs"'
+    scenario:
+      en: Find Rust imports/modules/functions
+      zh: 查找 Rust 导入/模块/函数
+  - cmd: 'grep -rn "#include\|#define" . --include="*.c"'
+    scenario:
+      en: Find C preprocessor directives
+      zh: 查找 C 预处理指令
+  - cmd: 'grep -rn "package\|import" . --include="*.go"'
+    scenario:
+      en: Find Go package/import statements
+      zh: 查找 Go 包/导入语句
+  - cmd: 'grep -E "^\s*export\s+" [file]'
+    scenario:
+      en: Find export statements
+      zh: 查找导出语句
+  - cmd: 'grep -E "^\s*(public|private|protected)\s+" [file]'
+    scenario:
+      en: Find access modifiers
+      zh: 查找访问修饰符
+  - cmd: 'grep -Pzo "(?s)<tag>.*?</tag>" [file]'
+    scenario:
+      en: Find multi-line XML/HTML tags
+      zh: 查找多行 XML/HTML 标签
+  - cmd: 'grep -rn "println!\|print!\|eprintln!" . --include="*.rs"'
+    scenario:
+      en: Find Rust print statements
+      zh: 查找 Rust 打印语句

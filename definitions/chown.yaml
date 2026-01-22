@@ -66,6 +66,14 @@ flags:
     description:
       en: Do not traverse any symbolic links (default)
       zh: 不解析任何符号链接（默认）
+  - long: help
+    description:
+      en: Display help text and exit
+      zh: 显示帮助信息并退出
+  - long: version
+    description:
+      en: Output version information and exit
+      zh: 输出版本信息并退出
 is_path_completion: true
 examples:
   - cmd: 'chown [user] [file]'
