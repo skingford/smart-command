@@ -46,22 +46,26 @@ impl Output {
     /// Display startup banner with ASCII art logo
     pub fn banner() {
         let logo_style = Style::new().fg(Color::Cyan).bold();
+        let accent_style = Style::new().fg(Color::Green).bold();
         let version_style = Style::new().fg(Color::Green);
-        let dim_style = Style::new().fg(Color::DarkGray);
         let cwd_style = Style::new().fg(Color::Yellow);
 
-        // ASCII art logo for Smart Command (terminal/shell theme)
+        // ASCII art logo - Smart Command: Terminal + Intelligence theme
+        // Combines prompt symbol, circuit pattern, and "SC" monogram
         let logo = r#"
-     ▗▄▄▄▖       ▗▄▄▄▖      ▗▄▄▄      ▄▄▄▖       ▄▄▄▖
-    ▐▛▀▀▘▜▀      ▐▛▀▀▘▜▀     ▐▛▀▀▙     ▐▛▀▀▘       ▐▛▀▀▘
-     ▐▙▄▄▟▐      ▐▙▄▄▟▐     ▐▙▄▄▛     ▐▙▄▄▖       ▐▙▄▄▖
+   ╭───────────────────────────────────────╮
+   │  ┏━━┓╺┳╸┏━┓┏━┓╻╻ ╻┏━┓╻  ┏━┓╺┳╸╻┏━┓  │
+   │  ┗━━┓ ┃ ┣━┫┣┳┛┃┃┏┛┣━┫┃  ┃ ┃┃┃┣┻┓  │
+   │  ┗━━┛ ╹ ╹ ╹╹┗╸╹┗╸ ╹ ╹┗━╸┗━┛╹╹╹┗━┛  │
+   │         ❯ Smart Command Shell      │
+   ╰───────────────────────────────────────╯
 "#;
 
         println!("{}", logo_style.paint(logo));
         println!(
-            "  {} {}",
-            version_style.paint(format!("Smart Command v{}", env!("CARGO_PKG_VERSION"))),
-            dim_style.paint("· Intelligent Shell")
+            "    {} {}",
+            accent_style.paint("⚡"),
+            version_style.paint(format!("v{} · AI-Powered Intelligent Shell", env!("CARGO_PKG_VERSION")))
         );
 
         // Show current working directory
@@ -70,7 +74,7 @@ impl Output {
                 .and_then(|home| cwd.strip_prefix(&home).ok())
                 .map(|rel| format!("~/{}", rel.display()))
                 .unwrap_or_else(|| cwd.display().to_string());
-            println!("  {}", cwd_style.paint(cwd_display));
+            println!("    {}", cwd_style.paint(format!("📁 {}", cwd_display)));
         }
 
         println!();
