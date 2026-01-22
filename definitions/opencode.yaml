@@ -63,7 +63,7 @@ subcommands:
         description: File(s) to attach to message
         takes_value: true
       - long: format
-        description: Format: default (formatted) or json (raw JSON events)
+        description: Output format - default (formatted) or json (raw JSON events)
         takes_value: true
       - long: title
         description: Title for the session
@@ -164,7 +164,7 @@ subcommands:
             description: Limit to N most recent sessions
             takes_value: true
           - long: format
-            description: Output format: table or json
+            description: "Output format: table or json"
             takes_value: true
   - name: stats
     description: Show token usage and cost statistics

@@ -49,8 +49,8 @@ flags:
     description:
       en: Smooth scrolling
       zh: 平滑滚动
-  - long:pattern
-    short: pattern
+  - long: pattern
+    short: p
     description:
       en: Search pattern
       zh: 搜索模式

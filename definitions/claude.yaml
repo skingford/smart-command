@@ -1,114 +1,278 @@
 name: claude
-description: Claude Code CLI - AI programming assistant from Anthropic
+description:
+  en: Claude Code CLI - AI programming assistant from Anthropic
+  zh: Claude Code CLI - Anthropic AI 编程助手
 flags:
   - long: help
-    description: Display help information
+    short: h
+    description:
+      en: Display help information
+      zh: 显示帮助信息
   - long: version
     short: v
-    description: Print version information
+    description:
+      en: Print version information
+      zh: 打印版本信息
+  - long: print
+    short: p
+    description:
+      en: Print response without interactive mode
+      zh: 打印响应而不进入交互模式
+    takes_value: true
+  - long: continue
+    short: c
+    description:
+      en: Continue most recent conversation in current directory
+      zh: 继续当前目录中最近的对话
+  - long: resume
+    short: r
+    description:
+      en: Resume a specific session by ID or name
+      zh: 按ID或名称恢复特定会话
+    takes_value: true
+  - long: model
+    description:
+      en: Set the model for the current session (sonnet or opus)
+      zh: 为当前会话设置模型（sonnet 或 opus）
+    takes_value: true
+  - long: agent
+    description:
+      en: Specify an agent for the current session
+      zh: 为当前会话指定代理
+    takes_value: true
+  - long: chrome
+    description:
+      en: Enable Chrome browser integration
+      zh: 启用 Chrome 浏览器集成
+  - long: no-chrome
+    description:
+      en: Disable Chrome browser integration
+      zh: 禁用 Chrome 浏览器集成
+  - long: ide
+    description:
+      en: Automatically connect to IDE on startup
+      zh: 启动时自动连接到 IDE
+  - long: add-dir
+    description:
+      en: Add additional working directories for Claude to access
+      zh: 添加额外的工作目录供 Claude 访问
+    takes_value: true
+  - long: plugin-dir
+    description:
+      en: Load plugins from directories
+      zh: 从目录加载插件
+    takes_value: true
+  - long: init
+    description:
+      en: Run Setup hooks and start interactive mode
+      zh: 运行设置钩子并启动交互模式
+  - long: init-only
+    description:
+      en: Run Setup hooks and exit
+      zh: 运行设置钩子然后退出
+  - long: dangerously-skip-permissions
+    description:
+      en: Skip all permission prompts
+      zh: 跳过所有权限提示
+  - long: allow-dangerously-skip-permissions
+    description:
+      en: Enable permission bypassing as an option
+      zh: 启用绕过权限的选项
+  - long: permission-mode
+    description:
+      en: Begin in a specified permission mode
+      zh: 以指定的权限模式开始
+    takes_value: true
+  - long: disable-slash-commands
+    description:
+      en: Disable all skills and slash commands
+      zh: 禁用所有技能和斜杠命令
+  - long: system-prompt
+    description:
+      en: Replace the entire system prompt with custom text
+      zh: 用自定义文本替换整个系统提示
+    takes_value: true
+  - long: append-system-prompt
+    description:
+      en: Append custom text to the default system prompt
+      zh: 将自定义文本追加到默认系统提示
+    takes_value: true
+  - long: debug
+    description:
+      en: Enable debug mode
+      zh: 启用调试模式
+  - long: verbose
+    description:
+      en: Enable verbose logging
+      zh: 启用详细日志
+  - long: remote
+    description:
+      en: Create a new web session on claude.ai
+      zh: 在 claude.ai 上创建新的 Web 会话
+    takes_value: true
+  - long: teleport
+    description:
+      en: Resume a web session in your local terminal
+      zh: 在本地终端恢复 Web 会话
 subcommands:
-  - name: commit
-    description: Generate and create git commits automatically
-    flags:
-      - long: message
-        short: m
-        description: Specify commit message
-        takes_value: true
-      - long: all
-        short: a
-        description: Stage all modified files
-      - long: no-verify
-        description: Skip git hooks
-  - name: chat
-    description: Start an interactive chat session with Claude
-    flags:
-      - long: prompt
-        short: p
-        description: Initial prompt for the session
-        takes_value: true
-      - long: continue
-        short: c
-        description: Continue last session
-      - long: session
-        short: s
-        description: Session ID to continue
-        takes_value: true
-  - name: plan
-    description: Create a structured implementation plan
-    flags:
-      - long: file
-        short: f
-        description: Output plan to file
-        takes_value: true
-  - name: review
-    description: Review code changes and provide feedback
-    flags:
-      - long: file
-        short: f
-        description: File to review
-        takes_value: true
-      - long: diff
-        short: d
-        description: Review git diff
-  - name: test
-    description: Run tests and fix failures
-    flags:
-      - long: file
-        short: f
-        description: Test file to run
-        takes_value: true
-      - long: watch
-        short: w
-        description: Watch mode for tests
-  - name: explain
-    description: Explain code or concepts
-    flags:
-      - long: file
-        short: f
-        description: File to explain
-        takes_value: true
-      - long: detailed
-        short: d
-        description: Show detailed explanation
-  - name: refactor
-    description: Refactor code with best practices
-    flags:
-      - long: file
-        short: f
-        description: File to refactor
-        takes_value: true
-      - long: backup
-        short: b
-        description: Create backup before refactoring
-  - name: debug
-    description: Debug code issues
-    flags:
-      - long: file
-        short: f
-        description: File with bug
-        takes_value: true
-      - long: error
-        short: e
-        description: Error message to debug
-        takes_value: true
-  - name: generate
-    description: Generate code from description
-    flags:
-      - long: type
-        short: t
-        description: Type of code to generate
-        takes_value: true
-      - long: output
-        short: o
-        description: Output file path
-        takes_value: true
-  - name: docs
-    description: Generate documentation for code
-    flags:
-      - long: file
-        short: f
-        description: File to document
-        takes_value: true
-      - long: format
-        description: Documentation format (markdown, html, etc.)
-        takes_value: true
+  # CLI Commands
+  - name: mcp
+    description:
+      en: Model Context Protocol commands
+      zh: 模型上下文协议命令
+    subcommands:
+      - name: list
+        description:
+          en: List MCP servers
+          zh: 列出 MCP 服务器
+      - name: add
+        description:
+          en: Add MCP server
+          zh: 添加 MCP 服务器
+      - name: remove
+        description:
+          en: Remove MCP server
+          zh: 移除 MCP 服务器
+  - name: update
+    description:
+      en: Update to latest version
+      zh: 更新到最新版本
+  # Interactive Session Slash Commands - built-in commands
+  - name: /help
+    description:
+      en: Show available commands and help
+      zh: 显示可用命令和帮助
+  - name: /compact
+    description:
+      en: Compress context to save tokens
+      zh: 压缩上下文以节省 token
+  - name: /status
+    description:
+      en: Show session status (version, model, account, connectivity)
+      zh: 显示会话状态（版本、模型、账户、连接）
+examples:
+  # CLI Examples - Run directly from terminal
+  - cmd: 'claude'
+    scenario:
+      en: Start interactive Claude session
+      zh: 启动交互式 Claude 会话
+  - cmd: 'claude "add user authentication"'
+    scenario:
+      en: Start REPL with initial prompt
+      zh: 使用初始提示启动 REPL
+  - cmd: 'claude -p "explain this function"'
+    scenario:
+      en: Quick one-off query, then exit
+      zh: 快速一次性查询然后退出
+  - cmd: 'cat logs.txt | claude -p "explain"'
+    scenario:
+      en: Process piped content
+      zh: 处理管道内容
+  - cmd: 'claude -c'
+    scenario:
+      en: Continue most recent conversation
+      zh: 继续最近的对话
+  - cmd: 'claude -c -p "Check for type errors"'
+    scenario:
+      en: Continue with additional query
+      zh: 继续并添加额外查询
+  - cmd: 'claude -r auth-refactor "Finish this PR"'
+    scenario:
+      en: Resume session by name
+      zh: 按名称恢复会话
+  - cmd: 'claude update'
+    scenario:
+      en: Update to latest version
+      zh: 更新到最新版本
+  # CLI Flags Examples
+  - cmd: 'claude --model sonnet'
+    scenario:
+      en: Use specific model
+      zh: 使用特定模型
+  - cmd: 'claude --agent my-custom-agent'
+    scenario:
+      en: Use custom agent
+      zh: 使用自定义代理
+  - cmd: 'claude --chrome'
+    scenario:
+      en: Enable Chrome integration
+      zh: 启用 Chrome 集成
+  - cmd: 'claude --add-dir ../apps ../lib'
+    scenario:
+      en: Add working directories
+      zh: 添加工作目录
+  - cmd: 'claude --system-prompt "You are a Python expert"'
+    scenario:
+      en: Replace system prompt
+      zh: 替换系统提示
+  - cmd: 'claude --append-system-prompt "Always use TypeScript"'
+    scenario:
+      en: Append to system prompt
+      zh: 追加到系统提示
+  - cmd: 'claude --dangerously-skip-permissions'
+    scenario:
+      en: Skip all permission prompts
+      zh: 跳过所有权限提示
+  - cmd: 'claude --permission-mode plan'
+    scenario:
+      en: Start in plan mode
+      zh: 以计划模式启动
+  - cmd: 'claude --remote "Fix the login bug"'
+    scenario:
+      en: Create web session
+      zh: 创建 Web 会话
+  - cmd: 'claude --teleport'
+    scenario:
+      en: Resume web session locally
+      zh: 在本地恢复 Web 会话
+  # Interactive Slash Commands - Use INSIDE Claude session
+  - cmd: '/help'
+    scenario:
+      en: Show available commands (in Claude session)
+      zh: 显示可用命令（在 Claude 会话中）
+  - cmd: '/compact'
+    scenario:
+      en: Compress context to save tokens (in Claude session)
+      zh: 压缩上下文以节省 token（在 Claude 会话中）
+  - cmd: '/status'
+    scenario:
+      en: Show session status (in Claude session)
+      zh: 显示会话状态（在 Claude 会话中）
+  # Natural Language Examples
+  - cmd: 'claude "fix the build error"'
+    scenario:
+      en: Debug and fix build issues
+      zh: 调试并修复构建问题
+  - cmd: 'claude "refactor to async/await"'
+    scenario:
+      en: Refactor code to modern patterns
+      zh: 将代码重构为现代模式
+  - cmd: 'claude "write unit tests"'
+    scenario:
+      en: Generate unit tests
+      zh: 生成单元测试
+  - cmd: 'claude "explain how this works"'
+    scenario:
+      en: Explain code functionality
+      zh: 解释代码功能
+  # Keyboard Shortcuts
+  - cmd: 'Shift+Tab'
+    scenario:
+      en: Cycle through input modes
+      zh: 循环切换输入模式
+  - cmd: '/'
+    scenario:
+      en: View all slash commands
+      zh: 查看所有斜杠命令
+  - cmd: 'Tab'
+    scenario:
+      en: Quick command completion
+      zh: 命令快速补全
+  - cmd: 'Option+Enter'
+    scenario:
+      en: Insert new line
+      zh: 换行
+  - cmd: 'Ctrl+C'
+    scenario:
+      en: Exit terminal
+      zh: 退出终端
