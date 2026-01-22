@@ -1,0 +1,34 @@
+name: basename
+description:
+  en: Strip directory and suffix from file names
+  zh: 从文件名中删除目录和后缀
+flags:
+  - long: multiple
+    short: a
+    description:
+      en: Support multiple arguments
+      zh: 支持多个参数
+  - long: suffix
+    short: s
+    description:
+      en: Remove suffix
+      zh: 删除后缀
+    takes_value: true
+  - long: zero
+    short: z
+    description:
+      en: End output with NUL instead of newline
+      zh: 以 NUL 而不是换行符结束输出
+examples:
+  - cmd: 'basename /path/to/file.txt'
+    scenario:
+      en: Get the filename from a path
+      zh: 从路径获取文件名
+  - cmd: 'basename /path/to/file.txt .txt'
+    scenario:
+      en: Get the filename without extension
+      zh: 获取不带扩展名的文件名
+  - cmd: 'basename -s .txt /path/to/file.txt'
+    scenario:
+      en: Remove .txt suffix from filename
+      zh: 从文件名中删除 .txt 后缀

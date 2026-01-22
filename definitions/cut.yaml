@@ -1,0 +1,69 @@
+name: cut
+description:
+  en: Remove sections from each line of files
+  zh: 从文件的每一行中删除部分
+flags:
+  - long: bytes
+    short: b
+    description:
+      en: Select only bytes
+      zh: 仅选择字节
+    takes_value: true
+  - long: characters
+    short: c
+    description:
+      en: Select only characters
+      zh: 仅选择字符
+    takes_value: true
+  - long: delimiter
+    short: d
+    description:
+      en: Use delimiter instead of TAB
+      zh: 使用分隔符而不是 TAB
+    takes_value: true
+  - long: fields
+    short: f
+    description:
+      en: Select only fields
+      zh: 仅选择字段
+    takes_value: true
+  - long: complement
+    description:
+      en: Select the non-matching fields/bytes/characters
+      zh: 选择不匹配的字段/字节/字符
+  - long: only-delimited
+    short: s
+    description:
+      en: Do not print lines without delimiter
+      zh: 不打印没有分隔符的行
+  - long: output-delimiter
+    description:
+      en: Use STRING as the output delimiter
+      zh: 使用字符串作为输出分隔符
+    takes_value: true
+  - long: zero-terminated
+    short: z
+    description:
+      en: Line delimiter is NUL, not newline
+      zh: 行分隔符是 NUL 而不是换行符
+examples:
+  - cmd: 'cut -d: -f1 /etc/passwd'
+    scenario:
+      en: Extract first field from colon-delimited file
+      zh: 从冒号分隔的文件中提取第一个字段
+  - cmd: 'cut -d, -f2,4 file.csv'
+    scenario:
+      en: Extract columns 2 and 4 from CSV
+      zh: 从 CSV 中提取第 2 和第 4 列
+  - cmd: 'cut -c1-10 file.txt'
+    scenario:
+      en: Extract first 10 characters from each line
+      zh: 从每行提取前 10 个字符
+  - cmd: 'echo "hello world" | cut -d" " -f1'
+    scenario:
+      en: Extract first word
+      zh: 提取第一个单词
+  - cmd: 'cut -b1,5,10 file.txt'
+    scenario:
+      en: Extract bytes 1, 5, and 10 from each line
+      zh: 从每行提取第 1、5 和 10 个字节

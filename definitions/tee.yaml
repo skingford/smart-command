@@ -1,0 +1,56 @@
+name: tee
+description:
+  en: Read from stdin and write to stdout and files
+  zh: 从标准输入读取并写入到标准输出和文件
+flags:
+  - long: append
+    short: a
+    description:
+      en: Append to files
+      zh: 追加到文件
+  - long: ignore-interrupts
+    short: i
+    description:
+      en: Ignore interrupt signals
+      zh: 忽略中断信号
+  - long: label
+    description:
+      en: Label the output
+      zh: 标记输出
+    takes_value: true
+  - long: output-error
+    description:
+      en: Set behavior on write error
+      zh: 设置写入错误时的行为
+    takes_value: true
+  - long: help
+    description:
+      en: Display help
+      zh: 显示帮助
+  - long: version
+    short: v
+    description:
+      en: Display version
+      zh: 显示版本
+is_path_completion: true
+examples:
+  - cmd: 'echo "hello" | tee file.txt'
+    scenario:
+      en: Write to file and stdout
+      zh: 写入文件和标准输出
+  - cmd: 'echo "world" | tee -a file.txt'
+    scenario:
+      en: Append to file
+      zh: 追加到文件
+  - cmd: 'ls -l | tee output.txt | less'
+    scenario:
+      en: Save ls output and pipe to less
+      zh: 保存 ls 输出并管道到 less
+  - cmd: 'echo "data" | tee file1.txt file2.txt'
+    scenario:
+      en: Write to multiple files
+      zh: 写入多个文件
+  - cmd: 'cat file.txt | tee backup.txt > /dev/null'
+    scenario:
+      en: Copy file while suppressing stdout
+      zh: 复制文件同时抑制标准输出

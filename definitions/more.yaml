@@ -1,0 +1,88 @@
+name: more
+description:
+  en: Page through text
+  zh: 分页浏览文本
+flags:
+  - long: clear-screen
+    short: c
+    description:
+      en: Clear screen before displaying
+      zh: 显示前清除屏幕
+  - long: squeeze
+    short: s
+    description:
+      en: Squeeze multiple blank lines
+      zh: 压缩多个空行
+  - long: lines
+    short: n
+    description:
+      en: Number of lines per screenful
+      zh: 每屏行数
+    takes_value: true
+  - long: quiet
+    short: q
+    description:
+      en: Quiet mode
+      zh: 安静模式
+  - long: silent
+    short: l
+    description:
+      en: Silent mode
+      zh: 静默模式
+  - long: dumb
+    short: d
+    description:
+      en: Dumb terminal
+      zh: 哑终端
+  - long: print-over
+    short: f
+    description:
+      en: Count logical lines
+      zh: 计数逻辑行
+  - long: no-init
+    short: p
+    description:
+      en: Don't clear screen
+      zh: 不清除屏幕
+  - long: smooth-scroll
+    short: u
+    description:
+      en: Smooth scrolling
+      zh: 平滑滚动
+  - long:pattern
+    short: pattern
+    description:
+      en: Search pattern
+      zh: 搜索模式
+    takes_value: true
+  - long: help
+    description:
+      en: Display help
+      zh: 显示帮助
+  - long: version
+    short: V
+    description:
+      en: Display version
+      zh: 显示版本
+is_path_completion: true
+examples:
+  - cmd: 'more file.txt'
+    scenario:
+      en: View file one page at a time
+      zh: 一次一页查看文件
+  - cmd: 'ls -l | more'
+    scenario:
+      en: View ls output page by page
+      zh: 逐页查看 ls 输出
+  - cmd: 'more -n 20 file.txt'
+    scenario:
+      en: View file with 20 lines per page
+      zh: 每页 20 行查看文件
+  - cmd: 'more +/pattern file.txt'
+    scenario:
+      en: Start at first occurrence of pattern
+      zh: 从模式的第一次出现开始
+  - cmd: 'more +50 file.txt'
+    scenario:
+      en: Start at line 50
+      zh: 从第 50 行开始

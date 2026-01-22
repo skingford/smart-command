@@ -1,0 +1,19 @@
+name: dirname
+description:
+  en: Strip last component from file name
+  zh: 从文件名中删除最后一个组件
+flags:
+  - long: zero
+    short: z
+    description:
+      en: End output with NUL instead of newline
+      zh: 以 NUL 而不是换行符结束输出
+examples:
+  - cmd: 'dirname /path/to/file.txt'
+    scenario:
+      en: Get the directory path from a file path
+      zh: 从文件路径获取目录路径
+  - cmd: 'dirname /path/to/directory/'
+    scenario:
+      en: Get the parent directory
+      zh: 获取父目录

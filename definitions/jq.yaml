@@ -1,0 +1,118 @@
+name: jq
+description:
+  en: Command-line JSON processor
+  zh: 命令行 JSON 处理器
+flags:
+  - long: compact-output
+    short: c
+    description:
+      en: Compact instead of pretty-printed output
+      zh: 紧凑输出而不是美化打印
+  - long: raw-output
+    short: r
+    description:
+      en: Output raw strings, not JSON texts
+      zh: 输出原始字符串而不是 JSON 文本
+  - long: join-output
+    short: j
+    description:
+      en: Join outputs with newline
+      zh: 用换行符连接输出
+  - long: null-input
+    short: n
+    description:
+      en: Use null as single input value
+      zh: 使用 null 作为单个输入值
+  - long: color-output
+    short: C
+    description:
+      en: Colorize JSON
+      zh: 为 JSON 着色
+  - long: monochrome-output
+    short: M
+    description:
+      en: Monochrome (no color) output
+      zh: 单色（无颜色）输出
+  - long: pretty-output
+    description:
+      en: Pretty-printed output
+      zh: 美化打印输出
+  - long: tab
+    description:
+      en: Use tabs for indentation
+      zh: 使用制表符缩进
+  - long: indent
+    short: I
+    description:
+      en: Number of spaces for indentation
+      zh: 缩进空格数
+    takes_value: true
+  - long: unbuffered
+    description:
+      en: Flush output after each JSON object
+      zh: 在每个 JSON 对象后刷新输出
+  - long: stream
+    short: S
+    description:
+      en: Parse input in streaming fashion
+      zh: 以流方式解析输入
+  - long: slurp
+    short: s
+    description:
+      en: Read all inputs into an array
+      zh: 将所有输入读入数组
+  - long: raw-input
+    short: R
+    description:
+      en: Read raw strings instead of JSON texts
+      zh: 读取原始字符串而不是 JSON 文本
+  - long: arg
+    short: a
+    description:
+      en: Read input as argument
+      zh: 将输入作为参数读取
+  - long: from-file
+    short: f
+    description:
+      en: Read filter from file
+      zh: 从文件读取过滤器
+    takes_value: true
+  - long: exit-status
+    short: e
+    description:
+      en: Set exit status code
+      zh: 设置退出状态码
+is_path_completion: true
+examples:
+  - cmd: 'jq "."'
+    scenario:
+      en: Pretty print JSON
+      zh: 美化打印 JSON
+  - cmd: 'jq ".key"'
+    scenario:
+      en: Extract a key from JSON
+      zh: 从 JSON 提取键
+  - cmd: 'jq ".key1, .key2"'
+    scenario:
+      en: Extract multiple keys from JSON
+      zh: 从 JSON 提取多个键
+  - cmd: 'jq ".items[] | .name"'
+    scenario:
+      en: Extract array elements
+      zh: 提取数组元素
+  - cmd: 'jq -r ".key"'
+    scenario:
+      en: Extract key as raw string
+      zh: 将键提取为原始字符串
+  - cmd: 'jq ".key = "value""'
+    scenario:
+      en: Update a key value
+      zh: 更新键值
+  - cmd: 'jq "del(.key)"'
+    scenario:
+      en: Delete a key from JSON
+      zh: 从 JSON 删除键
+  - cmd: 'jq "map(.value *= 2)"'
+    scenario:
+      en: Map over array elements
+      zh: 映射数组元素

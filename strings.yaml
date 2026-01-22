@@ -1,0 +1,55 @@
+name: strings
+description:
+  en: Print the strings of printable characters in files
+  zh: 打印文件中可打印字符的字符串
+flags:
+  - long: bytes
+    short: n
+    description:
+      en: Minimum string length
+      zh: 最小字符串长度
+    takes_value: true
+  - long: all
+    short: a
+    description:
+      en: Scan entire file
+      zh: 扫描整个文件
+  - long: print-file-name
+    description:
+      en: Print file name before string
+      zh: 在字符串前打印文件名
+  - long: radix
+    short: t
+    description:
+      en: Print offset in radix (o, d, x)
+      zh: 以指定进制打印偏移量（o、d、x）
+    takes_value: true
+  - long: encoding
+    short: e
+    description:
+      en: Select character encoding
+      zh: 选择字符编码
+    takes_value: true
+  - long: target
+    description:
+      en: Specify binary file format
+      zh: 指定二进制文件格式
+    takes_value: true
+is_path_completion: true
+examples:
+  - cmd: 'strings binary_file'
+    scenario:
+      en: Extract printable strings from binary file
+      zh: 从二进制文件中提取可打印字符串
+  - cmd: 'strings -n 10 binary_file'
+    scenario:
+      en: Extract strings with minimum length of 10
+      zh: 提取最小长度为 10 的字符串
+  - cmd: 'strings -t d binary_file'
+    scenario:
+      en: Extract strings with decimal offset
+      zh: 提取带十进制偏移量的字符串
+  - cmd: 'strings binary_file | grep "password"'
+    scenario:
+      en: Search for strings containing "password"
+      zh: 搜索包含 "password" 的字符串

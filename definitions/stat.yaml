@@ -1,0 +1,63 @@
+name: stat
+description:
+  en: Display file or file system status
+  zh: 显示文件或文件系统状态
+flags:
+  - long: file-system
+    short: f
+    description:
+      en: Display file system status
+      zh: 显示文件系统状态
+  - long: cache
+    short: c
+    description:
+      en: Specify cache mode
+      zh: 指定缓存模式
+    takes_value: true
+  - long: format
+    short: c
+    description:
+      en: Specify output format
+      zh: 指定输出格式
+    takes_value: true
+  - long: printf
+    description:
+      en: Like format but interpret backslash escapes
+      zh: 类似格式但解释反斜杠转义
+    takes_value: true
+  - long: dereference
+    short: L
+    description:
+      en: Follow links
+      zh: 跟随链接
+  - long: terse
+    short: t
+    description:
+      en: Display in terse form
+      zh: 以简洁形式显示
+is_path_completion: true
+examples:
+  - cmd: 'stat file.txt'
+    scenario:
+      en: Display detailed file information
+      zh: 显示详细的文件信息
+  - cmd: 'stat -c "%s" file.txt'
+    scenario:
+      en: Get file size in bytes
+      zh: 获取文件大小（字节）
+  - cmd: 'stat -c "%U:%G" file.txt'
+    scenario:
+      en: Get file owner and group
+      zh: 获取文件所有者和组
+  - cmd: 'stat -c "%a" file.txt'
+    scenario:
+      en: Get file permissions in octal
+      zh: 获取文件权限（八进制）
+  - cmd: 'stat -c "%x" file.txt'
+    scenario:
+      en: Get file last access time
+      zh: 获取文件最后访问时间
+  - cmd: 'stat -f /'
+    scenario:
+      en: Display file system status
+      zh: 显示文件系统状态

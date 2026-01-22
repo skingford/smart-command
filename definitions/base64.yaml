@@ -1,0 +1,47 @@
+name: base64
+description:
+  en: Base64 encode or decode data
+  zh: Base64 编码或解码数据
+flags:
+  - long: decode
+    short: d
+    description:
+      en: Decode data
+      zh: 解码数据
+  - long: encode
+    short: e
+    description:
+      en: Encode data
+      zh: 编码数据
+  - long: ignore-garbage
+    short: i
+    description:
+      en: When decoding, ignore non-alphabet characters
+      zh: 解码时忽略非字母字符
+  - long: wrap
+    short: w
+    description:
+      en: Wrap encoded lines after cols characters
+      zh: 在指定字符数后换行
+    takes_value: true
+  - long: help
+    description:
+      en: Display help
+      zh: 显示帮助
+examples:
+  - cmd: 'echo "hello" | base64'
+    scenario:
+      en: Encode a string to base64
+      zh: 将字符串编码为 base64
+  - cmd: 'echo "aGVsbG8=" | base64 -d'
+    scenario:
+      en: Decode a base64 string
+      zh: 解码 base64 字符串
+  - cmd: 'base64 -w 0 file.txt'
+    scenario:
+      en: Encode file without line wrapping
+      zh: 编码文件而不换行
+  - cmd: 'base64 -d encoded.txt > decoded.bin'
+    scenario:
+      en: Decode base64 file to binary
+      zh: 将 base64 文件解码为二进制

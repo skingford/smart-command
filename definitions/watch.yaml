@@ -1,0 +1,58 @@
+name: watch
+description:
+  en: Execute a program periodically
+  zh: 定期执行程序
+flags:
+  - long: interval
+    short: n
+    description:
+      en: Seconds to wait between updates
+      zh: 更新之间等待的秒数
+    takes_value: true
+  - long: beep
+    short: b
+    description:
+      en: Beep if command has a non-zero exit
+      zh: 如果命令非零退出则发出蜂鸣声
+  - long: color
+    short: g
+    description:
+      en: Interpret ANSI color sequences
+      zh: 解释 ANSI 颜色序列
+  - long: differences
+    short: d
+    description:
+      en: Highlight changes between updates
+      zh: 高亮显示更新之间的差异
+  - long: no-title
+    short: t
+    description:
+      en: Turn off header
+      zh: 关闭标题
+  - long: exit-on-error
+    short: e
+    description:
+      en: Exit if command has a non-zero exit
+      zh: 如果命令非零退出则退出
+  - long: precise
+    short: p
+    description:
+      en: Attempt precise interval
+      zh: 尝试精确间隔
+examples:
+  - cmd: 'watch ls -l'
+    scenario:
+      en: Watch ls -l output every 2 seconds
+      zh: 每 2 秒监视 ls -l 输出
+  - cmd: 'watch -n 5 date'
+    scenario:
+      en: Watch date command every 5 seconds
+      zh: 每 5 秒监视 date 命令
+  - cmd: 'watch -d ls -l'
+    scenario:
+      en: Watch ls -l with differences highlighted
+      zh: 监视 ls -l 并高亮显示差异
+  - cmd: 'watch -g ping google.com'
+    scenario:
+      en: Watch ping until output changes
+      zh: 监视 ping 直到输出改变

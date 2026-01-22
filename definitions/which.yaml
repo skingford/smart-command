@@ -1,0 +1,32 @@
+name: which
+description:
+  en: Locate a command
+  zh: 定位命令
+flags:
+  - long: all
+    short: a
+    description:
+      en: Print all matching pathnames
+      zh: 打印所有匹配的路径名
+  - long: read-alias
+    short: i
+    description:
+      en: Read alias from stdin
+      zh: 从标准输入读取别名
+  - long: skip-alias
+    description:
+      en: Ignore aliases
+      zh: 忽略别名
+  - long: tty-only
+    description:
+      en: Stop when a terminal is found
+      zh: 找到终端时停止
+examples:
+  - cmd: 'which python'
+    scenario:
+      en: Find the path to python executable
+      zh: 查找 python 可执行文件的路径
+  - cmd: 'which -a git'
+    scenario:
+      en: Find all paths to git executable
+      zh: 查找 git 可执行文件的所有路径

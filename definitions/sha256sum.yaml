@@ -1,0 +1,60 @@
+name: sha256sum
+description:
+  en: Compute and check SHA256 message digest
+  zh: 计算和检查 SHA256 消息摘要
+flags:
+  - long: check
+    short: c
+    description:
+      en: Read SHA256 sums from files and check them
+      zh: 从文件读取 SHA256 和并检查它们
+  - long: tag
+    description:
+      en: Create a BSD-style checksum
+      zh: 创建 BSD 风格的校验和
+  - long: binary
+    short: b
+    description:
+      en: Read in binary mode
+      zh: 以二进制模式读取
+  - long: text
+    short: t
+    description:
+      en: Read in text mode
+      zh: 以文本模式读取
+  - long: quiet
+    short: q
+    description:
+      en: Don't print OK for each verified file
+      zh: 不为每个验证的文件打印 OK
+  - long: status
+    description:
+      en: Don't output anything, status code shows success
+      zh: 不输出任何内容，状态代码显示成功
+  - long: warn
+    short: w
+    description:
+      en: Warn about improperly formatted checksum lines
+      zh: 警告格式不正确的校验和行
+  - long: strict
+    description:
+      en: Exit non-zero for improperly formatted checksum lines
+      zh: 对于格式不正确的校验和行以非零退出
+is_path_completion: true
+examples:
+  - cmd: 'sha256sum file.txt'
+    scenario:
+      en: Compute SHA256 hash of a file
+      zh: 计算文件的 SHA256 哈希值
+  - cmd: 'sha256sum *.txt > checksums.txt'
+    scenario:
+      en: Compute SHA256 hashes of multiple files
+      zh: 计算多个文件的 SHA256 哈希值
+  - cmd: 'sha256sum -c checksums.txt'
+    scenario:
+      en: Verify SHA256 hashes from a file
+      zh: 从文件验证 SHA256 哈希值
+  - cmd: 'echo "hello" | sha256sum'
+    scenario:
+      en: Compute SHA256 hash of stdin
+      zh: 计算标准输入的 SHA256 哈希值

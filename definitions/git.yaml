@@ -687,6 +687,422 @@ subcommands:
         description:
           en: Prune working tree information
           zh: 清理工作区信息
+  - name: rev-parse
+    description:
+      en: Parse revision specifications and output SHA-1 hashes
+      zh: 解析版本规范并输出 SHA-1 哈希值
+    flags:
+      - long: verify
+        short: v
+        description:
+          en: Verify that the given commits exist and are valid
+          zh: 验证给定的提交是否存在且有效
+      - long: short
+        short: s
+        description:
+          en: Output short SHA-1 hash
+          zh: 输出短 SHA-1 哈希值
+        takes_value: true
+      - long: quiet
+        short: q
+        description:
+          en: Suppress error messages
+          zh: 抑制错误消息
+      - long: abbrev-ref
+        description:
+          en: Show the short branch name
+          zh: 显示短分支名称
+      - long: show-toplevel
+        description:
+          en: Show the path of the top-level directory
+          zh: 显示顶级目录的路径
+      - long: git-dir
+        description:
+          en: Show the path of the .git directory
+          zh: 显示 .git 目录的路径
+      - long: show-prefix
+        description:
+          en: Show the path of the current directory relative to the top-level directory
+          zh: 显示当前目录相对于顶级目录的路径
+      - long: is-inside-git-dir
+        description:
+          en: Exit with 0 if inside .git directory
+          zh: 如果在 .git 目录内则返回 0
+      - long: is-inside-work-tree
+        description:
+          en: Exit with 0 if inside work tree
+          zh: 如果在工作区内则返回 0
+    is_path_completion: true
+  - name: describe
+    description:
+      en: Give an object a human readable name based on an available ref
+      zh: 基于可用引用为对象提供人类可读的名称
+    flags:
+      - long: tags
+        description:
+          en: Use any tag found in refs/tags namespace
+          zh: 使用 refs/tags 命名空间中的任何标签
+      - long: all
+        description:
+          en: Use any ref found in refs/ namespace
+          zh: 使用 refs/ 命名空间中的任何引用
+      - long: long
+        description:
+          en: Always output the long format
+          zh: 始终输出长格式
+      - long: abbrev
+        short: a
+        description:
+          en: Specify how many characters to abbreviate
+          zh: 指定缩写的字符数
+        takes_value: true
+      - long: exact-match
+        description:
+          en: Only output exact matches
+          zh: 仅输出精确匹配
+      - long: dirty
+        description:
+          en: Describe the working tree
+          zh: 描述工作区
+  - name: shortlog
+    description:
+      en: Summarize git log output
+      zh: 汇总 git log 输出
+    flags:
+      - long: numbered
+        short: n
+        description:
+          en: Sort output by number of commits
+          zh: 按提交数排序输出
+      - long: email
+        short: e
+        description:
+          en: Show email addresses
+          zh: 显示电子邮件地址
+      - long: format
+        short: f
+        description:
+          en: Specify format string
+          zh: 指定格式字符串
+        takes_value: true
+      - long: summary
+        short: s
+        description:
+          en: Suppress commit description
+          zh: 抑制提交描述
+      - long: no-merges
+        description:
+          en: Suppress merge commits
+          zh: 抑制合并提交
+  - name: reflog
+    description:
+      en: Manage reflog information
+      zh: 管理引用日志信息
+    subcommands:
+      - name: show
+        description:
+          en: Show reflog entries
+          zh: 显示引用日志条目
+      - name: expire
+        description:
+          en: Prune older reflog entries
+          zh: 清理较旧的引用日志条目
+      - name: delete
+        description:
+          en: Delete reflog entries
+          zh: 删除引用日志条目
+      - name: exists
+        description:
+          en: Check if a reflog exists
+          zh: 检查引用日志是否存在
+    flags:
+      - long: all
+        description:
+          en: Show all reflogs
+          zh: 显示所有引用日志
+      - long: expire
+        description:
+          en: expire entries older than date
+          zh: 过期早于日期的条目
+        takes_value: true
+      - long: rewrite
+        description:
+          en: Rewrite previous reflog entries
+          zh: 重写先前的引用日志条目
+      - long: updateref
+        description:
+          en: Update the reference to the new SHA-1
+          zh: 将引用更新为新的 SHA-1
+  - name: filter-branch
+    description:
+      en: Rewrite branches
+      zh: 重写分支
+    flags:
+      - long: env-filter
+        description:
+          en: Filter for environment variables
+          zh: 环境变量过滤器
+        takes_value: true
+      - long: tree-filter
+        description:
+          en: Filter for tree rewriting
+          zh: 树重写过滤器
+        takes_value: true
+      - long: index-filter
+        description:
+          en: Filter for index rewriting
+          zh: 索引重写过滤器
+        takes_value: true
+      - long: parent-filter
+        description:
+          en: Filter for parent rewriting
+          zh: 父级重写过滤器
+        takes_value: true
+      - long: msg-filter
+        description:
+          en: Filter for commit messages
+          zh: 提交信息过滤器
+        takes_value: true
+      - long: commit-filter
+        description:
+          en: Filter for commit rewriting
+          zh: 提交重写过滤器
+        takes_value: true
+      - long: tag-name-filter
+        description:
+          en: Filter for tag names
+          zh: 标签名过滤器
+        takes_value: true
+      - long: subdirectory-filter
+        description:
+          en: Filter for subdirectory
+          zh: 子目录过滤器
+        takes_value: true
+      - long: prune-empty
+        description:
+          en: Prune empty commits
+          zh: 删除空提交
+      - long: force
+        short: f
+        description:
+          en: Force operation
+          zh: 强制操作
+  - name: archive
+    description:
+      en: Create an archive of files from a tree
+      zh: 从树创建文件归档
+    flags:
+      - long: format
+        description:
+          en: Archive format (tar, zip, etc.)
+          zh: 归档格式（tar、zip 等）
+        takes_value: true
+      - long: prefix
+        description:
+          en: Prepend prefix to filenames
+          zh: 在文件名前添加前缀
+        takes_value: true
+      - long: output
+        short: o
+        description:
+          en: Output file
+          zh: 输出文件
+        takes_value: true
+      - long: verbose
+        short: v
+        description:
+          en: Be verbose
+          zh: 显示详细信息
+      - long: worktree-attributes
+        description:
+          en: Read attributes from .gitattributes
+          zh: 从 .gitattributes 读取属性
+  - name: gc
+    description:
+      en: Cleanup unnecessary files and optimize the repository
+      zh: 清理不必要的文件并优化仓库
+    flags:
+      - long: aggressive
+        description:
+          en: Optimize more aggressively
+          zh: 更积极地优化
+      - long: prune
+        description:
+          en: Prune loose objects older than date
+          zh: 清理早于日期的松散对象
+        takes_value: true
+      - long: no-prune
+        description:
+          en: Do not prune any loose objects
+          zh: 不清理任何松散对象
+      - long: quiet
+        short: q
+        description:
+          en: Suppress progress output
+          zh: 抑制进度输出
+    is_path_completion: true
+  - name: fsck
+    description:
+      en: Verify the connectivity and validity of objects
+      zh: 验证对象的连接性和有效性
+    flags:
+      - long: full
+        short: f
+        description:
+          en: Check all objects
+          zh: 检查所有对象
+      - long: no-reflogs
+        description:
+          en: Do not consider reflogs
+          zh: 不考虑引用日志
+      - long: no-full
+        description:
+          en: Only check objects in current directory
+          zh: 仅检查当前目录中的对象
+      - long: strict
+        description:
+          en: Enable more strict checking
+          zh: 启用更严格的检查
+      - long: verbose
+        short: v
+        description:
+          en: Be verbose
+          zh: 显示详细信息
+  - name: count-objects
+    description:
+      en: Count unpacked objects and pack size
+      zh: 计算解包对象和包大小
+    flags:
+      - long: verbose
+        short: v
+        description:
+          en: Be verbose
+          zh: 显示详细信息
+      - long: human-readable
+        short: H
+        description:
+          en: Print sizes in human readable format
+          zh: 以人类可读格式打印大小
+  - name: instaweb
+    description:
+      en: Instantly browse your working repository in gitweb
+      zh: 立即在 gitweb 中浏览工作仓库
+    flags:
+      - long: httpd
+        description:
+          en: HTTP daemon to use
+          zh: 要使用的 HTTP 守护进程
+        takes_value: true
+      - long: port
+        short: p
+        description:
+          en: Port to bind to
+          zh: 要绑定的端口
+        takes_value: true
+      - long: browser
+        short: b
+        description:
+          en: Browser to use
+          zh: 要使用的浏览器
+        takes_value: true
+  - name: notes
+    description:
+      en: Add or inspect object notes
+      zh: 添加或检查对象注释
+    subcommands:
+      - name: add
+        description:
+          en: Add notes for an object
+          zh: 为对象添加注释
+        flags:
+          - long: message
+            short: m
+            description:
+              en: Note message
+              zh: 注释信息
+            takes_value: true
+          - long: file
+            short: F
+            description:
+              en: Read note from file
+              zh: 从文件读取注释
+            takes_value: true
+          - long: rewrite
+            description:
+              en: Rewrite previous note
+              zh: 重写先前的注释
+          - long: allow-empty
+            description:
+              en: Allow empty note
+              zh: 允许空注释
+      - name: copy
+        description:
+          en: Copy notes from one object to another
+          zh: 将注释从一个对象复制到另一个
+        flags:
+          - long: force
+            short: f
+            description:
+              en: Replace existing note
+              zh: 替换现有注释
+      - name: append
+        description:
+          en: Append to the notes of an object
+          zh: 追加到对象的注释
+        flags:
+          - long: message
+            short: m
+            description:
+              en: Note message
+              zh: 注释信息
+            takes_value: true
+      - name: edit
+        description:
+          en: Edit notes for an object
+          zh: 编辑对象的注释
+      - name: show
+        description:
+          en: Show notes for an object
+          zh: 显示对象的注释
+      - name: merge
+        description:
+          en: Merge notes
+          zh: 合并注释
+        flags:
+          - long: strategy
+            short: s
+            description:
+              en: Merge strategy
+              zh: 合并策略
+            takes_value: true
+          - long: commit
+            short: c
+            description:
+              en: Merge commit
+              zh: 合并提交
+            takes_value: true
+      - name: remove
+        description:
+          en: Remove notes for an object
+          zh: 删除对象的注释
+      - name: prune
+        description:
+          en: Remove notes for unreachable objects
+          zh: 删除不可达对象的注释
+      - name: list
+        description:
+          en: List notes
+          zh: 列出注释
+      - name: get-ref
+        description:
+          en: Get notes ref
+          zh: 获取注释引用
+    flags:
+      - long: ref
+        description:
+          en: Use notes from <ref>
+          zh: 从 <ref> 使用注释
+        takes_value: true
 examples:
   - cmd: 'git clone [url]'
     scenario:
@@ -808,3 +1224,59 @@ examples:
     scenario:
       en: Create a bare repository clone (without working directory)
       zh: 创建裸仓库克隆（无工作目录）
+  - cmd: 'git rev-parse HEAD'
+    scenario:
+      en: Get the current commit SHA
+      zh: 获取当前提交的 SHA 值
+  - cmd: 'git rev-parse --short HEAD'
+    scenario:
+      en: Get the short commit SHA
+      zh: 获取短提交 SHA 值
+  - cmd: 'git rev-parse --abbrev-ref HEAD'
+    scenario:
+      en: Get the current branch name
+      zh: 获取当前分支名称
+  - cmd: 'git rev-parse --show-toplevel'
+    scenario:
+      en: Get the repository root directory
+      zh: 获取仓库根目录
+  - cmd: 'git rev-parse --git-dir'
+    scenario:
+      en: Get the .git directory path
+      zh: 获取 .git 目录路径
+  - cmd: 'git describe --tags'
+    scenario:
+      en: Describe the current commit with tags
+      zh: 用标签描述当前提交
+  - cmd: 'git describe --always --abbrev=0'
+    scenario:
+      en: Get the most recent tag
+      zh: 获取最近的标签
+  - cmd: 'git shortlog --summary --numbered'
+    scenario:
+      en: Show commit summary by author
+      zh: 按作者显示提交摘要
+  - cmd: 'git reflog show'
+    scenario:
+      en: Show reflog history
+      zh: 显示引用日志历史
+  - cmd: 'git archive --format=tar.gz --output=repo.tar.gz HEAD'
+    scenario:
+      en: Create a tar.gz archive of the current HEAD
+      zh: 创建当前 HEAD 的 tar.gz 归档
+  - cmd: 'git gc --aggressive'
+    scenario:
+      en: Aggressively garbage collect and optimize repository
+      zh: 积极地垃圾回收和优化仓库
+  - cmd: 'git fsck --full'
+    scenario:
+      en: Full check of repository integrity
+      zh: 全面检查仓库完整性
+  - cmd: 'git notes add HEAD -m "Note content"'
+    scenario:
+      en: Add a note to the current commit
+      zh: 为当前提交添加注释
+  - cmd: 'git notes show HEAD'
+    scenario:
+      en: Show notes for the current commit
+      zh: 显示当前提交的注释

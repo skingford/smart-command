@@ -1,0 +1,96 @@
+name: xxd
+description:
+  en: Make a hexdump or do the reverse
+  zh: 生成十六进制转储或进行反向操作
+subcommands:
+  - name: -r
+    description:
+      en: Reverse operation (hex to binary)
+      zh: 反向操作（十六进制转二进制）
+flags:
+  - long: cols
+    short: c
+    description:
+      en: Format octets per line
+      zh: 每行格式化字节数
+    takes_value: true
+  - long: offset
+    short: o
+    description:
+      en: Add offset to displayed file position
+      zh: 为显示的文件位置添加偏移量
+    takes_value: true
+  - long: len
+    short: l
+    description:
+      en: Specify length
+      zh: 指定长度
+    takes_value: true
+  - long: binary
+    short: b
+    description:
+      en: Binary mode
+      zh: 二进制模式
+  - long: hexdump
+    short: h
+    description:
+      en: Display hexdump
+      zh: 显示十六进制转储
+  - long: bits
+    short: b
+    description:
+      en: Display bits
+      zh: 显示位
+  - long: iterate
+    short: i
+    description:
+      en: Show output in incremental manner
+      zh: 以增量方式显示输出
+  - long: plain
+    short: p
+    description:
+      en: Plain hexdump style
+      zh: 纯十六进制转储样式
+  - long: revert
+    short: r
+    description:
+      en: Reverse operation
+      zh: 反向操作
+  - long: little-endian
+    short: e
+    description:
+      en: Little-endian output
+      zh: 小端序输出
+  - long: big-endian
+    short: E
+    description:
+      en: Big-endian output
+      zh: 大端序输出
+  - long: octal
+    short: o
+    description:
+      en: Octal output
+      zh: 八进制输出
+  - long: uppercase
+    short: u
+    description:
+      en: Uppercase hex letters
+      zh: 大写十六进制字母
+is_path_completion: true
+examples:
+  - cmd: 'xxd file.txt'
+    scenario:
+      en: Display hexdump of a file
+      zh: 显示文件的十六进制转储
+  - cmd: 'xxd -r -p hex.txt > binary.bin'
+    scenario:
+      en: Convert hex dump back to binary
+      zh: 将十六进制转储转换回二进制
+  - cmd: 'xxd -l 100 file.txt'
+    scenario:
+      en: Display first 100 bytes in hex
+      zh: 以十六进制显示前 100 个字节
+  - cmd: 'echo "hello" | xxd'
+    scenario:
+      en: Display hexdump of stdin
+      zh: 显示标准输入的十六进制转储

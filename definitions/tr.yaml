@@ -1,0 +1,50 @@
+name: tr
+description:
+  en: Translate or delete characters
+  zh: 翻译或删除字符
+flags:
+  - long: complement
+    short: c
+    description:
+      en: Use complement of SET1
+      zh: 使用 SET1 的补集
+  - long: delete
+    short: d
+    description:
+      en: Delete characters in SET1
+      zh: 删除 SET1 中的字符
+  - long: squeeze-repeats
+    short: s
+    description:
+      en: Replace sequences of characters with one
+      zh: 将字符序列替换为一个
+  - long: truncate-set1
+    short: t
+    description:
+      en: Truncate SET1 to length of SET2
+      zh: 将 SET1 截断为 SET2 的长度
+examples:
+  - cmd: 'echo "hello" | tr "a-z" "A-Z"'
+    scenario:
+      en: Convert to uppercase
+      zh: 转换为大写
+  - cmd: 'echo "HELLO" | tr "A-Z" "a-z"'
+    scenario:
+      en: Convert to lowercase
+      zh: 转换为小写
+  - cmd: 'echo "hello   world" | tr -s " "'
+    scenario:
+      en: Squeeze multiple spaces into one
+      zh: 将多个空格压缩为一个
+  - cmd: 'echo "hello123" | tr -d "0-9"'
+    scenario:
+      en: Delete all digits
+      zh: 删除所有数字
+  - cmd: 'tr -cd "[:print:]" < file.txt'
+    scenario:
+      en: Keep only printable characters
+      zh: 仅保留可打印字符
+  - cmd: 'echo "hello" | tr "el" "ip"'
+    scenario:
+      en: Replace characters
+      zh: 替换字符
