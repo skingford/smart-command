@@ -1,0 +1,154 @@
+name: codex
+description: OpenAI Codex CLI - AI coding agent for terminal
+flags:
+  - long: model
+    short: m
+    description: Override the model set in configuration
+    takes_value: true
+  - long: oss
+    description: Use local open source model provider (Ollama)
+  - long: profile
+    short: p
+    description: Configuration profile name to load
+    takes_value: true
+  - long: sandbox
+    short: s
+    description: Select sandbox policy for shell commands
+    takes_value: true
+  - long: ask-for-approval
+    short: a
+    description: Control when to pause for approval
+    takes_value: true
+  - long: full-auto
+    description: Set unattended mode with workspace-write sandbox
+  - long: yolo
+    description: Run without approvals or sandboxing (dangerous)
+  - long: cd
+    short: C
+    description: Set working directory before starting
+    takes_value: true
+    is_path_completion: true
+  - long: image
+    short: i
+    description: Attach image files to initial prompt
+    takes_value: true
+    is_path_completion: true
+subcommands:
+  - name: exec
+    short: e
+    description: Run Codex non-interactively
+    flags:
+      - long: image
+        short: i
+        description: Attach images to the first message
+        takes_value: true
+        is_path_completion: true
+      - long: model
+        short: m
+        description: Override the configured model
+        takes_value: true
+      - long: oss
+        description: Use local open source provider
+      - long: sandbox
+        short: s
+        description: Sandbox policy for generated commands
+        takes_value: true
+      - long: profile
+        short: p
+        description: Select configuration profile
+        takes_value: true
+      - long: full-auto
+        description: Apply low-friction automation preset
+      - long: yolo
+        description: Bypass approvals and sandboxing (dangerous)
+      - long: cd
+        short: C
+        description: Set workspace root before executing
+        takes_value: true
+        is_path_completion: true
+      - long: skip-git-repo-check
+        description: Allow running outside Git repository
+      - long: json
+        description: Output newline-delimited JSON events
+      - long: last
+        description: Resume most recent conversation
+    is_path_completion: true
+  - name: login
+    description: Authenticate with ChatGPT or API key
+    subcommands:
+      - name: status
+        description: Print authentication status
+    flags:
+      - long: with-api-key
+        description: Read API key from stdin
+  - name: logout
+    description: Remove stored authentication credentials
+  - name: resume
+    description: Continue a previous interactive session
+    flags:
+      - long: last
+        description: Resume most recent conversation
+  - name: apply
+    short: a
+    description: Apply diff from Codex Cloud task to local repository
+    is_path_completion: true
+  - name: sandbox
+    description: Run commands inside Codex-provided sandboxes
+    flags:
+      - long: full-auto
+        description: Grant write access without approvals
+      - long: config
+        short: c
+        description: Pass configuration overrides
+        takes_value: true
+  - name: completion
+    description: Generate shell completion scripts
+  - name: mcp
+    description: Manage Model Context Protocol servers
+    subcommands:
+      - name: list
+        description: List configured MCP servers
+        flags:
+          - long: json
+            description: Output in JSON format
+      - name: get
+        description: Show specific server configuration
+        flags:
+          - long: json
+            description: Print raw config entry
+      - name: add
+        description: Register an MCP server
+        flags:
+          - long: url
+            description: Register HTTP server
+            takes_value: true
+          - long: env
+            description: Environment variables for stdio
+            takes_value: true
+          - long: bearer-token-env-var
+            description: Bearer token environment variable
+            takes_value: true
+      - name: remove
+        description: Delete MCP server definition
+      - name: login
+        description: Start OAuth login for HTTP server
+        flags:
+          - long: scopes
+            description: OAuth scopes to request
+            takes_value: true
+      - name: logout
+        description: Remove OAuth credentials
+  - name: mcp-server
+    description: Run Codex as MCP server over stdio
+  - name: cloud
+    description: Interact with Codex Cloud tasks
+    flags:
+      - long: env
+        description: Target Codex Cloud environment ID
+        takes_value: true
+      - long: attempts
+        description: Number of assistant attempts (1-4)
+        takes_value: true
+    subcommands:
+      - name: exec
+        description: Submit task directly to Codex Cloud

@@ -1,5 +1,5 @@
 name: opencode
-description: OpenCode CLI - Open-source AI coding agent
+description: OpenCode CLI - Open-source AI coding agent for terminal
 flags:
   - long: help
     short: h
