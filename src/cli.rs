@@ -63,6 +63,29 @@ pub enum Commands {
 
     /// List all available commands
     List,
+
+    /// Install binary and definitions to standard locations
+    Install {
+        /// Destination directory for binary (default: platform user bin)
+        #[arg(long)]
+        bin_dir: Option<PathBuf>,
+
+        /// Destination directory for definitions (default: platform config dir)
+        #[arg(long)]
+        definitions_dir: Option<PathBuf>,
+
+        /// Source directory for definitions (default: auto-discover)
+        #[arg(long)]
+        definitions_src: Option<PathBuf>,
+
+        /// Skip copying the binary
+        #[arg(long)]
+        skip_bin: bool,
+
+        /// Skip copying definitions
+        #[arg(long)]
+        skip_definitions: bool,
+    },
 }
 
 #[derive(Subcommand, Debug)]

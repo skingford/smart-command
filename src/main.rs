@@ -18,12 +18,14 @@ mod completer;
 mod config;
 mod definitions;
 mod error;
+mod install;
 mod loader;
 mod output;
 
 use cli::{Cli, Commands, ConfigAction};
 use completer::SmartCompleter;
 use config::AppConfig;
+use install::InstallOptions;
 use output::Output;
 
 // Track previous directory for `cd -`
@@ -241,6 +243,22 @@ fn handle_subcommand(cmd: Commands, config: &AppConfig) -> anyhow::Result<()> {
             for name in completer.get_command_names() {
                 println!("  {}", Output::command(&name));
             }
+        }
+        Commands::Install {
+            bin_dir,
+            definitions_dir,
+            definitions_src,
+            skip_bin,
+            skip_definitions,
+        } => {
+            let opts = InstallOptions {
+                bin_dir,
+                definitions_dir,
+                definitions_src,
+                skip_bin,
+                skip_definitions,
+            };
+            install::run_install(opts)?;
         }
     }
     Ok(())

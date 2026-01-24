@@ -25,14 +25,16 @@ cargo build --release
 
 ## Installation
 
-### macOS / Linux (Recommended: Cargo Install)
+### macOS / Linux / Windows (Recommended: Cargo Install + Built-in Installer)
 
 ```bash
-# Ensure Rust is installed
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+# Ensure Rust is installed (see https://rustup.rs)
 
-# Install globally
+# Install globally (cargo)
 cargo install --path .
+
+# Install definitions (required for completions)
+smart-command install --skip-bin
 
 # Verify installation
 smart-command --version
