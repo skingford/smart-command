@@ -67,3 +67,19 @@ full = ["providers", "highlighting", "context", "ai"]
 [[bin]]
 name = "smart-command"
 path = "src/main.rs"
+
+[package.metadata.deb]
+maintainer = "kingford"
+copyright = "2024, kingford"
+license-file = ["LICENSE", "0"]
+extended-description = """
+Smart Command is an intelligent shell with context-aware command completion.
+Features include fuzzy search, multi-language support, and Git integration.
+"""
+section = "utility"
+priority = "optional"
+assets = [
+    ["target/release/smart-command", "usr/bin/", "755"],
+    ["definitions/*", "usr/share/smart-command/definitions/", "644"],
+    ["README.md", "usr/share/doc/smart-command/", "644"],
+]

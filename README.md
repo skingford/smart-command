@@ -9,63 +9,134 @@ An intelligent shell with context-aware command completion, fuzzy search, and mu
 - **Multi-language**: Supports English and Chinese descriptions
 - **Git Integration**: Shows current branch in prompt
 - **History Persistence**: Command history saved across sessions
-- **47+ Command Definitions**: Pre-configured support for git, cargo, docker, kubectl, npm, and more
+- **60+ Command Definitions**: Pre-configured support for git, cargo, docker, kubectl, npm, and more
 
-## Quick Start
+## Installation
 
+### Quick Install (Recommended)
+
+**macOS / Linux:**
 ```bash
-# Clone and build
+curl -sSL https://raw.githubusercontent.com/kingford/smart-command/main/install.sh | bash
+```
+
+**Windows (PowerShell):**
+```powershell
+irm https://raw.githubusercontent.com/kingford/smart-command/main/install.ps1 | iex
+```
+
+---
+
+### macOS
+
+#### Homebrew (Coming Soon)
+```bash
+brew tap kingford/tap
+brew install smart-command
+```
+
+#### Binary Download
+```bash
+# Intel Mac
+curl -LO https://github.com/kingford/smart-command/releases/latest/download/smart-command-x86_64-apple-darwin.tar.gz
+tar xzf smart-command-x86_64-apple-darwin.tar.gz
+sudo mv smart-command /usr/local/bin/
+
+# Apple Silicon (M1/M2/M3)
+curl -LO https://github.com/kingford/smart-command/releases/latest/download/smart-command-aarch64-apple-darwin.tar.gz
+tar xzf smart-command-aarch64-apple-darwin.tar.gz
+sudo mv smart-command /usr/local/bin/
+```
+
+---
+
+### Linux
+
+#### Debian / Ubuntu (.deb)
+```bash
+# Download the latest .deb package
+curl -LO https://github.com/kingford/smart-command/releases/latest/download/smart-command_0.1.0_amd64.deb
+sudo dpkg -i smart-command_0.1.0_amd64.deb
+```
+
+#### Binary Download
+```bash
+# x86_64
+curl -LO https://github.com/kingford/smart-command/releases/latest/download/smart-command-x86_64-unknown-linux-gnu.tar.gz
+tar xzf smart-command-x86_64-unknown-linux-gnu.tar.gz
+sudo mv smart-command /usr/local/bin/
+
+# ARM64 (Raspberry Pi, etc.)
+curl -LO https://github.com/kingford/smart-command/releases/latest/download/smart-command-aarch64-unknown-linux-gnu.tar.gz
+tar xzf smart-command-aarch64-unknown-linux-gnu.tar.gz
+sudo mv smart-command /usr/local/bin/
+```
+
+---
+
+### Windows
+
+#### Scoop (Coming Soon)
+```powershell
+scoop bucket add kingford https://github.com/kingford/scoop-bucket
+scoop install smart-command
+```
+
+#### Binary Download
+```powershell
+# Download and extract
+Invoke-WebRequest -Uri "https://github.com/kingford/smart-command/releases/latest/download/smart-command-x86_64-pc-windows-msvc.zip" -OutFile "smart-command.zip"
+Expand-Archive -Path "smart-command.zip" -DestinationPath "."
+
+# Move to a directory in your PATH, or add the current directory to PATH
+Move-Item smart-command.exe C:\Windows\System32\
+```
+
+---
+
+### From Source
+
+#### Cargo Install
+```bash
+# Requires Rust toolchain (https://rustup.rs)
+cargo install --git https://github.com/kingford/smart-command.git
+
+# Or clone and install locally
+git clone https://github.com/kingford/smart-command.git
+cd smart-command
+cargo install --path .
+```
+
+#### Build from Source
+```bash
 git clone https://github.com/kingford/smart-command.git
 cd smart-command
 cargo build --release
 
-# Run
-./target/release/smart-command
-```
-
-## Installation
-
-### macOS / Linux / Windows (Recommended: Cargo Install + Built-in Installer)
-
-```bash
-# Ensure Rust is installed (see https://rustup.rs)
-
-# Install globally (cargo)
-cargo install --path .
-
-# Install definitions (required for completions)
-smart-command install --skip-bin
-
-# Verify installation
-smart-command --version
-```
-
-### Manual Installation
-
-```bash
-# Build release version
-cargo build --release
-
-# Copy to system path
+# Install binary
 sudo cp target/release/smart-command /usr/local/bin/
 
-# Copy definitions (required)
-sudo mkdir -p /usr/share/smart-command
-sudo cp -r definitions /usr/share/smart-command/
+# Install definitions (required for completions)
+mkdir -p ~/.config/smart-command
+cp -r definitions ~/.config/smart-command/
 ```
 
-### System Package (Debian/Ubuntu)
+---
+
+### Post-Installation: Install Definitions
+
+After installing the binary, you need command definitions for completions to work:
 
 ```bash
-# Install cargo-deb
-cargo install cargo-deb
+# Option 1: Built-in installer (recommended)
+smart-command install --skip-bin
 
-# Build .deb package
-cargo deb
-
-# Install
-sudo dpkg -i target/debian/smart-command_*.deb
+# Option 2: Manual copy
+mkdir -p ~/.config/smart-command
+cp -r definitions ~/.config/smart-command/
 ```
+
+---
 
 ## Usage
 
@@ -142,7 +213,7 @@ subcommands:
 
 ## Configuration
 
-### Definition Paths
+### Definition Search Paths
 
 Smart Command searches for definitions in this order:
 1. `./definitions/` (current working directory)
@@ -169,6 +240,10 @@ cargo test
 
 # Check for issues
 cargo check
+
+# Build .deb package (Debian/Ubuntu)
+cargo install cargo-deb
+cargo deb
 ```
 
 ## Project Structure
@@ -181,9 +256,22 @@ smart-command/
 │   ├── command_def.rs   # Command specification structures
 │   ├── loader.rs        # YAML definition loader
 │   └── definitions.rs   # Fallback command definitions
-├── definitions/         # YAML command definitions (47 files)
-└── Cargo.toml          # Dependencies and metadata
+├── definitions/         # YAML command definitions (60+ files)
+├── pkg/
+│   ├── homebrew/        # Homebrew formula
+│   └── scoop/           # Scoop manifest
+└── Cargo.toml           # Dependencies and metadata
 ```
+
+## Supported Platforms
+
+| Platform | Architecture | Status |
+|----------|-------------|--------|
+| macOS | Intel (x86_64) | ✅ |
+| macOS | Apple Silicon (ARM64) | ✅ |
+| Linux | x86_64 | ✅ |
+| Linux | ARM64 | ✅ |
+| Windows | x86_64 | ✅ |
 
 ## Dependencies
 
@@ -191,6 +279,11 @@ smart-command/
 - [fuzzy-matcher](https://crates.io/crates/fuzzy-matcher) - Fuzzy string matching
 - [serde_yaml](https://crates.io/crates/serde_yaml) - YAML parsing
 - [dirs](https://crates.io/crates/dirs) - Platform directories
+- [clap](https://crates.io/crates/clap) - CLI framework
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 

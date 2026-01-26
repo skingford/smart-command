@@ -1,0 +1,27 @@
+{
+    "version": "0.1.0",
+    "description": "An intelligent shell with context-aware command completion",
+    "homepage": "https://github.com/kingford/smart-command",
+    "license": "MIT",
+    "architecture": {
+        "64bit": {
+            "url": "https://github.com/kingford/smart-command/releases/download/v0.1.0/smart-command-x86_64-pc-windows-msvc.zip",
+            "hash": ""
+        }
+    },
+    "bin": "smart-command.exe",
+    "post_install": [
+        "Write-Host 'Smart Command installed successfully!'",
+        "Write-Host 'Run smart-command to start the shell.'"
+    ],
+    "checkver": {
+        "github": "https://github.com/kingford/smart-command"
+    },
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://github.com/kingford/smart-command/releases/download/v$version/smart-command-x86_64-pc-windows-msvc.zip"
+            }
+        }
+    }
+}
