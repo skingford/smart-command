@@ -8,6 +8,7 @@ pub fn other_specs() -> Vec<CommandSpec> {
                 short: Some('a'),
                 description: "Include entries starting with .".into(),
                 takes_value: false,
+                value_type: None,
             })
             .field("is_path_completion", true),
         CommandSpec::new("cd", "Change the shell working directory")

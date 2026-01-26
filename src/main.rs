@@ -12,15 +12,22 @@ use std::sync::{Arc, RwLock};
 use tracing::{debug, info, warn};
 use tracing_subscriber::EnvFilter;
 
+mod ai;
+mod argument;
 mod cli;
 mod command_def;
 mod completer;
 mod config;
+mod context;
 mod definitions;
 mod error;
+mod highlighter;
 mod install;
 mod loader;
 mod output;
+mod pipeline;
+mod providers;
+mod ui;
 
 use cli::{Cli, Commands, ConfigAction};
 use completer::SmartCompleter;

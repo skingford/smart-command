@@ -40,6 +40,94 @@ pub struct Example {
     pub cmd: String,
 }
 
+/// Argument type for validation and completion
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(tag = "type", rename_all = "snake_case")]
+pub enum ArgumentType {
+    /// Plain string argument
+    String,
+    /// Numeric argument with optional range
+    Number {
+        #[serde(default)]
+        min: Option<i64>,
+        #[serde(default)]
+        max: Option<i64>,
+    },
+    /// Boolean argument
+    Boolean,
+    /// Fixed set of choices
+    Choice { values: Vec<String> },
+    /// Regex pattern
+    Pattern { regex: String },
+    /// File/directory path
+    Path {
+        #[serde(default)]
+        filter: PathFilterConfig,
+    },
+    /// Dynamic completion from provider
+    Provider { name: String },
+    /// URL
+    Url,
+    /// Email address
+    Email,
+    /// JSON string
+    Json,
+    /// Any value (default, no validation)
+    Any,
+}
+
+impl Default for ArgumentType {
+    fn default() -> Self {
+        ArgumentType::Any
+    }
+}
+
+/// Path filter configuration for YAML
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct PathFilterConfig {
+    /// Only show files with these extensions
+    #[serde(default)]
+    pub extensions: Option<Vec<String>>,
+    /// Exclude paths matching these patterns
+    #[serde(default)]
+    pub exclude_patterns: Vec<String>,
+    /// Include hidden files
+    #[serde(default)]
+    pub include_hidden: bool,
+    /// Only show files
+    #[serde(default)]
+    pub files_only: bool,
+    /// Only show directories
+    #[serde(default)]
+    pub dirs_only: bool,
+}
+
+/// Argument specification for commands
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ArgumentSpec {
+    /// Position of this argument (0-indexed, after command/subcommand)
+    #[serde(default)]
+    pub position: Option<usize>,
+    /// Argument name for documentation
+    #[serde(default)]
+    pub name: Option<String>,
+    /// Description of this argument
+    #[serde(default)]
+    pub description: Option<I18nString>,
+    /// Type of argument for validation and completion
+    #[serde(default, rename = "type")]
+    pub arg_type: ArgumentType,
+    /// Whether this argument is required
+    #[serde(default)]
+    pub required: bool,
+    /// Whether this argument can accept multiple values
+    #[serde(default)]
+    pub variadic: bool,
+    /// Provider name for dynamic completion (shorthand for type: provider)
+    #[serde(default)]
+    pub provider: Option<String>,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CommandSpec {
     pub name: String,
@@ -52,6 +140,9 @@ pub struct CommandSpec {
     pub examples: Vec<Example>,
     #[serde(default)]
     pub is_path_completion: bool,
+    /// Arguments specification for validation and dynamic completion
+    #[serde(default)]
+    pub arguments: Vec<ArgumentSpec>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -61,6 +152,9 @@ pub struct FlagSpec {
     pub description: I18nString,
     #[serde(default)]
     pub takes_value: bool,
+    /// Type of the flag's value for validation
+    #[serde(default)]
+    pub value_type: Option<ArgumentType>,
 }
 
 impl CommandSpec {
@@ -72,7 +166,27 @@ impl CommandSpec {
             flags: vec![],
             examples: vec![],
             is_path_completion: false,
+            arguments: vec![],
         }
+    }
+
+    /// Get the provider name for a given argument position
+    #[allow(dead_code)]
+    pub fn get_provider_for_position(&self, position: usize) -> Option<&str> {
+        self.arguments
+            .iter()
+            .find(|arg| arg.position == Some(position) || (arg.variadic && arg.position.map(|p| position >= p).unwrap_or(false)))
+            .and_then(|arg| {
+                // Check explicit provider field first
+                if let Some(ref provider) = arg.provider {
+                    return Some(provider.as_str());
+                }
+                // Then check argument type
+                if let ArgumentType::Provider { ref name } = arg.arg_type {
+                    return Some(name.as_str());
+                }
+                None
+            })
     }
 
     #[allow(dead_code)]

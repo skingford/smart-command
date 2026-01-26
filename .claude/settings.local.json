@@ -12,7 +12,12 @@
       "Bash(cargo clippy:*)",
       "Bash(cargo run:*)",
       "WebSearch",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(grep:*)",
+      "Bash(wc:*)",
+      "Bash(cargo --version:*)",
+      "Bash(rustc:*)",
+      "Bash(cargo test:*)"
     ]
   },
   "hooks": {

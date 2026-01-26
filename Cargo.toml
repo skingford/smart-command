@@ -35,6 +35,35 @@ tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 # Better error handling
 thiserror = "2.0"
 
+# Async runtime for providers
+tokio = { version = "1", features = ["rt-multi-thread", "fs", "process", "time", "sync"] }
+
+# File watching for cache invalidation
+notify = "6.0"
+
+# SQLite for context storage (optional)
+rusqlite = { version = "0.31", features = ["bundled"], optional = true }
+
+# HTTP client for npm/AI APIs (optional)
+reqwest = { version = "0.12", features = ["json"], optional = true }
+
+# LRU cache for providers
+lru = "0.12"
+
+# Once cell for lazy statics
+once_cell = "1.19"
+
+# Edit distance for typo correction
+strsim = "0.11"
+
+[features]
+default = ["providers", "highlighting", "context"]
+providers = []
+highlighting = []
+context = ["rusqlite"]
+ai = ["reqwest"]
+full = ["providers", "highlighting", "context", "ai"]
+
 [[bin]]
 name = "smart-command"
 path = "src/main.rs"

@@ -1,9 +1,11 @@
 use crate::command_def::CommandSpec;
 use crate::definitions;
+use crate::providers::{self, ProviderContext, ProviderSuggestion};
 use fuzzy_matcher::skim::SkimMatcherV2;
 use fuzzy_matcher::FuzzyMatcher;
 use reedline::{Completer, Span, Suggestion};
 use std::collections::HashMap;
+use std::path::PathBuf;
 use std::sync::{Arc, RwLock};
 
 pub struct SmartCompleter {
@@ -132,6 +134,57 @@ impl SmartCompleter {
     pub fn get_command_names(&self) -> Vec<String> {
         self.commands.keys().cloned().collect()
     }
+
+    /// Get completions from dynamic providers
+    fn get_provider_completions(
+        &self,
+        cmd: &str,
+        args: &[&str],
+        partial: &str,
+    ) -> Vec<Suggestion> {
+        let cwd = std::env::current_dir().unwrap_or_else(|_| PathBuf::from("."));
+
+        let context = ProviderContext::new(
+            cwd,
+            cmd,
+            args.iter().map(|s| s.to_string()).collect(),
+            partial,
+        );
+
+        let registry = providers::registry();
+        let suggestions = registry.complete(&context);
+
+        suggestions
+            .into_iter()
+            .map(|s| self.provider_suggestion_to_reedline(s, partial.len()))
+            .collect()
+    }
+
+    /// Convert provider suggestion to reedline suggestion
+    fn provider_suggestion_to_reedline(
+        &self,
+        suggestion: ProviderSuggestion,
+        partial_len: usize,
+    ) -> Suggestion {
+        let description = match (suggestion.description, suggestion.category) {
+            (Some(desc), Some(cat)) => Some(format!("[{}] {}", cat, desc)),
+            (Some(desc), None) => Some(desc),
+            (None, Some(cat)) => Some(format!("[{}]", cat)),
+            (None, None) => None,
+        };
+
+        Suggestion {
+            value: suggestion.value,
+            description,
+            extra: None,
+            span: Span {
+                start: 0, // Will be adjusted by caller
+                end: partial_len,
+            },
+            append_whitespace: suggestion.append_whitespace,
+            style: None,
+        }
+    }
 }
 
 impl Completer for SmartCompleter {
@@ -148,7 +201,7 @@ impl Completer for SmartCompleter {
                 return vec![Suggestion {
                     value: "/".to_string(),
                     description: Some(
-                        "Type to search commands (e.g., /压缩 for compression)".to_string(),
+                        "Type to search commands (e.g., /commit or /压缩)".to_string(),
                     ),
                     extra: None,
                     span: Span { start: 0, end: pos },
@@ -239,11 +292,13 @@ impl Completer for SmartCompleter {
 
                 // Descend the tree
                 let mut current_spec = root_spec;
+                let mut subcommand_depth = 0;
                 for i in 1..num_parts_to_descend {
                     let sub_name = parts[i];
                     if let Some(sub) = current_spec.subcommands.iter().find(|s| s.name == sub_name)
                     {
                         current_spec = sub;
+                        subcommand_depth += 1;
                     } else {
                         // User typed something that isn't a known subcommand.
                         break;
@@ -255,7 +310,35 @@ impl Completer for SmartCompleter {
                 let query = if is_new_arg { "" } else { *last_part };
                 let start_idx = if is_new_arg { pos } else { pos - query.len() };
 
-                // 1. Subcommand completion
+                // Calculate current argument position (after subcommands)
+                // This will be used in future phases for argument type validation
+                let _arg_position = if is_new_arg {
+                    parts.len() - 1 - subcommand_depth
+                } else {
+                    parts.len() - 2 - subcommand_depth
+                };
+
+                // 1. Try dynamic provider completions first
+                let provider_suggestions = self.get_provider_completions(
+                    cmd_name,
+                    &parts[1..],
+                    query,
+                );
+
+                if !provider_suggestions.is_empty() {
+                    return provider_suggestions
+                        .into_iter()
+                        .map(|mut s| {
+                            s.span = Span {
+                                start: start_idx,
+                                end: pos,
+                            };
+                            s
+                        })
+                        .collect();
+                }
+
+                // 2. Subcommand completion
                 // Suggest subcommands of the CURRENT spec (use prefix match for speed in tab completion)
                 let sub_suggestions: Vec<Suggestion> = current_spec
                     .subcommands
@@ -274,7 +357,7 @@ impl Completer for SmartCompleter {
                     })
                     .collect();
 
-                // 2. Flag completion
+                // 3. Flag completion
                 // Suggest flags of the CURRENT spec
                 let mut flag_suggestions = Vec::new();
                 if query.starts_with('-') || is_new_arg {
@@ -364,7 +447,7 @@ impl Completer for SmartCompleter {
                     }
                 }
 
-                // 3. Example completion
+                // 4. Example completion
                 let mut example_suggestions = Vec::new();
                 let full_input = &line[0..pos];
                 for example in &current_spec.examples {
@@ -396,6 +479,34 @@ impl Completer for SmartCompleter {
                     return vec![];
                 }
             }
+
+            // Try provider completions for unknown commands too
+            let is_new_arg = line.ends_with(' ');
+            let query = if is_new_arg {
+                ""
+            } else {
+                parts.last().unwrap_or(&"")
+            };
+
+            let provider_suggestions = self.get_provider_completions(
+                cmd_name,
+                &parts[1..],
+                query,
+            );
+
+            if !provider_suggestions.is_empty() {
+                let start_idx = if is_new_arg { pos } else { pos - query.len() };
+                return provider_suggestions
+                    .into_iter()
+                    .map(|mut s| {
+                        s.span = Span {
+                            start: start_idx,
+                            end: pos,
+                        };
+                        s
+                    })
+                    .collect();
+            }
         }
 
         // Fallback: Path completion
@@ -404,7 +515,34 @@ impl Completer for SmartCompleter {
         let query = if is_new_arg { "" } else { *last_part };
         let start_idx = if is_new_arg { pos } else { pos - query.len() };
 
-        // Simple directory reader
+        // Use enhanced path provider
+        let cwd = std::env::current_dir().unwrap_or_else(|_| PathBuf::from("."));
+        let cmd = parts.first().unwrap_or(&"");
+        let context = ProviderContext::new(
+            cwd.clone(),
+            cmd,
+            parts.iter().skip(1).map(|s| s.to_string()).collect(),
+            query,
+        );
+
+        let registry = providers::registry();
+        let path_suggestions = registry.complete(&context);
+
+        if !path_suggestions.is_empty() {
+            return path_suggestions
+                .into_iter()
+                .map(|s| {
+                    let mut suggestion = self.provider_suggestion_to_reedline(s, query.len());
+                    suggestion.span = Span {
+                        start: start_idx,
+                        end: pos,
+                    };
+                    suggestion
+                })
+                .collect();
+        }
+
+        // Fallback to simple directory listing if providers didn't return anything
         if let Ok(paths) = std::fs::read_dir(".") {
             return paths
                 .filter_map(|p| p.ok())
