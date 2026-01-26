@@ -11,7 +11,8 @@
       "Bash(cargo check:*)",
       "Bash(cargo clippy:*)",
       "Bash(cargo run:*)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(tree:*)"
     ]
   },
   "hooks": {
