@@ -1,0 +1,178 @@
+name: rg
+description:
+  en: ripgrep - recursively search for a regex pattern
+  zh: ripgrep - 递归搜索正则表达式模式
+flags:
+  - long: ignore-case
+    short: i
+    description:
+      en: Case insensitive search
+      zh: 不区分大小写搜索
+  - long: word-regexp
+    short: w
+    description:
+      en: Only show matches surrounded by word boundaries
+      zh: 只显示被单词边界包围的匹配
+  - long: count
+    short: c
+    description:
+      en: Only show count of matching lines
+      zh: 只显示匹配行数
+  - long: line-number
+    short: n
+    description:
+      en: Show line numbers
+      zh: 显示行号
+  - long: no-line-number
+    short: N
+    description:
+      en: Suppress line numbers
+      zh: 不显示行号
+  - long: hidden
+    description:
+      en: Search hidden files and directories
+      zh: 搜索隐藏文件和目录
+  - long: no-ignore
+    description:
+      en: Don't respect ignore files
+      zh: 不遵守忽略文件
+  - long: glob
+    short: g
+    description:
+      en: Include or exclude files and directories
+      zh: 包含或排除文件和目录
+    takes_value: true
+  - long: type
+    short: t
+    description:
+      en: Only search files matching type
+      zh: 只搜索匹配类型的文件
+    takes_value: true
+  - long: type-not
+    short: T
+    description:
+      en: Do not search files matching type
+      zh: 不搜索匹配类型的文件
+    takes_value: true
+  - long: type-list
+    description:
+      en: Show all supported file types
+      zh: 显示所有支持的文件类型
+  - long: context
+    short: C
+    description:
+      en: Show NUM lines before and after each match
+      zh: 显示每个匹配前后 NUM 行
+    takes_value: true
+  - long: before-context
+    short: B
+    description:
+      en: Show NUM lines before each match
+      zh: 显示每个匹配前 NUM 行
+    takes_value: true
+  - long: after-context
+    short: A
+    description:
+      en: Show NUM lines after each match
+      zh: 显示每个匹配后 NUM 行
+    takes_value: true
+  - long: files-with-matches
+    short: l
+    description:
+      en: Only print paths with at least one match
+      zh: 只打印至少有一个匹配的路径
+  - long: files-without-match
+    description:
+      en: Only print paths that contain no matches
+      zh: 只打印不包含匹配的路径
+  - long: fixed-strings
+    short: F
+    description:
+      en: Treat pattern as literal string
+      zh: 将模式视为字面字符串
+  - long: multiline
+    short: U
+    description:
+      en: Enable multiline matching
+      zh: 启用多行匹配
+  - long: pcre2
+    short: P
+    description:
+      en: Enable PCRE2 regex
+      zh: 启用 PCRE2 正则表达式
+  - long: replace
+    short: r
+    description:
+      en: Replace matches with given text
+      zh: 用给定文本替换匹配
+    takes_value: true
+  - long: only-matching
+    short: o
+    description:
+      en: Print only matched parts of matching lines
+      zh: 只打印匹配行的匹配部分
+  - long: max-count
+    short: m
+    description:
+      en: Limit the number of matches
+      zh: 限制匹配数量
+    takes_value: true
+  - long: max-depth
+    description:
+      en: Limit directory traversal depth
+      zh: 限制目录遍历深度
+    takes_value: true
+  - long: stats
+    description:
+      en: Print statistics about the search
+      zh: 打印搜索统计信息
+  - long: json
+    description:
+      en: Output in JSON Lines format
+      zh: 以 JSON Lines 格式输出
+  - long: vimgrep
+    description:
+      en: Output in vim compatible format
+      zh: 以 vim 兼容格式输出
+  - long: color
+    description:
+      en: When to use colors (never, auto, always, ansi)
+      zh: 何时使用颜色
+    takes_value: true
+  - long: colors
+    description:
+      en: Configure color settings
+      zh: 配置颜色设置
+    takes_value: true
+  - long: sort
+    description:
+      en: Sort results (path, modified, accessed, created)
+      zh: 排序结果
+    takes_value: true
+  - long: sortr
+    description:
+      en: Sort results in reverse
+      zh: 反向排序结果
+    takes_value: true
+is_path_completion: true
+examples:
+  - cmd: rg "TODO" src/
+    scenario:
+      en: Search for TODO in src directory
+      zh: 在 src 目录中搜索 TODO
+  - cmd: rg -i "error" --type rust
+    scenario:
+      en: Case-insensitive search in Rust files
+      zh: 在 Rust 文件中不区分大小写搜索
+  - cmd: rg "function" -g "*.js" -g "!node_modules"
+    scenario:
+      en: Search JS files excluding node_modules
+      zh: 搜索 JS 文件，排除 node_modules
+  - cmd: rg -l "deprecated"
+    scenario:
+      en: List files containing deprecated
+      zh: 列出包含 deprecated 的文件
+  - cmd: rg "import" -A 3
+    scenario:
+      en: Show 3 lines after each match
+      zh: 显示每个匹配后 3 行

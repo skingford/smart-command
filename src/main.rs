@@ -1,7 +1,7 @@
 use reedline::{
-    default_emacs_keybindings, ColumnarMenu, Emacs, ExampleHighlighter, FileBackedHistory,
-    MenuBuilder, Prompt, PromptEditMode, PromptHistorySearch, PromptHistorySearchStatus, Reedline,
-    ReedlineEvent, ReedlineMenu, Signal,
+    default_emacs_keybindings, ColumnarMenu, Emacs, FileBackedHistory, MenuBuilder, Prompt,
+    PromptEditMode, PromptHistorySearch, PromptHistorySearchStatus, Reedline, ReedlineEvent,
+    ReedlineMenu, Signal,
 };
 use std::borrow::Cow;
 use std::io::{self, Write};
@@ -13,7 +13,9 @@ use tracing::{debug, info, warn};
 use tracing_subscriber::EnvFilter;
 
 mod ai;
+mod aliases;
 mod argument;
+mod bookmarks;
 mod cli;
 mod command_def;
 mod completer;
@@ -22,18 +24,34 @@ mod context;
 mod definitions;
 mod error;
 mod highlighter;
+mod hinter;
 mod install;
 mod loader;
 mod output;
 mod pipeline;
 mod providers;
+mod snippets;
+mod timer;
 mod ui;
+mod validator;
+mod watcher;
+mod plugins;
 
+use ai::{NaturalLanguageTemplates, TypoCorrector};
+use aliases::AliasManager;
+use bookmarks::BookmarkManager;
 use cli::{Cli, Commands, ConfigAction};
 use completer::SmartCompleter;
 use config::AppConfig;
+use highlighter::{SmartHighlighter, SyntaxTheme};
+use hinter::SmartHinter;
 use install::InstallOptions;
+use nu_ansi_term::{Color, Style};
 use output::Output;
+use snippets::SnippetManager;
+use timer::CommandTimer;
+use validator::SmartValidator;
+use plugins::PluginManager;
 
 // Track previous directory for `cd -`
 static OLDPWD: Mutex<Option<PathBuf>> = Mutex::new(None);
@@ -183,12 +201,20 @@ fn main() -> anyhow::Result<()> {
 
     // Handle single command execution
     if let Some(cmd) = cli.command {
+        let definitions_dir = config
+            .definitions_dir
+            .clone()
+            .unwrap_or_else(|| PathBuf::from("definitions"));
+        let commands = loader::load_commands(&definitions_dir);
         let current_lang = Arc::new(RwLock::new(config.lang.clone()));
+        let completer = SmartCompleter::new(commands, current_lang.clone());
+        let command_names = completer.get_command_names();
+        let typo_corrector = TypoCorrector::new(command_names);
         let state = AppState {
             config: config.clone(),
             danger_protection: config.danger_protection,
         };
-        execute_command(&cmd, &current_lang, &state);
+        execute_command(&cmd, &current_lang, &state, &typo_corrector);
         return Ok(());
     }
 
@@ -299,7 +325,26 @@ fn run_repl(config: AppConfig) -> anyhow::Result<()> {
     );
 
     let command_names: Vec<String> = completer.get_command_names();
-    let highlighter = Box::new(ExampleHighlighter::new(command_names));
+
+    // Create AI features
+    let typo_corrector = TypoCorrector::new(command_names.clone());
+    let nl_templates = NaturalLanguageTemplates::new();
+
+    // Create SmartHighlighter with theme based on config
+    let theme = match config.theme.as_deref() {
+        Some("nord") => SyntaxTheme::nord(),
+        Some("dracula") => SyntaxTheme::dracula(),
+        _ => SyntaxTheme::default(),
+    };
+    let highlighter = Box::new(SmartHighlighter::new(command_names).with_theme(theme));
+
+    // Create SmartHinter for inline suggestions
+    let hinter = Box::new(
+        SmartHinter::new().with_style(Style::new().italic().fg(Color::DarkGray)),
+    );
+
+    // Create SmartValidator for syntax checking
+    let validator = Box::new(SmartValidator::new());
 
     let edit_mode = Box::new(Emacs::new(keybindings));
 
@@ -310,6 +355,8 @@ fn run_repl(config: AppConfig) -> anyhow::Result<()> {
         .with_completer(completer_for_editor)
         .with_menu(ReedlineMenu::EngineCompleter(completion_menu))
         .with_highlighter(highlighter)
+        .with_hinter(hinter)
+        .with_validator(validator)
         .with_edit_mode(edit_mode)
         .with_history(Box::new(history));
 
@@ -321,15 +368,21 @@ fn run_repl(config: AppConfig) -> anyhow::Result<()> {
         danger_protection: config.danger_protection,
     };
 
+    // Initialize UX managers
+    let mut alias_manager = AliasManager::new();
+    let mut snippet_manager = SnippetManager::new();
+    let mut bookmark_manager = BookmarkManager::new();
+    let mut command_timer = CommandTimer::new();
+    let mut plugin_manager = PluginManager::new();
+
     // Display startup banner
     output::Output::banner();
 
     // Welcome message
-    Output::dim("  Tab         - trigger completion menu");
-    Output::dim("  /<keyword>  - search commands (e.g., /commit)");
-    Output::dim("  config      - shell configuration");
-    Output::dim("  Ctrl-D/exit - quit");
-    Output::dim(&format!("  History: {}", config.history_path.display()));
+    Output::dim("  Tab         - completion menu    /<keyword>  - search commands");
+    Output::dim("  ?<query>    - natural language   :<snippet>  - expand snippet");
+    Output::dim("  @<bookmark> - jump to bookmark   alias/bm    - manage aliases/bookmarks");
+    Output::dim("  time        - command statistics Ctrl-D/exit - quit");
     println!();
 
     debug!("REPL started with config: {:?}", config);
@@ -342,6 +395,7 @@ fn run_repl(config: AppConfig) -> anyhow::Result<()> {
 
                 match &shell_state {
                     ShellState::Normal => {
+                        // Handle `/` prefix for command search
                         if trimmed.starts_with('/') && trimmed.len() > 1 {
                             let query = &trimmed[1..];
                             let results = completer.search(query);
@@ -360,6 +414,38 @@ fn run_repl(config: AppConfig) -> anyhow::Result<()> {
                             continue;
                         }
 
+                        // Handle `?` prefix for natural language queries
+                        if trimmed.starts_with('?') && trimmed.len() > 1 {
+                            let query = &trimmed[1..];
+                            let matches = nl_templates.find(query);
+
+                            if matches.is_empty() {
+                                Output::warn(&format!("No matching commands for: {}", query));
+                                Output::dim("Try keywords like: large files, disk space, git history, etc.");
+                            } else {
+                                println!();
+                                Output::info(&format!("Commands for '{}':", query));
+                                for (i, (cmd, desc)) in matches.iter().enumerate() {
+                                    println!("  {}. {} - {}", i + 1, Output::command(cmd), desc);
+                                }
+                                print!("\nExecute command? [1-{}/n]: ", matches.len());
+                                io::stdout().flush().ok();
+
+                                let mut input = String::new();
+                                if io::stdin().read_line(&mut input).is_ok() {
+                                    let input = input.trim();
+                                    if let Ok(num) = input.parse::<usize>() {
+                                        if num > 0 && num <= matches.len() {
+                                            let cmd = matches[num - 1].0;
+                                            Output::info(&format!("Executing: {}", cmd));
+                                            execute_command(cmd, &current_lang, &state, &typo_corrector);
+                                        }
+                                    }
+                                }
+                            }
+                            continue;
+                        }
+
                         if trimmed == "exit" {
                             break;
                         }
@@ -367,7 +453,116 @@ fn run_repl(config: AppConfig) -> anyhow::Result<()> {
                             continue;
                         }
 
-                        execute_command(trimmed, &current_lang, &state);
+                        // Handle snippet expansion (`:snippet` prefix)
+                        if trimmed.starts_with(':') {
+                            if let Some(expanded) = snippet_manager.try_expand(trimmed) {
+                                Output::info(&format!("Expanded: {}", expanded));
+                                print!("Execute? [Y/n]: ");
+                                io::stdout().flush().ok();
+                                let mut input = String::new();
+                                if io::stdin().read_line(&mut input).is_ok() {
+                                    let response = input.trim().to_lowercase();
+                                    if response.is_empty() || response == "y" || response == "yes" {
+                                        command_timer.start(&expanded);
+                                        execute_command(&expanded, &current_lang, &state, &typo_corrector);
+                                        if let Some(dur) = command_timer.stop(None) {
+                                            if let Some(formatted) = command_timer.format_duration(dur) {
+                                                Output::dim(&format!("⏱  {}", formatted));
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                // Try as snippet command
+                                let parts: Vec<&str> = trimmed[1..].split_whitespace().collect();
+                                if let Some(output) = snippets::handle_snippet_command(&mut snippet_manager, "snippet", &parts) {
+                                    println!("{}", output);
+                                } else {
+                                    Output::warn(&format!("Unknown snippet: {}", trimmed));
+                                }
+                            }
+                            continue;
+                        }
+
+                        // Handle bookmark jump (`@bookmark` syntax)
+                        if trimmed.starts_with('@') && !trimmed.contains(' ') {
+                            let name = &trimmed[1..];
+                            if let Some(path) = bookmark_manager.try_resolve(trimmed) {
+                                let path_str = path.display().to_string();
+                                Output::dim(&path_str);
+                                if let Err(e) = std::env::set_current_dir(path) {
+                                    Output::error(&format!("cd: {}: {}", path.display(), e));
+                                } else {
+                                    bookmark_manager.record_visit(name);
+                                }
+                            } else {
+                                Output::error(&format!("Bookmark @{} not found", name));
+                            }
+                            continue;
+                        }
+
+                        // Handle built-in UX commands
+                        let parts: Vec<&str> = trimmed.split_whitespace().collect();
+                        let cmd = parts.first().map(|s| *s).unwrap_or("");
+
+                        // Alias command
+                        if cmd == "alias" || cmd == "unalias" {
+                            if let Some(output) = aliases::handle_alias_command(&mut alias_manager, cmd, &parts[1..]) {
+                                println!("{}", output);
+                            }
+                            continue;
+                        }
+
+                        // Bookmark command
+                        if cmd == "bookmark" || cmd == "bm" || cmd == "unbookmark" || cmd == "unbm" {
+                            let cwd = std::env::current_dir().unwrap_or_default();
+                            if let Some(output) = bookmarks::handle_bookmark_command(&mut bookmark_manager, cmd, &parts[1..], &cwd) {
+                                println!("{}", output);
+                            }
+                            continue;
+                        }
+
+                        // Snippet command
+                        if cmd == "snippet" || cmd == "snip" {
+                            if let Some(output) = snippets::handle_snippet_command(&mut snippet_manager, cmd, &parts[1..]) {
+                                println!("{}", output);
+                            }
+                            continue;
+                        }
+
+                        // Timer command
+                        if cmd == "time" || cmd == "timer" {
+                            if let Some(output) = timer::handle_timer_command(&command_timer, cmd, &parts[1..]) {
+                                println!("{}", output);
+                            }
+                            continue;
+                        }
+
+                        // Plugin command
+                        if cmd == "plugin" || cmd == "plugins" {
+                            if let Some(output) = plugins::handle_plugin_command(&mut plugin_manager, cmd, &parts[1..]) {
+                                println!("{}", output);
+                            }
+                            continue;
+                        }
+
+                        // Expand aliases before execution
+                        let expanded = alias_manager.expand(trimmed);
+                        let final_cmd = if expanded != trimmed {
+                            Output::dim(&format!("→ {}", expanded));
+                            expanded
+                        } else {
+                            trimmed.to_string()
+                        };
+
+                        // Time the command execution
+                        command_timer.start(&final_cmd);
+                        execute_command(&final_cmd, &current_lang, &state, &typo_corrector);
+                        if let Some(dur) = command_timer.stop(None) {
+                            if let Some(formatted) = command_timer.format_duration(dur) {
+                                Output::dim(&format!("⏱  {}", formatted));
+                            }
+                        }
                     }
 
                     ShellState::SelectingSearchResult(results) => {
@@ -389,7 +584,7 @@ fn run_repl(config: AppConfig) -> anyhow::Result<()> {
                             if num > 0 && num <= results.len() {
                                 let selected = &results[num - 1].0;
                                 Output::info(&format!("Executing: {}", selected));
-                                execute_command(selected, &current_lang, &state);
+                                execute_command(selected, &current_lang, &state, &typo_corrector);
                                 shell_state = ShellState::Normal;
                             } else {
                                 Output::error(&format!(
@@ -424,7 +619,12 @@ fn run_repl(config: AppConfig) -> anyhow::Result<()> {
 }
 
 /// Execute a command and handle special built-in commands
-fn execute_command(command: &str, current_lang: &Arc<RwLock<String>>, state: &AppState) {
+fn execute_command(
+    command: &str,
+    current_lang: &Arc<RwLock<String>>,
+    state: &AppState,
+    typo_corrector: &TypoCorrector,
+) {
     let parts: Vec<&str> = command.split_whitespace().collect();
 
     if let Some(cmd) = parts.first() {
@@ -471,6 +671,13 @@ fn execute_command(command: &str, current_lang: &Arc<RwLock<String>>, state: &Ap
             Ok(exit_status) => {
                 match exit_status.code() {
                     Some(0) => {} // Success, silent
+                    Some(127) => {
+                        // Command not found - suggest typo corrections
+                        Output::exit_code(127);
+                        if let Some(message) = typo_corrector.did_you_mean(cmd) {
+                            Output::info(&message);
+                        }
+                    }
                     Some(code) => Output::exit_code(code),
                     None => Output::error("Process terminated by signal"),
                 }

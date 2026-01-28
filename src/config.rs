@@ -36,6 +36,10 @@ pub struct AppConfig {
     #[serde(default)]
     pub definitions_dir: Option<PathBuf>,
 
+    /// Syntax highlighting theme (default, nord, dracula)
+    #[serde(default)]
+    pub theme: Option<String>,
+
     /// Shell prompt format
     #[serde(default)]
     pub prompt: PromptConfig,
@@ -155,6 +159,7 @@ impl AppConfig {
             danger_protection: default_danger_protection(),
             log_level: default_log_level(),
             definitions_dir: None,
+            theme: None,
             prompt: PromptConfig::default(),
         }
     }
@@ -195,6 +200,9 @@ log_level = "info"
 
 # Custom definitions directory (optional)
 # definitions_dir = "/path/to/definitions"
+
+# Syntax highlighting theme: "default", "nord", or "dracula"
+# theme = "dracula"
 
 [prompt]
 # Show git branch in prompt

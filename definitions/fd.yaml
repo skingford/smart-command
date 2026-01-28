@@ -1,0 +1,168 @@
+name: fd
+description:
+  en: A simple, fast and user-friendly alternative to find
+  zh: 一个简单、快速且用户友好的 find 替代品
+flags:
+  - long: hidden
+    short: H
+    description:
+      en: Search hidden files and directories
+      zh: 搜索隐藏文件和目录
+  - long: no-ignore
+    short: I
+    description:
+      en: Don't respect .gitignore files
+      zh: 不遵守 .gitignore 文件
+  - long: case-sensitive
+    short: s
+    description:
+      en: Case-sensitive search
+      zh: 区分大小写搜索
+  - long: ignore-case
+    short: i
+    description:
+      en: Case-insensitive search
+      zh: 不区分大小写搜索
+  - long: glob
+    short: g
+    description:
+      en: Glob-based search (default: regex)
+      zh: 基于 glob 的搜索（默认：正则表达式）
+  - long: fixed-strings
+    short: F
+    description:
+      en: Treat pattern as literal string
+      zh: 将模式视为字面字符串
+  - long: absolute-path
+    short: a
+    description:
+      en: Show absolute paths
+      zh: 显示绝对路径
+  - long: list-details
+    short: l
+    description:
+      en: Show file details like ls -l
+      zh: 显示文件详情，类似 ls -l
+  - long: follow
+    short: L
+    description:
+      en: Follow symbolic links
+      zh: 跟随符号链接
+  - long: type
+    short: t
+    description:
+      en: Filter by type (f=file, d=directory, l=symlink, x=executable)
+      zh: 按类型过滤
+    takes_value: true
+  - long: extension
+    short: e
+    description:
+      en: Filter by file extension
+      zh: 按文件扩展名过滤
+    takes_value: true
+  - long: exclude
+    short: E
+    description:
+      en: Exclude entries matching pattern
+      zh: 排除匹配模式的条目
+    takes_value: true
+  - long: max-depth
+    short: d
+    description:
+      en: Maximum search depth
+      zh: 最大搜索深度
+    takes_value: true
+  - long: min-depth
+    description:
+      en: Only show results at depth greater than NUM
+      zh: 只显示深度大于 NUM 的结果
+    takes_value: true
+  - long: size
+    short: S
+    description:
+      en: Filter by size (+10M, -1k, etc.)
+      zh: 按大小过滤
+    takes_value: true
+  - long: changed-within
+    description:
+      en: Filter by modification time newer than
+      zh: 按修改时间过滤（更新于）
+    takes_value: true
+  - long: changed-before
+    description:
+      en: Filter by modification time older than
+      zh: 按修改时间过滤（早于）
+    takes_value: true
+  - long: exec
+    short: x
+    description:
+      en: Execute command for each search result
+      zh: 对每个搜索结果执行命令
+    takes_value: true
+  - long: exec-batch
+    short: X
+    description:
+      en: Execute command with all search results as arguments
+      zh: 将所有搜索结果作为参数执行命令
+    takes_value: true
+  - long: color
+    short: c
+    description:
+      en: When to use colors (never, auto, always)
+      zh: 何时使用颜色
+    takes_value: true
+  - long: threads
+    short: j
+    description:
+      en: Set number of threads
+      zh: 设置线程数
+    takes_value: true
+  - long: max-results
+    description:
+      en: Limit number of search results
+      zh: 限制搜索结果数量
+    takes_value: true
+  - long: quiet
+    short: q
+    description:
+      en: Don't print anything, just exit with status
+      zh: 不打印任何内容，只返回状态
+  - long: show-errors
+    description:
+      en: Show filesystem errors
+      zh: 显示文件系统错误
+  - long: one-file-system
+    description:
+      en: Don't cross filesystem boundaries
+      zh: 不跨越文件系统边界
+  - long: print0
+    short: "0"
+    description:
+      en: Separate results with null character
+      zh: 用空字符分隔结果
+is_path_completion: true
+examples:
+  - cmd: fd "\.rs$"
+    scenario:
+      en: Find all Rust files
+      zh: 查找所有 Rust 文件
+  - cmd: fd -e js -e ts
+    scenario:
+      en: Find JavaScript and TypeScript files
+      zh: 查找 JavaScript 和 TypeScript 文件
+  - cmd: fd -t d config
+    scenario:
+      en: Find directories named config
+      zh: 查找名为 config 的目录
+  - cmd: fd -H -I pattern
+    scenario:
+      en: Search hidden files and ignored directories
+      zh: 搜索隐藏文件和忽略的目录
+  - cmd: fd -e log -x rm
+    scenario:
+      en: Delete all .log files
+      zh: 删除所有 .log 文件
+  - cmd: fd -S +10M
+    scenario:
+      en: Find files larger than 10MB
+      zh: 查找大于 10MB 的文件

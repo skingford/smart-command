@@ -1,0 +1,207 @@
+name: rustup
+description:
+  en: The Rust toolchain installer
+  zh: Rust 工具链安装器
+subcommands:
+  - name: show
+    description:
+      en: Show the active and installed toolchains
+      zh: 显示活动和已安装的工具链
+    subcommands:
+      - name: active-toolchain
+        description:
+          en: Show the active toolchain
+          zh: 显示活动工具链
+      - name: home
+        description:
+          en: Display the computed value of RUSTUP_HOME
+          zh: 显示 RUSTUP_HOME 的计算值
+      - name: profile
+        description:
+          en: Show the current profile
+          zh: 显示当前配置文件
+  - name: update
+    description:
+      en: Update Rust toolchains
+      zh: 更新 Rust 工具链
+    flags:
+      - long: no-self-update
+        description:
+          en: Don't perform self update
+          zh: 不执行自更新
+      - long: force
+        description:
+          en: Force an update
+          zh: 强制更新
+  - name: default
+    description:
+      en: Set the default toolchain
+      zh: 设置默认工具链
+  - name: toolchain
+    description:
+      en: Modify or query the installed toolchains
+      zh: 修改或查询已安装的工具链
+    subcommands:
+      - name: list
+        description:
+          en: List installed toolchains
+          zh: 列出已安装的工具链
+      - name: install
+        description:
+          en: Install a toolchain
+          zh: 安装工具链
+        flags:
+          - long: profile
+            description:
+              en: Component installation profile
+              zh: 组件安装配置文件
+            takes_value: true
+      - name: uninstall
+        description:
+          en: Uninstall a toolchain
+          zh: 卸载工具链
+      - name: link
+        description:
+          en: Create a custom toolchain
+          zh: 创建自定义工具链
+  - name: target
+    description:
+      en: Modify a toolchain's supported targets
+      zh: 修改工具链支持的目标
+    subcommands:
+      - name: list
+        description:
+          en: List installed and available targets
+          zh: 列出已安装和可用的目标
+        flags:
+          - long: installed
+            description:
+              en: List only installed targets
+              zh: 只列出已安装的目标
+      - name: add
+        description:
+          en: Add a target to a Rust toolchain
+          zh: 向 Rust 工具链添加目标
+      - name: remove
+        description:
+          en: Remove a target from a Rust toolchain
+          zh: 从 Rust 工具链移除目标
+  - name: component
+    description:
+      en: Modify a toolchain's installed components
+      zh: 修改工具链已安装的组件
+    subcommands:
+      - name: list
+        description:
+          en: List installed and available components
+          zh: 列出已安装和可用的组件
+        flags:
+          - long: installed
+            description:
+              en: List only installed components
+              zh: 只列出已安装的组件
+      - name: add
+        description:
+          en: Add a component to a Rust toolchain
+          zh: 向 Rust 工具链添加组件
+      - name: remove
+        description:
+          en: Remove a component from a Rust toolchain
+          zh: 从 Rust 工具链移除组件
+  - name: override
+    description:
+      en: Modify directory toolchain overrides
+      zh: 修改目录工具链覆盖
+    subcommands:
+      - name: list
+        description:
+          en: List directory overrides
+          zh: 列出目录覆盖
+      - name: set
+        description:
+          en: Set the override toolchain
+          zh: 设置覆盖工具链
+      - name: unset
+        description:
+          en: Remove the override toolchain
+          zh: 移除覆盖工具链
+  - name: run
+    description:
+      en: Run a command with an environment for a given toolchain
+      zh: 使用给定工具链的环境运行命令
+  - name: which
+    description:
+      en: Display which binary will be run
+      zh: 显示将运行哪个二进制文件
+  - name: doc
+    description:
+      en: Open the documentation
+      zh: 打开文档
+    flags:
+      - long: book
+        description:
+          en: The Rust Programming Language book
+          zh: Rust 程序设计语言书籍
+      - long: std
+        description:
+          en: Standard library API documentation
+          zh: 标准库 API 文档
+      - long: reference
+        description:
+          en: The Rust Reference
+          zh: Rust 参考手册
+      - long: cargo
+        description:
+          en: The Cargo Book
+          zh: Cargo 手册
+  - name: self
+    description:
+      en: Modify the rustup installation
+      zh: 修改 rustup 安装
+    subcommands:
+      - name: update
+        description:
+          en: Update rustup
+          zh: 更新 rustup
+      - name: uninstall
+        description:
+          en: Uninstall rustup
+          zh: 卸载 rustup
+  - name: set
+    description:
+      en: Alter rustup settings
+      zh: 更改 rustup 设置
+    subcommands:
+      - name: default-host
+        description:
+          en: Set the default host triple
+          zh: 设置默认主机三元组
+      - name: profile
+        description:
+          en: Set the default profile
+          zh: 设置默认配置文件
+      - name: auto-self-update
+        description:
+          en: Set auto self-update mode
+          zh: 设置自动自更新模式
+examples:
+  - cmd: rustup update
+    scenario:
+      en: Update all toolchains
+      zh: 更新所有工具链
+  - cmd: rustup default stable
+    scenario:
+      en: Set stable as default toolchain
+      zh: 将 stable 设为默认工具链
+  - cmd: rustup target add wasm32-unknown-unknown
+    scenario:
+      en: Add WebAssembly target
+      zh: 添加 WebAssembly 目标
+  - cmd: rustup component add clippy rustfmt
+    scenario:
+      en: Add clippy and rustfmt
+      zh: 添加 clippy 和 rustfmt
+  - cmd: rustup doc --std
+    scenario:
+      en: Open standard library documentation
+      zh: 打开标准库文档

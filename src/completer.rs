@@ -1,4 +1,5 @@
 use crate::command_def::CommandSpec;
+use crate::context::tracker;
 use crate::definitions;
 use crate::providers::{self, ProviderContext, ProviderSuggestion};
 use fuzzy_matcher::skim::SkimMatcherV2;
@@ -59,9 +60,17 @@ impl SmartCompleter {
 
     fn search_commands(&self, query: &str, lang: &str) -> Vec<(String, String, String)> {
         let mut results: Vec<(i64, String, String, String)> = Vec::new(); // (score, cmd, desc, match_type)
+        let cwd = std::env::current_dir().unwrap_or_else(|_| PathBuf::from("."));
 
         for cmd in self.commands.values() {
             self.search_command_recursive(cmd, query, lang, &cmd.name, &mut results);
+        }
+
+        // Apply context-aware boosting to scores
+        for result in &mut results {
+            let cmd_name = result.1.split_whitespace().next().unwrap_or(&result.1);
+            let context_boost = tracker().score_boost(cmd_name, &cwd);
+            result.0 += context_boost;
         }
 
         // Sort by score (higher is better)
@@ -253,13 +262,17 @@ impl Completer for SmartCompleter {
 
         if parts.is_empty() || (parts.len() == 1 && !line.ends_with(' ')) {
             let query = parts.first().unwrap_or(&"");
+            let cwd = std::env::current_dir().unwrap_or_else(|_| PathBuf::from("."));
+
             let mut suggestions: Vec<(i64, Suggestion)> = self
                 .commands
                 .values()
                 .filter_map(|cmd| self.fuzzy_match(query, &cmd.name).map(|score| (score, cmd)))
                 .map(|(score, cmd)| {
+                    // Apply context-aware boosting
+                    let context_boost = tracker().score_boost(&cmd.name, &cwd);
                     (
-                        score,
+                        score + context_boost,
                         Suggestion {
                             value: cmd.name.clone(),
                             description: Some(cmd.description.get(&lang).to_string()),
@@ -275,7 +288,7 @@ impl Completer for SmartCompleter {
                 })
                 .collect();
 
-            // Sort by fuzzy score (higher is better)
+            // Sort by fuzzy score + context boost (higher is better)
             suggestions.sort_by(|a, b| b.0.cmp(&a.0));
             return suggestions.into_iter().map(|(_, s)| s).collect();
         }

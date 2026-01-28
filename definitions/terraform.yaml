@@ -1,0 +1,241 @@
+name: terraform
+description:
+  en: Infrastructure as Code tool for building, changing, and versioning infrastructure
+  zh: 基础设施即代码工具，用于构建、更改和版本控制基础设施
+subcommands:
+  - name: init
+    description:
+      en: Initialize a Terraform working directory
+      zh: 初始化 Terraform 工作目录
+    flags:
+      - long: upgrade
+        description:
+          en: Upgrade modules and plugins
+          zh: 升级模块和插件
+      - long: backend-config
+        description:
+          en: Backend configuration
+          zh: 后端配置
+        takes_value: true
+      - long: reconfigure
+        description:
+          en: Reconfigure backend ignoring saved configuration
+          zh: 重新配置后端，忽略已保存的配置
+  - name: plan
+    description:
+      en: Show changes required by the current configuration
+      zh: 显示当前配置所需的更改
+    flags:
+      - long: out
+        description:
+          en: Write plan to file
+          zh: 将计划写入文件
+        takes_value: true
+      - long: var
+        description:
+          en: Set a variable
+          zh: 设置变量
+        takes_value: true
+      - long: var-file
+        description:
+          en: Load variables from file
+          zh: 从文件加载变量
+        takes_value: true
+      - long: target
+        description:
+          en: Target specific resource
+          zh: 针对特定资源
+        takes_value: true
+      - long: destroy
+        description:
+          en: Plan destroy
+          zh: 计划销毁
+  - name: apply
+    description:
+      en: Create or update infrastructure
+      zh: 创建或更新基础设施
+    flags:
+      - long: auto-approve
+        description:
+          en: Skip interactive approval
+          zh: 跳过交互式确认
+      - long: var
+        description:
+          en: Set a variable
+          zh: 设置变量
+        takes_value: true
+      - long: var-file
+        description:
+          en: Load variables from file
+          zh: 从文件加载变量
+        takes_value: true
+      - long: target
+        description:
+          en: Target specific resource
+          zh: 针对特定资源
+        takes_value: true
+      - long: parallelism
+        description:
+          en: Limit parallel resource operations
+          zh: 限制并行资源操作数
+        takes_value: true
+  - name: destroy
+    description:
+      en: Destroy previously-created infrastructure
+      zh: 销毁之前创建的基础设施
+    flags:
+      - long: auto-approve
+        description:
+          en: Skip interactive approval
+          zh: 跳过交互式确认
+      - long: target
+        description:
+          en: Target specific resource
+          zh: 针对特定资源
+        takes_value: true
+  - name: validate
+    description:
+      en: Validate the configuration files
+      zh: 验证配置文件
+  - name: fmt
+    description:
+      en: Reformat configuration in standard style
+      zh: 以标准样式重新格式化配置
+    flags:
+      - long: recursive
+        description:
+          en: Process directories recursively
+          zh: 递归处理目录
+      - long: check
+        description:
+          en: Check if files are formatted
+          zh: 检查文件是否已格式化
+      - long: diff
+        description:
+          en: Display diffs of formatting changes
+          zh: 显示格式更改的差异
+  - name: output
+    description:
+      en: Show output values from state
+      zh: 显示状态中的输出值
+    flags:
+      - long: json
+        description:
+          en: Output in JSON format
+          zh: 以 JSON 格式输出
+      - long: raw
+        description:
+          en: Output raw string value
+          zh: 输出原始字符串值
+  - name: state
+    description:
+      en: Advanced state management
+      zh: 高级状态管理
+    subcommands:
+      - name: list
+        description:
+          en: List resources in the state
+          zh: 列出状态中的资源
+      - name: show
+        description:
+          en: Show a resource in the state
+          zh: 显示状态中的资源
+      - name: mv
+        description:
+          en: Move an item in the state
+          zh: 在状态中移动项目
+      - name: rm
+        description:
+          en: Remove items from the state
+          zh: 从状态中删除项目
+      - name: pull
+        description:
+          en: Pull current state
+          zh: 拉取当前状态
+      - name: push
+        description:
+          en: Update remote state
+          zh: 更新远程状态
+  - name: workspace
+    description:
+      en: Workspace management
+      zh: 工作区管理
+    subcommands:
+      - name: list
+        description:
+          en: List workspaces
+          zh: 列出工作区
+      - name: new
+        description:
+          en: Create a new workspace
+          zh: 创建新工作区
+      - name: select
+        description:
+          en: Select a workspace
+          zh: 选择工作区
+      - name: delete
+        description:
+          en: Delete a workspace
+          zh: 删除工作区
+      - name: show
+        description:
+          en: Show current workspace
+          zh: 显示当前工作区
+  - name: import
+    description:
+      en: Import existing infrastructure into Terraform
+      zh: 将现有基础设施导入 Terraform
+  - name: refresh
+    description:
+      en: Update the state to match remote systems
+      zh: 更新状态以匹配远程系统
+  - name: taint
+    description:
+      en: Mark a resource for recreation
+      zh: 标记资源以重新创建
+  - name: untaint
+    description:
+      en: Remove the taint from a resource
+      zh: 从资源中移除污点标记
+  - name: graph
+    description:
+      en: Generate a visual representation
+      zh: 生成可视化表示
+  - name: providers
+    description:
+      en: Show the providers required
+      zh: 显示所需的 provider
+    subcommands:
+      - name: lock
+        description:
+          en: Write provider dependency locks
+          zh: 写入 provider 依赖锁
+      - name: mirror
+        description:
+          en: Mirror providers to local directory
+          zh: 镜像 provider 到本地目录
+      - name: schema
+        description:
+          en: Show provider schemas
+          zh: 显示 provider schema
+examples:
+  - cmd: terraform init
+    scenario:
+      en: Initialize working directory
+      zh: 初始化工作目录
+  - cmd: terraform plan -out=tfplan
+    scenario:
+      en: Create execution plan
+      zh: 创建执行计划
+  - cmd: terraform apply -auto-approve
+    scenario:
+      en: Apply changes without confirmation
+      zh: 无需确认应用更改
+  - cmd: terraform destroy -auto-approve
+    scenario:
+      en: Destroy all resources
+      zh: 销毁所有资源
+  - cmd: terraform workspace new dev
+    scenario:
+      en: Create new workspace
+      zh: 创建新工作区

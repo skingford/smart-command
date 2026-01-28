@@ -1,0 +1,326 @@
+name: helm
+description:
+  en: The Kubernetes Package Manager
+  zh: Kubernetes 包管理器
+subcommands:
+  - name: install
+    description:
+      en: Install a chart
+      zh: 安装 chart
+    flags:
+      - long: name
+        short: n
+        description:
+          en: Release name
+          zh: 发布名称
+        takes_value: true
+      - long: namespace
+        description:
+          en: Namespace scope
+          zh: 命名空间范围
+        takes_value: true
+      - long: values
+        short: f
+        description:
+          en: Specify values file
+          zh: 指定 values 文件
+        takes_value: true
+      - long: set
+        description:
+          en: Set values on command line
+          zh: 在命令行设置值
+        takes_value: true
+      - long: dry-run
+        description:
+          en: Simulate an install
+          zh: 模拟安装
+      - long: wait
+        description:
+          en: Wait for resources to be ready
+          zh: 等待资源就绪
+      - long: timeout
+        description:
+          en: Time to wait for operations
+          zh: 等待操作的时间
+        takes_value: true
+      - long: create-namespace
+        description:
+          en: Create namespace if not exists
+          zh: 如果不存在则创建命名空间
+  - name: upgrade
+    description:
+      en: Upgrade a release
+      zh: 升级发布
+    flags:
+      - long: install
+        short: i
+        description:
+          en: Install if release doesn't exist
+          zh: 如果发布不存在则安装
+      - long: namespace
+        description:
+          en: Namespace scope
+          zh: 命名空间范围
+        takes_value: true
+      - long: values
+        short: f
+        description:
+          en: Specify values file
+          zh: 指定 values 文件
+        takes_value: true
+      - long: set
+        description:
+          en: Set values on command line
+          zh: 在命令行设置值
+        takes_value: true
+      - long: dry-run
+        description:
+          en: Simulate an upgrade
+          zh: 模拟升级
+      - long: wait
+        description:
+          en: Wait for resources to be ready
+          zh: 等待资源就绪
+      - long: atomic
+        description:
+          en: Rollback on failure
+          zh: 失败时回滚
+      - long: reuse-values
+        description:
+          en: Reuse last release values
+          zh: 重用上次发布的值
+  - name: uninstall
+    description:
+      en: Uninstall a release
+      zh: 卸载发布
+    flags:
+      - long: namespace
+        description:
+          en: Namespace scope
+          zh: 命名空间范围
+        takes_value: true
+      - long: dry-run
+        description:
+          en: Simulate an uninstall
+          zh: 模拟卸载
+      - long: keep-history
+        description:
+          en: Keep release history
+          zh: 保留发布历史
+  - name: list
+    description:
+      en: List releases
+      zh: 列出发布
+    flags:
+      - long: all
+        short: a
+        description:
+          en: Show all releases
+          zh: 显示所有发布
+      - long: namespace
+        description:
+          en: Namespace scope
+          zh: 命名空间范围
+        takes_value: true
+      - long: all-namespaces
+        short: A
+        description:
+          en: List across all namespaces
+          zh: 列出所有命名空间
+      - long: output
+        short: o
+        description:
+          en: Output format (table, json, yaml)
+          zh: 输出格式
+        takes_value: true
+  - name: repo
+    description:
+      en: Add, list, remove, update, and index chart repositories
+      zh: 添加、列出、删除、更新和索引 chart 仓库
+    subcommands:
+      - name: add
+        description:
+          en: Add a chart repository
+          zh: 添加 chart 仓库
+      - name: list
+        description:
+          en: List chart repositories
+          zh: 列出 chart 仓库
+      - name: remove
+        description:
+          en: Remove a chart repository
+          zh: 删除 chart 仓库
+      - name: update
+        description:
+          en: Update chart repositories
+          zh: 更新 chart 仓库
+      - name: index
+        description:
+          en: Generate index file
+          zh: 生成索引文件
+  - name: search
+    description:
+      en: Search for charts
+      zh: 搜索 charts
+    subcommands:
+      - name: hub
+        description:
+          en: Search Artifact Hub
+          zh: 搜索 Artifact Hub
+      - name: repo
+        description:
+          en: Search repositories
+          zh: 搜索仓库
+  - name: show
+    description:
+      en: Show chart information
+      zh: 显示 chart 信息
+    subcommands:
+      - name: all
+        description:
+          en: Show all chart info
+          zh: 显示所有 chart 信息
+      - name: chart
+        description:
+          en: Show chart definition
+          zh: 显示 chart 定义
+      - name: readme
+        description:
+          en: Show chart README
+          zh: 显示 chart README
+      - name: values
+        description:
+          en: Show chart values
+          zh: 显示 chart 值
+  - name: pull
+    description:
+      en: Download a chart
+      zh: 下载 chart
+    flags:
+      - long: untar
+        description:
+          en: Untar after downloading
+          zh: 下载后解压
+      - long: version
+        description:
+          en: Chart version
+          zh: Chart 版本
+        takes_value: true
+  - name: push
+    description:
+      en: Push a chart to a registry
+      zh: 推送 chart 到注册表
+  - name: template
+    description:
+      en: Render chart templates locally
+      zh: 在本地渲染 chart 模板
+    flags:
+      - long: values
+        short: f
+        description:
+          en: Specify values file
+          zh: 指定 values 文件
+        takes_value: true
+      - long: set
+        description:
+          en: Set values
+          zh: 设置值
+        takes_value: true
+      - long: output-dir
+        description:
+          en: Output to directory
+          zh: 输出到目录
+        takes_value: true
+  - name: rollback
+    description:
+      en: Roll back a release to a previous revision
+      zh: 回滚发布到之前的版本
+    flags:
+      - long: dry-run
+        description:
+          en: Simulate a rollback
+          zh: 模拟回滚
+      - long: wait
+        description:
+          en: Wait for resources to be ready
+          zh: 等待资源就绪
+  - name: history
+    description:
+      en: Fetch release history
+      zh: 获取发布历史
+    flags:
+      - long: namespace
+        description:
+          en: Namespace scope
+          zh: 命名空间范围
+        takes_value: true
+      - long: output
+        short: o
+        description:
+          en: Output format
+          zh: 输出格式
+        takes_value: true
+  - name: status
+    description:
+      en: Display release status
+      zh: 显示发布状态
+    flags:
+      - long: namespace
+        description:
+          en: Namespace scope
+          zh: 命名空间范围
+        takes_value: true
+  - name: get
+    description:
+      en: Get information about a release
+      zh: 获取发布信息
+    subcommands:
+      - name: all
+        description:
+          en: Get all info
+          zh: 获取所有信息
+      - name: hooks
+        description:
+          en: Get hooks
+          zh: 获取 hooks
+      - name: manifest
+        description:
+          en: Get manifest
+          zh: 获取 manifest
+      - name: notes
+        description:
+          en: Get notes
+          zh: 获取 notes
+      - name: values
+        description:
+          en: Get values
+          zh: 获取 values
+  - name: create
+    description:
+      en: Create a new chart
+      zh: 创建新 chart
+  - name: package
+    description:
+      en: Package a chart directory
+      zh: 打包 chart 目录
+  - name: lint
+    description:
+      en: Examine a chart for issues
+      zh: 检查 chart 问题
+examples:
+  - cmd: helm install myrelease ./mychart
+    scenario:
+      en: Install a local chart
+      zh: 安装本地 chart
+  - cmd: helm upgrade --install myapp bitnami/nginx -f values.yaml
+    scenario:
+      en: Install or upgrade with values file
+      zh: 使用 values 文件安装或升级
+  - cmd: helm list -A
+    scenario:
+      en: List releases in all namespaces
+      zh: 列出所有命名空间的发布
+  - cmd: helm repo add bitnami https://charts.bitnami.com/bitnami
+    scenario:
+      en: Add Bitnami repository
+      zh: 添加 Bitnami 仓库

@@ -8,6 +8,8 @@
 pub mod docker;
 pub mod env;
 pub mod git;
+pub mod kubernetes;
+pub mod make;
 pub mod npm;
 pub mod path;
 pub mod process;
@@ -148,6 +150,8 @@ impl ProviderRegistry {
                 "process".to_string(),
                 "npm".to_string(),
                 "path".to_string(),
+                "make".to_string(),
+                "k8s".to_string(),
             ]),
         };
         registry.register_default_providers();
@@ -175,6 +179,19 @@ impl ProviderRegistry {
 
         // Package providers
         self.register(Box::new(npm::NpmPackageProvider::new()));
+
+        // Build tool providers
+        self.register(Box::new(make::MakeTargetProvider::new()));
+
+        // Kubernetes providers
+        self.register(Box::new(kubernetes::KubernetesResourceProvider::pods()));
+        self.register(Box::new(kubernetes::KubernetesResourceProvider::services()));
+        self.register(Box::new(kubernetes::KubernetesResourceProvider::deployments()));
+        self.register(Box::new(kubernetes::KubernetesResourceProvider::namespaces()));
+        self.register(Box::new(kubernetes::KubernetesResourceProvider::configmaps()));
+        self.register(Box::new(kubernetes::KubernetesResourceProvider::secrets()));
+        self.register(Box::new(kubernetes::KubernetesContextProvider::new()));
+        self.register(Box::new(kubernetes::KubernetesNamespaceProvider::new()));
 
         // Path provider (enhanced)
         self.register(Box::new(path::PathProvider::new()));

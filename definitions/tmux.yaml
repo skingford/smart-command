@@ -1,0 +1,335 @@
+name: tmux
+description:
+  en: Terminal multiplexer
+  zh: 终端复用器
+subcommands:
+  - name: new-session
+    description:
+      en: Create a new session
+      zh: 创建新会话
+    flags:
+      - long: session-name
+        short: s
+        description:
+          en: Name the session
+          zh: 命名会话
+        takes_value: true
+      - long: detach
+        short: d
+        description:
+          en: Don't attach to the new session
+          zh: 不附加到新会话
+      - long: window-name
+        short: n
+        description:
+          en: Name the first window
+          zh: 命名第一个窗口
+        takes_value: true
+      - long: x
+        description:
+          en: Set width
+          zh: 设置宽度
+        takes_value: true
+      - long: y
+        description:
+          en: Set height
+          zh: 设置高度
+        takes_value: true
+  - name: attach-session
+    description:
+      en: Attach to an existing session
+      zh: 附加到现有会话
+    flags:
+      - long: target-session
+        short: t
+        description:
+          en: Target session
+          zh: 目标会话
+        takes_value: true
+      - long: detach
+        short: d
+        description:
+          en: Detach other clients
+          zh: 分离其他客户端
+      - long: read-only
+        short: r
+        description:
+          en: Read-only mode
+          zh: 只读模式
+  - name: detach-client
+    description:
+      en: Detach current client
+      zh: 分离当前客户端
+    flags:
+      - long: target-session
+        short: s
+        description:
+          en: Target session
+          zh: 目标会话
+        takes_value: true
+  - name: kill-session
+    description:
+      en: Kill a session
+      zh: 终止会话
+    flags:
+      - long: target-session
+        short: t
+        description:
+          en: Target session
+          zh: 目标会话
+        takes_value: true
+      - long: all
+        short: a
+        description:
+          en: Kill all sessions except the current
+          zh: 终止除当前会话外的所有会话
+  - name: kill-server
+    description:
+      en: Kill the tmux server
+      zh: 终止 tmux 服务器
+  - name: list-sessions
+    description:
+      en: List sessions
+      zh: 列出会话
+    flags:
+      - long: format
+        short: F
+        description:
+          en: Format string
+          zh: 格式字符串
+        takes_value: true
+  - name: new-window
+    description:
+      en: Create a new window
+      zh: 创建新窗口
+    flags:
+      - long: name
+        short: n
+        description:
+          en: Window name
+          zh: 窗口名称
+        takes_value: true
+      - long: target-window
+        short: t
+        description:
+          en: Target window
+          zh: 目标窗口
+        takes_value: true
+      - long: detach
+        short: d
+        description:
+          en: Don't switch to new window
+          zh: 不切换到新窗口
+  - name: kill-window
+    description:
+      en: Kill a window
+      zh: 终止窗口
+    flags:
+      - long: target-window
+        short: t
+        description:
+          en: Target window
+          zh: 目标窗口
+        takes_value: true
+  - name: list-windows
+    description:
+      en: List windows
+      zh: 列出窗口
+    flags:
+      - long: target-session
+        short: t
+        description:
+          en: Target session
+          zh: 目标会话
+        takes_value: true
+  - name: select-window
+    description:
+      en: Select a window
+      zh: 选择窗口
+    flags:
+      - long: target-window
+        short: t
+        description:
+          en: Target window
+          zh: 目标窗口
+        takes_value: true
+      - long: next
+        short: n
+        description:
+          en: Select next window
+          zh: 选择下一个窗口
+      - long: previous
+        short: p
+        description:
+          en: Select previous window
+          zh: 选择上一个窗口
+      - long: last
+        short: l
+        description:
+          en: Select last window
+          zh: 选择上一个使用的窗口
+  - name: split-window
+    description:
+      en: Split a window
+      zh: 拆分窗口
+    flags:
+      - long: horizontal
+        short: h
+        description:
+          en: Split horizontally
+          zh: 水平拆分
+      - long: vertical
+        short: v
+        description:
+          en: Split vertically
+          zh: 垂直拆分
+      - long: percent
+        short: p
+        description:
+          en: Percentage of window
+          zh: 窗口百分比
+        takes_value: true
+  - name: select-pane
+    description:
+      en: Select a pane
+      zh: 选择窗格
+    flags:
+      - long: target-pane
+        short: t
+        description:
+          en: Target pane
+          zh: 目标窗格
+        takes_value: true
+      - long: left
+        short: L
+        description:
+          en: Select left pane
+          zh: 选择左侧窗格
+      - long: right
+        short: R
+        description:
+          en: Select right pane
+          zh: 选择右侧窗格
+      - long: up
+        short: U
+        description:
+          en: Select above pane
+          zh: 选择上方窗格
+      - long: down
+        short: D
+        description:
+          en: Select below pane
+          zh: 选择下方窗格
+  - name: resize-pane
+    description:
+      en: Resize a pane
+      zh: 调整窗格大小
+    flags:
+      - long: left
+        short: L
+        description:
+          en: Resize left
+          zh: 向左调整
+      - long: right
+        short: R
+        description:
+          en: Resize right
+          zh: 向右调整
+      - long: up
+        short: U
+        description:
+          en: Resize up
+          zh: 向上调整
+      - long: down
+        short: D
+        description:
+          en: Resize down
+          zh: 向下调整
+      - long: zoom
+        short: Z
+        description:
+          en: Toggle zoom
+          zh: 切换缩放
+  - name: send-keys
+    description:
+      en: Send keys to a pane
+      zh: 向窗格发送按键
+    flags:
+      - long: target-pane
+        short: t
+        description:
+          en: Target pane
+          zh: 目标窗格
+        takes_value: true
+      - long: literal
+        short: l
+        description:
+          en: Disable key name lookup
+          zh: 禁用按键名称查找
+  - name: copy-mode
+    description:
+      en: Enter copy mode
+      zh: 进入复制模式
+    flags:
+      - long: target-pane
+        short: t
+        description:
+          en: Target pane
+          zh: 目标窗格
+        takes_value: true
+  - name: source-file
+    description:
+      en: Execute tmux commands from a file
+      zh: 从文件执行 tmux 命令
+    is_path_completion: true
+  - name: show-options
+    description:
+      en: Show options
+      zh: 显示选项
+    flags:
+      - long: global
+        short: g
+        description:
+          en: Show global options
+          zh: 显示全局选项
+      - long: window
+        short: w
+        description:
+          en: Show window options
+          zh: 显示窗口选项
+  - name: set-option
+    description:
+      en: Set an option
+      zh: 设置选项
+    flags:
+      - long: global
+        short: g
+        description:
+          en: Set global option
+          zh: 设置全局选项
+      - long: append
+        short: a
+        description:
+          en: Append to existing value
+          zh: 追加到现有值
+examples:
+  - cmd: tmux new-session -s work
+    scenario:
+      en: Create a session named work
+      zh: 创建名为 work 的会话
+  - cmd: tmux attach-session -t work
+    scenario:
+      en: Attach to session work
+      zh: 附加到 work 会话
+  - cmd: tmux split-window -h
+    scenario:
+      en: Split window horizontally
+      zh: 水平拆分窗口
+  - cmd: tmux list-sessions
+    scenario:
+      en: List all sessions
+      zh: 列出所有会话
+  - cmd: tmux kill-session -t work
+    scenario:
+      en: Kill session work
+      zh: 终止 work 会话

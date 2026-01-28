@@ -1,0 +1,144 @@
+name: bat
+description:
+  en: A cat clone with syntax highlighting and Git integration
+  zh: 带有语法高亮和 Git 集成的 cat 克隆
+flags:
+  - long: language
+    short: l
+    description:
+      en: Set the language for syntax highlighting
+      zh: 设置语法高亮的语言
+    takes_value: true
+  - long: list-languages
+    short: L
+    description:
+      en: Display all supported languages
+      zh: 显示所有支持的语言
+  - long: theme
+    description:
+      en: Set the theme for syntax highlighting
+      zh: 设置语法高亮主题
+    takes_value: true
+  - long: list-themes
+    description:
+      en: Display all supported themes
+      zh: 显示所有支持的主题
+  - long: style
+    description:
+      en: Set output style (full, plain, changes, header, grid, rule, numbers, snip)
+      zh: 设置输出样式
+    takes_value: true
+  - long: plain
+    short: p
+    description:
+      en: Only show plain output (no decorations)
+      zh: 只显示纯文本输出
+  - long: number
+    short: n
+    description:
+      en: Only show line numbers
+      zh: 只显示行号
+  - long: show-all
+    short: A
+    description:
+      en: Show non-printable characters
+      zh: 显示不可打印字符
+  - long: line-range
+    short: r
+    description:
+      en: Print specific range of lines
+      zh: 打印特定行范围
+    takes_value: true
+  - long: highlight-line
+    short: H
+    description:
+      en: Highlight specific lines
+      zh: 高亮特定行
+    takes_value: true
+  - long: color
+    description:
+      en: When to use colors (auto, never, always)
+      zh: 何时使用颜色
+    takes_value: true
+  - long: decorations
+    description:
+      en: When to show decorations (auto, never, always)
+      zh: 何时显示装饰
+    takes_value: true
+  - long: paging
+    description:
+      en: When to use pager (auto, never, always)
+      zh: 何时使用分页器
+    takes_value: true
+  - long: pager
+    description:
+      en: Set the pager to use
+      zh: 设置使用的分页器
+    takes_value: true
+  - long: map-syntax
+    short: m
+    description:
+      en: Map a glob pattern to an existing syntax
+      zh: 将 glob 模式映射到现有语法
+    takes_value: true
+  - long: tabs
+    description:
+      en: Set the tab width
+      zh: 设置制表符宽度
+    takes_value: true
+  - long: wrap
+    description:
+      en: Text wrapping mode (auto, never, character)
+      zh: 文本换行模式
+    takes_value: true
+  - long: diff
+    short: d
+    description:
+      en: Only show lines that have been added/removed
+      zh: 只显示已添加/删除的行
+  - long: diff-context
+    description:
+      en: Include N lines of context around added/removed lines
+      zh: 在添加/删除行周围包含 N 行上下文
+    takes_value: true
+  - long: file-name
+    description:
+      en: Override the file name
+      zh: 覆盖文件名
+    takes_value: true
+  - long: force-colorization
+    short: f
+    description:
+      en: Force colorization even when piped
+      zh: 即使在管道中也强制着色
+  - long: italic-text
+    description:
+      en: Use italic text (always, never)
+      zh: 使用斜体文本
+    takes_value: true
+is_path_completion: true
+examples:
+  - cmd: bat src/main.rs
+    scenario:
+      en: View a Rust file with syntax highlighting
+      zh: 查看带有语法高亮的 Rust 文件
+  - cmd: bat -l json data.txt
+    scenario:
+      en: Force JSON highlighting
+      zh: 强制 JSON 高亮
+  - cmd: bat --style=numbers,changes file.py
+    scenario:
+      en: Show line numbers and Git changes
+      zh: 显示行号和 Git 更改
+  - cmd: bat -r 10:20 large-file.txt
+    scenario:
+      en: View lines 10-20 only
+      zh: 只查看 10-20 行
+  - cmd: bat --diff file.txt
+    scenario:
+      en: Show only modified lines
+      zh: 只显示修改的行
+  - cmd: bat -A script.sh
+    scenario:
+      en: Show hidden characters
+      zh: 显示隐藏字符

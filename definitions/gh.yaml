@@ -1,0 +1,300 @@
+name: gh
+description:
+  en: GitHub CLI - work with GitHub from the command line
+  zh: GitHub 命令行工具 - 从命令行操作 GitHub
+subcommands:
+  - name: auth
+    description:
+      en: Authenticate gh and git with GitHub
+      zh: 使用 GitHub 进行身份验证
+    subcommands:
+      - name: login
+        description:
+          en: Authenticate with a GitHub host
+          zh: 登录 GitHub
+        flags:
+          - long: web
+            short: w
+            description:
+              en: Open a browser to authenticate
+              zh: 打开浏览器进行身份验证
+          - long: hostname
+            short: h
+            description:
+              en: The hostname of the GitHub instance
+              zh: GitHub 实例的主机名
+            takes_value: true
+      - name: logout
+        description:
+          en: Log out of a GitHub host
+          zh: 登出 GitHub
+      - name: status
+        description:
+          en: View authentication status
+          zh: 查看身份验证状态
+  - name: repo
+    description:
+      en: Work with GitHub repositories
+      zh: 操作 GitHub 仓库
+    subcommands:
+      - name: clone
+        description:
+          en: Clone a repository locally
+          zh: 克隆仓库到本地
+      - name: create
+        description:
+          en: Create a new repository
+          zh: 创建新仓库
+        flags:
+          - long: public
+            description:
+              en: Make the repository public
+              zh: 创建公开仓库
+          - long: private
+            description:
+              en: Make the repository private
+              zh: 创建私有仓库
+          - long: description
+            short: d
+            description:
+              en: Description of the repository
+              zh: 仓库描述
+            takes_value: true
+      - name: fork
+        description:
+          en: Create a fork of a repository
+          zh: Fork 一个仓库
+      - name: view
+        description:
+          en: View a repository
+          zh: 查看仓库
+        flags:
+          - long: web
+            short: w
+            description:
+              en: Open in browser
+              zh: 在浏览器中打开
+      - name: list
+        description:
+          en: List repositories owned by a user or organization
+          zh: 列出用户或组织的仓库
+  - name: pr
+    description:
+      en: Work with GitHub pull requests
+      zh: 操作 GitHub Pull Request
+    subcommands:
+      - name: create
+        description:
+          en: Create a pull request
+          zh: 创建 Pull Request
+        flags:
+          - long: title
+            short: t
+            description:
+              en: Title for the pull request
+              zh: Pull Request 标题
+            takes_value: true
+          - long: body
+            short: b
+            description:
+              en: Body for the pull request
+              zh: Pull Request 内容
+            takes_value: true
+          - long: draft
+            short: d
+            description:
+              en: Mark as draft
+              zh: 标记为草稿
+          - long: web
+            short: w
+            description:
+              en: Open browser to create
+              zh: 在浏览器中创建
+      - name: list
+        description:
+          en: List pull requests
+          zh: 列出 Pull Requests
+        flags:
+          - long: state
+            short: s
+            description:
+              en: Filter by state (open, closed, merged, all)
+              zh: 按状态过滤
+            takes_value: true
+      - name: checkout
+        description:
+          en: Check out a pull request in git
+          zh: 检出 Pull Request
+      - name: view
+        description:
+          en: View a pull request
+          zh: 查看 Pull Request
+        flags:
+          - long: web
+            short: w
+            description:
+              en: Open in browser
+              zh: 在浏览器中打开
+      - name: merge
+        description:
+          en: Merge a pull request
+          zh: 合并 Pull Request
+        flags:
+          - long: squash
+            short: s
+            description:
+              en: Squash commits
+              zh: 压缩提交
+          - long: rebase
+            short: r
+            description:
+              en: Rebase commits
+              zh: Rebase 提交
+          - long: delete-branch
+            short: d
+            description:
+              en: Delete branch after merge
+              zh: 合并后删除分支
+      - name: close
+        description:
+          en: Close a pull request
+          zh: 关闭 Pull Request
+  - name: issue
+    description:
+      en: Work with GitHub issues
+      zh: 操作 GitHub Issues
+    subcommands:
+      - name: create
+        description:
+          en: Create a new issue
+          zh: 创建新 Issue
+        flags:
+          - long: title
+            short: t
+            description:
+              en: Title for the issue
+              zh: Issue 标题
+            takes_value: true
+          - long: body
+            short: b
+            description:
+              en: Body for the issue
+              zh: Issue 内容
+            takes_value: true
+          - long: label
+            short: l
+            description:
+              en: Add labels
+              zh: 添加标签
+            takes_value: true
+      - name: list
+        description:
+          en: List issues
+          zh: 列出 Issues
+        flags:
+          - long: state
+            short: s
+            description:
+              en: Filter by state
+              zh: 按状态过滤
+            takes_value: true
+          - long: label
+            short: l
+            description:
+              en: Filter by label
+              zh: 按标签过滤
+            takes_value: true
+      - name: view
+        description:
+          en: View an issue
+          zh: 查看 Issue
+        flags:
+          - long: web
+            short: w
+            description:
+              en: Open in browser
+              zh: 在浏览器中打开
+      - name: close
+        description:
+          en: Close an issue
+          zh: 关闭 Issue
+  - name: run
+    description:
+      en: View details about workflow runs
+      zh: 查看工作流运行详情
+    subcommands:
+      - name: list
+        description:
+          en: List recent workflow runs
+          zh: 列出最近的工作流运行
+      - name: view
+        description:
+          en: View a summary of a workflow run
+          zh: 查看工作流运行摘要
+        flags:
+          - long: web
+            short: w
+            description:
+              en: Open in browser
+              zh: 在浏览器中打开
+      - name: watch
+        description:
+          en: Watch a run until it completes
+          zh: 监视运行直到完成
+  - name: workflow
+    description:
+      en: View details about GitHub Actions workflows
+      zh: 查看 GitHub Actions 工作流详情
+    subcommands:
+      - name: list
+        description:
+          en: List workflows
+          zh: 列出工作流
+      - name: run
+        description:
+          en: Run a workflow
+          zh: 运行工作流
+      - name: view
+        description:
+          en: View workflow summary
+          zh: 查看工作流摘要
+  - name: api
+    description:
+      en: Make an authenticated GitHub API request
+      zh: 发送经过身份验证的 GitHub API 请求
+    flags:
+      - long: method
+        short: X
+        description:
+          en: HTTP method for the request
+          zh: 请求的 HTTP 方法
+        takes_value: true
+      - long: field
+        short: f
+        description:
+          en: Add a parameter
+          zh: 添加参数
+        takes_value: true
+      - long: jq
+        short: q
+        description:
+          en: Query to select values from response
+          zh: 从响应中选择值的查询
+        takes_value: true
+examples:
+  - cmd: gh pr create --title "Fix bug" --body "Description"
+    scenario:
+      en: Create a PR with title and body
+      zh: 创建带标题和描述的 PR
+  - cmd: gh pr list --state open
+    scenario:
+      en: List open pull requests
+      zh: 列出打开的 Pull Requests
+  - cmd: gh issue create --title "Bug report" --label bug
+    scenario:
+      en: Create an issue with label
+      zh: 创建带标签的 Issue
+  - cmd: gh repo clone owner/repo
+    scenario:
+      en: Clone a repository
+      zh: 克隆仓库

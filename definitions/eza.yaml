@@ -1,0 +1,237 @@
+name: eza
+description:
+  en: A modern replacement for ls
+  zh: ls 的现代替代品
+flags:
+  - long: all
+    short: a
+    description:
+      en: Show hidden and dot files
+      zh: 显示隐藏文件和点文件
+  - long: almost-all
+    short: A
+    description:
+      en: Show hidden files, but not . and ..
+      zh: 显示隐藏文件，但不显示 . 和 ..
+  - long: list
+    short: l
+    description:
+      en: Display extended file metadata
+      zh: 显示扩展文件元数据
+  - long: long
+    description:
+      en: Same as -l
+      zh: 与 -l 相同
+  - long: oneline
+    short: "1"
+    description:
+      en: Display one entry per line
+      zh: 每行显示一个条目
+  - long: grid
+    short: G
+    description:
+      en: Display as a grid
+      zh: 以网格形式显示
+  - long: tree
+    short: T
+    description:
+      en: Recurse into directories as a tree
+      zh: 以树形结构递归进入目录
+  - long: recurse
+    short: R
+    description:
+      en: Recurse into directories
+      zh: 递归进入目录
+  - long: level
+    short: L
+    description:
+      en: Limit the depth of recursion
+      zh: 限制递归深度
+    takes_value: true
+  - long: classify
+    short: F
+    description:
+      en: Display type indicator by file names
+      zh: 在文件名后显示类型指示符
+  - long: icons
+    description:
+      en: Display icons
+      zh: 显示图标
+  - long: no-icons
+    description:
+      en: Don't display icons
+      zh: 不显示图标
+  - long: git
+    description:
+      en: Display Git status
+      zh: 显示 Git 状态
+  - long: no-git
+    description:
+      en: Don't display Git status
+      zh: 不显示 Git 状态
+  - long: git-ignore
+    description:
+      en: Ignore files in .gitignore
+      zh: 忽略 .gitignore 中的文件
+  - long: binary
+    short: b
+    description:
+      en: Show file sizes in binary units
+      zh: 以二进制单位显示文件大小
+  - long: bytes
+    short: B
+    description:
+      en: Show file sizes in bytes
+      zh: 以字节显示文件大小
+  - long: group
+    short: g
+    description:
+      en: Show group ownership
+      zh: 显示组所有权
+  - long: header
+    short: h
+    description:
+      en: Add header row
+      zh: 添加标题行
+  - long: links
+    short: H
+    description:
+      en: Show hard links count
+      zh: 显示硬链接数
+  - long: inode
+    short: i
+    description:
+      en: Show inode number
+      zh: 显示 inode 号
+  - long: modified
+    short: m
+    description:
+      en: Use modified timestamp field
+      zh: 使用修改时间戳字段
+  - long: numeric
+    short: n
+    description:
+      en: Show numeric UID and GID
+      zh: 显示数字 UID 和 GID
+  - long: blocks
+    short: S
+    description:
+      en: Show number of file system blocks
+      zh: 显示文件系统块数
+  - long: time
+    short: t
+    description:
+      en: Which timestamp to show (modified, accessed, created)
+      zh: 显示哪个时间戳
+    takes_value: true
+  - long: accessed
+    short: u
+    description:
+      en: Use accessed timestamp
+      zh: 使用访问时间戳
+  - long: created
+    short: U
+    description:
+      en: Use created timestamp
+      zh: 使用创建时间戳
+  - long: no-permissions
+    description:
+      en: Hide permissions column
+      zh: 隐藏权限列
+  - long: octal-permissions
+    short: o
+    description:
+      en: Show octal permissions
+      zh: 显示八进制权限
+  - long: no-filesize
+    description:
+      en: Hide file size column
+      zh: 隐藏文件大小列
+  - long: no-user
+    description:
+      en: Hide user column
+      zh: 隐藏用户列
+  - long: no-time
+    description:
+      en: Hide time column
+      zh: 隐藏时间列
+  - long: time-style
+    description:
+      en: Time/date format
+      zh: 时间/日期格式
+    takes_value: true
+  - long: hyperlink
+    description:
+      en: Display file name as hyperlink
+      zh: 将文件名显示为超链接
+  - long: absolute
+    description:
+      en: Display absolute path
+      zh: 显示绝对路径
+    takes_value: true
+  - long: sort
+    short: s
+    description:
+      en: Sort field (name, size, ext, modified, accessed, created, inode, type)
+      zh: 排序字段
+    takes_value: true
+  - long: reverse
+    short: r
+    description:
+      en: Reverse sort order
+      zh: 反向排序
+  - long: group-directories-first
+    description:
+      en: List directories before files
+      zh: 在文件之前列出目录
+  - long: only-dirs
+    short: D
+    description:
+      en: List only directories
+      zh: 只列出目录
+  - long: only-files
+    short: f
+    description:
+      en: List only files
+      zh: 只列出文件
+  - long: ignore-glob
+    short: I
+    description:
+      en: Glob patterns to ignore
+      zh: 要忽略的 glob 模式
+    takes_value: true
+  - long: color
+    description:
+      en: When to use terminal colours
+      zh: 何时使用终端颜色
+    takes_value: true
+  - long: colour-scale
+    description:
+      en: Use colour scale for file size
+      zh: 使用颜色比例表示文件大小
+is_path_completion: true
+examples:
+  - cmd: eza -la
+    scenario:
+      en: List all files in long format
+      zh: 以长格式列出所有文件
+  - cmd: eza -T -L 2
+    scenario:
+      en: Show tree with max depth 2
+      zh: 显示最大深度为 2 的树
+  - cmd: eza -l --git
+    scenario:
+      en: List with Git status
+      zh: 列出并显示 Git 状态
+  - cmd: eza -la --icons
+    scenario:
+      en: List with icons
+      zh: 带图标列出
+  - cmd: eza -s modified -r
+    scenario:
+      en: Sort by modified time (newest last)
+      zh: 按修改时间排序（最新在后）
+  - cmd: eza --group-directories-first
+    scenario:
+      en: Show directories first
+      zh: 首先显示目录

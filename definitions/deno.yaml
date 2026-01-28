@@ -1,0 +1,308 @@
+name: deno
+description:
+  en: A modern runtime for JavaScript and TypeScript
+  zh: JavaScript 和 TypeScript 的现代运行时
+subcommands:
+  - name: run
+    description:
+      en: Run a JavaScript or TypeScript program
+      zh: 运行 JavaScript 或 TypeScript 程序
+    flags:
+      - long: allow-read
+        short: R
+        description:
+          en: Allow file system read access
+          zh: 允许文件系统读取访问
+        takes_value: true
+      - long: allow-write
+        short: W
+        description:
+          en: Allow file system write access
+          zh: 允许文件系统写入访问
+        takes_value: true
+      - long: allow-net
+        short: N
+        description:
+          en: Allow network access
+          zh: 允许网络访问
+        takes_value: true
+      - long: allow-env
+        short: E
+        description:
+          en: Allow environment access
+          zh: 允许环境访问
+        takes_value: true
+      - long: allow-run
+        short: S
+        description:
+          en: Allow running subprocesses
+          zh: 允许运行子进程
+        takes_value: true
+      - long: allow-ffi
+        description:
+          en: Allow loading dynamic libraries
+          zh: 允许加载动态库
+      - long: allow-all
+        short: A
+        description:
+          en: Allow all permissions
+          zh: 允许所有权限
+      - long: unstable
+        description:
+          en: Enable unstable features
+          zh: 启用不稳定功能
+      - long: watch
+        description:
+          en: Watch for file changes and restart
+          zh: 监视文件更改并重启
+      - long: check
+        description:
+          en: Type-check modules
+          zh: 类型检查模块
+      - long: no-check
+        description:
+          en: Skip type checking
+          zh: 跳过类型检查
+      - long: reload
+        short: r
+        description:
+          en: Reload source code cache
+          zh: 重新加载源代码缓存
+      - long: config
+        short: c
+        description:
+          en: Specify config file
+          zh: 指定配置文件
+        takes_value: true
+    is_path_completion: true
+  - name: compile
+    description:
+      en: Compile the script into a self-contained executable
+      zh: 将脚本编译为独立可执行文件
+    flags:
+      - long: output
+        short: o
+        description:
+          en: Output file
+          zh: 输出文件
+        takes_value: true
+      - long: target
+        description:
+          en: Target OS
+          zh: 目标操作系统
+        takes_value: true
+      - long: allow-all
+        short: A
+        description:
+          en: Allow all permissions
+          zh: 允许所有权限
+    is_path_completion: true
+  - name: bundle
+    description:
+      en: Bundle module and dependencies
+      zh: 打包模块和依赖
+    is_path_completion: true
+  - name: cache
+    description:
+      en: Cache the dependencies
+      zh: 缓存依赖
+    is_path_completion: true
+  - name: check
+    description:
+      en: Type-check the dependencies
+      zh: 类型检查依赖
+    is_path_completion: true
+  - name: fmt
+    description:
+      en: Format source files
+      zh: 格式化源文件
+    flags:
+      - long: check
+        description:
+          en: Check if files are formatted
+          zh: 检查文件是否已格式化
+      - long: ignore
+        description:
+          en: Ignore files
+          zh: 忽略文件
+        takes_value: true
+      - long: options-indent-width
+        description:
+          en: Indentation width
+          zh: 缩进宽度
+        takes_value: true
+    is_path_completion: true
+  - name: lint
+    description:
+      en: Lint source files
+      zh: 代码检查
+    flags:
+      - long: ignore
+        description:
+          en: Ignore files
+          zh: 忽略文件
+        takes_value: true
+      - long: json
+        description:
+          en: Output as JSON
+          zh: 以 JSON 格式输出
+      - long: rules
+        description:
+          en: List available rules
+          zh: 列出可用规则
+    is_path_completion: true
+  - name: test
+    description:
+      en: Run tests
+      zh: 运行测试
+    flags:
+      - long: allow-all
+        short: A
+        description:
+          en: Allow all permissions
+          zh: 允许所有权限
+      - long: filter
+        description:
+          en: Filter tests by name
+          zh: 按名称过滤测试
+        takes_value: true
+      - long: parallel
+        description:
+          en: Run tests in parallel
+          zh: 并行运行测试
+      - long: watch
+        description:
+          en: Watch for changes
+          zh: 监视更改
+      - long: coverage
+        description:
+          en: Collect coverage
+          zh: 收集覆盖率
+        takes_value: true
+      - long: doc
+        description:
+          en: Type-check documentation examples
+          zh: 类型检查文档示例
+    is_path_completion: true
+  - name: bench
+    description:
+      en: Run benchmarks
+      zh: 运行基准测试
+    flags:
+      - long: allow-all
+        short: A
+        description:
+          en: Allow all permissions
+          zh: 允许所有权限
+      - long: filter
+        description:
+          en: Filter benchmarks by name
+          zh: 按名称过滤基准测试
+        takes_value: true
+    is_path_completion: true
+  - name: doc
+    description:
+      en: Show documentation
+      zh: 显示文档
+    flags:
+      - long: json
+        description:
+          en: Output as JSON
+          zh: 以 JSON 格式输出
+      - long: html
+        description:
+          en: Output as static HTML
+          zh: 输出为静态 HTML
+    is_path_completion: true
+  - name: repl
+    description:
+      en: Start interactive shell
+      zh: 启动交互式 shell
+    flags:
+      - long: eval
+        description:
+          en: Evaluate code on startup
+          zh: 启动时执行代码
+        takes_value: true
+  - name: install
+    description:
+      en: Install script as executable
+      zh: 将脚本安装为可执行文件
+    flags:
+      - long: name
+        short: n
+        description:
+          en: Executable name
+          zh: 可执行文件名
+        takes_value: true
+      - long: root
+        description:
+          en: Installation root
+          zh: 安装根目录
+        takes_value: true
+      - long: force
+        short: f
+        description:
+          en: Overwrite existing installation
+          zh: 覆盖现有安装
+  - name: uninstall
+    description:
+      en: Uninstall a script
+      zh: 卸载脚本
+  - name: info
+    description:
+      en: Show info about cache or dependencies
+      zh: 显示缓存或依赖信息
+    is_path_completion: true
+  - name: upgrade
+    description:
+      en: Upgrade deno executable
+      zh: 升级 deno 可执行文件
+    flags:
+      - long: version
+        description:
+          en: Upgrade to specific version
+          zh: 升级到特定版本
+        takes_value: true
+      - long: canary
+        description:
+          en: Upgrade to canary version
+          zh: 升级到 canary 版本
+  - name: task
+    description:
+      en: Run a task defined in deno.json
+      zh: 运行 deno.json 中定义的任务
+  - name: init
+    description:
+      en: Initialize a new project
+      zh: 初始化新项目
+    flags:
+      - long: lib
+        description:
+          en: Initialize as library
+          zh: 初始化为库
+examples:
+  - cmd: deno run -A script.ts
+    scenario:
+      en: Run script with all permissions
+      zh: 以所有权限运行脚本
+  - cmd: deno run --allow-net server.ts
+    scenario:
+      en: Run with network permission only
+      zh: 仅以网络权限运行
+  - cmd: deno test --allow-all
+    scenario:
+      en: Run all tests
+      zh: 运行所有测试
+  - cmd: deno fmt
+    scenario:
+      en: Format all files
+      zh: 格式化所有文件
+  - cmd: deno lint
+    scenario:
+      en: Lint source files
+      zh: 代码检查
+  - cmd: deno compile -o app main.ts
+    scenario:
+      en: Compile to executable
+      zh: 编译为可执行文件
