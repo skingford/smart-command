@@ -21,3 +21,7 @@ Commit subjects in this repo commonly use a short prefix like `feat: ...`; keep 
 
 ## Configuration & Data Files
 Definitions are loaded from `./definitions/`, the executable-adjacent `definitions/`, or user/system config directories (e.g., `~/.config/smart-command/definitions/`). When adding or updating a definition, restart the shell to reload.
+
+## Requirement
+
+- Always respond in Chinese-simplified
