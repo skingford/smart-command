@@ -154,6 +154,6 @@ echo "配置选项 (~/.config/smart-command/config.toml):"
 echo "  [upgrade]"
 echo "  auto_check = true"
 echo "  check_interval_hours = 24"
-echo "  repository = \"kingford/smart-command\""
+echo "  repository = \"skingford/smart-command\""
 echo "  include_prerelease = false"
 echo

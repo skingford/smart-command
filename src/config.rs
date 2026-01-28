@@ -85,7 +85,7 @@ fn default_check_interval() -> u64 {
 }
 
 fn default_repo() -> String {
-    "kingford/smart-command".to_string()
+    "skingford/smart-command".to_string()
 }
 
 /// Prompt configuration
@@ -266,7 +266,7 @@ auto_check = true
 check_interval_hours = 24
 
 # GitHub repository for updates
-repository = "kingford/smart-command"
+repository = "skingford/smart-command"
 
 # Include pre-release versions
 include_prerelease = false

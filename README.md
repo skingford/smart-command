@@ -18,12 +18,12 @@ An intelligent shell with context-aware command completion, fuzzy search, and mu
 
 **macOS / Linux:**
 ```bash
-curl -sSL https://raw.githubusercontent.com/kingford/smart-command/main/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/skingford/smart-command/main/install.sh | bash
 ```
 
 **Windows (PowerShell):**
 ```powershell
-irm https://raw.githubusercontent.com/kingford/smart-command/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/skingford/smart-command/main/install.ps1 | iex
 ```
 
 ---
@@ -32,19 +32,19 @@ irm https://raw.githubusercontent.com/kingford/smart-command/main/install.ps1 | 
 
 #### Homebrew (Coming Soon)
 ```bash
-brew tap kingford/tap
+brew tap skingford/tap
 brew install smart-command
 ```
 
 #### Binary Download
 ```bash
 # Intel Mac
-curl -LO https://github.com/kingford/smart-command/releases/latest/download/sc-x86_64-apple-darwin.tar.gz
+curl -LO https://github.com/skingford/smart-command/releases/latest/download/sc-x86_64-apple-darwin.tar.gz
 tar xzf sc-x86_64-apple-darwin.tar.gz
 sudo mv sc /usr/local/bin/
 
 # Apple Silicon (M1/M2/M3/M4)
-curl -LO https://github.com/kingford/smart-command/releases/latest/download/sc-aarch64-apple-darwin.tar.gz
+curl -LO https://github.com/skingford/smart-command/releases/latest/download/sc-aarch64-apple-darwin.tar.gz
 tar xzf sc-aarch64-apple-darwin.tar.gz
 sudo mv sc /usr/local/bin/
 ```
@@ -56,19 +56,19 @@ sudo mv sc /usr/local/bin/
 #### Debian / Ubuntu (.deb)
 ```bash
 # Download the latest .deb package
-curl -LO https://github.com/kingford/smart-command/releases/latest/download/sc_0.1.0_amd64.deb
+curl -LO https://github.com/skingford/smart-command/releases/latest/download/sc_0.1.0_amd64.deb
 sudo dpkg -i sc_0.1.0_amd64.deb
 ```
 
 #### Binary Download
 ```bash
 # x86_64
-curl -LO https://github.com/kingford/smart-command/releases/latest/download/sc-x86_64-unknown-linux-gnu.tar.gz
+curl -LO https://github.com/skingford/smart-command/releases/latest/download/sc-x86_64-unknown-linux-gnu.tar.gz
 tar xzf sc-x86_64-unknown-linux-gnu.tar.gz
 sudo mv sc /usr/local/bin/
 
 # ARM64 (Raspberry Pi, etc.)
-curl -LO https://github.com/kingford/smart-command/releases/latest/download/sc-aarch64-unknown-linux-gnu.tar.gz
+curl -LO https://github.com/skingford/smart-command/releases/latest/download/sc-aarch64-unknown-linux-gnu.tar.gz
 tar xzf sc-aarch64-unknown-linux-gnu.tar.gz
 sudo mv sc /usr/local/bin/
 ```
@@ -79,14 +79,14 @@ sudo mv sc /usr/local/bin/
 
 #### Scoop (Coming Soon)
 ```powershell
-scoop bucket add kingford https://github.com/kingford/scoop-bucket
+scoop bucket add skingford https://github.com/skingford/scoop-bucket
 scoop install smart-command
 ```
 
 #### Binary Download
 ```powershell
 # Download and extract
-Invoke-WebRequest -Uri "https://github.com/kingford/smart-command/releases/latest/download/sc-x86_64-pc-windows-msvc.zip" -OutFile "sc.zip"
+Invoke-WebRequest -Uri "https://github.com/skingford/smart-command/releases/latest/download/sc-x86_64-pc-windows-msvc.zip" -OutFile "sc.zip"
 Expand-Archive -Path "sc.zip" -DestinationPath "."
 
 # Move to a directory in your PATH, or add the current directory to PATH
@@ -100,17 +100,17 @@ Move-Item sc.exe C:\Windows\System32\
 #### Cargo Install
 ```bash
 # Requires Rust toolchain (https://rustup.rs)
-cargo install --git https://github.com/kingford/smart-command.git
+cargo install --git https://github.com/skingford/smart-command.git
 
 # Or clone and install locally
-git clone https://github.com/kingford/smart-command.git
+git clone https://github.com/skingford/smart-command.git
 cd smart-command
 cargo install --path .
 ```
 
 #### Build from Source
 ```bash
-git clone https://github.com/kingford/smart-command.git
+git clone https://github.com/skingford/smart-command.git
 cd smart-command
 cargo build --release
 
@@ -241,7 +241,7 @@ language = "en"
 [upgrade]
 auto_check = true
 check_interval_hours = 24
-repository = "kingford/smart-command"
+repository = "skingford/smart-command"
 include_prerelease = false
 ```
 

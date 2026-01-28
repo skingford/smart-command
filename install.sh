@@ -2,9 +2,9 @@
 set -e
 
 # Smart Command (sc) Installer
-# Usage: curl -sSL https://raw.githubusercontent.com/kingford/smart-command/main/install.sh | bash
+# Usage: curl -sSL https://raw.githubusercontent.com/skingford/smart-command/main/install.sh | bash
 
-REPO="kingford/smart-command"
+REPO="skingford/smart-command"
 BINARY_NAME="sc"
 INSTALL_DIR="${INSTALL_DIR:-/usr/local/bin}"
 DEFINITIONS_DIR="${DEFINITIONS_DIR:-$HOME/.config/smart-command/definitions}"

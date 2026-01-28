@@ -5,7 +5,7 @@ edition = "2021"
 description = "An intelligent shell with context-aware command completion"
 authors = ["kingford"]
 license = "MIT"
-repository = "https://github.com/kingford/smart-command"
+repository = "https://github.com/skingford/smart-command"
 keywords = ["shell", "cli", "completion", "terminal"]
 categories = ["command-line-utilities"]
 

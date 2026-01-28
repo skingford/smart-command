@@ -1,15 +1,16 @@
-# Smart Command Installer for Windows
-# Usage: irm https://raw.githubusercontent.com/kingford/smart-command/main/install.ps1 | iex
+# Smart Command (sc) Installer for Windows
+# Usage: irm https://raw.githubusercontent.com/skingford/smart-command/main/install.ps1 | iex
 
 $ErrorActionPreference = "Stop"
 
-$Repo = "kingford/smart-command"
+$Repo = "skingford/smart-command"
+$BinaryName = "sc"
 $InstallDir = "$env:LOCALAPPDATA\Programs\smart-command"
 $DefinitionsDir = "$env:APPDATA\smart-command\definitions"
 
 function Write-Info { param($Message) Write-Host "[INFO] $Message" -ForegroundColor Green }
 function Write-Warn { param($Message) Write-Host "[WARN] $Message" -ForegroundColor Yellow }
-function Write-Error { param($Message) Write-Host "[ERROR] $Message" -ForegroundColor Red; exit 1 }
+function Write-Err { param($Message) Write-Host "[ERROR] $Message" -ForegroundColor Red; exit 1 }
 
 function Get-LatestVersion {
     $response = Invoke-RestMethod -Uri "https://api.github.com/repos/$Repo/releases/latest"
@@ -17,8 +18,9 @@ function Get-LatestVersion {
 }
 
 function Install-SmartCommand {
-    Write-Host "Smart Command Installer"
-    Write-Host "======================="
+    Write-Host ""
+    Write-Host "  Smart Command (sc) Installer"
+    Write-Host "  AI-Powered Intelligent Shell"
     Write-Host ""
 
     # Detect architecture
@@ -30,20 +32,20 @@ function Install-SmartCommand {
     # Get latest version
     $version = Get-LatestVersion
     if (-not $version) {
-        Write-Error "Failed to get latest version. Please check your internet connection."
+        Write-Err "Failed to get latest version. Please check your internet connection."
     }
     Write-Info "Latest version: $version"
 
     # Download URL
-    $downloadUrl = "https://github.com/$Repo/releases/download/$version/smart-command-$target.zip"
+    $downloadUrl = "https://github.com/$Repo/releases/download/$version/$BinaryName-$target.zip"
     $tempDir = New-TemporaryFile | ForEach-Object { Remove-Item $_; New-Item -ItemType Directory -Path $_ }
-    $zipPath = Join-Path $tempDir "smart-command.zip"
+    $zipPath = Join-Path $tempDir "$BinaryName.zip"
 
     Write-Info "Downloading from $downloadUrl"
     try {
         Invoke-WebRequest -Uri $downloadUrl -OutFile $zipPath
     } catch {
-        Write-Error "Failed to download: $_"
+        Write-Err "Failed to download: $_"
     }
 
     Write-Info "Extracting..."
@@ -56,7 +58,7 @@ function Install-SmartCommand {
     }
 
     # Copy binary
-    Copy-Item -Path (Join-Path $tempDir "smart-command.exe") -Destination $InstallDir -Force
+    Copy-Item -Path (Join-Path $tempDir "$BinaryName.exe") -Destination $InstallDir -Force
 
     # Copy definitions
     Write-Info "Installing definitions to $DefinitionsDir"
@@ -82,7 +84,8 @@ function Install-SmartCommand {
     Write-Host ""
     Write-Info "Installation complete!"
     Write-Host ""
-    Write-Host "Run 'smart-command' to start the shell."
+    Write-Host "  Run '$BinaryName' to start the smart shell."
+    Write-Host "  Run '$BinaryName --help' for more options."
     Write-Host ""
     Write-Host "NOTE: You may need to restart your terminal for PATH changes to take effect."
 }
