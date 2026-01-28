@@ -1,10 +1,11 @@
 #!/bin/bash
 set -e
 
-# Smart Command Installer
+# Smart Command (sc) Installer
 # Usage: curl -sSL https://raw.githubusercontent.com/kingford/smart-command/main/install.sh | bash
 
 REPO="kingford/smart-command"
+BINARY_NAME="sc"
 INSTALL_DIR="${INSTALL_DIR:-/usr/local/bin}"
 DEFINITIONS_DIR="${DEFINITIONS_DIR:-$HOME/.config/smart-command/definitions}"
 
@@ -12,10 +13,15 @@ DEFINITIONS_DIR="${DEFINITIONS_DIR:-$HOME/.config/smart-command/definitions}"
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 info() {
-    echo -e "${GREEN}[INFO]${NC} $1"
+    echo -e "${BLUE}[INFO]${NC} $1"
+}
+
+success() {
+    echo -e "${GREEN}[OK]${NC} $1"
 }
 
 warn() {
@@ -74,49 +80,64 @@ install() {
         *) archive_ext="tar.gz" ;;
     esac
 
-    download_url="https://github.com/${REPO}/releases/download/${version}/smart-command-${platform}.${archive_ext}"
+    download_url="https://github.com/${REPO}/releases/download/${version}/${BINARY_NAME}-${platform}.${archive_ext}"
     tmp_dir=$(mktemp -d)
 
     info "Downloading from $download_url"
-    curl -sSL "$download_url" -o "$tmp_dir/smart-command.${archive_ext}"
+    if ! curl -sSL "$download_url" -o "$tmp_dir/${BINARY_NAME}.${archive_ext}"; then
+        error "Failed to download. Please check if release exists."
+    fi
 
     info "Extracting..."
     cd "$tmp_dir"
     if [ "$archive_ext" = "zip" ]; then
-        unzip -q "smart-command.${archive_ext}"
+        unzip -q "${BINARY_NAME}.${archive_ext}"
     else
-        tar xzf "smart-command.${archive_ext}"
+        tar xzf "${BINARY_NAME}.${archive_ext}"
     fi
 
     # Install binary
     info "Installing binary to $INSTALL_DIR"
     if [ -w "$INSTALL_DIR" ]; then
-        cp smart-command "$INSTALL_DIR/"
+        cp "$BINARY_NAME" "$INSTALL_DIR/"
     else
-        sudo cp smart-command "$INSTALL_DIR/"
+        sudo cp "$BINARY_NAME" "$INSTALL_DIR/"
     fi
-    chmod +x "$INSTALL_DIR/smart-command"
+    chmod +x "$INSTALL_DIR/$BINARY_NAME"
 
     # Install definitions
-    info "Installing definitions to $DEFINITIONS_DIR"
-    mkdir -p "$DEFINITIONS_DIR"
-    cp -r definitions/* "$DEFINITIONS_DIR/" 2>/dev/null || true
+    if [ -d "definitions" ]; then
+        info "Installing definitions to $DEFINITIONS_DIR"
+        mkdir -p "$DEFINITIONS_DIR"
+        cp -r definitions/* "$DEFINITIONS_DIR/" 2>/dev/null || true
+        success "Definitions installed"
+    fi
 
     # Cleanup
     rm -rf "$tmp_dir"
 
-    info "Installation complete!"
     echo ""
-    echo "Run 'smart-command' to start the shell."
+    success "Installation complete!"
     echo ""
-    echo "If smart-command is not found, add $INSTALL_DIR to your PATH:"
-    echo "  export PATH=\"\$PATH:$INSTALL_DIR\""
+    echo "  Run '${BINARY_NAME}' to start the smart shell."
+    echo "  Run '${BINARY_NAME} --help' for more options."
+    echo ""
+
+    # Check if binary is in PATH
+    if ! command -v "$BINARY_NAME" &> /dev/null; then
+        warn "$BINARY_NAME is not in your PATH"
+        echo "  Add $INSTALL_DIR to your PATH:"
+        echo "    export PATH=\"\$PATH:$INSTALL_DIR\""
+    fi
 }
 
 # Main
 main() {
-    echo "Smart Command Installer"
-    echo "======================="
+    echo ""
+    echo "  ╭─────────────────────────────────────╮"
+    echo "  │     Smart Command (sc) Installer    │"
+    echo "  │   AI-Powered Intelligent Shell      │"
+    echo "  ╰─────────────────────────────────────╯"
     echo ""
 
     # Check for curl

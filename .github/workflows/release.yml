@@ -7,6 +7,7 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  BINARY_NAME: sc
 
 jobs:
   build:
@@ -61,26 +62,38 @@ jobs:
         if: matrix.os != 'windows-latest'
         run: |
           cd target/${{ matrix.target }}/release
-          strip smart-command || true
-          tar czvf ../../../smart-command-${{ matrix.target }}.tar.gz smart-command
+          strip ${{ env.BINARY_NAME }} || true
           cd ../../..
-          # Add definitions to archive
-          tar czvf smart-command-${{ matrix.target }}.tar.gz -C target/${{ matrix.target }}/release smart-command -C ../../../ definitions
+          # Create archive with binary and definitions
+          tar czvf ${{ env.BINARY_NAME }}-${{ matrix.target }}.tar.gz \
+            -C target/${{ matrix.target }}/release ${{ env.BINARY_NAME }} \
+            -C ../../../ definitions
 
       - name: Package (Windows)
         if: matrix.os == 'windows-latest'
         run: |
           cd target/${{ matrix.target }}/release
-          7z a ../../../smart-command-${{ matrix.target }}.zip smart-command.exe
+          7z a ../../../${{ env.BINARY_NAME }}-${{ matrix.target }}.zip ${{ env.BINARY_NAME }}.exe
           cd ../../..
-          7z a smart-command-${{ matrix.target }}.zip definitions
+          7z a ${{ env.BINARY_NAME }}-${{ matrix.target }}.zip definitions
+        shell: bash
+
+      - name: Generate checksums
+        run: |
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then
+            sha256sum ${{ env.BINARY_NAME }}-${{ matrix.target }}.zip > ${{ env.BINARY_NAME }}-${{ matrix.target }}.zip.sha256
+          else
+            sha256sum ${{ env.BINARY_NAME }}-${{ matrix.target }}.tar.gz > ${{ env.BINARY_NAME }}-${{ matrix.target }}.tar.gz.sha256
+          fi
         shell: bash
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: smart-command-${{ matrix.target }}
-          path: smart-command-${{ matrix.target }}.${{ matrix.archive }}
+          name: ${{ env.BINARY_NAME }}-${{ matrix.target }}
+          path: |
+            ${{ env.BINARY_NAME }}-${{ matrix.target }}.${{ matrix.archive }}
+            ${{ env.BINARY_NAME }}-${{ matrix.target }}.${{ matrix.archive }}.sha256
 
   build-deb:
     name: Build Debian Package
@@ -100,7 +113,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: smart-command-deb
+          name: sc-deb
           path: target/debian/*.deb
 
   release:
@@ -117,8 +130,11 @@ jobs:
         with:
           path: artifacts
 
+      - name: List artifacts
+        run: find artifacts -type f | head -50
+
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           draft: false
           prerelease: false
@@ -127,3 +143,4 @@ jobs:
             artifacts/**/*.tar.gz
             artifacts/**/*.zip
             artifacts/**/*.deb
+            artifacts/**/*.sha256

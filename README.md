@@ -1,4 +1,4 @@
-# Smart Command
+# Smart Command (sc)
 
 An intelligent shell with context-aware command completion, fuzzy search, and multi-language support.
 
@@ -9,7 +9,8 @@ An intelligent shell with context-aware command completion, fuzzy search, and mu
 - **Multi-language**: Supports English and Chinese descriptions
 - **Git Integration**: Shows current branch in prompt
 - **History Persistence**: Command history saved across sessions
-- **60+ Command Definitions**: Pre-configured support for git, cargo, docker, kubectl, npm, and more
+- **Auto Upgrade**: Built-in version checking and self-update (`sc upgrade`)
+- **80+ Command Definitions**: Pre-configured support for git, cargo, docker, kubectl, npm, claude, gemini, and more
 
 ## Installation
 
@@ -38,14 +39,14 @@ brew install smart-command
 #### Binary Download
 ```bash
 # Intel Mac
-curl -LO https://github.com/kingford/smart-command/releases/latest/download/smart-command-x86_64-apple-darwin.tar.gz
-tar xzf smart-command-x86_64-apple-darwin.tar.gz
-sudo mv smart-command /usr/local/bin/
+curl -LO https://github.com/kingford/smart-command/releases/latest/download/sc-x86_64-apple-darwin.tar.gz
+tar xzf sc-x86_64-apple-darwin.tar.gz
+sudo mv sc /usr/local/bin/
 
-# Apple Silicon (M1/M2/M3)
-curl -LO https://github.com/kingford/smart-command/releases/latest/download/smart-command-aarch64-apple-darwin.tar.gz
-tar xzf smart-command-aarch64-apple-darwin.tar.gz
-sudo mv smart-command /usr/local/bin/
+# Apple Silicon (M1/M2/M3/M4)
+curl -LO https://github.com/kingford/smart-command/releases/latest/download/sc-aarch64-apple-darwin.tar.gz
+tar xzf sc-aarch64-apple-darwin.tar.gz
+sudo mv sc /usr/local/bin/
 ```
 
 ---
@@ -55,21 +56,21 @@ sudo mv smart-command /usr/local/bin/
 #### Debian / Ubuntu (.deb)
 ```bash
 # Download the latest .deb package
-curl -LO https://github.com/kingford/smart-command/releases/latest/download/smart-command_0.1.0_amd64.deb
-sudo dpkg -i smart-command_0.1.0_amd64.deb
+curl -LO https://github.com/kingford/smart-command/releases/latest/download/sc_0.1.0_amd64.deb
+sudo dpkg -i sc_0.1.0_amd64.deb
 ```
 
 #### Binary Download
 ```bash
 # x86_64
-curl -LO https://github.com/kingford/smart-command/releases/latest/download/smart-command-x86_64-unknown-linux-gnu.tar.gz
-tar xzf smart-command-x86_64-unknown-linux-gnu.tar.gz
-sudo mv smart-command /usr/local/bin/
+curl -LO https://github.com/kingford/smart-command/releases/latest/download/sc-x86_64-unknown-linux-gnu.tar.gz
+tar xzf sc-x86_64-unknown-linux-gnu.tar.gz
+sudo mv sc /usr/local/bin/
 
 # ARM64 (Raspberry Pi, etc.)
-curl -LO https://github.com/kingford/smart-command/releases/latest/download/smart-command-aarch64-unknown-linux-gnu.tar.gz
-tar xzf smart-command-aarch64-unknown-linux-gnu.tar.gz
-sudo mv smart-command /usr/local/bin/
+curl -LO https://github.com/kingford/smart-command/releases/latest/download/sc-aarch64-unknown-linux-gnu.tar.gz
+tar xzf sc-aarch64-unknown-linux-gnu.tar.gz
+sudo mv sc /usr/local/bin/
 ```
 
 ---
@@ -85,11 +86,11 @@ scoop install smart-command
 #### Binary Download
 ```powershell
 # Download and extract
-Invoke-WebRequest -Uri "https://github.com/kingford/smart-command/releases/latest/download/smart-command-x86_64-pc-windows-msvc.zip" -OutFile "smart-command.zip"
-Expand-Archive -Path "smart-command.zip" -DestinationPath "."
+Invoke-WebRequest -Uri "https://github.com/kingford/smart-command/releases/latest/download/sc-x86_64-pc-windows-msvc.zip" -OutFile "sc.zip"
+Expand-Archive -Path "sc.zip" -DestinationPath "."
 
 # Move to a directory in your PATH, or add the current directory to PATH
-Move-Item smart-command.exe C:\Windows\System32\
+Move-Item sc.exe C:\Windows\System32\
 ```
 
 ---
@@ -114,7 +115,7 @@ cd smart-command
 cargo build --release
 
 # Install binary
-sudo cp target/release/smart-command /usr/local/bin/
+sudo cp target/release/sc /usr/local/bin/
 
 # Install definitions (required for completions)
 mkdir -p ~/.config/smart-command
@@ -129,7 +130,7 @@ After installing the binary, you need command definitions for completions to wor
 
 ```bash
 # Option 1: Built-in installer (recommended)
-smart-command install --skip-bin
+sc install --skip-bin
 
 # Option 2: Manual copy
 mkdir -p ~/.config/smart-command
@@ -144,7 +145,7 @@ cp -r definitions ~/.config/smart-command/
 
 ```bash
 # Start the shell
-smart-command
+sc
 
 # Tab completion
 git <TAB>           # Shows git subcommands
@@ -161,6 +162,22 @@ config set-lang en  # Switch to English
 # Navigation
 cd -                # Go to previous directory
 cd ~/projects       # Tilde expansion
+```
+
+### Upgrade Commands
+
+```bash
+# Check for updates
+sc upgrade --check
+
+# Upgrade to latest version
+sc upgrade
+
+# Skip confirmation
+sc upgrade -y
+
+# Force upgrade (reinstall current version)
+sc upgrade --force
 ```
 
 ### Keyboard Shortcuts
@@ -209,9 +226,24 @@ subcommands:
    - `~/.config/smart-command/definitions/`
    - `/usr/share/smart-command/definitions/`
 
-2. Restart smart-command to load new definitions
+2. Restart sc to load new definitions
 
 ## Configuration
+
+### Config File
+
+Configuration is stored in `~/.config/smart-command/config.toml`:
+
+```toml
+[general]
+language = "en"
+
+[upgrade]
+auto_check = true
+check_interval_hours = 24
+repository = "kingford/smart-command"
+include_prerelease = false
+```
 
 ### Definition Search Paths
 
@@ -255,11 +287,14 @@ smart-command/
 │   ├── completer.rs     # Smart completion with fuzzy matching
 │   ├── command_def.rs   # Command specification structures
 │   ├── loader.rs        # YAML definition loader
-│   └── definitions.rs   # Fallback command definitions
-├── definitions/         # YAML command definitions (60+ files)
-├── pkg/
-│   ├── homebrew/        # Homebrew formula
-│   └── scoop/           # Scoop manifest
+│   ├── upgrade.rs       # Self-update functionality
+│   └── output.rs        # Colored output utilities
+├── definitions/         # YAML command definitions (80+ files)
+├── scripts/
+│   └── test_upgrade.sh  # Upgrade functionality test
+├── .github/
+│   └── workflows/
+│       └── release.yml  # Auto-release on tag push
 └── Cargo.toml           # Dependencies and metadata
 ```
 
@@ -273,13 +308,30 @@ smart-command/
 | Linux | ARM64 | ✅ |
 | Windows | x86_64 | ✅ |
 
+## Release Process
+
+Releases are automated via GitHub Actions. To create a new release:
+
+```bash
+# Update version in Cargo.toml, then:
+git tag v0.1.1
+git push origin v0.1.1
+```
+
+This will automatically:
+1. Build binaries for all platforms
+2. Create checksums
+3. Package with definitions
+4. Publish a GitHub Release
+
 ## Dependencies
 
 - [reedline](https://crates.io/crates/reedline) - Interactive line editor
 - [fuzzy-matcher](https://crates.io/crates/fuzzy-matcher) - Fuzzy string matching
 - [serde_yaml](https://crates.io/crates/serde_yaml) - YAML parsing
-- [dirs](https://crates.io/crates/dirs) - Platform directories
 - [clap](https://crates.io/crates/clap) - CLI framework
+- [reqwest](https://crates.io/crates/reqwest) - HTTP client for upgrades
+- [semver](https://crates.io/crates/semver) - Version parsing
 
 ## Contributing
 

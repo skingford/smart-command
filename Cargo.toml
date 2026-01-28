@@ -88,13 +88,13 @@ maintainer = "kingford"
 copyright = "2024, kingford"
 license-file = ["LICENSE", "0"]
 extended-description = """
-Smart Command is an intelligent shell with context-aware command completion.
-Features include fuzzy search, multi-language support, and Git integration.
+Smart Command (sc) is an intelligent shell with context-aware command completion.
+Features include fuzzy search, multi-language support, Git integration, and auto-upgrade.
 """
 section = "utility"
 priority = "optional"
 assets = [
-    ["target/release/sc", "usr/bin/", "755"],
+    ["target/release/sc", "usr/bin/sc", "755"],
     ["definitions/*", "usr/share/smart-command/definitions/", "644"],
-    ["README.md", "usr/share/doc/smart-command/", "644"],
+    ["README.md", "usr/share/doc/smart-command/README.md", "644"],
 ]
