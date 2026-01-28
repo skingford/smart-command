@@ -1,154 +1,382 @@
 name: codex
-description: OpenAI Codex CLI - AI coding agent for terminal
+description:
+  en: OpenAI Codex CLI - AI coding agent for terminal
+  zh: OpenAI Codex CLI - 终端 AI 编程代理
 flags:
+  - long: help
+    short: h
+    description:
+      en: Display help information
+      zh: 显示帮助信息
+  - long: version
+    short: v
+    description:
+      en: Print version information
+      zh: 打印版本信息
   - long: model
     short: m
-    description: Override the model set in configuration
+    description:
+      en: Override the model set in configuration
+      zh: 覆盖配置中设置的模型
     takes_value: true
   - long: oss
-    description: Use local open source model provider (Ollama)
+    description:
+      en: Use local open source model provider (Ollama)
+      zh: 使用本地开源模型提供商（Ollama）
   - long: profile
     short: p
-    description: Configuration profile name to load
+    description:
+      en: Configuration profile name to load
+      zh: 要加载的配置文件名称
     takes_value: true
   - long: sandbox
     short: s
-    description: Select sandbox policy for shell commands
+    description:
+      en: "Select sandbox policy: read-only, workspace-write, danger-full-access"
+      zh: "选择沙盒策略：read-only、workspace-write、danger-full-access"
     takes_value: true
-  - long: ask-for-approval
+  - long: approval-mode
     short: a
-    description: Control when to pause for approval
+    description:
+      en: "Control when to pause for approval: never, on-request, on-failure, untrusted"
+      zh: "控制何时暂停以获得批准：never、on-request、on-failure、untrusted"
     takes_value: true
   - long: full-auto
-    description: Set unattended mode with workspace-write sandbox
+    description:
+      en: Set unattended mode with workspace-write sandbox and on-failure approval
+      zh: 设置无人值守模式（workspace-write 沙盒和 on-failure 批准）
   - long: yolo
-    description: Run without approvals or sandboxing (dangerous)
+    description:
+      en: Run without approvals or sandboxing (dangerous)
+      zh: 运行时不需要批准或沙盒（危险）
   - long: cd
     short: C
-    description: Set working directory before starting
+    description:
+      en: Set working directory before starting
+      zh: 开始前设置工作目录
     takes_value: true
     is_path_completion: true
   - long: image
     short: i
-    description: Attach image files to initial prompt
+    description:
+      en: Attach image files to initial prompt
+      zh: 将图像文件附加到初始提示
     takes_value: true
     is_path_completion: true
+  - long: quiet
+    short: q
+    description:
+      en: Suppress non-essential output
+      zh: 抑制非必要输出
+  - long: no-color
+    description:
+      en: Disable colored output
+      zh: 禁用彩色输出
 subcommands:
   - name: exec
     short: e
-    description: Run Codex non-interactively
+    description:
+      en: Run Codex non-interactively
+      zh: 非交互式运行 Codex
     flags:
       - long: image
         short: i
-        description: Attach images to the first message
+        description:
+          en: Attach images to the first message
+          zh: 将图像附加到第一条消息
         takes_value: true
         is_path_completion: true
       - long: model
         short: m
-        description: Override the configured model
+        description:
+          en: Override the configured model
+          zh: 覆盖配置的模型
         takes_value: true
       - long: oss
-        description: Use local open source provider
+        description:
+          en: Use local open source provider
+          zh: 使用本地开源提供商
       - long: sandbox
         short: s
-        description: Sandbox policy for generated commands
+        description:
+          en: Sandbox policy for generated commands
+          zh: 生成命令的沙盒策略
         takes_value: true
       - long: profile
         short: p
-        description: Select configuration profile
+        description:
+          en: Select configuration profile
+          zh: 选择配置文件
         takes_value: true
       - long: full-auto
-        description: Apply low-friction automation preset
+        description:
+          en: Apply low-friction automation preset
+          zh: 应用低阻力自动化预设
       - long: yolo
-        description: Bypass approvals and sandboxing (dangerous)
+        description:
+          en: Bypass approvals and sandboxing (dangerous)
+          zh: 绕过批准和沙盒（危险）
       - long: cd
         short: C
-        description: Set workspace root before executing
+        description:
+          en: Set workspace root before executing
+          zh: 执行前设置工作区根目录
         takes_value: true
         is_path_completion: true
       - long: skip-git-repo-check
-        description: Allow running outside Git repository
+        description:
+          en: Allow running outside Git repository
+          zh: 允许在 Git 仓库外运行
       - long: json
-        description: Output newline-delimited JSON events
+        description:
+          en: Output newline-delimited JSON events
+          zh: 输出以换行符分隔的 JSON 事件
       - long: last
-        description: Resume most recent conversation
+        description:
+          en: Resume most recent conversation
+          zh: 恢复最近的对话
     is_path_completion: true
   - name: login
-    description: Authenticate with ChatGPT or API key
+    description:
+      en: Authenticate with ChatGPT or API key
+      zh: 使用 ChatGPT 或 API 密钥进行身份验证
     subcommands:
       - name: status
-        description: Print authentication status
+        description:
+          en: Print authentication status
+          zh: 打印身份验证状态
     flags:
       - long: with-api-key
-        description: Read API key from stdin
+        description:
+          en: Read API key from stdin
+          zh: 从 stdin 读取 API 密钥
   - name: logout
-    description: Remove stored authentication credentials
+    description:
+      en: Remove stored authentication credentials
+      zh: 移除存储的身份验证凭据
   - name: resume
-    description: Continue a previous interactive session
+    description:
+      en: Continue a previous interactive session
+      zh: 继续之前的交互式会话
     flags:
       - long: last
-        description: Resume most recent conversation
+        description:
+          en: Resume most recent conversation
+          zh: 恢复最近的对话
   - name: apply
     short: a
-    description: Apply diff from Codex Cloud task to local repository
+    description:
+      en: Apply diff from Codex Cloud task to local repository
+      zh: 将 Codex Cloud 任务的差异应用到本地仓库
     is_path_completion: true
   - name: sandbox
-    description: Run commands inside Codex-provided sandboxes
+    description:
+      en: Run commands inside Codex-provided sandboxes
+      zh: 在 Codex 提供的沙盒内运行命令
     flags:
       - long: full-auto
-        description: Grant write access without approvals
+        description:
+          en: Grant write access without approvals
+          zh: 授予写访问权限而无需批准
       - long: config
         short: c
-        description: Pass configuration overrides
+        description:
+          en: Pass configuration overrides
+          zh: 传递配置覆盖
         takes_value: true
   - name: completion
-    description: Generate shell completion scripts
+    description:
+      en: Generate shell completion scripts
+      zh: 生成 shell 补全脚本
+    subcommands:
+      - name: bash
+        description:
+          en: Generate bash completion script
+          zh: 生成 bash 补全脚本
+      - name: zsh
+        description:
+          en: Generate zsh completion script
+          zh: 生成 zsh 补全脚本
+      - name: fish
+        description:
+          en: Generate fish completion script
+          zh: 生成 fish 补全脚本
   - name: mcp
-    description: Manage Model Context Protocol servers
+    description:
+      en: Manage Model Context Protocol servers
+      zh: 管理模型上下文协议服务器
     subcommands:
       - name: list
-        description: List configured MCP servers
+        description:
+          en: List configured MCP servers
+          zh: 列出已配置的 MCP 服务器
         flags:
           - long: json
-            description: Output in JSON format
+            description:
+              en: Output in JSON format
+              zh: 以 JSON 格式输出
       - name: get
-        description: Show specific server configuration
+        description:
+          en: Show specific server configuration
+          zh: 显示特定服务器配置
         flags:
           - long: json
-            description: Print raw config entry
+            description:
+              en: Print raw config entry
+              zh: 打印原始配置条目
       - name: add
-        description: Register an MCP server
+        description:
+          en: Register an MCP server
+          zh: 注册 MCP 服务器
         flags:
           - long: url
-            description: Register HTTP server
+            description:
+              en: Register HTTP server
+              zh: 注册 HTTP 服务器
             takes_value: true
           - long: env
-            description: Environment variables for stdio
+            description:
+              en: Environment variables for stdio
+              zh: stdio 的环境变量
             takes_value: true
           - long: bearer-token-env-var
-            description: Bearer token environment variable
+            description:
+              en: Bearer token environment variable
+              zh: Bearer 令牌环境变量
             takes_value: true
       - name: remove
-        description: Delete MCP server definition
+        description:
+          en: Delete MCP server definition
+          zh: 删除 MCP 服务器定义
       - name: login
-        description: Start OAuth login for HTTP server
+        description:
+          en: Start OAuth login for HTTP server
+          zh: 为 HTTP 服务器启动 OAuth 登录
         flags:
           - long: scopes
-            description: OAuth scopes to request
+            description:
+              en: OAuth scopes to request
+              zh: 要请求的 OAuth 范围
             takes_value: true
       - name: logout
-        description: Remove OAuth credentials
+        description:
+          en: Remove OAuth credentials
+          zh: 移除 OAuth 凭据
   - name: mcp-server
-    description: Run Codex as MCP server over stdio
+    description:
+      en: Run Codex as MCP server over stdio
+      zh: 通过 stdio 将 Codex 作为 MCP 服务器运行
   - name: cloud
-    description: Interact with Codex Cloud tasks
+    description:
+      en: Interact with Codex Cloud tasks
+      zh: 与 Codex Cloud 任务交互
     flags:
       - long: env
-        description: Target Codex Cloud environment ID
+        description:
+          en: Target Codex Cloud environment ID
+          zh: 目标 Codex Cloud 环境 ID
         takes_value: true
       - long: attempts
-        description: Number of assistant attempts (1-4)
+        description:
+          en: Number of assistant attempts (1-4)
+          zh: 助手尝试次数（1-4）
         takes_value: true
     subcommands:
       - name: exec
-        description: Submit task directly to Codex Cloud
+        description:
+          en: Submit task directly to Codex Cloud
+          zh: 直接向 Codex Cloud 提交任务
+      - name: status
+        description:
+          en: Check status of cloud task
+          zh: 检查云任务状态
+      - name: cancel
+        description:
+          en: Cancel a running cloud task
+          zh: 取消正在运行的云任务
+  - name: config
+    description:
+      en: Manage Codex configuration
+      zh: 管理 Codex 配置
+    subcommands:
+      - name: show
+        description:
+          en: Show current configuration
+          zh: 显示当前配置
+      - name: set
+        description:
+          en: Set configuration value
+          zh: 设置配置值
+      - name: reset
+        description:
+          en: Reset configuration to defaults
+          zh: 重置配置为默认值
+examples:
+  - cmd: 'codex'
+    scenario:
+      en: Start interactive Codex session
+      zh: 启动交互式 Codex 会话
+  - cmd: 'codex "analyze this codebase"'
+    scenario:
+      en: Start session with initial prompt
+      zh: 使用初始提示启动会话
+  - cmd: 'codex --sandbox read-only "analyze this codebase"'
+    scenario:
+      en: Run with read-only sandbox (safest)
+      zh: 以只读沙盒运行（最安全）
+  - cmd: 'codex --sandbox workspace-write "refactor the auth module"'
+    scenario:
+      en: Run with workspace write permissions
+      zh: 以工作区写入权限运行
+  - cmd: 'codex --approval-mode never "build and test"'
+    scenario:
+      en: Full auto mode, no approvals needed
+      zh: 全自动模式，无需批准
+  - cmd: 'codex --approval-mode on-failure "fix TypeScript errors"'
+    scenario:
+      en: Auto-approve unless commands fail
+      zh: 除非命令失败，否则自动批准
+  - cmd: 'codex --full-auto "implement the feature"'
+    scenario:
+      en: Low-friction automation preset
+      zh: 低阻力自动化预设
+  - cmd: 'codex exec "run tests"'
+    scenario:
+      en: Non-interactive execution
+      zh: 非交互式执行
+  - cmd: 'codex exec --json "analyze code"'
+    scenario:
+      en: Get JSON output for scripting
+      zh: 获取用于脚本的 JSON 输出
+  - cmd: 'codex login'
+    scenario:
+      en: Authenticate with OpenAI
+      zh: 使用 OpenAI 进行身份验证
+  - cmd: 'codex login status'
+    scenario:
+      en: Check authentication status
+      zh: 检查身份验证状态
+  - cmd: 'codex resume --last'
+    scenario:
+      en: Resume most recent session
+      zh: 恢复最近的会话
+  - cmd: 'codex mcp list'
+    scenario:
+      en: List MCP servers
+      zh: 列出 MCP 服务器
+  - cmd: 'codex mcp add my-server -- npx my-mcp-server'
+    scenario:
+      en: Add stdio MCP server
+      zh: 添加 stdio MCP 服务器
+  - cmd: 'codex cloud exec "deploy to staging"'
+    scenario:
+      en: Submit task to Codex Cloud
+      zh: 向 Codex Cloud 提交任务
+  - cmd: 'codex -i screenshot.png "fix this UI bug"'
+    scenario:
+      en: Attach image to prompt
+      zh: 将图像附加到提示
+  - cmd: 'codex -C /path/to/project'
+    scenario:
+      en: Start in specific directory
+      zh: 在特定目录中启动

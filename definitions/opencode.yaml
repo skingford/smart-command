@@ -1,236 +1,535 @@
 name: opencode
-description: OpenCode CLI - Open-source AI coding agent for terminal
+description:
+  en: OpenCode CLI - Open-source AI coding agent for terminal
+  zh: OpenCode CLI - 开源终端 AI 编程代理
 flags:
   - long: help
     short: h
-    description: Display help information
+    description:
+      en: Display help information
+      zh: 显示帮助信息
   - long: version
     short: v
-    description: Print version information
+    description:
+      en: Print version information
+      zh: 打印版本信息
   - long: print-logs
-    description: Print logs to stderr
+    description:
+      en: Print logs to stderr
+      zh: 将日志打印到 stderr
   - long: log-level
-    description: Log level (DEBUG, INFO, WARN, ERROR)
+    description:
+      en: "Log level: DEBUG, INFO, WARN, ERROR"
+      zh: "日志级别：DEBUG、INFO、WARN、ERROR"
+    takes_value: true
+  - long: continue
+    short: c
+    description:
+      en: Continue the last session
+      zh: 继续上次会话
+  - long: model
+    short: m
+    description:
+      en: Model to use in the form of provider/model
+      zh: 要使用的模型，格式为 provider/model
+    takes_value: true
+  - long: agent
+    description:
+      en: Agent to use for the session
+      zh: 会话使用的代理
     takes_value: true
 subcommands:
   - name: tui
-    description: Start the OpenCode terminal user interface
+    description:
+      en: Start the OpenCode terminal user interface
+      zh: 启动 OpenCode 终端用户界面
     flags:
       - long: continue
         short: c
-        description: Continue the last session
+        description:
+          en: Continue the last session
+          zh: 继续上次会话
       - long: session
         short: s
-        description: Session ID to continue
+        description:
+          en: Session ID to continue
+          zh: 要继续的会话 ID
         takes_value: true
       - long: prompt
-        description: Prompt to use
+        description:
+          en: Prompt to use
+          zh: 要使用的提示
         takes_value: true
       - long: model
         short: m
-        description: Model to use in the form of provider/model
+        description:
+          en: Model to use in the form of provider/model
+          zh: 要使用的模型，格式为 provider/model
         takes_value: true
       - long: agent
-        description: Agent to use
+        description:
+          en: Agent to use
+          zh: 要使用的代理
         takes_value: true
       - long: port
-        description: Port to listen on
+        description:
+          en: Port to listen on
+          zh: 监听端口
         takes_value: true
       - long: hostname
-        description: Hostname to listen on
+        description:
+          en: Hostname to listen on
+          zh: 监听主机名
         takes_value: true
   - name: run
-    description: Run opencode in non-interactive mode
+    description:
+      en: Run opencode in non-interactive mode
+      zh: 以非交互模式运行 opencode
     flags:
       - long: continue
         short: c
-        description: Continue the last session
+        description:
+          en: Continue the last session
+          zh: 继续上次会话
       - long: session
         short: s
-        description: Session ID to continue
+        description:
+          en: Session ID to continue
+          zh: 要继续的会话 ID
         takes_value: true
       - long: share
-        description: Share the session
+        description:
+          en: Share the session
+          zh: 分享会话
       - long: model
         short: m
-        description: Model to use in the form of provider/model
+        description:
+          en: Model to use in the form of provider/model
+          zh: 要使用的模型，格式为 provider/model
         takes_value: true
       - long: agent
-        description: Agent to use
+        description:
+          en: Agent to use
+          zh: 要使用的代理
         takes_value: true
       - long: file
         short: f
-        description: File(s) to attach to message
+        description:
+          en: File(s) to attach to message
+          zh: 附加到消息的文件
         takes_value: true
+        is_path_completion: true
       - long: format
-        description: Output format - default (formatted) or json (raw JSON events)
+        description:
+          en: "Output format: default (formatted) or json (raw JSON events)"
+          zh: "输出格式：default（格式化）或 json（原始 JSON 事件）"
         takes_value: true
       - long: title
-        description: Title for the session
+        description:
+          en: Title for the session
+          zh: 会话标题
         takes_value: true
       - long: attach
-        description: Attach to a running opencode server
+        description:
+          en: Attach to a running opencode server
+          zh: 附加到正在运行的 opencode 服务器
         takes_value: true
       - long: port
-        description: Port for the local server
+        description:
+          en: Port for the local server
+          zh: 本地服务器端口
         takes_value: true
       - long: command
-        description: The command to run, use message for args
+        description:
+          en: The command to run, use message for args
+          zh: 要运行的命令，使用 message 作为参数
         takes_value: true
     is_path_completion: true
   - name: agent
-    description: Manage agents for OpenCode
+    description:
+      en: Manage agents for OpenCode
+      zh: 管理 OpenCode 代理
     subcommands:
       - name: create
-        description: Create a new agent with custom configuration
+        description:
+          en: Create a new agent with custom configuration
+          zh: 使用自定义配置创建新代理
       - name: list
-        description: List all available agents
+        description:
+          en: List all available agents
+          zh: 列出所有可用代理
   - name: attach
-    description: Attach a terminal to a running OpenCode backend server
+    description:
+      en: Attach a terminal to a running OpenCode backend server
+      zh: 将终端附加到正在运行的 OpenCode 后端服务器
     flags:
       - long: dir
-        description: Working directory to start TUI in
+        description:
+          en: Working directory to start TUI in
+          zh: 启动 TUI 的工作目录
         takes_value: true
+        is_path_completion: true
       - long: session
         short: s
-        description: Session ID to continue
+        description:
+          en: Session ID to continue
+          zh: 要继续的会话 ID
         takes_value: true
     is_path_completion: true
   - name: auth
-    description: Command to manage credentials and login for providers
+    description:
+      en: Manage credentials and login for providers
+      zh: 管理提供商的凭据和登录
     subcommands:
       - name: login
-        description: Login to a provider
+        description:
+          en: Login to a provider
+          zh: 登录到提供商
       - name: list
-        description: List all authenticated providers
+        description:
+          en: List all authenticated providers
+          zh: 列出所有已认证的提供商
       - name: logout
-        description: Logout from a provider
+        description:
+          en: Logout from a provider
+          zh: 从提供商注销
   - name: github
-    description: Manage the GitHub agent for repository automation
+    description:
+      en: Manage the GitHub agent for repository automation
+      zh: 管理用于仓库自动化的 GitHub 代理
     subcommands:
       - name: install
-        description: Install the GitHub agent in your repository
+        description:
+          en: Install the GitHub agent in your repository
+          zh: 在仓库中安装 GitHub 代理
       - name: run
-        description: Run the GitHub agent
+        description:
+          en: Run the GitHub agent
+          zh: 运行 GitHub 代理
         flags:
           - long: event
-            description: GitHub mock event to run the agent for
+            description:
+              en: GitHub mock event to run the agent for
+              zh: 要运行代理的 GitHub 模拟事件
             takes_value: true
           - long: token
-            description: GitHub personal access token
+            description:
+              en: GitHub personal access token
+              zh: GitHub 个人访问令牌
             takes_value: true
   - name: mcp
-    description: Manage Model Context Protocol servers
+    description:
+      en: Manage Model Context Protocol servers
+      zh: 管理模型上下文协议服务器
     subcommands:
       - name: add
-        description: Add an MCP server to your configuration
+        description:
+          en: Add an MCP server to your configuration
+          zh: 将 MCP 服务器添加到配置
       - name: list
-        description: List all configured MCP servers
+        description:
+          en: List all configured MCP servers
+          zh: 列出所有已配置的 MCP 服务器
       - name: auth
-        description: Authenticate with an OAuth-enabled MCP server
+        description:
+          en: Authenticate with an OAuth-enabled MCP server
+          zh: 使用支持 OAuth 的 MCP 服务器进行身份验证
       - name: logout
-        description: Remove OAuth credentials for an MCP server
+        description:
+          en: Remove OAuth credentials for an MCP server
+          zh: 移除 MCP 服务器的 OAuth 凭据
       - name: debug
-        description: Debug OAuth connection issues for an MCP server
+        description:
+          en: Debug OAuth connection issues for an MCP server
+          zh: 调试 MCP 服务器的 OAuth 连接问题
   - name: models
-    description: List all available models from configured providers
+    description:
+      en: List all available models from configured providers
+      zh: 列出已配置提供商的所有可用模型
     flags:
       - long: refresh
-        description: Refresh the models cache from models.dev
+        description:
+          en: Refresh the models cache from models.dev
+          zh: 从 models.dev 刷新模型缓存
       - long: verbose
-        description: Use more verbose model output (includes metadata like costs)
+        description:
+          en: Use more verbose model output (includes metadata like costs)
+          zh: 使用更详细的模型输出（包括成本等元数据）
   - name: serve
-    description: Start a headless OpenCode server for API access
+    description:
+      en: Start a headless OpenCode server for API access
+      zh: 启动无头 OpenCode 服务器以进行 API 访问
     flags:
       - long: port
-        description: Port to listen on
+        description:
+          en: Port to listen on
+          zh: 监听端口
         takes_value: true
       - long: hostname
-        description: Hostname to listen on
+        description:
+          en: Hostname to listen on
+          zh: 监听主机名
         takes_value: true
       - long: mdns
-        description: Enable mDNS discovery
+        description:
+          en: Enable mDNS discovery
+          zh: 启用 mDNS 发现
       - long: cors
-        description: Additional browser origin(s) to allow CORS
+        description:
+          en: Additional browser origin(s) to allow CORS
+          zh: 允许 CORS 的额外浏览器源
         takes_value: true
   - name: session
-    description: Manage OpenCode sessions
+    description:
+      en: Manage OpenCode sessions
+      zh: 管理 OpenCode 会话
     subcommands:
       - name: list
-        description: List all OpenCode sessions
+        description:
+          en: List all OpenCode sessions
+          zh: 列出所有 OpenCode 会话
         flags:
           - long: max-count
             short: n
-            description: Limit to N most recent sessions
+            description:
+              en: Limit to N most recent sessions
+              zh: 限制为 N 个最近的会话
             takes_value: true
           - long: format
-            description: "Output format: table or json"
+            description:
+              en: "Output format: table or json"
+              zh: "输出格式：table 或 json"
             takes_value: true
   - name: stats
-    description: Show token usage and cost statistics
+    description:
+      en: Show token usage and cost statistics
+      zh: 显示 token 使用量和成本统计
     flags:
       - long: days
-        description: Show stats for the last N days
+        description:
+          en: Show stats for the last N days
+          zh: 显示最近 N 天的统计
         takes_value: true
       - long: tools
-        description: Number of tools to show
+        description:
+          en: Number of tools to show
+          zh: 要显示的工具数量
         takes_value: true
       - long: models
-        description: Show model usage breakdown
+        description:
+          en: Show model usage breakdown
+          zh: 显示模型使用明细
         takes_value: true
       - long: project
-        description: Filter by project
+        description:
+          en: Filter by project
+          zh: 按项目筛选
         takes_value: true
   - name: export
-    description: Export session data as JSON
+    description:
+      en: Export session data as JSON
+      zh: 将会话数据导出为 JSON
     is_path_completion: true
   - name: import
-    description: Import session data from a JSON file or OpenCode share URL
+    description:
+      en: Import session data from a JSON file or OpenCode share URL
+      zh: 从 JSON 文件或 OpenCode 分享 URL 导入会话数据
     is_path_completion: true
   - name: web
-    description: Start a headless OpenCode server with a web interface
+    description:
+      en: Start a headless OpenCode server with a web interface
+      zh: 启动带 Web 界面的无头 OpenCode 服务器
     flags:
       - long: port
-        description: Port to listen on
+        description:
+          en: Port to listen on
+          zh: 监听端口
         takes_value: true
       - long: hostname
-        description: Hostname to listen on
+        description:
+          en: Hostname to listen on
+          zh: 监听主机名
         takes_value: true
       - long: mdns
-        description: Enable mDNS discovery
+        description:
+          en: Enable mDNS discovery
+          zh: 启用 mDNS 发现
       - long: cors
-        description: Additional browser origin(s) to allow CORS
+        description:
+          en: Additional browser origin(s) to allow CORS
+          zh: 允许 CORS 的额外浏览器源
         takes_value: true
   - name: acp
-    description: Start an ACP (Agent Client Protocol) server
+    description:
+      en: Start an ACP (Agent Client Protocol) server
+      zh: 启动 ACP（代理客户端协议）服务器
     flags:
       - long: cwd
-        description: Working directory
+        description:
+          en: Working directory
+          zh: 工作目录
         takes_value: true
+        is_path_completion: true
       - long: port
-        description: Port to listen on
+        description:
+          en: Port to listen on
+          zh: 监听端口
         takes_value: true
       - long: hostname
-        description: Hostname to listen on
+        description:
+          en: Hostname to listen on
+          zh: 监听主机名
         takes_value: true
   - name: uninstall
-    description: Uninstall OpenCode and remove all related files
+    description:
+      en: Uninstall OpenCode and remove all related files
+      zh: 卸载 OpenCode 并删除所有相关文件
     flags:
       - long: keep-config
         short: c
-        description: Keep configuration files
+        description:
+          en: Keep configuration files
+          zh: 保留配置文件
       - long: keep-data
         short: d
-        description: Keep session data and snapshots
+        description:
+          en: Keep session data and snapshots
+          zh: 保留会话数据和快照
       - long: dry-run
-        description: Show what would be removed without removing
+        description:
+          en: Show what would be removed without removing
+          zh: 显示将要删除的内容但不实际删除
       - long: force
         short: f
-        description: Skip confirmation prompts
+        description:
+          en: Skip confirmation prompts
+          zh: 跳过确认提示
   - name: upgrade
-    description: Updates opencode to the latest version or a specific version
+    description:
+      en: Updates opencode to the latest version or a specific version
+      zh: 将 opencode 更新到最新版本或特定版本
     flags:
       - long: method
         short: m
-        description: The installation method that was used (curl, npm, pnpm, bun, brew)
+        description:
+          en: "The installation method used: curl, npm, pnpm, bun, brew"
+          zh: "使用的安装方法：curl、npm、pnpm、bun、brew"
         takes_value: true
+  - name: config
+    description:
+      en: Manage OpenCode configuration
+      zh: 管理 OpenCode 配置
+    subcommands:
+      - name: show
+        description:
+          en: Show current configuration
+          zh: 显示当前配置
+      - name: edit
+        description:
+          en: Open configuration file in editor
+          zh: 在编辑器中打开配置文件
+      - name: path
+        description:
+          en: Show configuration file path
+          zh: 显示配置文件路径
+examples:
+  - cmd: 'opencode'
+    scenario:
+      en: Start OpenCode TUI in current directory
+      zh: 在当前目录启动 OpenCode TUI
+  - cmd: 'opencode /path/to/project'
+    scenario:
+      en: Start with specific project directory
+      zh: 使用特定项目目录启动
+  - cmd: 'opencode --continue'
+    scenario:
+      en: Continue last session
+      zh: 继续上次会话
+  - cmd: 'opencode --model anthropic/claude-sonnet-4-5'
+    scenario:
+      en: Use specific model
+      zh: 使用特定模型
+  - cmd: 'opencode --agent plan'
+    scenario:
+      en: Use specific agent
+      zh: 使用特定代理
+  - cmd: 'opencode run "fix the build errors"'
+    scenario:
+      en: Run non-interactively with prompt
+      zh: 使用提示非交互式运行
+  - cmd: 'opencode run --format json "analyze code"'
+    scenario:
+      en: Get JSON output for scripting
+      zh: 获取用于脚本的 JSON 输出
+  - cmd: 'opencode run -f main.ts "explain this file"'
+    scenario:
+      en: Attach file to prompt
+      zh: 将文件附加到提示
+  - cmd: 'opencode auth login'
+    scenario:
+      en: Login to a provider
+      zh: 登录到提供商
+  - cmd: 'opencode auth list'
+    scenario:
+      en: List authenticated providers
+      zh: 列出已认证的提供商
+  - cmd: 'opencode models'
+    scenario:
+      en: List available models
+      zh: 列出可用模型
+  - cmd: 'opencode models --verbose'
+    scenario:
+      en: List models with cost info
+      zh: 列出带成本信息的模型
+  - cmd: 'opencode session list'
+    scenario:
+      en: List all sessions
+      zh: 列出所有会话
+  - cmd: 'opencode session list -n 10'
+    scenario:
+      en: List last 10 sessions
+      zh: 列出最近 10 个会话
+  - cmd: 'opencode stats'
+    scenario:
+      en: Show usage statistics
+      zh: 显示使用统计
+  - cmd: 'opencode stats --days 7'
+    scenario:
+      en: Show stats for last week
+      zh: 显示上周统计
+  - cmd: 'opencode mcp list'
+    scenario:
+      en: List MCP servers
+      zh: 列出 MCP 服务器
+  - cmd: 'opencode mcp add my-server'
+    scenario:
+      en: Add MCP server
+      zh: 添加 MCP 服务器
+  - cmd: 'opencode github install'
+    scenario:
+      en: Install GitHub agent
+      zh: 安装 GitHub 代理
+  - cmd: 'opencode serve --port 8080'
+    scenario:
+      en: Start headless server on port 8080
+      zh: 在端口 8080 启动无头服务器
+  - cmd: 'opencode web'
+    scenario:
+      en: Start server with web interface
+      zh: 启动带 Web 界面的服务器
+  - cmd: 'opencode upgrade'
+    scenario:
+      en: Update to latest version
+      zh: 更新到最新版本
+  - cmd: 'opencode agent list'
+    scenario:
+      en: List available agents
+      zh: 列出可用代理
+  - cmd: 'opencode export session.json'
+    scenario:
+      en: Export session to file
+      zh: 导出会话到文件
+  - cmd: 'opencode import session.json'
+    scenario:
+      en: Import session from file
+      zh: 从文件导入会话
