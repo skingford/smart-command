@@ -103,3 +103,7 @@ subcommands:
 - Path completion triggers when no subcommand/flag matches AND `is_path_completion` is true
 - Short flags can be combined (e.g., `-am` for `-a -m`)
 - Flags that take values stop short-flag chaining
+
+## Requirement
+
+- Fix waning

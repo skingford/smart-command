@@ -128,6 +128,29 @@ impl Output {
             eprintln!("{}", style.paint(format!("Exit: {}", code)));
         }
     }
+
+    /// Display upgrade available notification
+    pub fn upgrade_available(current: &str, latest: &str) {
+        let style = Style::new().fg(Color::Yellow).bold();
+        let version_current = Style::new().fg(Color::DarkGray);
+        let version_new = Style::new().fg(Color::Green).bold();
+        let cmd_style = Style::new().fg(Color::Cyan);
+
+        println!();
+        println!(
+            "  {} {} {} {} {}",
+            style.paint("⬆"),
+            style.paint("发现新版本:"),
+            version_current.paint(current),
+            style.paint("→"),
+            version_new.paint(latest)
+        );
+        println!(
+            "    运行 {} 进行升级",
+            cmd_style.paint("sc upgrade")
+        );
+        println!();
+    }
 }
 
 /// Dangerous command patterns that require confirmation

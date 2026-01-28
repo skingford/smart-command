@@ -86,6 +86,25 @@ pub enum Commands {
         #[arg(long)]
         skip_definitions: bool,
     },
+
+    /// Check for updates and upgrade to the latest version
+    Upgrade {
+        /// Only check for updates, don't install
+        #[arg(long)]
+        check: bool,
+
+        /// Force upgrade even if already on latest
+        #[arg(long)]
+        force: bool,
+
+        /// Skip confirmation prompt
+        #[arg(short = 'y', long)]
+        yes: bool,
+
+        /// Upgrade to specific version (e.g., "0.2.0" or "v0.2.0")
+        #[arg(long)]
+        version: Option<String>,
+    },
 }
 
 #[derive(Subcommand, Debug)]

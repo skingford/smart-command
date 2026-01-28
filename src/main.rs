@@ -36,6 +36,7 @@ mod ui;
 mod validator;
 mod watcher;
 mod plugins;
+mod upgrade;
 
 use ai::{NaturalLanguageTemplates, TypoCorrector};
 use aliases::AliasManager;
@@ -293,8 +294,96 @@ fn handle_subcommand(cmd: Commands, config: &AppConfig) -> anyhow::Result<()> {
             };
             install::run_install(opts)?;
         }
+        Commands::Upgrade { check, force, yes, version } => {
+            handle_upgrade(config, check, force, yes, version.as_deref())?;
+        }
     }
     Ok(())
+}
+
+/// Handle upgrade command
+fn handle_upgrade(
+    config: &AppConfig,
+    check_only: bool,
+    force: bool,
+    skip_confirm: bool,
+    _target_version: Option<&str>,
+) -> anyhow::Result<()> {
+    use upgrade::Upgrader;
+
+    let rt = tokio::runtime::Runtime::new()?;
+
+    rt.block_on(async {
+        let upgrader = Upgrader::new(config.upgrade.clone());
+        let current = Upgrader::current_version();
+
+        Output::info(&format!("当前版本: {}", current));
+        Output::info("正在检查更新...");
+
+        match upgrader.check_for_update().await {
+            Ok(Some(info)) => {
+                Output::success(&format!(
+                    "发现新版本: {} -> {}",
+                    current, info.version
+                ));
+
+                if let Some(notes) = &info.release_notes {
+                    if !notes.is_empty() {
+                        Output::dim("\n更新说明:");
+                        // Show first few lines of release notes
+                        for line in notes.lines().take(10) {
+                            Output::dim(&format!("  {}", line));
+                        }
+                        if notes.lines().count() > 10 {
+                            Output::dim("  ...");
+                        }
+                        println!();
+                    }
+                }
+
+                if check_only {
+                    Output::dim("使用 'sc upgrade' 来安装更新");
+                    return Ok(());
+                }
+
+                // Confirm upgrade
+                if !skip_confirm && !force {
+                    print!("是否立即升级? [Y/n]: ");
+                    io::stdout().flush().ok();
+
+                    let mut input = String::new();
+                    if io::stdin().read_line(&mut input).is_ok() {
+                        let response = input.trim().to_lowercase();
+                        if !response.is_empty() && response != "y" && response != "yes" {
+                            Output::dim("升级已取消");
+                            return Ok(());
+                        }
+                    }
+                }
+
+                // Perform upgrade
+                match upgrader.upgrade(&info).await {
+                    Ok(()) => {
+                        Output::success(&format!("升级完成! 已更新到版本 {}", info.version));
+                        Output::dim("请重启 shell 以使用新版本");
+                    }
+                    Err(e) => {
+                        Output::error(&format!("升级失败: {}", e));
+                        return Err(anyhow::anyhow!("Upgrade failed: {}", e));
+                    }
+                }
+            }
+            Ok(None) => {
+                Output::success(&format!("已是最新版本: {}", current));
+            }
+            Err(e) => {
+                Output::error(&format!("检查更新失败: {}", e));
+                return Err(anyhow::anyhow!("Check failed: {}", e));
+            }
+        }
+
+        Ok(())
+    })
 }
 
 fn run_repl(config: AppConfig) -> anyhow::Result<()> {
@@ -385,7 +474,23 @@ fn run_repl(config: AppConfig) -> anyhow::Result<()> {
     Output::dim("  time        - command statistics Ctrl-D/exit - quit");
     println!();
 
+    // Start background version check if enabled
+    let version_check_rx = if config.upgrade.auto_check {
+        Some(start_background_version_check(config.upgrade.clone()))
+    } else {
+        None
+    };
+
     debug!("REPL started with config: {:?}", config);
+
+    // Check for version update result (non-blocking)
+    if let Some(rx) = version_check_rx {
+        // Give the check a moment to complete
+        std::thread::sleep(std::time::Duration::from_millis(100));
+        if let Ok(Some(new_version)) = rx.try_recv() {
+            Output::upgrade_available(upgrade::Upgrader::current_version(), &new_version);
+        }
+    }
 
     loop {
         let sig = line_editor.read_line(&prompt)?;
@@ -723,6 +828,33 @@ fn handle_cd(parts: &[&str]) {
             *OLDPWD.lock().unwrap() = Some(old);
         }
     }
+}
+
+/// Start background version check
+fn start_background_version_check(
+    config: config::UpgradeConfig,
+) -> std::sync::mpsc::Receiver<Option<String>> {
+    use std::sync::mpsc;
+    use upgrade::Upgrader;
+
+    let (tx, rx) = mpsc::channel();
+
+    std::thread::spawn(move || {
+        let rt = tokio::runtime::Builder::new_current_thread()
+            .enable_all()
+            .build();
+
+        if let Ok(rt) = rt {
+            let result = rt.block_on(async {
+                let upgrader = Upgrader::new(config);
+                upgrader.check_for_update().await.ok().flatten()
+            });
+
+            let _ = tx.send(result.map(|info| info.version));
+        }
+    });
+
+    rx
 }
 
 /// Handle 'config' command

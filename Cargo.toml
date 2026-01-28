@@ -56,13 +56,28 @@ once_cell = "1.19"
 # Edit distance for typo correction
 strsim = "0.11"
 
+# Version parsing for upgrade
+semver = "1.0"
+
+
+# SHA256 checksum verification
+sha2 = "0.10"
+
+# Temp file for upgrade downloads
+tempfile = "3"
+
+# Archive extraction for upgrade
+flate2 = "1"
+tar = "0.4"
+
 [features]
-default = ["providers", "highlighting", "context"]
+default = ["providers", "highlighting", "context", "upgrade"]
 providers = []
 highlighting = []
 context = ["rusqlite"]
 ai = ["reqwest"]
-full = ["providers", "highlighting", "context", "ai"]
+upgrade = ["reqwest"]
+full = ["providers", "highlighting", "context", "ai", "upgrade"]
 
 [[bin]]
 name = "sc"

@@ -43,6 +43,49 @@ pub struct AppConfig {
     /// Shell prompt format
     #[serde(default)]
     pub prompt: PromptConfig,
+
+    /// Upgrade configuration
+    #[serde(default)]
+    pub upgrade: UpgradeConfig,
+}
+
+/// Upgrade configuration
+#[derive(Debug, Deserialize, Clone)]
+pub struct UpgradeConfig {
+    /// Enable automatic version check at startup
+    #[serde(default = "default_true")]
+    pub auto_check: bool,
+
+    /// Check interval in hours (default: 24)
+    #[serde(default = "default_check_interval")]
+    pub check_interval_hours: u64,
+
+    /// GitHub repository (owner/repo)
+    #[serde(default = "default_repo")]
+    pub repository: String,
+
+    /// Include pre-release versions
+    #[serde(default)]
+    pub include_prerelease: bool,
+}
+
+impl Default for UpgradeConfig {
+    fn default() -> Self {
+        Self {
+            auto_check: true,
+            check_interval_hours: default_check_interval(),
+            repository: default_repo(),
+            include_prerelease: false,
+        }
+    }
+}
+
+fn default_check_interval() -> u64 {
+    24
+}
+
+fn default_repo() -> String {
+    "kingford/smart-command".to_string()
 }
 
 /// Prompt configuration
@@ -161,6 +204,7 @@ impl AppConfig {
             definitions_dir: None,
             theme: None,
             prompt: PromptConfig::default(),
+            upgrade: UpgradeConfig::default(),
         }
     }
 
@@ -213,6 +257,19 @@ show_cwd = true
 
 # Prompt indicator character
 indicator = "❯"
+
+[upgrade]
+# Enable automatic version check at startup
+auto_check = true
+
+# Check interval in hours
+check_interval_hours = 24
+
+# GitHub repository for updates
+repository = "kingford/smart-command"
+
+# Include pre-release versions
+include_prerelease = false
 "#
     .to_string()
 }

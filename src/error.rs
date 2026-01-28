@@ -32,6 +32,40 @@ pub enum AppError {
 
     #[error("Shell completion generation failed: {0}")]
     CompletionGeneration(String),
+
+    #[error("Upgrade error: {0}")]
+    Upgrade(#[from] UpgradeError),
+}
+
+/// Upgrade-related errors
+#[derive(Error, Debug)]
+pub enum UpgradeError {
+    #[error("检查更新失败: {0}")]
+    CheckFailed(String),
+
+    #[error("下载更新失败: {0}")]
+    DownloadFailed(String),
+
+    #[error("校验和不匹配")]
+    ChecksumMismatch,
+
+    #[error("安装更新失败: {0}")]
+    InstallFailed(String),
+
+    #[error("不支持的平台: {0}")]
+    UnsupportedPlatform(String),
+
+    #[error("网络不可用")]
+    NetworkUnavailable,
+
+    #[error("GitHub API 请求限制")]
+    RateLimited,
+
+    #[error("IO 错误: {0}")]
+    Io(#[from] std::io::Error),
+
+    #[error("解析错误: {0}")]
+    Parse(String),
 }
 
 /// Command execution errors
