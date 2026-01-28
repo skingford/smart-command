@@ -65,7 +65,7 @@ ai = ["reqwest"]
 full = ["providers", "highlighting", "context", "ai"]
 
 [[bin]]
-name = "smart-command"
+name = "sc"
 path = "src/main.rs"
 
 [package.metadata.deb]
@@ -79,7 +79,7 @@ Features include fuzzy search, multi-language support, and Git integration.
 section = "utility"
 priority = "optional"
 assets = [
-    ["target/release/smart-command", "usr/bin/", "755"],
+    ["target/release/sc", "usr/bin/", "755"],
     ["definitions/*", "usr/share/smart-command/definitions/", "644"],
     ["README.md", "usr/share/doc/smart-command/", "644"],
 ]
