@@ -3,6 +3,7 @@
 //! Provides completions for process names and PIDs for kill/pkill commands.
 
 use super::{CompletionProvider, ProviderContext, ProviderSuggestion};
+#[cfg(any(target_os = "macos", target_os = "linux"))]
 use std::process::Command;
 use std::time::Duration;
 
