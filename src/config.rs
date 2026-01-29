@@ -823,24 +823,31 @@ model = "anthropic/claude-sonnet-4"
 # provider_type = "claude"
 # api_key = "$MY_PROXY_API_KEY"
 # endpoint = "https://my-relay.example.com/claude/v1/messages"
-# model = "claude-3-haiku-20240307"
+# model = "claude-sonnet-4-20250514"
 #
 # Example: Using an OpenAI-compatible relay (e.g., one-api, new-api)
 # [ai.providers.openai-relay]
 # provider_type = "openai"
 # api_key = "$RELAY_API_KEY"
 # endpoint = "https://relay.example.com/v1/chat/completions"
-# model = "gpt-4"
+# model = "gpt-4o-mini"
 
 #------------------------------------------------------------------------------
-# REPL Commands for AI Management
+# REPL Commands
 #------------------------------------------------------------------------------
-# In the shell, you can use these commands:
-#
+# AI Commands:
 #   ai list              - List all configured providers
 #   ai use <provider>    - Switch to a different provider
 #   ai test              - Test the current provider connection
 #   ai status            - Show current AI configuration status
+#   ai providers         - Show available provider types
+#   ?ai <query>          - Generate command with AI
+#
+# Config Commands:
+#   config check         - Validate this config file
+#   config show          - Show current config
+#   config edit          - Edit config in $EDITOR
+#   config path          - Show config file path
 #
 # Example:
 #   > ai list

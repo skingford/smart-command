@@ -1405,6 +1405,7 @@ fn handle_ai_command(ai_config: &mut AiConfig, subcommand: &str, args: &[&str]) 
             Output::dim("  ai use <provider>    - Switch to a different provider");
             Output::dim("  ai test              - Test the current provider connection");
             Output::dim("  ai providers         - Show available provider types");
+            Output::dim("  config edit          - Edit config file");
             println!();
         }
 

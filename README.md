@@ -249,7 +249,30 @@ examples
 | `bookmark` / `bm` | Manage directory bookmarks |
 | `@<bookmark>` | Jump to bookmarked directory |
 | `:<snippet>` | Expand saved snippet |
+
+**Config Commands:**
+
+| Command | Action |
+|---------|--------|
+| `config check` | Validate config file |
+| `config show` | Show current config |
+| `config path` | Show config file path |
+| `config edit` | Edit config in $EDITOR |
+| `config init` | Initialize config file |
+| `config example` | Print example config |
 | `config set-lang <lang>` | Change language (en/zh) |
+
+**AI Commands:**
+
+| Command | Action |
+|---------|--------|
+| `ai status` | Show AI configuration |
+| `ai list` | List configured providers |
+| `ai use <provider>` | Switch AI provider |
+| `ai test` | Test provider connection |
+| `ai providers` | Show available provider types |
+| `ai enable` / `ai disable` | Enable/disable AI |
+| `?ai <query>` | Generate command with AI |
 
 ### Search Results
 
