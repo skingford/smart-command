@@ -152,6 +152,67 @@ pub struct CommandSpec {
     pub common_flag_combos: Vec<FlagCombo>,
 }
 
+/// Flag category for grouping in help display
+#[derive(Debug, Clone, Default, Serialize, Deserialize, PartialEq, Eq, Hash)]
+#[serde(rename_all = "snake_case")]
+pub enum FlagCategory {
+    /// Common/frequently used options
+    #[default]
+    Common,
+    /// File-related options
+    File,
+    /// Output formatting options
+    Output,
+    /// Network-related options
+    Network,
+    /// Debug/verbose options
+    Debug,
+    /// Advanced/rarely used options
+    Advanced,
+    /// Configuration options
+    Config,
+    /// Filter/selection options
+    Filter,
+}
+
+impl FlagCategory {
+    /// Get the display name for this category
+    pub fn display_name(&self, lang: &str) -> &'static str {
+        match (self, lang) {
+            (FlagCategory::Common, "zh") => "常用选项",
+            (FlagCategory::Common, _) => "Common Options",
+            (FlagCategory::File, "zh") => "文件选项",
+            (FlagCategory::File, _) => "File Options",
+            (FlagCategory::Output, "zh") => "输出选项",
+            (FlagCategory::Output, _) => "Output Options",
+            (FlagCategory::Network, "zh") => "网络选项",
+            (FlagCategory::Network, _) => "Network Options",
+            (FlagCategory::Debug, "zh") => "调试选项",
+            (FlagCategory::Debug, _) => "Debug Options",
+            (FlagCategory::Advanced, "zh") => "高级选项",
+            (FlagCategory::Advanced, _) => "Advanced Options",
+            (FlagCategory::Config, "zh") => "配置选项",
+            (FlagCategory::Config, _) => "Config Options",
+            (FlagCategory::Filter, "zh") => "过滤选项",
+            (FlagCategory::Filter, _) => "Filter Options",
+        }
+    }
+
+    /// Get the sort order for categories (lower = first)
+    pub fn sort_order(&self) -> u8 {
+        match self {
+            FlagCategory::Common => 0,
+            FlagCategory::File => 1,
+            FlagCategory::Output => 2,
+            FlagCategory::Filter => 3,
+            FlagCategory::Network => 4,
+            FlagCategory::Config => 5,
+            FlagCategory::Debug => 6,
+            FlagCategory::Advanced => 7,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct FlagSpec {
     pub long: Option<String>,
@@ -162,6 +223,9 @@ pub struct FlagSpec {
     /// Type of the flag's value for validation
     #[serde(default)]
     pub value_type: Option<ArgumentType>,
+    /// Category for grouping in help display
+    #[serde(default)]
+    pub category: FlagCategory,
 }
 
 impl CommandSpec {

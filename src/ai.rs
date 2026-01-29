@@ -7,6 +7,671 @@
 
 use strsim::levenshtein;
 use std::collections::HashMap;
+use std::env;
+use std::time::Duration;
+use crate::config::{AiConfig, EffectiveAiSettings, ProviderType};
+
+/// AI Provider for generating shell commands from natural language
+pub mod llm {
+    use super::*;
+    use serde::{Deserialize, Serialize};
+
+    /// Error type for AI operations
+    #[derive(Debug)]
+    pub enum AiError {
+        NotEnabled,
+        NoApiKey,
+        NetworkError(String),
+        ApiError(String),
+        ParseError(String),
+        Timeout,
+    }
+
+    impl std::fmt::Display for AiError {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+            match self {
+                AiError::NotEnabled => write!(f, "AI completion is not enabled"),
+                AiError::NoApiKey => write!(f, "No API key configured"),
+                AiError::NetworkError(e) => write!(f, "Network error: {}", e),
+                AiError::ApiError(e) => write!(f, "API error: {}", e),
+                AiError::ParseError(e) => write!(f, "Parse error: {}", e),
+                AiError::Timeout => write!(f, "Request timed out"),
+            }
+        }
+    }
+
+    impl std::error::Error for AiError {}
+
+    /// Context for AI command generation
+    #[derive(Debug, Clone)]
+    pub struct AiContext {
+        pub cwd: String,
+        pub shell: String,
+        pub os: String,
+        pub recent_commands: Vec<String>,
+    }
+
+    impl Default for AiContext {
+        fn default() -> Self {
+            Self {
+                cwd: env::current_dir()
+                    .map(|p| p.to_string_lossy().to_string())
+                    .unwrap_or_else(|_| ".".to_string()),
+                shell: env::var("SHELL").unwrap_or_else(|_| "bash".to_string()),
+                os: env::consts::OS.to_string(),
+                recent_commands: Vec::new(),
+            }
+        }
+    }
+
+    /// Claude API request/response types
+    #[derive(Debug, Serialize)]
+    struct ClaudeRequest {
+        model: String,
+        max_tokens: u32,
+        messages: Vec<ClaudeMessage>,
+        system: Option<String>,
+    }
+
+    #[derive(Debug, Serialize)]
+    struct ClaudeMessage {
+        role: String,
+        content: String,
+    }
+
+    #[derive(Debug, Deserialize)]
+    struct ClaudeResponse {
+        content: Vec<ClaudeContent>,
+    }
+
+    #[derive(Debug, Deserialize)]
+    struct ClaudeContent {
+        text: String,
+    }
+
+    /// OpenAI-compatible API request/response types (for Gemini, GLM, custom)
+    #[derive(Debug, Serialize)]
+    struct OpenAiRequest {
+        model: String,
+        messages: Vec<OpenAiMessage>,
+        max_tokens: u32,
+        temperature: f32,
+    }
+
+    #[derive(Debug, Serialize)]
+    struct OpenAiMessage {
+        role: String,
+        content: String,
+    }
+
+    #[derive(Debug, Deserialize)]
+    struct OpenAiResponse {
+        choices: Vec<OpenAiChoice>,
+    }
+
+    #[derive(Debug, Deserialize)]
+    struct OpenAiChoice {
+        message: OpenAiMessageContent,
+    }
+
+    #[derive(Debug, Deserialize)]
+    struct OpenAiMessageContent {
+        content: String,
+    }
+
+    /// AI command generator with multi-provider support
+    pub struct AiCommandGenerator {
+        config: AiConfig,
+        effective: EffectiveAiSettings,
+        client: reqwest::blocking::Client,
+    }
+
+    impl AiCommandGenerator {
+        pub fn new(config: &AiConfig) -> Self {
+            let effective = config.get_effective_settings();
+            let client = reqwest::blocking::Client::builder()
+                .timeout(Duration::from_secs(effective.timeout_secs))
+                .build()
+                .unwrap_or_else(|_| reqwest::blocking::Client::new());
+
+            Self {
+                config: config.clone(),
+                effective,
+                client,
+            }
+        }
+
+        /// Rebuild the client with new settings (used after switching providers)
+        pub fn refresh(&mut self) {
+            self.effective = self.config.get_effective_settings();
+            self.client = reqwest::blocking::Client::builder()
+                .timeout(Duration::from_secs(self.effective.timeout_secs))
+                .build()
+                .unwrap_or_else(|_| reqwest::blocking::Client::new());
+        }
+
+        /// Get the current effective settings
+        pub fn get_settings(&self) -> &EffectiveAiSettings {
+            &self.effective
+        }
+
+        /// Resolve API key (expand environment variable references)
+        /// NOTE: Always use environment variable references (e.g., $ANTHROPIC_API_KEY)
+        /// to avoid storing API keys in plain text config files.
+        fn resolve_api_key(&self) -> Option<String> {
+            let key = self.effective.api_key.as_ref()?;
+
+            if key.starts_with('$') {
+                let var_name = &key[1..];
+                env::var(var_name).ok()
+            } else {
+                // Warn user about security risk of plain text API keys
+                eprintln!(
+                    "\x1b[33mWarning: Using plain text API key in config. \
+                    Consider using environment variable reference (e.g., $ANTHROPIC_API_KEY) instead.\x1b[0m"
+                );
+                Some(key.clone())
+            }
+        }
+
+        /// Generate a shell command from natural language
+        pub fn generate(&self, query: &str, context: &AiContext) -> Result<String, AiError> {
+            if !self.effective.enabled {
+                return Err(AiError::NotEnabled);
+            }
+
+            // Ollama doesn't require API key
+            let api_key = if self.effective.provider_type == ProviderType::Ollama {
+                String::new()
+            } else {
+                self.resolve_api_key().ok_or(AiError::NoApiKey)?
+            };
+
+            // Build the prompt with context
+            let user_prompt = format!(
+                "Working directory: {}\nShell: {}\nOS: {}\n\nUser request: {}\n\nGenerate ONLY the shell command, no explanation.",
+                context.cwd, context.shell, context.os, query
+            );
+
+            match self.effective.provider_type {
+                ProviderType::Claude => self.call_claude(&api_key, &user_prompt),
+                ProviderType::Gemini => self.call_gemini(&api_key, &user_prompt),
+                ProviderType::OpenAI => self.call_openai(&api_key, &user_prompt),
+                ProviderType::GLM => self.call_glm(&api_key, &user_prompt),
+                ProviderType::DeepSeek => self.call_deepseek(&api_key, &user_prompt),
+                ProviderType::Qwen => self.call_qwen(&api_key, &user_prompt),
+                ProviderType::Ollama => self.call_ollama(&user_prompt),
+                ProviderType::OpenRouter => self.call_openrouter(&api_key, &user_prompt),
+                ProviderType::Custom => self.call_custom(&api_key, &user_prompt),
+            }
+        }
+
+        /// Test the connection to the current provider
+        pub fn test_connection(&self) -> Result<String, AiError> {
+            if !self.effective.enabled {
+                return Err(AiError::NotEnabled);
+            }
+
+            // Simple test query
+            let context = AiContext::default();
+            match self.generate("echo hello", &context) {
+                Ok(_) => Ok(format!("✓ Connected to {} successfully", self.effective.provider_type)),
+                Err(e) => Err(e),
+            }
+        }
+
+        fn call_claude(&self, api_key: &str, user_prompt: &str) -> Result<String, AiError> {
+            let model = self.effective.model.clone()
+                .unwrap_or_else(|| "claude-sonnet-4-20250514".to_string());
+
+            // Support custom endpoint for proxy/relay services
+            let endpoint = self.effective.endpoint.clone()
+                .unwrap_or_else(|| "https://api.anthropic.com/v1/messages".to_string());
+
+            let request = ClaudeRequest {
+                model,
+                max_tokens: self.effective.max_tokens,
+                messages: vec![ClaudeMessage {
+                    role: "user".to_string(),
+                    content: user_prompt.to_string(),
+                }],
+                system: Some(self.effective.system_prompt.clone()),
+            };
+
+            let response = self.client
+                .post(&endpoint)
+                .header("x-api-key", api_key)
+                .header("anthropic-version", "2023-06-01")
+                .header("content-type", "application/json")
+                .json(&request)
+                .send()
+                .map_err(|e| AiError::NetworkError(e.to_string()))?;
+
+            if !response.status().is_success() {
+                let status = response.status();
+                let body = response.text().unwrap_or_default();
+                return Err(AiError::ApiError(format!("Status {}: {}", status, body)));
+            }
+
+            let result: ClaudeResponse = response.json()
+                .map_err(|e| AiError::ParseError(e.to_string()))?;
+
+            result.content.first()
+                .map(|c| c.text.trim().to_string())
+                .ok_or_else(|| AiError::ParseError("Empty response".to_string()))
+        }
+
+        fn call_openai(&self, api_key: &str, user_prompt: &str) -> Result<String, AiError> {
+            let model = self.effective.model.clone()
+                .unwrap_or_else(|| "gpt-4o-mini".to_string());
+
+            let endpoint = self.effective.endpoint.clone()
+                .unwrap_or_else(|| "https://api.openai.com/v1/chat/completions".to_string());
+
+            let request = OpenAiRequest {
+                model,
+                messages: vec![
+                    OpenAiMessage {
+                        role: "system".to_string(),
+                        content: self.effective.system_prompt.clone(),
+                    },
+                    OpenAiMessage {
+                        role: "user".to_string(),
+                        content: user_prompt.to_string(),
+                    },
+                ],
+                max_tokens: self.effective.max_tokens,
+                temperature: self.effective.temperature,
+            };
+
+            let response = self.client
+                .post(&endpoint)
+                .header("Authorization", format!("Bearer {}", api_key))
+                .header("content-type", "application/json")
+                .json(&request)
+                .send()
+                .map_err(|e| AiError::NetworkError(e.to_string()))?;
+
+            if !response.status().is_success() {
+                let status = response.status();
+                let body = response.text().unwrap_or_default();
+                return Err(AiError::ApiError(format!("Status {}: {}", status, body)));
+            }
+
+            let result: OpenAiResponse = response.json()
+                .map_err(|e| AiError::ParseError(e.to_string()))?;
+
+            result.choices.first()
+                .map(|c| c.message.content.trim().to_string())
+                .ok_or_else(|| AiError::ParseError("Empty response".to_string()))
+        }
+
+        fn call_gemini(&self, api_key: &str, user_prompt: &str) -> Result<String, AiError> {
+            // NOTE: Gemini API requires API key in URL query parameter (for official endpoint).
+            // Custom endpoints (proxy/relay) may use different auth methods.
+            let model = self.effective.model.clone()
+                .unwrap_or_else(|| "gemini-2.0-flash".to_string());
+
+            // Support custom endpoint for proxy/relay services
+            let endpoint = if let Some(ref custom_endpoint) = self.effective.endpoint {
+                // Custom endpoint - append model and key if not already in URL
+                if custom_endpoint.contains("?key=") || custom_endpoint.contains("&key=") {
+                    custom_endpoint.clone()
+                } else if custom_endpoint.contains('?') {
+                    format!("{}&key={}", custom_endpoint, api_key)
+                } else {
+                    format!("{}?key={}", custom_endpoint, api_key)
+                }
+            } else {
+                // Default Google endpoint
+                format!(
+                    "https://generativelanguage.googleapis.com/v1beta/models/{}:generateContent?key={}",
+                    model, api_key
+                )
+            };
+
+            // Gemini has a different request format
+            #[derive(Serialize)]
+            struct GeminiRequest {
+                contents: Vec<GeminiContent>,
+            }
+
+            #[derive(Serialize)]
+            struct GeminiContent {
+                parts: Vec<GeminiPart>,
+            }
+
+            #[derive(Serialize)]
+            struct GeminiPart {
+                text: String,
+            }
+
+            #[derive(Deserialize)]
+            struct GeminiResponse {
+                candidates: Vec<GeminiCandidate>,
+            }
+
+            #[derive(Deserialize)]
+            struct GeminiCandidate {
+                content: GeminiContentResp,
+            }
+
+            #[derive(Deserialize)]
+            struct GeminiContentResp {
+                parts: Vec<GeminiPartResp>,
+            }
+
+            #[derive(Deserialize)]
+            struct GeminiPartResp {
+                text: String,
+            }
+
+            let full_prompt = format!("{}\n\n{}", self.effective.system_prompt, user_prompt);
+            let request = GeminiRequest {
+                contents: vec![GeminiContent {
+                    parts: vec![GeminiPart {
+                        text: full_prompt,
+                    }],
+                }],
+            };
+
+            let response = self.client
+                .post(&endpoint)
+                .header("content-type", "application/json")
+                .json(&request)
+                .send()
+                .map_err(|e| AiError::NetworkError(e.to_string()))?;
+
+            if !response.status().is_success() {
+                let status = response.status();
+                let body = response.text().unwrap_or_default();
+                return Err(AiError::ApiError(format!("Status {}: {}", status, body)));
+            }
+
+            let result: GeminiResponse = response.json()
+                .map_err(|e| AiError::ParseError(e.to_string()))?;
+
+            result.candidates.first()
+                .and_then(|c| c.content.parts.first())
+                .map(|p| p.text.trim().to_string())
+                .ok_or_else(|| AiError::ParseError("Empty response".to_string()))
+        }
+
+        fn call_glm(&self, api_key: &str, user_prompt: &str) -> Result<String, AiError> {
+            // GLM (智谱AI) uses OpenAI-compatible format
+            let model = self.effective.model.clone()
+                .unwrap_or_else(|| "glm-4-plus".to_string());
+
+            let endpoint = self.effective.endpoint.clone()
+                .unwrap_or_else(|| "https://open.bigmodel.cn/api/paas/v4/chat/completions".to_string());
+
+            let request = OpenAiRequest {
+                model,
+                messages: vec![
+                    OpenAiMessage {
+                        role: "system".to_string(),
+                        content: self.effective.system_prompt.clone(),
+                    },
+                    OpenAiMessage {
+                        role: "user".to_string(),
+                        content: user_prompt.to_string(),
+                    },
+                ],
+                max_tokens: self.effective.max_tokens,
+                temperature: self.effective.temperature,
+            };
+
+            let response = self.client
+                .post(&endpoint)
+                .header("Authorization", format!("Bearer {}", api_key))
+                .header("content-type", "application/json")
+                .json(&request)
+                .send()
+                .map_err(|e| AiError::NetworkError(e.to_string()))?;
+
+            if !response.status().is_success() {
+                let status = response.status();
+                let body = response.text().unwrap_or_default();
+                return Err(AiError::ApiError(format!("Status {}: {}", status, body)));
+            }
+
+            let result: OpenAiResponse = response.json()
+                .map_err(|e| AiError::ParseError(e.to_string()))?;
+
+            result.choices.first()
+                .map(|c| c.message.content.trim().to_string())
+                .ok_or_else(|| AiError::ParseError("Empty response".to_string()))
+        }
+
+        fn call_custom(&self, api_key: &str, user_prompt: &str) -> Result<String, AiError> {
+            // Custom provider uses OpenAI-compatible format
+            let endpoint = self.effective.endpoint.clone()
+                .ok_or_else(|| AiError::ApiError("Custom provider requires endpoint".to_string()))?;
+
+            let model = self.effective.model.clone()
+                .unwrap_or_else(|| "default".to_string());
+
+            let request = OpenAiRequest {
+                model,
+                messages: vec![
+                    OpenAiMessage {
+                        role: "system".to_string(),
+                        content: self.effective.system_prompt.clone(),
+                    },
+                    OpenAiMessage {
+                        role: "user".to_string(),
+                        content: user_prompt.to_string(),
+                    },
+                ],
+                max_tokens: self.effective.max_tokens,
+                temperature: self.effective.temperature,
+            };
+
+            let response = self.client
+                .post(&endpoint)
+                .header("Authorization", format!("Bearer {}", api_key))
+                .header("content-type", "application/json")
+                .json(&request)
+                .send()
+                .map_err(|e| AiError::NetworkError(e.to_string()))?;
+
+            if !response.status().is_success() {
+                let status = response.status();
+                let body = response.text().unwrap_or_default();
+                return Err(AiError::ApiError(format!("Status {}: {}", status, body)));
+            }
+
+            let result: OpenAiResponse = response.json()
+                .map_err(|e| AiError::ParseError(e.to_string()))?;
+
+            result.choices.first()
+                .map(|c| c.message.content.trim().to_string())
+                .ok_or_else(|| AiError::ParseError("Empty response".to_string()))
+        }
+
+        /// DeepSeek - Uses OpenAI-compatible format
+        fn call_deepseek(&self, api_key: &str, user_prompt: &str) -> Result<String, AiError> {
+            let model = self.effective.model.clone()
+                .unwrap_or_else(|| "deepseek-chat".to_string());
+
+            let endpoint = self.effective.endpoint.clone()
+                .unwrap_or_else(|| "https://api.deepseek.com/v1/chat/completions".to_string());
+
+            self.call_openai_compatible(&endpoint, api_key, &model, user_prompt)
+        }
+
+        /// Qwen (通义千问) - Uses OpenAI-compatible format
+        fn call_qwen(&self, api_key: &str, user_prompt: &str) -> Result<String, AiError> {
+            let model = self.effective.model.clone()
+                .unwrap_or_else(|| "qwen-max".to_string());
+
+            let endpoint = self.effective.endpoint.clone()
+                .unwrap_or_else(|| "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions".to_string());
+
+            self.call_openai_compatible(&endpoint, api_key, &model, user_prompt)
+        }
+
+        /// OpenRouter - Access multiple providers through one API
+        fn call_openrouter(&self, api_key: &str, user_prompt: &str) -> Result<String, AiError> {
+            let model = self.effective.model.clone()
+                .unwrap_or_else(|| "anthropic/claude-sonnet-4".to_string());
+
+            let endpoint = self.effective.endpoint.clone()
+                .unwrap_or_else(|| "https://openrouter.ai/api/v1/chat/completions".to_string());
+
+            let request = OpenAiRequest {
+                model,
+                messages: vec![
+                    OpenAiMessage {
+                        role: "system".to_string(),
+                        content: self.effective.system_prompt.clone(),
+                    },
+                    OpenAiMessage {
+                        role: "user".to_string(),
+                        content: user_prompt.to_string(),
+                    },
+                ],
+                max_tokens: self.effective.max_tokens,
+                temperature: self.effective.temperature,
+            };
+
+            let response = self.client
+                .post(&endpoint)
+                .header("Authorization", format!("Bearer {}", api_key))
+                .header("HTTP-Referer", "https://github.com/skingford/smart-command")
+                .header("X-Title", "Smart Command")
+                .header("content-type", "application/json")
+                .json(&request)
+                .send()
+                .map_err(|e| AiError::NetworkError(e.to_string()))?;
+
+            if !response.status().is_success() {
+                let status = response.status();
+                let body = response.text().unwrap_or_default();
+                return Err(AiError::ApiError(format!("Status {}: {}", status, body)));
+            }
+
+            let result: OpenAiResponse = response.json()
+                .map_err(|e| AiError::ParseError(e.to_string()))?;
+
+            result.choices.first()
+                .map(|c| c.message.content.trim().to_string())
+                .ok_or_else(|| AiError::ParseError("Empty response".to_string()))
+        }
+
+        /// Ollama - Local models (no API key required)
+        fn call_ollama(&self, user_prompt: &str) -> Result<String, AiError> {
+            let model = self.effective.model.clone()
+                .unwrap_or_else(|| "qwen2.5:7b".to_string());
+
+            let endpoint = self.effective.endpoint.clone()
+                .unwrap_or_else(|| "http://localhost:11434/api/chat".to_string());
+
+            // Ollama has its own request format
+            #[derive(Serialize)]
+            struct OllamaRequest {
+                model: String,
+                messages: Vec<OllamaMessage>,
+                stream: bool,
+            }
+
+            #[derive(Serialize)]
+            struct OllamaMessage {
+                role: String,
+                content: String,
+            }
+
+            #[derive(Deserialize)]
+            struct OllamaResponse {
+                message: OllamaResponseMessage,
+            }
+
+            #[derive(Deserialize)]
+            struct OllamaResponseMessage {
+                content: String,
+            }
+
+            let request = OllamaRequest {
+                model,
+                messages: vec![
+                    OllamaMessage {
+                        role: "system".to_string(),
+                        content: self.effective.system_prompt.clone(),
+                    },
+                    OllamaMessage {
+                        role: "user".to_string(),
+                        content: user_prompt.to_string(),
+                    },
+                ],
+                stream: false,
+            };
+
+            let response = self.client
+                .post(&endpoint)
+                .header("content-type", "application/json")
+                .json(&request)
+                .send()
+                .map_err(|e| AiError::NetworkError(e.to_string()))?;
+
+            if !response.status().is_success() {
+                let status = response.status();
+                let body = response.text().unwrap_or_default();
+                return Err(AiError::ApiError(format!("Status {}: {}", status, body)));
+            }
+
+            let result: OllamaResponse = response.json()
+                .map_err(|e| AiError::ParseError(e.to_string()))?;
+
+            Ok(result.message.content.trim().to_string())
+        }
+
+        /// Helper for OpenAI-compatible APIs (used by DeepSeek, Qwen, etc.)
+        fn call_openai_compatible(
+            &self,
+            endpoint: &str,
+            api_key: &str,
+            model: &str,
+            user_prompt: &str,
+        ) -> Result<String, AiError> {
+            let request = OpenAiRequest {
+                model: model.to_string(),
+                messages: vec![
+                    OpenAiMessage {
+                        role: "system".to_string(),
+                        content: self.effective.system_prompt.clone(),
+                    },
+                    OpenAiMessage {
+                        role: "user".to_string(),
+                        content: user_prompt.to_string(),
+                    },
+                ],
+                max_tokens: self.effective.max_tokens,
+                temperature: self.effective.temperature,
+            };
+
+            let response = self.client
+                .post(endpoint)
+                .header("Authorization", format!("Bearer {}", api_key))
+                .header("content-type", "application/json")
+                .json(&request)
+                .send()
+                .map_err(|e| AiError::NetworkError(e.to_string()))?;
+
+            if !response.status().is_success() {
+                let status = response.status();
+                let body = response.text().unwrap_or_default();
+                return Err(AiError::ApiError(format!("Status {}: {}", status, body)));
+            }
+
+            let result: OpenAiResponse = response.json()
+                .map_err(|e| AiError::ParseError(e.to_string()))?;
+
+            result.choices.first()
+                .map(|c| c.message.content.trim().to_string())
+                .ok_or_else(|| AiError::ParseError("Empty response".to_string()))
+        }
+    }
+}
 
 /// Typo correction using edit distance
 pub struct TypoCorrector {

@@ -10,90 +10,107 @@ subcommands:
     flags:
       - long: detach
         short: d
+        category: common
         description:
           en: Run container in background
           zh: 在后台运行容器
       - long: interactive
         short: i
+        category: common
         description:
           en: Keep STDIN open
           zh: 保持标准输入打开
       - long: tty
         short: t
+        category: common
         description:
           en: Allocate a pseudo-TTY
           zh: 分配伪终端
       - long: rm
+        category: common
         description:
           en: Automatically remove container when it exits
           zh: 容器退出时自动删除
       - long: name
+        category: common
         description:
           en: Assign a name to the container
           zh: 为容器指定名称
         takes_value: true
       - long: publish
         short: p
+        category: network
         description:
           en: Publish container port to host
           zh: 发布容器端口到主机
         takes_value: true
       - long: volume
         short: v
+        category: file
         description:
           en: Bind mount a volume
           zh: 绑定挂载卷
         takes_value: true
       - long: env
         short: e
+        category: config
         description:
           en: Set environment variables
           zh: 设置环境变量
         takes_value: true
       - long: env-file
+        category: config
         description:
           en: Read in a file of environment variables
           zh: 从文件读取环境变量
         takes_value: true
       - long: network
+        category: network
         description:
           en: Connect container to a network
           zh: 将容器连接到网络
         takes_value: true
       - long: workdir
         short: w
+        category: config
         description:
           en: Working directory inside the container
           zh: 容器内的工作目录
         takes_value: true
       - long: user
         short: u
+        category: config
         description:
           en: Username or UID
           zh: 用户名或UID
         takes_value: true
       - long: entrypoint
+        category: advanced
         description:
           en: Overwrite the default ENTRYPOINT
           zh: 覆盖默认入口点
         takes_value: true
       - long: restart
+        category: config
         description:
           en: Restart policy
           zh: 重启策略
         takes_value: true
       - long: memory
         short: m
+        category: advanced
         description:
           en: Memory limit
           zh: 内存限制
         takes_value: true
       - long: cpus
+        category: advanced
         description:
           en: Number of CPUs
           zh: CPU数量
         takes_value: true
       - long: platform
+        category: advanced
         description:
           en: Set platform if server is multi-platform capable
           zh: 设置平台（如服务器支持多平台）

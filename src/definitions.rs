@@ -1,4 +1,4 @@
-use crate::command_def::{CommandSpec, FlagSpec};
+use crate::command_def::{CommandSpec, FlagCategory, FlagSpec};
 
 pub fn other_specs() -> Vec<CommandSpec> {
     vec![
@@ -9,6 +9,7 @@ pub fn other_specs() -> Vec<CommandSpec> {
                 description: "Include entries starting with .".into(),
                 takes_value: false,
                 value_type: None,
+                category: FlagCategory::Common,
             })
             .field("is_path_completion", true),
         CommandSpec::new("cd", "Change the shell working directory")

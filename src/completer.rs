@@ -330,6 +330,11 @@ impl SmartCompleter {
         self.commands.keys().cloned().collect()
     }
 
+    /// Get command spec by name (for help mode)
+    pub fn get_command_spec(&self, name: &str) -> Option<&CommandSpec> {
+        self.commands.get(name)
+    }
+
     /// Get completions from dynamic providers
     fn get_provider_completions(
         &self,

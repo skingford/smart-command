@@ -6,6 +6,9 @@ An intelligent shell with context-aware command completion, fuzzy search, and mu
 
 - **Smart Completion**: Tab completion with subcommand and flag suggestions
 - **Combined Flag Completion**: Smart suggestions for common flag combinations (e.g., `tar -zxvf`)
+- **Help Mode**: Type `command ?` to see all options grouped by category (common, file, output, etc.)
+- **Context-Aware Variables**: Smart suggestions for `export JAVA_HOME=`, `export PATH=`, etc.
+- **AI Command Generation**: Press `Alt+L` or type `?ai <query>` to generate commands with Claude/Gemini/OpenAI
 - **Fuzzy Search**: Type `/keyword` to search across commands, descriptions, and examples
 - **History Prefix Search**: `Ctrl+R` to search history by prefix, real-time filtering
 - **Example Browser**: View and search command examples with `example` command
@@ -226,7 +229,10 @@ examples
 |-----|--------|
 | `Tab` | Trigger completion menu |
 | `/` + keyword | Search commands |
-| `?` + query | Natural language query |
+| `?` + query | Natural language query (local templates) |
+| `command ?` | Show categorized help for command |
+| `?ai` + query | AI-powered command generation |
+| `Alt+L` | Trigger AI command generation |
 | `Ctrl+R` | History prefix search |
 | `Alt+H` | History menu |
 | `Ctrl+C` | Clear current line |

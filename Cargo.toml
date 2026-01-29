@@ -46,7 +46,7 @@ rusqlite = { version = "0.31", features = ["bundled"], optional = true }
 
 # HTTP client for npm/AI APIs (optional)
 # Use rustls-tls to avoid OpenSSL dependency issues in cross-compilation
-reqwest = { version = "0.11", default-features = false, features = ["json", "rustls-tls"], optional = true }
+reqwest = { version = "0.11", default-features = false, features = ["json", "rustls-tls", "blocking"], optional = true }
 
 # LRU cache for providers
 lru = "0.12"

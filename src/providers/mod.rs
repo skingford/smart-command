@@ -7,6 +7,7 @@
 
 pub mod docker;
 pub mod env;
+pub mod export;
 pub mod git;
 pub mod kubernetes;
 pub mod make;
@@ -146,6 +147,7 @@ impl ProviderRegistry {
                 "git".to_string(),
                 "docker".to_string(),
                 "env".to_string(),
+                "export".to_string(),
                 "ssh".to_string(),
                 "process".to_string(),
                 "npm".to_string(),
@@ -174,6 +176,7 @@ impl ProviderRegistry {
 
         // System providers
         self.register(Box::new(env::EnvVarProvider::new()));
+        self.register(Box::new(export::ExportProvider::new()));
         self.register(Box::new(process::ProcessProvider::new()));
         self.register(Box::new(ssh::SshHostProvider::new()));
 

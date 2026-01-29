@@ -43,7 +43,7 @@ use aliases::AliasManager;
 use bookmarks::BookmarkManager;
 use cli::{Cli, Commands, ConfigAction};
 use completer::SmartCompleter;
-use config::AppConfig;
+use config::{AiConfig, AppConfig, ProviderType};
 use highlighter::{SmartHighlighter, SyntaxTheme};
 use hinter::SmartHinter;
 use install::InstallOptions;
@@ -415,7 +415,7 @@ fn handle_upgrade(
     })
 }
 
-fn run_repl(config: AppConfig) -> anyhow::Result<()> {
+fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
     let definitions_dir = config
         .definitions_dir
         .clone()
@@ -455,6 +455,13 @@ fn run_repl(config: AppConfig) -> anyhow::Result<()> {
         reedline::KeyModifiers::CONTROL,
         reedline::KeyCode::Char('r'),
         ReedlineEvent::SearchHistory,
+    );
+
+    // Alt+L - AI command generation (requires configuration)
+    keybindings.add_binding(
+        reedline::KeyModifiers::ALT,
+        reedline::KeyCode::Char('l'),
+        ReedlineEvent::Edit(vec![reedline::EditCommand::InsertString("?ai ".to_string())]),
     );
 
     let command_names: Vec<String> = completer.get_command_names();
@@ -565,7 +572,110 @@ fn run_repl(config: AppConfig) -> anyhow::Result<()> {
                             continue;
                         }
 
-                        // Handle `?` prefix for natural language queries
+                        // Handle `command ?` suffix for help mode (categorized options)
+                        if trimmed.ends_with(" ?") || trimmed == "?" {
+                            let command_path = if trimmed == "?" {
+                                String::new()
+                            } else {
+                                trimmed[..trimmed.len() - 2].trim().to_string()
+                            };
+
+                            if command_path.is_empty() {
+                                // Show general help
+                                let lang = current_lang.read().unwrap().clone();
+                                let help_msg = if lang == "zh" {
+                                    "用法: <命令> ? 查看该命令的所有选项"
+                                } else {
+                                    "Usage: <command> ? to see all options for that command"
+                                };
+                                Output::info(help_msg);
+                                Output::dim("  git ?        - Show git options");
+                                Output::dim("  git commit ? - Show git commit options");
+                                Output::dim("  docker run ? - Show docker run options");
+                            } else {
+                                // Find the command and show help
+                                let parts: Vec<&str> = command_path.split_whitespace().collect();
+                                if let Some(root_name) = parts.first() {
+                                    if let Some(spec) = completer.get_command_spec(root_name) {
+                                        let lang = current_lang.read().unwrap().clone();
+                                        // Navigate to subcommand if specified
+                                        let mut current_spec = spec;
+                                        let mut current_path = root_name.to_string();
+                                        for part in parts.iter().skip(1) {
+                                            if let Some(sub) = current_spec.subcommands.iter().find(|s| &s.name == part) {
+                                                current_spec = sub;
+                                                current_path = format!("{} {}", current_path, part);
+                                            } else {
+                                                break;
+                                            }
+                                        }
+                                        output::display_categorized_help(
+                                            &current_path,
+                                            &current_spec.subcommands,
+                                            &current_spec.flags,
+                                            &lang,
+                                        );
+                                    } else {
+                                        Output::warn(&format!("Unknown command: {}", root_name));
+                                    }
+                                }
+                            }
+                            continue;
+                        }
+
+                        // Handle `?ai` prefix for AI-powered command generation
+                        if trimmed.starts_with("?ai ") && trimmed.len() > 4 {
+                            let query = &trimmed[4..];
+
+                            if !config.ai.enabled {
+                                Output::warn("AI completion is not enabled.");
+                                Output::dim("To enable, set ai.enabled = true in ~/.config/smart-command/config.toml");
+                                Output::dim("and configure your API key (e.g., ai.api_key = \"$ANTHROPIC_API_KEY\")");
+                                continue;
+                            }
+
+                            Output::info(&format!("Generating command for: {}", query));
+                            let effective = config.ai.get_effective_settings();
+                            println!("  Contacting {} API...", effective.provider_type);
+
+                            let generator = ai::llm::AiCommandGenerator::new(&config.ai);
+                            let context = ai::llm::AiContext::default();
+
+                            match generator.generate(query, &context) {
+                                Ok(generated_cmd) => {
+                                    println!();
+
+                                    // Check if AI-generated command is dangerous
+                                    if let Some(warning) = output::get_danger_warning(&generated_cmd) {
+                                        Output::warn(&format!("WARNING: {}", warning));
+                                        Output::warn("AI-generated command detected as potentially dangerous!");
+                                    }
+
+                                    Output::success(&format!("Generated: {}", Output::command(&generated_cmd)));
+                                    print!("\nExecute? [Y/n/e(dit)]: ");
+                                    io::stdout().flush().ok();
+
+                                    let mut input = String::new();
+                                    if io::stdin().read_line(&mut input).is_ok() {
+                                        let response = input.trim().to_lowercase();
+                                        if response.is_empty() || response == "y" || response == "yes" {
+                                            execute_command(&generated_cmd, &current_lang, &state, &typo_corrector);
+                                        } else if response == "e" || response == "edit" {
+                                            // Insert command into line for editing (next iteration)
+                                            Output::info("Command copied. Edit and press Enter to execute.");
+                                            // Note: We can't directly edit the line, so just show it
+                                            println!("  {}", generated_cmd);
+                                        }
+                                    }
+                                }
+                                Err(e) => {
+                                    Output::error(&format!("AI generation failed: {}", e));
+                                }
+                            }
+                            continue;
+                        }
+
+                        // Handle `?` prefix for natural language queries (local templates)
                         if trimmed.starts_with('?') && trimmed.len() > 1 {
                             let query = &trimmed[1..];
                             let matches = nl_templates.find(query);
@@ -701,6 +811,13 @@ fn run_repl(config: AppConfig) -> anyhow::Result<()> {
                         if cmd == "example" || cmd == "examples" || cmd == "ex" {
                             let lang = current_lang.read().unwrap().clone();
                             handle_example_command(&completer, &parts[1..], &lang);
+                            continue;
+                        }
+
+                        // AI management commands
+                        if cmd == "ai" {
+                            let subcommand = parts.get(1).map(|s| *s).unwrap_or("status");
+                            handle_ai_command(&mut config.ai, subcommand, &parts[2..]);
                             continue;
                         }
 
@@ -912,8 +1029,10 @@ fn start_background_version_check(
 
 /// Handle 'config' command
 fn handle_config(parts: &[&str], current_lang: &Arc<RwLock<String>>) {
-    if let Some(sub) = parts.get(1) {
-        if *sub == "set-lang" {
+    let sub = parts.get(1).map(|s| *s).unwrap_or("help");
+
+    match sub {
+        "set-lang" => {
             if let Some(lang) = parts.get(2) {
                 *current_lang.write().unwrap() = lang.to_string();
                 Output::success(&format!("Language switched to: {}", lang));
@@ -921,12 +1040,192 @@ fn handle_config(parts: &[&str], current_lang: &Arc<RwLock<String>>) {
                 Output::info("Usage: config set-lang <lang>");
                 Output::dim("Available languages: en, zh");
             }
-        } else {
-            Output::error(&format!("Unknown config subcommand: {}", sub));
-            Output::dim("Available: set-lang");
         }
-    } else {
-        Output::info("Usage: config set-lang <lang>");
+
+        "check" | "validate" => {
+            // Validate config file
+            let config_path = AppConfig::config_file_path();
+            println!();
+            Output::info(&format!("Validating config: {}", config_path.display()));
+            println!();
+
+            if !config_path.exists() {
+                Output::warn("Config file not found.");
+                Output::dim(&format!("Create one with: config example > {}", config_path.display()));
+                return;
+            }
+
+            // Try to load and parse the config
+            match AppConfig::load() {
+                Ok(config) => {
+                    Output::success("✓ Config file is valid!");
+                    println!();
+
+                    // Show summary
+                    Output::dim("Summary:");
+                    println!("  Language:          {}", config.lang);
+                    println!("  History size:      {}", config.history_size);
+                    println!("  Danger protection: {}", config.danger_protection);
+                    println!("  AI enabled:        {}", config.ai.enabled);
+                    if config.ai.enabled {
+                        println!("  AI provider:       {}", config.ai.active);
+                    }
+
+                    // Validate AI config
+                    if config.ai.enabled {
+                        println!();
+                        Output::dim("AI Configuration:");
+                        if let Some(provider) = config.ai.get_active_provider() {
+                            let key_status = match &provider.api_key {
+                                Some(key) if key.starts_with('$') => {
+                                    let var_name = &key[1..];
+                                    if std::env::var(var_name).is_ok() {
+                                        format!("✓ {} (set)", key)
+                                    } else {
+                                        format!("✗ {} (not set)", key)
+                                    }
+                                }
+                                Some(_) => "⚠ plain text (not recommended)".to_string(),
+                                None => {
+                                    if provider.provider_type == ProviderType::Ollama {
+                                        "✓ not required".to_string()
+                                    } else {
+                                        "✗ not configured".to_string()
+                                    }
+                                }
+                            };
+                            println!("  API Key: {}", key_status);
+                            if let Some(ref model) = provider.model {
+                                println!("  Model:   {}", model);
+                            }
+                            if let Some(ref endpoint) = provider.endpoint {
+                                println!("  Endpoint: {}", endpoint);
+                            }
+                        }
+                    }
+                }
+                Err(e) => {
+                    Output::error(&format!("✗ Config file has errors: {}", e));
+                    println!();
+                    Output::dim("Common issues:");
+                    Output::dim("  - Missing quotes around string values");
+                    Output::dim("  - Invalid TOML syntax");
+                    Output::dim("  - Unknown field names");
+                    Output::dim("  - Wrong value types (e.g., string instead of number)");
+                }
+            }
+        }
+
+        "show" => {
+            // Show current config
+            let config_path = AppConfig::config_file_path();
+            if config_path.exists() {
+                match std::fs::read_to_string(&config_path) {
+                    Ok(content) => {
+                        println!();
+                        Output::info(&format!("Config file: {}", config_path.display()));
+                        println!();
+                        println!("{}", content);
+                    }
+                    Err(e) => Output::error(&format!("Failed to read config: {}", e)),
+                }
+            } else {
+                Output::warn("Config file not found.");
+                Output::dim(&format!("Expected at: {}", config_path.display()));
+            }
+        }
+
+        "path" => {
+            let config_path = AppConfig::config_file_path();
+            println!("{}", config_path.display());
+        }
+
+        "edit" => {
+            let config_path = AppConfig::config_file_path();
+
+            // Create config directory and file if not exists
+            if !config_path.exists() {
+                if let Some(parent) = config_path.parent() {
+                    let _ = std::fs::create_dir_all(parent);
+                }
+                let example = config::generate_example_config();
+                if std::fs::write(&config_path, &example).is_err() {
+                    Output::error("Failed to create config file");
+                    return;
+                }
+                Output::success(&format!("Created config file: {}", config_path.display()));
+            }
+
+            // Try to open in editor
+            let editor = std::env::var("EDITOR").unwrap_or_else(|_| "vim".to_string());
+            Output::info(&format!("Opening {} with {}...", config_path.display(), editor));
+
+            let status = std::process::Command::new(&editor)
+                .arg(&config_path)
+                .status();
+
+            match status {
+                Ok(s) if s.success() => {
+                    Output::success("Config file saved. Restart sc to apply changes.");
+                }
+                Ok(_) => Output::warn("Editor exited with non-zero status"),
+                Err(e) => {
+                    Output::error(&format!("Failed to open editor: {}", e));
+                    Output::dim(&format!("Set EDITOR env var or edit manually: {}", config_path.display()));
+                }
+            }
+        }
+
+        "example" => {
+            // Generate example config
+            let example = config::generate_example_config();
+            println!("{}", example);
+        }
+
+        "init" => {
+            // Initialize config file with example
+            let config_path = AppConfig::config_file_path();
+
+            if config_path.exists() {
+                Output::warn(&format!("Config file already exists: {}", config_path.display()));
+                Output::dim("Use 'config edit' to modify or 'config show' to view");
+                return;
+            }
+
+            // Create directory
+            if let Some(parent) = config_path.parent() {
+                if let Err(e) = std::fs::create_dir_all(parent) {
+                    Output::error(&format!("Failed to create directory: {}", e));
+                    return;
+                }
+            }
+
+            // Write example config
+            let example = config::generate_example_config();
+            match std::fs::write(&config_path, &example) {
+                Ok(_) => {
+                    Output::success(&format!("Created config file: {}", config_path.display()));
+                    Output::dim("Edit with: config edit");
+                }
+                Err(e) => Output::error(&format!("Failed to write config: {}", e)),
+            }
+        }
+
+        "help" | _ => {
+            println!();
+            Output::info("Config Commands");
+            println!();
+            println!("  {}       - Validate config file", Color::Cyan.paint("config check"));
+            println!("  {}        - Show current config", Color::Cyan.paint("config show"));
+            println!("  {}        - Show config file path", Color::Cyan.paint("config path"));
+            println!("  {}        - Edit config file in $EDITOR", Color::Cyan.paint("config edit"));
+            println!("  {}        - Initialize config file", Color::Cyan.paint("config init"));
+            println!("  {}     - Print example config", Color::Cyan.paint("config example"));
+            println!("  {} - Set display language", Color::Cyan.paint("config set-lang <en|zh>"));
+            println!();
+            Output::dim(&format!("Config file: {}", AppConfig::config_file_path().display()));
+            println!();
+        }
     }
 }
 
@@ -1050,4 +1349,204 @@ fn handle_example_command(completer: &SmartCompleter, args: &[&str], lang: &str)
     let command_path = args.join(" ");
     let examples = completer.get_examples(&command_path, lang);
     display_command_examples(&examples, &command_path, false);
+}
+
+/// Handle 'ai' command - manage AI providers
+fn handle_ai_command(ai_config: &mut AiConfig, subcommand: &str, args: &[&str]) {
+    match subcommand {
+        "status" | "info" => {
+            // Show current AI configuration status
+            println!();
+            Output::info("AI Configuration Status");
+            println!();
+
+            let enabled_str = if ai_config.enabled {
+                format!("{}", Color::Green.paint("enabled"))
+            } else {
+                format!("{}", Color::Red.paint("disabled"))
+            };
+            println!("  Status:  {}", enabled_str);
+            println!("  Active:  {}", Color::Cyan.paint(&ai_config.active));
+
+            if let Some(provider) = ai_config.get_active_provider() {
+                println!("  Type:    {}", provider.provider_type);
+                if let Some(ref model) = provider.model {
+                    println!("  Model:   {}", model);
+                }
+                if let Some(ref endpoint) = provider.endpoint {
+                    println!("  Endpoint: {}", endpoint);
+                }
+
+                // Check if API key is configured
+                let key_status = match &provider.api_key {
+                    Some(key) if key.starts_with('$') => {
+                        let var_name = &key[1..];
+                        if std::env::var(var_name).is_ok() {
+                            format!("{} (via {})", Color::Green.paint("configured"), key)
+                        } else {
+                            format!("{} ({} not set)", Color::Yellow.paint("missing"), key)
+                        }
+                    }
+                    Some(_) => format!("{}", Color::Yellow.paint("configured (plain text - not recommended)")),
+                    None => {
+                        if provider.provider_type == ProviderType::Ollama {
+                            format!("{}", Color::Green.paint("not required (local)"))
+                        } else {
+                            format!("{}", Color::Red.paint("not configured"))
+                        }
+                    }
+                };
+                println!("  API Key: {}", key_status);
+            }
+
+            println!();
+            Output::dim("Commands:");
+            Output::dim("  ai list              - List all configured providers");
+            Output::dim("  ai use <provider>    - Switch to a different provider");
+            Output::dim("  ai test              - Test the current provider connection");
+            Output::dim("  ai providers         - Show available provider types");
+            println!();
+        }
+
+        "list" | "ls" => {
+            // List all configured providers
+            println!();
+            Output::info("Configured AI Providers");
+            println!();
+
+            let providers = ai_config.list_providers();
+            if providers.is_empty() {
+                Output::warn("No providers configured");
+                return;
+            }
+
+            for (name, config) in providers {
+                let active_marker = if name == &ai_config.active {
+                    format!("{}", Color::Green.paint(" ✓ (active)"))
+                } else {
+                    String::new()
+                };
+
+                let model = config.model.as_deref().unwrap_or("default");
+                println!(
+                    "  {} [{}/{}]{}",
+                    Color::Cyan.paint(name),
+                    config.provider_type,
+                    model,
+                    active_marker
+                );
+            }
+            println!();
+        }
+
+        "use" | "switch" => {
+            // Switch to a different provider
+            if args.is_empty() {
+                Output::warn("Usage: ai use <provider>");
+                Output::dim("  Available providers: ai list");
+                return;
+            }
+
+            let provider_name = args[0];
+            match ai_config.switch_provider(provider_name) {
+                Ok(()) => {
+                    Output::success(&format!("Switched to provider: {}", provider_name));
+                    if let Some(provider) = ai_config.get_active_provider() {
+                        if let Some(ref model) = provider.model {
+                            Output::dim(&format!("  Model: {}", model));
+                        }
+                    }
+                }
+                Err(e) => {
+                    Output::error(&e);
+                }
+            }
+        }
+
+        "test" => {
+            // Test the current provider connection
+            if !ai_config.enabled {
+                Output::warn("AI is not enabled. Set ai.enabled = true in config.");
+                return;
+            }
+
+            Output::info(&format!("Testing connection to {}...", ai_config.active));
+
+            let generator = ai::llm::AiCommandGenerator::new(ai_config);
+            match generator.test_connection() {
+                Ok(msg) => Output::success(&msg),
+                Err(e) => Output::error(&format!("Connection failed: {}", e)),
+            }
+        }
+
+        "providers" | "types" => {
+            // Show available provider types
+            println!();
+            Output::info("Available AI Provider Types");
+            println!();
+
+            let providers = [
+                ("claude", "Anthropic Claude", "claude-sonnet-4, claude-opus-4"),
+                ("openai", "OpenAI GPT", "gpt-4o, gpt-4o-mini, o1"),
+                ("gemini", "Google Gemini", "gemini-2.0-flash, gemini-1.5-pro"),
+                ("deepseek", "DeepSeek", "deepseek-chat, deepseek-reasoner"),
+                ("glm", "智谱AI GLM", "glm-4-plus, glm-4-flash"),
+                ("qwen", "阿里通义千问", "qwen-max, qwen-plus"),
+                ("ollama", "Ollama (Local)", "qwen2.5, llama3.2, deepseek-r1"),
+                ("openrouter", "OpenRouter", "Access multiple providers"),
+                ("custom", "Custom", "Any OpenAI-compatible API"),
+            ];
+
+            for (name, display, desc) in providers {
+                println!(
+                    "  {:12} {:20} {}",
+                    Color::Cyan.paint(name),
+                    display,
+                    Color::DarkGray.paint(desc)
+                );
+            }
+
+            println!();
+            Output::dim("Configure in ~/.config/smart-command/config.toml:");
+            Output::dim("  [ai.providers.my_provider]");
+            Output::dim("  provider_type = \"openai\"");
+            Output::dim("  api_key = \"$OPENAI_API_KEY\"");
+            Output::dim("  endpoint = \"https://your-proxy.com/v1/chat/completions\"");
+            Output::dim("  model = \"gpt-4o-mini\"");
+            println!();
+        }
+
+        "enable" => {
+            ai_config.enabled = true;
+            Output::success("AI completion enabled");
+        }
+
+        "disable" => {
+            ai_config.enabled = false;
+            Output::success("AI completion disabled");
+        }
+
+        "help" | "?" => {
+            println!();
+            Output::info("AI Command Help");
+            println!();
+            println!("  {}      - Show current AI configuration", Color::Cyan.paint("ai status"));
+            println!("  {}        - List all configured providers", Color::Cyan.paint("ai list"));
+            println!("  {} - Switch to a different provider", Color::Cyan.paint("ai use <name>"));
+            println!("  {}        - Test the current provider connection", Color::Cyan.paint("ai test"));
+            println!("  {}   - Show available provider types", Color::Cyan.paint("ai providers"));
+            println!("  {}      - Enable AI completion", Color::Cyan.paint("ai enable"));
+            println!("  {}     - Disable AI completion", Color::Cyan.paint("ai disable"));
+            println!();
+            Output::dim("Generate commands with AI:");
+            Output::dim("  ?ai <query>   - Generate a command from natural language");
+            Output::dim("  Alt+L         - Quick AI input");
+            println!();
+        }
+
+        _ => {
+            Output::error(&format!("Unknown ai subcommand: {}", subcommand));
+            Output::dim("Try: ai help");
+        }
+    }
 }

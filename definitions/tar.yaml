@@ -34,30 +34,54 @@ common_flag_combos:
 flags:
   - long: extract
     short: x
+    category: common
     description:
       en: Extract files from an archive
       zh: 从归档文件中提取文件
   - long: create
     short: c
+    category: common
     description:
       en: Create a new archive
       zh: 创建新的归档文件
   - long: verbose
     short: v
+    category: output
     description:
       en: Verbosely list files processed
       zh: 详细列出处理的文件
   - long: file
     short: f
+    category: file
     description:
       en: Use archive file or device ARCHIVE
       zh: 使用归档文件或设备
     takes_value: true
   - long: gzip
     short: z
+    category: common
     description:
       en: Filter the archive through gzip
       zh: 通过 gzip 过滤归档文件
+  - long: list
+    short: t
+    category: common
+    description:
+      en: List the contents of an archive
+      zh: 列出归档内容
+  - long: directory
+    short: C
+    category: file
+    description:
+      en: Change to directory before extracting
+      zh: 在提取前切换到指定目录
+    takes_value: true
+  - long: exclude
+    category: filter
+    description:
+      en: Exclude files matching pattern
+      zh: 排除匹配模式的文件
+    takes_value: true
 examples:
   - cmd: 'tar -czvf [archive.tar.gz] [source_dir]'
     scenario:

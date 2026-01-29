@@ -176,6 +176,101 @@ pub static DANGEROUS_PATTERNS: &[&str] = &[
     "TRUNCATE TABLE",
 ];
 
+/// Display categorized help for a command
+pub fn display_categorized_help(
+    command_path: &str,
+    subcommands: &[crate::command_def::CommandSpec],
+    flags: &[crate::command_def::FlagSpec],
+    lang: &str,
+) {
+    use crate::command_def::FlagCategory;
+    use std::collections::BTreeMap;
+
+    let header_style = Style::new().fg(Color::Cyan).bold();
+    let category_style = Style::new().fg(Color::Yellow).bold();
+    let flag_style = Style::new().fg(Color::Green);
+    let desc_style = Style::new().fg(Color::White);
+    let dim_style = Style::new().fg(Color::DarkGray);
+
+    println!();
+    println!(
+        "{} {}",
+        header_style.paint("?"),
+        header_style.paint(format!("Help for '{}'", command_path))
+    );
+    println!();
+
+    // Display subcommands if any
+    if !subcommands.is_empty() {
+        let sub_header = if lang == "zh" { "子命令" } else { "Subcommands" };
+        println!("{}", category_style.paint(format!("  {} ──────────────────────", sub_header)));
+
+        for sub in subcommands {
+            println!(
+                "    {}  {}",
+                flag_style.paint(format!("{:<16}", sub.name)),
+                desc_style.paint(sub.description.get(lang))
+            );
+        }
+        println!();
+    }
+
+    // Group flags by category
+    let mut grouped: BTreeMap<u8, (FlagCategory, Vec<&crate::command_def::FlagSpec>)> =
+        BTreeMap::new();
+
+    for flag in flags {
+        let order = flag.category.sort_order();
+        grouped
+            .entry(order)
+            .or_insert_with(|| (flag.category.clone(), Vec::new()))
+            .1
+            .push(flag);
+    }
+
+    // Display each category
+    for (_order, (category, category_flags)) in grouped {
+        let cat_name = category.display_name(lang);
+        println!("{}", category_style.paint(format!("  {} ──────────────────────", cat_name)));
+
+        for flag in category_flags {
+            // Format the flag display
+            let short = flag.short.map(|c| format!("-{}", c)).unwrap_or_default();
+            let long = flag.long.as_ref().map(|l| format!("--{}", l)).unwrap_or_default();
+
+            let flag_display = match (flag.short, flag.long.as_ref()) {
+                (Some(_), Some(_)) => format!("{}, {}", short, long),
+                (Some(_), None) => short,
+                (None, Some(_)) => long,
+                (None, None) => continue,
+            };
+
+            // Add value indicator if needed
+            let flag_with_value = if flag.takes_value {
+                format!("{} <value>", flag_display)
+            } else {
+                flag_display
+            };
+
+            println!(
+                "    {}  {}",
+                flag_style.paint(format!("{:<24}", flag_with_value)),
+                desc_style.paint(flag.description.get(lang))
+            );
+        }
+        println!();
+    }
+
+    // Show tip
+    let tip = if lang == "zh" {
+        "提示: 输入命令后按 Tab 查看补全建议"
+    } else {
+        "Tip: Press Tab after command for completion suggestions"
+    };
+    println!("  {}", dim_style.paint(tip));
+    println!();
+}
+
 /// Check if a command is potentially dangerous
 pub fn is_dangerous_command(cmd: &str) -> bool {
     let cmd_lower = cmd.to_lowercase();
