@@ -57,6 +57,11 @@ subcommands:
     description:
       en: Record changes to the repository
       zh: 记录对仓库的更改
+    common_flag_combos:
+      - combo: am
+        description:
+          en: Stage all and commit with message
+          zh: 暂存所有并提交消息
     flags:
       - long: message
         short: m

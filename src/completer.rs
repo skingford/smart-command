@@ -152,6 +152,94 @@ impl SmartCompleter {
         target.to_lowercase().starts_with(&input.to_lowercase())
     }
 
+    /// Get combined flag suggestions based on common combos and available flags
+    fn get_combo_suggestions(
+        &self,
+        spec: &CommandSpec,
+        current_chain: &str,
+        start_idx: usize,
+        pos: usize,
+        lang: &str,
+    ) -> Vec<Suggestion> {
+        let mut suggestions = Vec::new();
+
+        // Extract already used characters (skip leading '-')
+        let used_chars: Vec<char> = current_chain.chars().skip(1).collect();
+        let chain_prefix = &current_chain[1..]; // without leading '-'
+
+        // 1. First, check for matching common flag combos
+        for combo in &spec.common_flag_combos {
+            // Skip if combo doesn't start with current prefix
+            if !combo.combo.starts_with(chain_prefix) {
+                continue;
+            }
+            // Skip if combo is same as current (already complete)
+            if combo.combo == chain_prefix {
+                continue;
+            }
+
+            // Check if all characters in combo are valid flags
+            let all_valid = combo.combo.chars().all(|c| {
+                spec.flags.iter().any(|f| f.short == Some(c))
+            });
+
+            if all_valid {
+                suggestions.push(Suggestion {
+                    value: format!("-{}", combo.combo),
+                    description: Some(format!(
+                        "[combo] {}",
+                        combo.description.get(lang)
+                    )),
+                    extra: None,
+                    span: Span {
+                        start: start_idx,
+                        end: pos,
+                    },
+                    append_whitespace: true,
+                    style: None,
+                });
+            }
+        }
+
+        // 2. Then, suggest individual flags that can be added
+        for flag in &spec.flags {
+            if let Some(c) = flag.short {
+                // Skip if already used
+                if used_chars.contains(&c) {
+                    continue;
+                }
+
+                // Skip if last char in chain takes value (can't chain further)
+                if let Some(last_char) = used_chars.last() {
+                    let last_takes_value = spec.flags.iter().any(|f| {
+                        f.short == Some(*last_char) && f.takes_value
+                    });
+                    if last_takes_value {
+                        continue;
+                    }
+                }
+
+                suggestions.push(Suggestion {
+                    value: format!("{}{}", current_chain, c),
+                    description: Some(format!(
+                        "(+{}) {}",
+                        c,
+                        flag.description.get(lang)
+                    )),
+                    extra: None,
+                    span: Span {
+                        start: start_idx,
+                        end: pos,
+                    },
+                    append_whitespace: !flag.takes_value,
+                    style: None,
+                });
+            }
+        }
+
+        suggestions
+    }
+
     fn get_lang(&self) -> String {
         self.current_lang.read().unwrap().clone()
     }
@@ -298,7 +386,7 @@ impl Completer for SmartCompleter {
     fn complete(&mut self, line: &str, pos: usize) -> Vec<Suggestion> {
         let lang = self.get_lang();
         let input = &line[0..pos];
-        let parts: Vec<&str> = input.trim_start().split_whitespace().collect();
+        let parts: Vec<&str> = input.split_whitespace().collect();
 
         if line.starts_with('/') {
             let query = &line[1..pos]; // skip the slash
@@ -473,9 +561,8 @@ impl Completer for SmartCompleter {
                 // Descend the tree
                 let mut current_spec = root_spec;
                 let mut subcommand_depth = 0;
-                for i in 1..num_parts_to_descend {
-                    let sub_name = parts[i];
-                    if let Some(sub) = current_spec.subcommands.iter().find(|s| s.name == sub_name)
+                for sub_name in parts.iter().take(num_parts_to_descend).skip(1) {
+                    if let Some(sub) = current_spec.subcommands.iter().find(|s| &s.name == sub_name)
                     {
                         current_spec = sub;
                         subcommand_depth += 1;
@@ -541,86 +628,70 @@ impl Completer for SmartCompleter {
                 // Suggest flags of the CURRENT spec
                 let mut flag_suggestions = Vec::new();
                 if query.starts_with('-') || is_new_arg {
-                    // Copied/Refined flag logic
                     let is_short_chain = query.starts_with('-') && !query.starts_with("--");
-                    let used_chars: Vec<char> = if is_short_chain {
-                        query.chars().skip(1).collect()
-                    } else {
-                        vec![]
-                    };
+                    let is_long_flag = query.starts_with("--");
 
-                    // Simple check: if we are in short chain and last char takes value, don't suggest more flags?
-                    let stop_flagging = if is_short_chain {
-                        if let Some(last_char) = query.chars().last() {
-                            current_spec
-                                .flags
-                                .iter()
-                                .any(|f| f.short == Some(last_char) && f.takes_value)
-                        } else {
-                            false
+                    // For short flag chains (e.g., "-zx"), use combo suggestions
+                    if is_short_chain && query.len() > 1 {
+                        // Check if last char takes value - if so, stop suggesting more flags
+                        let last_char = query.chars().last().unwrap();
+                        let last_takes_value = current_spec
+                            .flags
+                            .iter()
+                            .any(|f| f.short == Some(last_char) && f.takes_value);
+
+                        if !last_takes_value {
+                            flag_suggestions = self.get_combo_suggestions(
+                                current_spec,
+                                query,
+                                start_idx,
+                                pos,
+                                &lang,
+                            );
                         }
                     } else {
-                        false
-                    };
-
-                    if !stop_flagging {
+                        // Standard flag suggestions (single dash or long flags)
                         for flag in &current_spec.flags {
                             let short = flag.short.map(|c| format!("-{}", c));
                             let long = flag.long.as_ref().map(|s| format!("--{}", s));
-                            let match_short = short
-                                .as_ref()
-                                .map(|s| s.starts_with(query))
-                                .unwrap_or(false);
-                            let match_long =
-                                long.as_ref().map(|s| s.starts_with(query)).unwrap_or(false);
 
-                            if match_short && short.is_some() {
-                                flag_suggestions.push(Suggestion {
-                                    value: short.clone().unwrap(),
-                                    description: Some(flag.description.get(&lang).to_string()),
-                                    extra: None,
-                                    span: Span {
-                                        start: start_idx,
-                                        end: pos,
-                                    },
-                                    append_whitespace: true,
-                                    style: None,
-                                });
-                            }
-                            if match_long && long.is_some() {
-                                flag_suggestions.push(Suggestion {
-                                    value: long.clone().unwrap(),
-                                    description: Some(flag.description.get(&lang).to_string()),
-                                    extra: None,
-                                    span: Span {
-                                        start: start_idx,
-                                        end: pos,
-                                    },
-                                    append_whitespace: true,
-                                    style: None,
-                                });
-                            }
-
-                            // Combined short flags
-                            if is_short_chain {
-                                if let Some(c) = flag.short {
-                                    if !used_chars.contains(&c) {
+                            // Match short flags
+                            if !is_long_flag {
+                                if let Some(ref s) = short {
+                                    if s.starts_with(query) || (is_new_arg && query.is_empty()) {
                                         flag_suggestions.push(Suggestion {
-                                            value: format!("{}{}", query, c),
-                                            description: Some(format!(
-                                                "{} (+{})",
-                                                flag.description.get(&lang),
-                                                c
-                                            )),
+                                            value: s.clone(),
+                                            description: Some(
+                                                flag.description.get(&lang).to_string(),
+                                            ),
                                             extra: None,
                                             span: Span {
                                                 start: start_idx,
                                                 end: pos,
                                             },
-                                            append_whitespace: true,
+                                            append_whitespace: !flag.takes_value,
                                             style: None,
                                         });
                                     }
+                                }
+                            }
+
+                            // Match long flags
+                            if let Some(ref l) = long {
+                                if l.starts_with(query) || (is_new_arg && query.is_empty()) {
+                                    flag_suggestions.push(Suggestion {
+                                        value: l.clone(),
+                                        description: Some(
+                                            flag.description.get(&lang).to_string(),
+                                        ),
+                                        extra: None,
+                                        span: Span {
+                                            start: start_idx,
+                                            end: pos,
+                                        },
+                                        append_whitespace: !flag.takes_value,
+                                        style: None,
+                                    });
                                 }
                             }
                         }

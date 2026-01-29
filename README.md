@@ -5,7 +5,9 @@ An intelligent shell with context-aware command completion, fuzzy search, and mu
 ## Features
 
 - **Smart Completion**: Tab completion with subcommand and flag suggestions
+- **Combined Flag Completion**: Smart suggestions for common flag combinations (e.g., `tar -zxvf`)
 - **Fuzzy Search**: Type `/keyword` to search across commands, descriptions, and examples
+- **History Prefix Search**: `Ctrl+R` to search history by prefix, real-time filtering
 - **Example Browser**: View and search command examples with `example` command
 - **Multi-language**: Supports English and Chinese descriptions
 - **Git Integration**: Shows current branch in prompt
@@ -225,6 +227,8 @@ examples
 | `Tab` | Trigger completion menu |
 | `/` + keyword | Search commands |
 | `?` + query | Natural language query |
+| `Ctrl+R` | History prefix search |
+| `Alt+H` | History menu |
 | `Ctrl+C` | Clear current line |
 | `Ctrl+D` | Exit shell |
 | `↑` / `↓` | Navigate history |

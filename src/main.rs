@@ -1,7 +1,7 @@
 use reedline::{
-    default_emacs_keybindings, ColumnarMenu, Emacs, FileBackedHistory, MenuBuilder, Prompt,
-    PromptEditMode, PromptHistorySearch, PromptHistorySearchStatus, Reedline, ReedlineEvent,
-    ReedlineMenu, Signal,
+    default_emacs_keybindings, ColumnarMenu, Emacs, FileBackedHistory, ListMenu, MenuBuilder,
+    Prompt, PromptEditMode, PromptHistorySearch, PromptHistorySearchStatus, Reedline,
+    ReedlineEvent, ReedlineMenu, Signal,
 };
 use std::borrow::Cow;
 use std::io::{self, Write};
@@ -426,6 +426,13 @@ fn run_repl(config: AppConfig) -> anyhow::Result<()> {
     let completer_for_editor = Box::new(completer.clone());
     let completion_menu = Box::new(ColumnarMenu::default().with_name("completion_menu"));
 
+    // Create history menu for browsing command history
+    let history_menu = Box::new(
+        ListMenu::default()
+            .with_name("history_menu")
+            .with_page_size(15),
+    );
+
     let mut keybindings = default_emacs_keybindings();
     keybindings.add_binding(
         reedline::KeyModifiers::NONE,
@@ -436,10 +443,18 @@ fn run_repl(config: AppConfig) -> anyhow::Result<()> {
         ]),
     );
 
+    // Alt+H - Open history menu
     keybindings.add_binding(
         reedline::KeyModifiers::ALT,
         reedline::KeyCode::Char('h'),
         ReedlineEvent::Menu("history_menu".to_string()),
+    );
+
+    // Ctrl+R - History search (prefix filtering)
+    keybindings.add_binding(
+        reedline::KeyModifiers::CONTROL,
+        reedline::KeyCode::Char('r'),
+        ReedlineEvent::SearchHistory,
     );
 
     let command_names: Vec<String> = completer.get_command_names();
@@ -472,6 +487,7 @@ fn run_repl(config: AppConfig) -> anyhow::Result<()> {
     let mut line_editor = Reedline::create()
         .with_completer(completer_for_editor)
         .with_menu(ReedlineMenu::EngineCompleter(completion_menu))
+        .with_menu(ReedlineMenu::HistoryMenu(history_menu))
         .with_highlighter(highlighter)
         .with_hinter(hinter)
         .with_validator(validator)
@@ -498,6 +514,7 @@ fn run_repl(config: AppConfig) -> anyhow::Result<()> {
 
     // Welcome message
     Output::dim("  Tab         - completion menu    /<keyword>  - search commands");
+    Output::dim("  Ctrl+R      - history search     Alt+H       - history menu");
     Output::dim("  ?<query>    - natural language   :<snippet>  - expand snippet");
     Output::dim("  @<bookmark> - jump to bookmark   example     - show command examples");
     Output::dim("  alias/bm    - manage shortcuts   Ctrl-D/exit - quit");

@@ -41,7 +41,7 @@ pub struct Example {
 }
 
 /// Argument type for validation and completion
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum ArgumentType {
     /// Plain string argument
@@ -73,13 +73,8 @@ pub enum ArgumentType {
     /// JSON string
     Json,
     /// Any value (default, no validation)
+    #[default]
     Any,
-}
-
-impl Default for ArgumentType {
-    fn default() -> Self {
-        ArgumentType::Any
-    }
 }
 
 /// Path filter configuration for YAML
@@ -100,6 +95,15 @@ pub struct PathFilterConfig {
     /// Only show directories
     #[serde(default)]
     pub dirs_only: bool,
+}
+
+/// Common flag combination for quick completion
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct FlagCombo {
+    /// The combination string without leading dash, e.g., "zxvf"
+    pub combo: String,
+    /// Description of what this combination does
+    pub description: I18nString,
 }
 
 /// Argument specification for commands
@@ -143,6 +147,9 @@ pub struct CommandSpec {
     /// Arguments specification for validation and dynamic completion
     #[serde(default)]
     pub arguments: Vec<ArgumentSpec>,
+    /// Common flag combinations for quick completion (e.g., "zxvf" for tar)
+    #[serde(default)]
+    pub common_flag_combos: Vec<FlagCombo>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -167,6 +174,7 @@ impl CommandSpec {
             examples: vec![],
             is_path_completion: false,
             arguments: vec![],
+            common_flag_combos: vec![],
         }
     }
 

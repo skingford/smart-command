@@ -2,6 +2,35 @@ name: tar
 description:
   en: Manipulate tape archives
   zh: 操作磁带归档文件
+common_flag_combos:
+  - combo: zxvf
+    description:
+      en: Extract gzip archive with verbose output
+      zh: 解压 gzip 归档并显示详情
+  - combo: czvf
+    description:
+      en: Create gzip archive with verbose output
+      zh: 创建 gzip 归档并显示详情
+  - combo: xvf
+    description:
+      en: Extract archive with verbose output
+      zh: 解压归档并显示详情
+  - combo: cvf
+    description:
+      en: Create archive with verbose output
+      zh: 创建归档并显示详情
+  - combo: tvf
+    description:
+      en: List archive contents
+      zh: 列出归档内容
+  - combo: xzf
+    description:
+      en: Extract gzip archive (quiet)
+      zh: 解压 gzip 归档（静默）
+  - combo: czf
+    description:
+      en: Create gzip archive (quiet)
+      zh: 创建 gzip 归档（静默）
 flags:
   - long: extract
     short: x
