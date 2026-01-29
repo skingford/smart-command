@@ -204,6 +204,10 @@ examples:
     scenario:
       en: SOCKS proxy
       zh: SOCKS 代理
+  - cmd: 'ssh -J [jump_host] [user]@[host]'
+    scenario:
+      en: Connect via jump host
+      zh: 通过跳板机连接
   - cmd: 'ssh -t [user]@[host] "command"'
     scenario:
       en: Run command on remote host

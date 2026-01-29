@@ -35,8 +35,7 @@ flags:
       en: "Select sandbox policy: read-only, workspace-write, danger-full-access"
       zh: "选择沙盒策略：read-only、workspace-write、danger-full-access"
     takes_value: true
-  - long: approval-mode
-    short: a
+  - long: ask-for-approval
     description:
       en: "Control when to pause for approval: never, on-request, on-failure, untrusted"
       zh: "控制何时暂停以获得批准：never、on-request、on-failure、untrusted"
@@ -328,14 +327,30 @@ examples:
     scenario:
       en: Run with workspace write permissions
       zh: 以工作区写入权限运行
-  - cmd: 'codex --approval-mode never "build and test"'
+  - cmd: 'codex --sandbox read-only --ask-for-approval never'
+    scenario:
+      en: Read-only sandbox with no approval prompts
+      zh: 只读沙盒且不请求批准
+  - cmd: 'codex --sandbox workspace-write --ask-for-approval untrusted'
+    scenario:
+      en: Workspace-write sandbox, ask approval for untrusted commands
+      zh: 工作区可写沙盒，不可信命令需批准
+  - cmd: 'codex --ask-for-approval never "build and test"'
     scenario:
       en: Full auto mode, no approvals needed
       zh: 全自动模式，无需批准
-  - cmd: 'codex --approval-mode on-failure "fix TypeScript errors"'
+  - cmd: 'codex --ask-for-approval on-failure "fix TypeScript errors"'
     scenario:
       en: Auto-approve unless commands fail
       zh: 除非命令失败，否则自动批准
+  - cmd: 'codex --dangerously-bypass-approvals-and-sandbox'
+    scenario:
+      en: No sandbox and no approvals (not recommended)
+      zh: 无沙盒且不需批准（不推荐）
+  - cmd: 'codex --yolo'
+    scenario:
+      en: Alias for bypassing approvals and sandbox (not recommended)
+      zh: 绕过批准与沙盒的别名（不推荐）
   - cmd: 'codex --full-auto "implement the feature"'
     scenario:
       en: Low-friction automation preset

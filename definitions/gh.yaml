@@ -281,6 +281,73 @@ subcommands:
           en: Query to select values from response
           zh: 从响应中选择值的查询
         takes_value: true
+  - name: release
+    description:
+      en: Manage GitHub releases
+      zh: 管理 GitHub Releases
+  - name: search
+    description:
+      en: Search for GitHub repositories, issues, and pull requests
+      zh: 搜索 GitHub 仓库、Issues 和 Pull Requests
+    subcommands:
+      - name: prs
+        description:
+          en: Search pull requests
+          zh: 搜索 Pull Requests
+        flags:
+          - long: assignee
+            short: a
+            description:
+              en: Filter by assignee
+              zh: 按负责人过滤
+            takes_value: true
+          - long: author
+            short: A
+            description:
+              en: Filter by author
+              zh: 按作者过滤
+            takes_value: true
+          - long: base
+            short: B
+            description:
+              en: Filter by base branch
+              zh: 按基准分支过滤
+            takes_value: true
+          - long: head
+            short: H
+            description:
+              en: Filter by head branch
+              zh: 按源分支过滤
+            takes_value: true
+          - long: label
+            short: l
+            description:
+              en: Filter by label
+              zh: 按标签过滤
+            takes_value: true
+          - long: limit
+            short: L
+            description:
+              en: Maximum number of results
+              zh: 最大结果数量
+            takes_value: true
+          - long: repo
+            short: R
+            description:
+              en: Filter by repository
+              zh: 按仓库过滤
+            takes_value: true
+          - long: state
+            short: s
+            description:
+              en: Filter by state (open, closed)
+              zh: 按状态过滤（open、closed）
+            takes_value: true
+          - long: web
+            short: w
+            description:
+              en: Open search in browser
+              zh: 在浏览器中打开搜索
 examples:
   - cmd: gh pr create --title "Fix bug" --body "Description"
     scenario:
