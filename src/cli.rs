@@ -102,8 +102,20 @@ pub enum Commands {
         yes: bool,
 
         /// Upgrade to specific version (e.g., "0.2.0" or "v0.2.0")
-        #[arg(long)]
-        version: Option<String>,
+        #[arg(long = "to")]
+        target_version: Option<String>,
+    },
+
+    /// Show examples for commands
+    Example {
+        /// Command to show examples for (e.g., "git", "git commit")
+        /// If empty, lists all commands with examples
+        #[arg(trailing_var_arg = true)]
+        command: Vec<String>,
+
+        /// Search examples by keyword
+        #[arg(short, long)]
+        search: Option<String>,
     },
 }
 

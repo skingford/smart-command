@@ -42,6 +42,104 @@ impl SmartCompleter {
         }
     }
 
+    /// Get examples for a specific command path (e.g., "git", "git commit")
+    pub fn get_examples(&self, command_path: &str, lang: &str) -> Vec<(String, String)> {
+        let parts: Vec<&str> = command_path.split_whitespace().collect();
+        if parts.is_empty() {
+            return vec![];
+        }
+
+        // Find root command
+        let root_name = parts[0];
+        let root_spec = match self.commands.get(root_name) {
+            Some(spec) => spec,
+            None => return vec![],
+        };
+
+        // Descend along path
+        let mut current = root_spec;
+        for part in &parts[1..] {
+            match current.subcommands.iter().find(|s| s.name == *part) {
+                Some(sub) => current = sub,
+                None => return vec![],
+            }
+        }
+
+        // Return examples
+        current
+            .examples
+            .iter()
+            .map(|e| (e.cmd.clone(), e.scenario.get(lang).to_string()))
+            .collect()
+    }
+
+    /// Get all commands that have examples
+    pub fn get_commands_with_examples(&self) -> Vec<String> {
+        let mut result = Vec::new();
+        for (name, cmd) in &self.commands {
+            Self::collect_commands_with_examples(cmd, name, &mut result);
+        }
+        result.sort();
+        result
+    }
+
+    fn collect_commands_with_examples(cmd: &CommandSpec, path: &str, result: &mut Vec<String>) {
+        if !cmd.examples.is_empty() {
+            result.push(path.to_string());
+        }
+        for sub in &cmd.subcommands {
+            let sub_path = format!("{} {}", path, sub.name);
+            Self::collect_commands_with_examples(sub, &sub_path, result);
+        }
+    }
+
+    /// Search examples by query (returns command path, example cmd, scenario)
+    pub fn search_examples(&self, query: &str, lang: &str) -> Vec<(String, String, String)> {
+        let mut results: Vec<(i64, String, String, String)> = Vec::new();
+
+        for (name, cmd) in &self.commands {
+            self.search_examples_recursive(cmd, query, lang, name, &mut results);
+        }
+
+        // Sort by score
+        results.sort_by(|a, b| b.0.cmp(&a.0));
+
+        results
+            .into_iter()
+            .map(|(_, path, cmd, scenario)| (path, cmd, scenario))
+            .collect()
+    }
+
+    fn search_examples_recursive(
+        &self,
+        cmd: &CommandSpec,
+        query: &str,
+        lang: &str,
+        path: &str,
+        results: &mut Vec<(i64, String, String, String)>,
+    ) {
+        for example in &cmd.examples {
+            let scenario = example.scenario.get(lang);
+            // Match against scenario or command
+            let score_scenario = self.fuzzy_match(query, scenario);
+            let score_cmd = self.fuzzy_match(query, &example.cmd);
+
+            if let Some(score) = score_scenario.or(score_cmd) {
+                results.push((
+                    score,
+                    path.to_string(),
+                    example.cmd.clone(),
+                    scenario.to_string(),
+                ));
+            }
+        }
+
+        for sub in &cmd.subcommands {
+            let sub_path = format!("{} {}", path, sub.name);
+            self.search_examples_recursive(sub, query, lang, &sub_path, results);
+        }
+    }
+
     /// True fuzzy match - allows non-contiguous character matching
     /// e.g., "cm" matches "commit", "gco" matches "git checkout"
     fn fuzzy_match(&self, input: &str, target: &str) -> Option<i64> {
@@ -294,6 +392,75 @@ impl Completer for SmartCompleter {
         }
 
         if let Some(cmd_name) = parts.first() {
+            // Special handling for 'example' command - complete with command names that have examples
+            if *cmd_name == "example" || *cmd_name == "examples" || *cmd_name == "ex" {
+                let is_new_arg = line.ends_with(' ');
+                let query: String = if is_new_arg {
+                    String::new()
+                } else if parts.len() > 1 {
+                    parts[1..].join(" ")
+                } else {
+                    String::new()
+                };
+                let query_ref = query.as_str();
+                let start_idx = if is_new_arg {
+                    pos
+                } else {
+                    // Find start of the argument portion after 'example '
+                    let prefix_len = cmd_name.len() + 1; // "example "
+                    if input.len() > prefix_len {
+                        prefix_len
+                    } else {
+                        pos
+                    }
+                };
+
+                // Get commands with examples and filter by query
+                let commands = self.get_commands_with_examples();
+                let mut suggestions: Vec<Suggestion> = commands
+                    .iter()
+                    .filter(|c| {
+                        if query_ref.is_empty() {
+                            true
+                        } else {
+                            c.to_lowercase().contains(&query_ref.to_lowercase())
+                                || self.fuzzy_match(query_ref, c).is_some()
+                        }
+                    })
+                    .map(|c| Suggestion {
+                        value: c.clone(),
+                        description: Some(format!("[{}]", c.split_whitespace().next().unwrap_or(c))),
+                        extra: None,
+                        span: Span {
+                            start: start_idx,
+                            end: pos,
+                        },
+                        append_whitespace: true,
+                        style: None,
+                    })
+                    .collect();
+
+                // Add 'search' subcommand if matching
+                if "search".starts_with(query_ref) || query_ref.is_empty() {
+                    suggestions.insert(
+                        0,
+                        Suggestion {
+                            value: "search".to_string(),
+                            description: Some("Search all examples".to_string()),
+                            extra: None,
+                            span: Span {
+                                start: start_idx,
+                                end: pos,
+                            },
+                            append_whitespace: true,
+                            style: None,
+                        },
+                    );
+                }
+
+                return suggestions;
+            }
+
             if let Some(root_spec) = self.commands.get(*cmd_name) {
                 // Determine which tokens are "completed" and can be used for descent
                 let is_new_arg = line.ends_with(' ');
@@ -460,26 +627,27 @@ impl Completer for SmartCompleter {
                     }
                 }
 
-                // 4. Example completion
-                let mut example_suggestions = Vec::new();
-                let full_input = &line[0..pos];
-                for example in &current_spec.examples {
-                    if example.cmd.starts_with(full_input) {
-                        example_suggestions.push(Suggestion {
-                            value: example.cmd.clone(),
-                            description: Some(format!("[Ex] {}", example.scenario.get(&lang))),
-                            extra: None,
-                            span: Span { start: 0, end: pos },
-                            append_whitespace: false, // Examples are complete commands usually
-                            style: None,
-                        });
-                    }
-                }
+                // 4. Example completion - DISABLED in Tab completion
+                // Examples are now accessible via the 'example' command
+                // This makes Tab completion cleaner and faster
+                // let mut example_suggestions = Vec::new();
+                // let full_input = &line[0..pos];
+                // for example in &current_spec.examples {
+                //     if example.cmd.starts_with(full_input) {
+                //         example_suggestions.push(Suggestion {
+                //             value: example.cmd.clone(),
+                //             description: Some(format!("[Ex] {}", example.scenario.get(&lang))),
+                //             extra: None,
+                //             span: Span { start: 0, end: pos },
+                //             append_whitespace: false,
+                //             style: None,
+                //         });
+                //     }
+                // }
 
-                // Combine suggestions
+                // Combine suggestions (subcommands + flags only, no examples)
                 let mut all_suggestions = sub_suggestions;
                 all_suggestions.extend(flag_suggestions);
-                all_suggestions.extend(example_suggestions);
 
                 if !all_suggestions.is_empty() {
                     return all_suggestions;

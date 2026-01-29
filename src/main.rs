@@ -57,6 +57,9 @@ use plugins::PluginManager;
 // Track previous directory for `cd -`
 static OLDPWD: Mutex<Option<PathBuf>> = Mutex::new(None);
 
+/// Maximum number of example search results to display
+const MAX_EXAMPLE_RESULTS: usize = 20;
+
 /// Application state
 #[allow(dead_code)]
 struct AppState {
@@ -294,8 +297,34 @@ fn handle_subcommand(cmd: Commands, config: &AppConfig) -> anyhow::Result<()> {
             };
             install::run_install(opts)?;
         }
-        Commands::Upgrade { check, force, yes, version } => {
-            handle_upgrade(config, check, force, yes, version.as_deref())?;
+        Commands::Upgrade { check, force, yes, target_version } => {
+            handle_upgrade(config, check, force, yes, target_version.as_deref())?;
+        }
+        Commands::Example { command, search } => {
+            let definitions_dir = config
+                .definitions_dir
+                .clone()
+                .unwrap_or_else(|| PathBuf::from("definitions"));
+            let commands = loader::load_commands(&definitions_dir);
+            let current_lang = Arc::new(RwLock::new(config.lang.clone()));
+            let completer = SmartCompleter::new(commands, current_lang.clone());
+            let lang = current_lang.read().unwrap().clone();
+
+            // Handle search flag
+            if let Some(query) = search {
+                let results = completer.search_examples(&query, &lang);
+                display_example_search_results(&results, &query);
+                return Ok(());
+            }
+
+            // Handle command argument
+            if command.is_empty() {
+                display_commands_with_examples(&completer, true);
+            } else {
+                let command_path = command.join(" ");
+                let examples = completer.get_examples(&command_path, &lang);
+                display_command_examples(&examples, &command_path, true);
+            }
         }
     }
     Ok(())
@@ -470,8 +499,8 @@ fn run_repl(config: AppConfig) -> anyhow::Result<()> {
     // Welcome message
     Output::dim("  Tab         - completion menu    /<keyword>  - search commands");
     Output::dim("  ?<query>    - natural language   :<snippet>  - expand snippet");
-    Output::dim("  @<bookmark> - jump to bookmark   alias/bm    - manage aliases/bookmarks");
-    Output::dim("  time        - command statistics Ctrl-D/exit - quit");
+    Output::dim("  @<bookmark> - jump to bookmark   example     - show command examples");
+    Output::dim("  alias/bm    - manage shortcuts   Ctrl-D/exit - quit");
     println!();
 
     // Start background version check if enabled
@@ -648,6 +677,13 @@ fn run_repl(config: AppConfig) -> anyhow::Result<()> {
                             if let Some(output) = plugins::handle_plugin_command(&mut plugin_manager, cmd, &parts[1..]) {
                                 println!("{}", output);
                             }
+                            continue;
+                        }
+
+                        // Example command
+                        if cmd == "example" || cmd == "examples" || cmd == "ex" {
+                            let lang = current_lang.read().unwrap().clone();
+                            handle_example_command(&completer, &parts[1..], &lang);
                             continue;
                         }
 
@@ -875,4 +911,126 @@ fn handle_config(parts: &[&str], current_lang: &Arc<RwLock<String>>) {
     } else {
         Output::info("Usage: config set-lang <lang>");
     }
+}
+
+/// Display a list of commands that have examples
+fn display_commands_with_examples(completer: &SmartCompleter, is_cli: bool) {
+    let commands = completer.get_commands_with_examples();
+    Output::info("Commands with examples:");
+    println!();
+
+    // Group by root command for better display
+    let mut current_root = String::new();
+    for cmd in &commands {
+        let root = cmd.split_whitespace().next().unwrap_or(cmd);
+        if root != current_root {
+            if !current_root.is_empty() {
+                println!();
+            }
+            current_root = root.to_string();
+        }
+        println!("  {}", Output::command(cmd));
+    }
+
+    println!();
+    Output::dim("Usage:");
+    if is_cli {
+        Output::dim("  sc example <command>         Show examples for a command");
+        Output::dim("  sc example <cmd> <subcmd>    Show examples for a subcommand");
+        Output::dim("  sc example -s <query>        Search all examples");
+    } else {
+        Output::dim("  example <command>           Show examples for a command");
+        Output::dim("  example <cmd> <subcmd>      Show examples for a subcommand");
+        Output::dim("  example search <query>      Search all examples");
+    }
+}
+
+/// Display search results for examples
+fn display_example_search_results(results: &[(String, String, String)], query: &str) {
+    if results.is_empty() {
+        Output::warn(&format!("No examples found for: {}", query));
+        return;
+    }
+
+    Output::info(&format!("Examples matching '{}':", query));
+    println!();
+
+    let num_style = nu_ansi_term::Style::new().fg(nu_ansi_term::Color::DarkGray);
+    let path_style = nu_ansi_term::Style::new().fg(nu_ansi_term::Color::Cyan);
+
+    for (i, (path, cmd, scenario)) in results.iter().take(MAX_EXAMPLE_RESULTS).enumerate() {
+        println!(
+            "  {}. {} {}",
+            num_style.paint(format!("{:>2}", i + 1)),
+            path_style.paint(format!("[{}]", path)),
+            Output::command(cmd)
+        );
+        Output::dim(&format!("      → {}", scenario));
+    }
+
+    if results.len() > MAX_EXAMPLE_RESULTS {
+        println!();
+        Output::dim(&format!(
+            "  ... and {} more results",
+            results.len() - MAX_EXAMPLE_RESULTS
+        ));
+    }
+}
+
+/// Display examples for a specific command
+fn display_command_examples(examples: &[(String, String)], command_path: &str, is_cli: bool) {
+    if examples.is_empty() {
+        Output::warn(&format!("No examples found for: {}", command_path));
+        if is_cli {
+            Output::dim(
+                "Try 'sc example' to see commands with examples, or 'sc example -s <query>' to search.",
+            );
+        } else {
+            Output::dim(
+                "Try 'example' to see commands with examples, or 'example search <query>' to search.",
+            );
+        }
+        return;
+    }
+
+    Output::info(&format!("Examples for '{}':", command_path));
+    println!();
+
+    let num_style = nu_ansi_term::Style::new().fg(nu_ansi_term::Color::DarkGray);
+
+    for (i, (cmd, scenario)) in examples.iter().enumerate() {
+        println!(
+            "  {}. {}",
+            num_style.paint(format!("{:>2}", i + 1)),
+            Output::command(cmd)
+        );
+        Output::dim(&format!("      → {}", scenario));
+    }
+    println!();
+}
+
+/// Handle 'example' command - display examples for commands (REPL version)
+fn handle_example_command(completer: &SmartCompleter, args: &[&str], lang: &str) {
+    if args.is_empty() {
+        display_commands_with_examples(completer, false);
+        return;
+    }
+
+    // Handle search subcommand
+    if args[0] == "search" || args[0] == "s" {
+        if args.len() < 2 {
+            Output::warn("Usage: example search <query>");
+            return;
+        }
+
+        let query = args[1..].join(" ");
+        let results = completer.search_examples(&query, lang);
+        display_example_search_results(&results, &query);
+        return;
+    }
+
+    // Show examples for a specific command
+    let command_path = args.join(" ");
+    let examples = completer.get_examples(&command_path, lang);
+    display_command_examples(&examples, &command_path, false);
 }

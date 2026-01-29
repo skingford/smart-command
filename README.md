@@ -6,6 +6,7 @@ An intelligent shell with context-aware command completion, fuzzy search, and mu
 
 - **Smart Completion**: Tab completion with subcommand and flag suggestions
 - **Fuzzy Search**: Type `/keyword` to search across commands, descriptions, and examples
+- **Example Browser**: View and search command examples with `example` command
 - **Multi-language**: Supports English and Chinese descriptions
 - **Git Integration**: Shows current branch in prompt
 - **History Persistence**: Command history saved across sessions
@@ -180,15 +181,65 @@ sc upgrade -y
 sc upgrade --force
 ```
 
+### Example Commands
+
+View and search command examples without cluttering tab completion:
+
+```bash
+# List all commands with examples
+sc example
+example              # In REPL mode
+
+# Show examples for a specific command
+sc example git
+sc example docker run
+example git          # In REPL mode
+
+# Search examples by keyword
+sc example -s "clone"
+sc example -s "push"
+example search clone # In REPL mode
+
+# Short aliases (REPL mode only)
+ex git
+examples
+```
+
+**Example output:**
+```
+ℹ Examples for 'git':
+
+   1. git clone [url]
+      → Clone a repository
+   2. git commit -m "[message]"
+      → Commit with message
+   3. git push -u origin [branch]
+      → Push and set upstream
+   ...
+```
+
 ### Keyboard Shortcuts
 
 | Key | Action |
 |-----|--------|
 | `Tab` | Trigger completion menu |
 | `/` + keyword | Search commands |
+| `?` + query | Natural language query |
 | `Ctrl+C` | Clear current line |
 | `Ctrl+D` | Exit shell |
 | `↑` / `↓` | Navigate history |
+
+### Built-in Commands (REPL)
+
+| Command | Action |
+|---------|--------|
+| `example <cmd>` | Show examples for a command |
+| `example search <query>` | Search all examples |
+| `alias` | Manage command aliases |
+| `bookmark` / `bm` | Manage directory bookmarks |
+| `@<bookmark>` | Jump to bookmarked directory |
+| `:<snippet>` | Expand saved snippet |
+| `config set-lang <lang>` | Change language (en/zh) |
 
 ### Search Results
 

@@ -20,7 +20,10 @@
       "Bash(cargo test:*)",
       "Bash(find:*)",
       "WebFetch(domain:api.github.com)",
-      "Bash(claude plugins install:*)"
+      "Bash(claude plugins install:*)",
+      "Bash(./target/release/sc:*)",
+      "Bash(git stash:*)",
+      "Bash(sc:*)"
     ]
   },
   "hooks": {
