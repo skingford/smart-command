@@ -38,7 +38,7 @@ mod watcher;
 mod plugins;
 mod upgrade;
 
-use ai::{NaturalLanguageTemplates, TypoCorrector};
+use ai::{CommandPredictor, NaturalLanguageTemplates, TypoCorrector};
 use aliases::AliasManager;
 use bookmarks::BookmarkManager;
 use cli::{Cli, Commands, ConfigAction};
@@ -469,6 +469,8 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
     // Create AI features
     let typo_corrector = TypoCorrector::new(command_names.clone());
     let nl_templates = NaturalLanguageTemplates::new();
+    let command_predictor = Arc::new(RwLock::new(CommandPredictor::new()));
+    let mut previous_command: Option<String> = None;
 
     // Create SmartHighlighter with theme based on config
     let theme = match config.theme.as_deref() {
@@ -478,9 +480,10 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
     };
     let highlighter = Box::new(SmartHighlighter::new(command_names).with_theme(theme));
 
-    // Create SmartHinter for inline suggestions
+    // Create SmartHinter for inline suggestions with shared predictor
     let hinter = Box::new(
-        SmartHinter::new().with_style(Style::new().italic().fg(Color::DarkGray)),
+        SmartHinter::with_predictor(command_predictor.clone())
+            .with_style(Style::new().italic().fg(Color::DarkGray)),
     );
 
     // Create SmartValidator for syntax checking
@@ -641,7 +644,7 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                             let generator = ai::llm::AiCommandGenerator::new(&config.ai);
                             let context = ai::llm::AiContext::default();
 
-                            match generator.generate(query, &context) {
+                            match generator.generate_streaming(query, &context) {
                                 Ok(generated_cmd) => {
                                     println!();
 
@@ -838,6 +841,11 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                 Output::dim(&format!("⏱  {}", formatted));
                             }
                         }
+
+                        // Record command for prediction
+                        let base_cmd = final_cmd.split_whitespace().next().unwrap_or(&final_cmd).to_string();
+                        command_predictor.write().unwrap().record(&base_cmd, previous_command.as_deref());
+                        previous_command = Some(base_cmd);
                     }
 
                     ShellState::SelectingSearchResult(results) => {

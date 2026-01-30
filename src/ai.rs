@@ -96,6 +96,8 @@ pub mod llm {
         messages: Vec<OpenAiMessage>,
         max_tokens: u32,
         temperature: f32,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        stream: Option<bool>,
     }
 
     #[derive(Debug, Serialize)]
@@ -117,6 +119,24 @@ pub mod llm {
     #[derive(Debug, Deserialize)]
     struct OpenAiMessageContent {
         content: String,
+    }
+
+    /// Streaming response types for OpenAI-compatible APIs
+    #[derive(Debug, Deserialize)]
+    struct OpenAiStreamResponse {
+        choices: Vec<OpenAiStreamChoice>,
+    }
+
+    #[derive(Debug, Deserialize)]
+    struct OpenAiStreamChoice {
+        delta: OpenAiDelta,
+        #[allow(dead_code)]
+        finish_reason: Option<String>,
+    }
+
+    #[derive(Debug, Deserialize)]
+    struct OpenAiDelta {
+        content: Option<String>,
     }
 
     /// AI command generator with multi-provider support
@@ -161,8 +181,7 @@ pub mod llm {
         fn resolve_api_key(&self) -> Option<String> {
             let key = self.effective.api_key.as_ref()?;
 
-            if key.starts_with('$') {
-                let var_name = &key[1..];
+            if let Some(var_name) = key.strip_prefix('$') {
                 env::var(var_name).ok()
             } else {
                 // Warn user about security risk of plain text API keys
@@ -203,6 +222,34 @@ pub mod llm {
                 ProviderType::Ollama => self.call_ollama(&user_prompt),
                 ProviderType::OpenRouter => self.call_openrouter(&api_key, &user_prompt),
                 ProviderType::Custom => self.call_custom(&api_key, &user_prompt),
+            }
+        }
+
+        /// Generate a shell command with streaming output (for better UX)
+        pub fn generate_streaming(&self, query: &str, context: &AiContext) -> Result<String, AiError> {
+            if !self.effective.enabled {
+                return Err(AiError::NotEnabled);
+            }
+
+            let api_key = if self.effective.provider_type == ProviderType::Ollama {
+                String::new()
+            } else {
+                self.resolve_api_key().ok_or(AiError::NoApiKey)?
+            };
+
+            let user_prompt = format!(
+                "Working directory: {}\nShell: {}\nOS: {}\n\nUser request: {}\n\nGenerate ONLY the shell command, no explanation.",
+                context.cwd, context.shell, context.os, query
+            );
+
+            // Use streaming for OpenAI-compatible providers
+            match self.effective.provider_type {
+                ProviderType::OpenAI | ProviderType::DeepSeek | ProviderType::Qwen
+                | ProviderType::GLM | ProviderType::OpenRouter | ProviderType::Custom => {
+                    self.call_openai_streaming(&api_key, &user_prompt)
+                }
+                // Fall back to non-streaming for other providers
+                _ => self.generate(query, context)
             }
         }
 
@@ -282,6 +329,7 @@ pub mod llm {
                 ],
                 max_tokens: self.effective.max_tokens,
                 temperature: self.effective.temperature,
+                stream: None,
             };
 
             let response = self.client
@@ -304,6 +352,89 @@ pub mod llm {
             result.choices.first()
                 .map(|c| c.message.content.trim().to_string())
                 .ok_or_else(|| AiError::ParseError("Empty response".to_string()))
+        }
+
+        /// Call OpenAI-compatible API with streaming support
+        fn call_openai_streaming(&self, api_key: &str, user_prompt: &str) -> Result<String, AiError> {
+            use std::io::{BufRead, BufReader};
+
+            let model = self.effective.model.clone()
+                .unwrap_or_else(|| "gpt-4o-mini".to_string());
+
+            let endpoint = self.effective.endpoint.clone()
+                .unwrap_or_else(|| "https://api.openai.com/v1/chat/completions".to_string());
+
+            let request = OpenAiRequest {
+                model,
+                messages: vec![
+                    OpenAiMessage {
+                        role: "system".to_string(),
+                        content: self.effective.system_prompt.clone(),
+                    },
+                    OpenAiMessage {
+                        role: "user".to_string(),
+                        content: user_prompt.to_string(),
+                    },
+                ],
+                max_tokens: self.effective.max_tokens,
+                temperature: self.effective.temperature,
+                stream: Some(true),
+            };
+
+            let response = self.client
+                .post(&endpoint)
+                .header("Authorization", format!("Bearer {}", api_key))
+                .header("content-type", "application/json")
+                .json(&request)
+                .send()
+                .map_err(|e| AiError::NetworkError(e.to_string()))?;
+
+            if !response.status().is_success() {
+                let status = response.status();
+                let body = response.text().unwrap_or_default();
+                return Err(AiError::ApiError(format!("Status {}: {}", status, body)));
+            }
+
+            // Process streaming response (SSE format)
+            let reader = BufReader::new(response);
+            let mut accumulated = String::new();
+
+            print!("\x1b[32m"); // Green color for streaming output
+            for line in reader.lines() {
+                let line = line.map_err(|e| AiError::NetworkError(e.to_string()))?;
+
+                // Skip empty lines
+                if line.trim().is_empty() {
+                    continue;
+                }
+
+                // SSE lines start with "data: "
+                if let Some(json_str) = line.strip_prefix("data: ") {
+                    // "[DONE]" indicates end of stream
+                    if json_str == "[DONE]" {
+                        break;
+                    }
+
+                    // Parse the JSON chunk
+                    if let Ok(chunk) = serde_json::from_str::<OpenAiStreamResponse>(json_str) {
+                        if let Some(choice) = chunk.choices.first() {
+                            if let Some(content) = &choice.delta.content {
+                                print!("{}", content);
+                                use std::io::Write;
+                                std::io::stdout().flush().ok();
+                                accumulated.push_str(content);
+                            }
+                        }
+                    }
+                }
+            }
+            println!("\x1b[0m"); // Reset color
+
+            if accumulated.is_empty() {
+                Err(AiError::ParseError("Empty streaming response".to_string()))
+            } else {
+                Ok(accumulated.trim().to_string())
+            }
         }
 
         fn call_gemini(&self, api_key: &str, user_prompt: &str) -> Result<String, AiError> {
@@ -419,6 +550,7 @@ pub mod llm {
                 ],
                 max_tokens: self.effective.max_tokens,
                 temperature: self.effective.temperature,
+                stream: None,
             };
 
             let response = self.client
@@ -465,6 +597,7 @@ pub mod llm {
                 ],
                 max_tokens: self.effective.max_tokens,
                 temperature: self.effective.temperature,
+                stream: None,
             };
 
             let response = self.client
@@ -533,6 +666,7 @@ pub mod llm {
                 ],
                 max_tokens: self.effective.max_tokens,
                 temperature: self.effective.temperature,
+                stream: None,
             };
 
             let response = self.client
@@ -647,6 +781,7 @@ pub mod llm {
                 ],
                 max_tokens: self.effective.max_tokens,
                 temperature: self.effective.temperature,
+                stream: None,
             };
 
             let response = self.client

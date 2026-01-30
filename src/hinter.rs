@@ -56,6 +56,18 @@ impl SmartHinter {
         }
     }
 
+    /// Create a new SmartHinter with a shared CommandPredictor
+    pub fn with_predictor(predictor: Arc<RwLock<CommandPredictor>>) -> Self {
+        Self {
+            style: Style::new().italic().fg(Color::DarkGray),
+            current_hint: String::new(),
+            cwd: std::env::current_dir().unwrap_or_else(|_| PathBuf::from(".")),
+            predictor,
+            min_chars: 1,
+            last_command: Arc::new(RwLock::new(None)),
+        }
+    }
+
     /// Set the style for hint text
     pub fn with_style(mut self, style: Style) -> Self {
         self.style = style;

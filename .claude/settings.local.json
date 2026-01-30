@@ -24,7 +24,12 @@
       "Bash(./target/release/sc:*)",
       "Bash(git stash:*)",
       "Bash(sc:*)",
-      "Bash(~/.cargo/bin/sc:*)"
+      "Bash(~/.cargo/bin/sc:*)",
+      "Bash(chmod:*)",
+      "Bash(# Install AST tools via bun \\(already confirmed available\\) echo \"\"Installing @ast-grep/napi via bun...\"\" # Clean up npm version if it exists to avoid duplicates if command -v npm &> /dev/null && npm list -g @ast-grep/napi &>/dev/null; then echo \"\"Removing existing npm installation to avoid duplicates...\"\" npm uninstall -g @ast-grep/napi fi bun install -g @ast-grep/napi # Verify installation if bun pm ls -g)",
+      "Bash(then)",
+      "Bash(else)",
+      "Bash(fi)"
     ]
   },
   "hooks": {
