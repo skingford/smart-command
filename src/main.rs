@@ -747,24 +747,50 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                         if io::stdin().read_line(&mut input).is_ok() {
                                             let input = input.trim().to_lowercase();
                                             if input == "a" || input == "all" {
-                                                for entry in &response.commands {
-                                                    Output::dim(&format!(" {}", entry.command));
-                                                    execute_command(&entry.command, &current_lang, &state, &typo_corrector);
+                                                let total = response.commands.len();
+                                                for (i, entry) in response.commands.iter().enumerate() {
+                                                    let desc = entry.description.as_deref().unwrap_or("执行命令");
+                                                    Output::step(i + 1, total, desc);
+                                                    Output::executing(&entry.command);
+                                                    let result = execute_command_with_result(&entry.command, &current_lang, &state, &typo_corrector);
+                                                    Output::exec_result(result.0, result.1);
+                                                    if !result.0 {
+                                                        print!("Continue? [Y/n]: ");
+                                                        io::stdout().flush().ok();
+                                                        let mut cont = String::new();
+                                                        if io::stdin().read_line(&mut cont).is_ok() {
+                                                            let cont = cont.trim().to_lowercase();
+                                                            if cont == "n" || cont == "no" {
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
                                                 }
                                             } else if let Ok(num) = input.parse::<usize>() {
                                                 if num > 0 && num <= response.commands.len() {
-                                                    let cmd = &response.commands[num - 1].command;
-                                                    execute_command(cmd, &current_lang, &state, &typo_corrector);
+                                                    let entry = &response.commands[num - 1];
+                                                    let desc = entry.description.as_deref().unwrap_or("执行命令");
+                                                    Output::step(1, 1, desc);
+                                                    Output::executing(&entry.command);
+                                                    let result = execute_command_with_result(&entry.command, &current_lang, &state, &typo_corrector);
+                                                    Output::exec_result(result.0, result.1);
                                                 }
                                             } else if input.is_empty() || input == "y" || input == "yes" {
-                                                if let Some(cmd) = response.first_command() {
-                                                    execute_command(cmd, &current_lang, &state, &typo_corrector);
+                                                if !response.commands.is_empty() {
+                                                    let entry = &response.commands[0];
+                                                    let desc = entry.description.as_deref().unwrap_or("执行命令");
+                                                    Output::step(1, 1, desc);
+                                                    Output::executing(&entry.command);
+                                                    let result = execute_command_with_result(&entry.command, &current_lang, &state, &typo_corrector);
+                                                    Output::exec_result(result.0, result.1);
                                                 }
                                             }
                                         }
                                     } else {
                                         // Single command response
-                                        if let Some(cmd) = response.first_command() {
+                                        if !response.commands.is_empty() {
+                                            let entry = &response.commands[0];
+                                            let cmd = &entry.command;
                                             println!();
                                             if let Some(warning) = output::get_danger_warning(cmd) {
                                                 Output::warn(&format!(" {}", warning));
@@ -778,7 +804,11 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                             if io::stdin().read_line(&mut input).is_ok() {
                                                 let input = input.trim().to_lowercase();
                                                 if input.is_empty() || input == "y" || input == "yes" {
-                                                    execute_command(cmd, &current_lang, &state, &typo_corrector);
+                                                    let desc = entry.description.as_deref().unwrap_or("执行命令");
+                                                    Output::step(1, 1, desc);
+                                                    Output::executing(cmd);
+                                                    let result = execute_command_with_result(cmd, &current_lang, &state, &typo_corrector);
+                                                    Output::exec_result(result.0, result.1);
                                                 } else if input == "e" || input == "edit" {
                                                     Output::info("Command to edit (copy and modify):");
                                                     println!("  {}", Output::command(cmd));
@@ -1078,7 +1108,8 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                     // The response was already streamed to terminal, just add newline
                                     println!();
                                 } else if parsed.commands.len() == 1 {
-                                    let cmd = &parsed.commands[0].command;
+                                    let entry = &parsed.commands[0];
+                                    let cmd = &entry.command;
                                     println!();
                                     if let Some(warning) = output::get_danger_warning(cmd) {
                                         Output::warn(&format!("  {}", warning));
@@ -1090,7 +1121,12 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                     if io::stdin().read_line(&mut input).is_ok() {
                                         let input = input.trim().to_lowercase();
                                         if input.is_empty() || input == "y" || input == "yes" {
-                                            execute_command(cmd, &current_lang, &state, &typo_corrector);
+                                            // Show step info
+                                            let desc = entry.description.as_deref().unwrap_or("执行命令");
+                                            Output::step(1, 1, desc);
+                                            Output::executing(cmd);
+                                            let result = execute_command_with_result(cmd, &current_lang, &state, &typo_corrector);
+                                            Output::exec_result(result.0, result.1);
                                         } else if input == "e" || input == "edit" {
                                             Output::info("Command to edit (copy and modify):");
                                             println!("  {}", Output::command(cmd));
@@ -1114,14 +1150,34 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                     if io::stdin().read_line(&mut input).is_ok() {
                                         let input = input.trim().to_lowercase();
                                         if input == "a" || input == "all" {
-                                            for entry in &parsed.commands {
-                                                Output::dim(&format!(" {}", entry.command));
-                                                execute_command(&entry.command, &current_lang, &state, &typo_corrector);
+                                            let total = parsed.commands.len();
+                                            for (i, entry) in parsed.commands.iter().enumerate() {
+                                                let desc = entry.description.as_deref().unwrap_or("执行命令");
+                                                Output::step(i + 1, total, desc);
+                                                Output::executing(&entry.command);
+                                                let result = execute_command_with_result(&entry.command, &current_lang, &state, &typo_corrector);
+                                                Output::exec_result(result.0, result.1);
+                                                // If command failed, ask if continue
+                                                if !result.0 {
+                                                    print!("Continue? [Y/n]: ");
+                                                    io::stdout().flush().ok();
+                                                    let mut cont = String::new();
+                                                    if io::stdin().read_line(&mut cont).is_ok() {
+                                                        let cont = cont.trim().to_lowercase();
+                                                        if cont == "n" || cont == "no" {
+                                                            break;
+                                                        }
+                                                    }
+                                                }
                                             }
                                         } else if let Ok(num) = input.parse::<usize>() {
                                             if num > 0 && num <= parsed.commands.len() {
-                                                let cmd = &parsed.commands[num - 1].command;
-                                                execute_command(cmd, &current_lang, &state, &typo_corrector);
+                                                let entry = &parsed.commands[num - 1];
+                                                let desc = entry.description.as_deref().unwrap_or("执行命令");
+                                                Output::step(1, 1, desc);
+                                                Output::executing(&entry.command);
+                                                let result = execute_command_with_result(&entry.command, &current_lang, &state, &typo_corrector);
+                                                Output::exec_result(result.0, result.1);
                                             }
                                         }
                                     }
@@ -1218,6 +1274,82 @@ fn execute_command(
             }
             Err(e) => Output::error(&format!("Error executing command: {}", e)),
         }
+    }
+}
+
+/// Execute a command and return the result (success, exit_code)
+/// This is used by AI commands to show execution results
+fn execute_command_with_result(
+    command: &str,
+    current_lang: &Arc<RwLock<String>>,
+    state: &AppState,
+    typo_corrector: &TypoCorrector,
+) -> (bool, Option<i32>) {
+    let parts: Vec<&str> = command.split_whitespace().collect();
+
+    if let Some(cmd) = parts.first() {
+        // Handle 'cd' command
+        if *cmd == "cd" {
+            handle_cd(&parts);
+            return (true, Some(0));
+        }
+
+        // Handle 'config' command
+        if *cmd == "config" {
+            handle_config(&parts, current_lang);
+            return (true, Some(0));
+        }
+
+        // Check for dangerous commands
+        if state.danger_protection {
+            if let Some(warning) = output::get_danger_warning(command) {
+                warn!("Dangerous command detected: {}", command);
+                Output::warn(&warning);
+                print!("Are you sure you want to execute this command? [y/N] ");
+                io::stdout().flush().ok();
+
+                let mut input = String::new();
+                if io::stdin().read_line(&mut input).is_ok() {
+                    let response = input.trim().to_lowercase();
+                    if response != "y" && response != "yes" {
+                        Output::dim("Command cancelled.");
+                        return (false, None);
+                    }
+                } else {
+                    Output::dim("Command cancelled.");
+                    return (false, None);
+                }
+            }
+        }
+
+        debug!("Executing command: {}", command);
+
+        // Execute external command
+        let status = Command::new("sh").arg("-c").arg(command).status();
+
+        match status {
+            Ok(exit_status) => {
+                let code = exit_status.code();
+                match code {
+                    Some(0) => (true, Some(0)),
+                    Some(127) => {
+                        // Command not found - suggest typo corrections
+                        if let Some(message) = typo_corrector.did_you_mean(cmd) {
+                            Output::info(&message);
+                        }
+                        (false, Some(127))
+                    }
+                    Some(c) => (false, Some(c)),
+                    None => (false, None),
+                }
+            }
+            Err(e) => {
+                Output::error(&format!("Error executing command: {}", e));
+                (false, None)
+            }
+        }
+    } else {
+        (false, None)
     }
 }
 

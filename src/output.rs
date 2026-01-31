@@ -129,6 +129,58 @@ impl Output {
         }
     }
 
+    /// Display step header for AI command execution
+    pub fn step(step_num: usize, total_steps: usize, description: &str) {
+        let step_style = Style::new().fg(Color::Cyan).bold();
+        let desc_style = Style::new().fg(Color::White);
+
+        if total_steps > 1 {
+            println!(
+                "\n{} {} {}",
+                step_style.paint("⟹"),
+                step_style.paint(format!("Step {}/{}:", step_num, total_steps)),
+                desc_style.paint(description)
+            );
+        } else {
+            println!(
+                "\n{} {}",
+                step_style.paint("⟹"),
+                desc_style.paint(description)
+            );
+        }
+    }
+
+    /// Display command being executed
+    pub fn executing(cmd: &str) {
+        let prompt_style = Style::new().fg(Color::DarkGray);
+        let cmd_style = Style::new().fg(Color::Yellow).bold();
+        println!(
+            "  {} {}",
+            prompt_style.paint("$"),
+            cmd_style.paint(cmd)
+        );
+        // Print separator line
+        let separator = Style::new().fg(Color::DarkGray);
+        println!("  {}", separator.paint("─".repeat(50)));
+    }
+
+    /// Display execution result
+    pub fn exec_result(success: bool, exit_code: Option<i32>) {
+        let separator = Style::new().fg(Color::DarkGray);
+        println!("  {}", separator.paint("─".repeat(50)));
+
+        if success {
+            let style = Style::new().fg(Color::Green);
+            println!("  {} {}", style.paint("✓"), style.paint("Done"));
+        } else if let Some(code) = exit_code {
+            let style = Style::new().fg(Color::Red);
+            println!("  {} {} (exit: {})", style.paint("✗"), style.paint("Failed"), code);
+        } else {
+            let style = Style::new().fg(Color::Red);
+            println!("  {} {}", style.paint("✗"), style.paint("Failed"));
+        }
+    }
+
     /// Display upgrade available notification
     pub fn upgrade_available(current: &str, latest: &str) {
         let style = Style::new().fg(Color::Yellow).bold();
