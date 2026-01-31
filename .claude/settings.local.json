@@ -24,7 +24,8 @@
       "Bash(./target/release/sc:*)",
       "Bash(git stash:*)",
       "Bash(sc:*)",
-      "Bash(~/.cargo/bin/sc:*)"
+      "Bash(~/.cargo/bin/sc:*)",
+      "Bash(ls:*)"
     ]
   },
   "hooks": {

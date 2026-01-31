@@ -114,6 +114,9 @@ cargo install --git https://github.com/skingford/smart-command.git
 git clone https://github.com/skingford/smart-command.git
 cd smart-command
 cargo install --path .
+
+# Ensure Cargo bin is in PATH (restart shell to take effect)
+echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> ~/.zshrc
 ```
 
 #### Build from Source
