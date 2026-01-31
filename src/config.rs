@@ -463,17 +463,39 @@ fn default_ai_provider() -> String {
 }
 
 fn default_ai_system_prompt() -> String {
-    r#"You are a shell command expert. Generate a single shell command based on the user's natural language description.
-Rules:
-- Output ONLY the command, no explanations
-- Use common Unix/Linux commands
-- Prefer portable solutions
-- If multiple commands needed, use && or pipes
-- Never use dangerous commands without explicit request"#.to_string()
+    r#"You are a shell command generator. Your PRIMARY job is to output executable shell commands.
+
+RESPONSE FORMAT:
+
+1. For COMMAND REQUESTS (e.g., "list files", "find large files", "用gh查看PR"):
+   Output ONLY the command, nothing else. No explanations.
+   Example: ls -la
+
+2. For LEARNING/USAGE queries (e.g., "how to use git", "介绍gh用法", "explain curl"):
+   Use CMD:/DESC: format for each useful command:
+   CMD: gh repo list
+   DESC: List your repositories
+   CMD: gh pr list
+   DESC: List pull requests
+   CMD: gh issue create
+   DESC: Create a new issue
+
+3. For MULTI-STEP tasks:
+   CMD: git add .
+   CMD: git commit -m "message"
+   CMD: git push
+
+CRITICAL RULES:
+- NEVER output prose or explanations without CMD: prefix
+- NEVER use markdown formatting (**bold**, `code`, etc.)
+- NEVER start response with "I", "Here", "The", "You", "This"
+- For usage/help queries, ALWAYS use CMD:/DESC: format
+- Detect user's language for DESC: content
+- Prefer portable Unix commands"#.to_string()
 }
 
 fn default_ai_max_tokens() -> u32 {
-    256
+    1024
 }
 
 fn default_ai_temperature() -> f32 {
@@ -582,7 +604,7 @@ impl AppConfig {
 
         // Add config file if it exists
         let builder = if config_file.exists() {
-            builder.add_source(File::from(config_file))
+            builder.add_source(File::from(config_file.clone()))
         } else {
             builder
         };
@@ -594,7 +616,36 @@ impl AppConfig {
                 .try_parsing(true),
         );
 
-        builder.build()?.try_deserialize()
+        let mut app_config: Self = builder.build()?.try_deserialize()?;
+
+        // Merge user-defined AI providers with defaults
+        // config crate doesn't handle nested HashMap defaults well, so we do it manually
+        if config_file.exists() {
+            if let Ok(content) = std::fs::read_to_string(&config_file) {
+                if let Ok(toml_value) = content.parse::<toml::Table>() {
+                    if let Some(ai) = toml_value.get("ai").and_then(|v| v.as_table()) {
+                        // Override active if specified in config file
+                        if let Some(active) = ai.get("active").and_then(|v| v.as_str()) {
+                            app_config.ai.active = active.to_string();
+                        }
+                        // Override enabled if specified in config file
+                        if let Some(enabled) = ai.get("enabled").and_then(|v| v.as_bool()) {
+                            app_config.ai.enabled = enabled;
+                        }
+                        // Merge providers: user-defined providers take precedence
+                        if let Some(providers) = ai.get("providers").and_then(|v| v.as_table()) {
+                            for (name, provider_value) in providers {
+                                if let Ok(provider_config) = provider_value.clone().try_into::<ProviderConfig>() {
+                                    app_config.ai.providers.insert(name.clone(), provider_config);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        Ok(app_config)
     }
 
     /// Create default configuration
@@ -823,24 +874,31 @@ model = "anthropic/claude-sonnet-4"
 # provider_type = "claude"
 # api_key = "$MY_PROXY_API_KEY"
 # endpoint = "https://my-relay.example.com/claude/v1/messages"
-# model = "claude-3-haiku-20240307"
+# model = "claude-sonnet-4-20250514"
 #
 # Example: Using an OpenAI-compatible relay (e.g., one-api, new-api)
 # [ai.providers.openai-relay]
 # provider_type = "openai"
 # api_key = "$RELAY_API_KEY"
 # endpoint = "https://relay.example.com/v1/chat/completions"
-# model = "gpt-4"
+# model = "gpt-4o-mini"
 
 #------------------------------------------------------------------------------
-# REPL Commands for AI Management
+# REPL Commands
 #------------------------------------------------------------------------------
-# In the shell, you can use these commands:
-#
+# AI Commands:
 #   ai list              - List all configured providers
 #   ai use <provider>    - Switch to a different provider
 #   ai test              - Test the current provider connection
 #   ai status            - Show current AI configuration status
+#   ai providers         - Show available provider types
+#   ?ai <query>          - Generate command with AI
+#
+# Config Commands:
+#   config check         - Validate this config file
+#   config show          - Show current config
+#   config edit          - Edit config in $EDITOR
+#   config path          - Show config file path
 #
 # Example:
 #   > ai list

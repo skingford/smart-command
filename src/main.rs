@@ -13,6 +13,7 @@ use tracing::{debug, info, warn};
 use tracing_subscriber::EnvFilter;
 
 mod ai;
+mod ai_stream;
 mod aliases;
 mod argument;
 mod bookmarks;
@@ -39,6 +40,7 @@ mod plugins;
 mod upgrade;
 
 use ai::{NaturalLanguageTemplates, TypoCorrector};
+use ai_stream::{AiModeCommand, AiSession, StreamingAiGenerator};
 use aliases::AliasManager;
 use bookmarks::BookmarkManager;
 use cli::{Cli, Commands, ConfigAction};
@@ -157,9 +159,62 @@ impl Prompt for SmartPrompt {
     }
 }
 
+/// AI Mode prompt with visual indicator
+struct AiPrompt {
+    provider: String,
+}
+
+impl AiPrompt {
+    fn new(provider: &str) -> Self {
+        Self {
+            provider: provider.to_string(),
+        }
+    }
+}
+
+impl Prompt for AiPrompt {
+    fn render_prompt_left(&self) -> Cow<'_, str> {
+        Cow::Owned(format!(
+            "{}",
+            nu_ansi_term::Color::Magenta.bold().paint(format!("AI [{}]", self.provider))
+        ))
+    }
+
+    fn render_prompt_right(&self) -> Cow<'_, str> {
+        Cow::Borrowed("")
+    }
+
+    fn render_prompt_indicator(&self, _edit_mode: PromptEditMode) -> Cow<'_, str> {
+        Cow::Owned(format!(
+            "\n{} ",
+            nu_ansi_term::Color::Magenta.paint(">>")
+        ))
+    }
+
+    fn render_prompt_multiline_indicator(&self) -> Cow<'_, str> {
+        Cow::Borrowed(".. ")
+    }
+
+    fn render_prompt_history_search_indicator(
+        &self,
+        history_search: PromptHistorySearch,
+    ) -> Cow<'_, str> {
+        let prefix = match history_search.status {
+            PromptHistorySearchStatus::Passing => "",
+            PromptHistorySearchStatus::Failing => "failing ",
+        };
+        Cow::Owned(format!(
+            "({}reverse-search: {}) ",
+            prefix, history_search.term
+        ))
+    }
+}
+
 enum ShellState {
     Normal,
     SelectingSearchResult(Vec<(String, String, String)>),
+    /// AI conversation mode - all input goes to AI
+    AiMode,
 }
 
 fn main() -> anyhow::Result<()> {
@@ -515,6 +570,7 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
     let mut bookmark_manager = BookmarkManager::new();
     let mut command_timer = CommandTimer::new();
     let mut plugin_manager = PluginManager::new();
+    let mut ai_session = AiSession::new();
 
     // Display startup banner
     output::Output::banner();
@@ -525,6 +581,9 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
     Output::dim("  ?<query>    - natural language   :<snippet>  - expand snippet");
     Output::dim("  @<bookmark> - jump to bookmark   example     - show command examples");
     Output::dim("  alias/bm    - manage shortcuts   Ctrl-D/exit - quit");
+    if config.ai.enabled {
+        Output::dim("  ai on       - enter AI mode      ?ai <query> - generate command");
+    }
     println!();
 
     // Start background version check if enabled
@@ -546,7 +605,15 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
     }
 
     loop {
-        let sig = line_editor.read_line(&prompt)?;
+        // Use different prompt based on shell state
+        let sig = match shell_state {
+            ShellState::AiMode => {
+                let effective = config.ai.get_effective_settings();
+                let ai_prompt = AiPrompt::new(&format!("{}", effective.provider_type));
+                line_editor.read_line(&ai_prompt)?
+            }
+            _ => line_editor.read_line(&prompt)?,
+        };
         match sig {
             Signal::Success(buffer) => {
                 let trimmed = buffer.trim();
@@ -623,53 +690,105 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                             continue;
                         }
 
-                        // Handle `?ai` prefix for AI-powered command generation
+                        // Handle `?ai` prefix for AI-powered command generation (with streaming)
                         if trimmed.starts_with("?ai ") && trimmed.len() > 4 {
                             let query = &trimmed[4..];
 
                             if !config.ai.enabled {
                                 Output::warn("AI completion is not enabled.");
-                                Output::dim("To enable, set ai.enabled = true in ~/.config/smart-command/config.toml");
-                                Output::dim("and configure your API key (e.g., ai.api_key = \"$ANTHROPIC_API_KEY\")");
+                                Output::dim("To enable, set ai.enabled = true in config");
+                                Output::dim("and configure your API key");
                                 continue;
                             }
 
-                            Output::info(&format!("Generating command for: {}", query));
+                            Output::info(&format!("Query: {}", query));
                             let effective = config.ai.get_effective_settings();
-                            println!("  Contacting {} API...", effective.provider_type);
+                            Output::dim(&format!("  {} streaming...", effective.provider_type));
 
-                            let generator = ai::llm::AiCommandGenerator::new(&config.ai);
+                            let generator = StreamingAiGenerator::new(&config.ai);
                             let context = ai::llm::AiContext::default();
 
-                            match generator.generate(query, &context) {
-                                Ok(generated_cmd) => {
-                                    println!();
+                            match generator.generate_streaming(query, &context, None) {
+                                Ok(raw_response) => {
+                                    let response = ai::llm::AiResponse::parse(&raw_response);
 
-                                    // Check if AI-generated command is dangerous
-                                    if let Some(warning) = output::get_danger_warning(&generated_cmd) {
-                                        Output::warn(&format!("WARNING: {}", warning));
-                                        Output::warn("AI-generated command detected as potentially dangerous!");
-                                    }
+                                    if response.commands.is_empty() {
+                                        // AI returned prose/explanation, not a command
+                                        // The response was already streamed to terminal
+                                        println!();
+                                    } else if response.is_multi() {
+                                        // Multi-command response with descriptions
+                                        println!();
+                                        Output::success("Generated commands:");
+                                        println!();
+                                        for (i, entry) in response.commands.iter().enumerate() {
+                                            let danger = output::get_danger_warning(&entry.command);
+                                            let cmd_display = Output::command(&entry.command);
 
-                                    Output::success(&format!("Generated: {}", Output::command(&generated_cmd)));
-                                    print!("\nExecute? [Y/n/e(dit)]: ");
-                                    io::stdout().flush().ok();
+                                            if let Some(desc) = &entry.description {
+                                                println!("  {}. {} - {}", i + 1, cmd_display, desc);
+                                            } else {
+                                                println!("  {}. {}", i + 1, cmd_display);
+                                            }
 
-                                    let mut input = String::new();
-                                    if io::stdin().read_line(&mut input).is_ok() {
-                                        let response = input.trim().to_lowercase();
-                                        if response.is_empty() || response == "y" || response == "yes" {
-                                            execute_command(&generated_cmd, &current_lang, &state, &typo_corrector);
-                                        } else if response == "e" || response == "edit" {
-                                            // Insert command into line for editing (next iteration)
-                                            Output::info("Command copied. Edit and press Enter to execute.");
-                                            // Note: We can't directly edit the line, so just show it
-                                            println!("  {}", generated_cmd);
+                                            if let Some(warning) = danger {
+                                                Output::warn(&format!("       {}", warning));
+                                            }
+                                        }
+
+                                        if response.commands.len() > 1 {
+                                            print!("\nExecute command [1-{}/n/a(ll)]: ", response.commands.len());
+                                        } else {
+                                            print!("\nExecute? [Y/n]: ");
+                                        }
+                                        io::stdout().flush().ok();
+
+                                        let mut input = String::new();
+                                        if io::stdin().read_line(&mut input).is_ok() {
+                                            let input = input.trim().to_lowercase();
+                                            if input == "a" || input == "all" {
+                                                for entry in &response.commands {
+                                                    Output::dim(&format!(" {}", entry.command));
+                                                    execute_command(&entry.command, &current_lang, &state, &typo_corrector);
+                                                }
+                                            } else if let Ok(num) = input.parse::<usize>() {
+                                                if num > 0 && num <= response.commands.len() {
+                                                    let cmd = &response.commands[num - 1].command;
+                                                    execute_command(cmd, &current_lang, &state, &typo_corrector);
+                                                }
+                                            } else if input.is_empty() || input == "y" || input == "yes" {
+                                                if let Some(cmd) = response.first_command() {
+                                                    execute_command(cmd, &current_lang, &state, &typo_corrector);
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        // Single command response
+                                        if let Some(cmd) = response.first_command() {
+                                            println!();
+                                            if let Some(warning) = output::get_danger_warning(cmd) {
+                                                Output::warn(&format!(" {}", warning));
+                                            }
+
+                                            Output::success(&format!("Generated: {}", Output::command(cmd)));
+                                            print!("\nExecute? [Y/n/e(dit)]: ");
+                                            io::stdout().flush().ok();
+
+                                            let mut input = String::new();
+                                            if io::stdin().read_line(&mut input).is_ok() {
+                                                let input = input.trim().to_lowercase();
+                                                if input.is_empty() || input == "y" || input == "yes" {
+                                                    execute_command(cmd, &current_lang, &state, &typo_corrector);
+                                                } else if input == "e" || input == "edit" {
+                                                    Output::info("Command to edit (copy and modify):");
+                                                    println!("  {}", Output::command(cmd));
+                                                }
+                                            }
                                         }
                                     }
                                 }
                                 Err(e) => {
-                                    Output::error(&format!("AI generation failed: {}", e));
+                                    Output::error(&format!("AI error: {}", e));
                                 }
                             }
                             continue;
@@ -817,7 +936,26 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                         // AI management commands
                         if cmd == "ai" {
                             let subcommand = parts.get(1).map(|s| *s).unwrap_or("status");
-                            handle_ai_command(&mut config.ai, subcommand, &parts[2..]);
+                            let args = if parts.len() > 2 { &parts[2..] } else { &[] };
+
+                            // Handle "ai on" to enter AI mode
+                            if subcommand == "on" || subcommand == "start" || subcommand == "enter" || subcommand == "mode" {
+                                if !config.ai.enabled {
+                                    Output::warn("AI is not enabled. Set ai.enabled = true in config.");
+                                    Output::dim("Run: config edit");
+                                    continue;
+                                }
+                                let effective = config.ai.get_effective_settings();
+                                ai_session.enter();
+                                shell_state = ShellState::AiMode;
+                                ai_stream::show_ai_mode_welcome(
+                                    &format!("{}", effective.provider_type),
+                                    effective.model.as_deref(),
+                                );
+                                continue;
+                            }
+
+                            handle_ai_command(&mut config.ai, subcommand, args);
                             continue;
                         }
 
@@ -877,10 +1015,131 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                             ));
                         }
                     }
+
+                    ShellState::AiMode => {
+                        // Handle AI mode commands
+                        if let Some(cmd) = ai_stream::parse_ai_mode_command(trimmed) {
+                            match cmd {
+                                AiModeCommand::Exit => {
+                                    ai_session.exit();
+                                    shell_state = ShellState::Normal;
+                                    ai_stream::show_ai_mode_exit();
+                                    continue;
+                                }
+                                AiModeCommand::Clear => {
+                                    ai_session.clear();
+                                    Output::success("Conversation history cleared.");
+                                    continue;
+                                }
+                                AiModeCommand::Help => {
+                                    ai_stream::show_ai_mode_help();
+                                    continue;
+                                }
+                                AiModeCommand::Enter => {
+                                    Output::dim("Already in AI mode.");
+                                    continue;
+                                }
+                            }
+                        }
+
+                        // Empty input - just continue
+                        if trimmed.is_empty() {
+                            continue;
+                        }
+
+                        // Handle "exit" in AI mode
+                        if trimmed == "exit" {
+                            ai_session.exit();
+                            shell_state = ShellState::Normal;
+                            ai_stream::show_ai_mode_exit();
+                            continue;
+                        }
+
+                        // Process AI query with streaming
+                        let effective = config.ai.get_effective_settings();
+                        Output::dim(&format!("  {} thinking...", effective.provider_type));
+
+                        let generator = StreamingAiGenerator::new(&config.ai);
+                        let context = ai::llm::AiContext::default();
+
+                        // Add user message to session
+                        ai_session.add_user_message(trimmed);
+
+                        match generator.generate_streaming(trimmed, &context, Some(&ai_session)) {
+                            Ok(response) => {
+                                // Add assistant response to session
+                                ai_session.add_assistant_message(&response);
+
+                                // Parse response for commands
+                                let parsed = ai::llm::AiResponse::parse(&response);
+
+                                if parsed.commands.is_empty() {
+                                    // AI returned prose/explanation, not a command
+                                    // The response was already streamed to terminal, just add newline
+                                    println!();
+                                } else if parsed.commands.len() == 1 {
+                                    let cmd = &parsed.commands[0].command;
+                                    println!();
+                                    if let Some(warning) = output::get_danger_warning(cmd) {
+                                        Output::warn(&format!("  {}", warning));
+                                    }
+                                    print!("Execute? [Y/n/e(dit)]: ");
+                                    io::stdout().flush().ok();
+
+                                    let mut input = String::new();
+                                    if io::stdin().read_line(&mut input).is_ok() {
+                                        let input = input.trim().to_lowercase();
+                                        if input.is_empty() || input == "y" || input == "yes" {
+                                            execute_command(cmd, &current_lang, &state, &typo_corrector);
+                                        } else if input == "e" || input == "edit" {
+                                            Output::info("Command to edit (copy and modify):");
+                                            println!("  {}", Output::command(cmd));
+                                        }
+                                    }
+                                } else {
+                                    // Multiple commands
+                                    println!();
+                                    Output::dim("Generated commands:");
+                                    for (i, entry) in parsed.commands.iter().enumerate() {
+                                        if let Some(desc) = &entry.description {
+                                            println!("  {}. {} - {}", i + 1, Output::command(&entry.command), desc);
+                                        } else {
+                                            println!("  {}. {}", i + 1, Output::command(&entry.command));
+                                        }
+                                    }
+                                    print!("\nExecute [1-{}/n/a(ll)]: ", parsed.commands.len());
+                                    io::stdout().flush().ok();
+
+                                    let mut input = String::new();
+                                    if io::stdin().read_line(&mut input).is_ok() {
+                                        let input = input.trim().to_lowercase();
+                                        if input == "a" || input == "all" {
+                                            for entry in &parsed.commands {
+                                                Output::dim(&format!(" {}", entry.command));
+                                                execute_command(&entry.command, &current_lang, &state, &typo_corrector);
+                                            }
+                                        } else if let Ok(num) = input.parse::<usize>() {
+                                            if num > 0 && num <= parsed.commands.len() {
+                                                let cmd = &parsed.commands[num - 1].command;
+                                                execute_command(cmd, &current_lang, &state, &typo_corrector);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            Err(e) => {
+                                Output::error(&format!("AI error: {}", e));
+                            }
+                        }
+                    }
                 }
             }
             Signal::CtrlC => {
                 println!("^C");
+                if ai_session.is_active() {
+                    ai_session.exit();
+                    ai_stream::show_ai_mode_exit();
+                }
                 shell_state = ShellState::Normal;
             }
             Signal::CtrlD => {
@@ -1405,6 +1664,7 @@ fn handle_ai_command(ai_config: &mut AiConfig, subcommand: &str, args: &[&str]) 
             Output::dim("  ai use <provider>    - Switch to a different provider");
             Output::dim("  ai test              - Test the current provider connection");
             Output::dim("  ai providers         - Show available provider types");
+            Output::dim("  config edit          - Edit config file");
             println!();
         }
 

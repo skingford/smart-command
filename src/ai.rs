@@ -16,6 +16,323 @@ pub mod llm {
     use super::*;
     use serde::{Deserialize, Serialize};
 
+    /// Parsed AI response - can be single command or multiple with descriptions
+    #[derive(Debug, Clone)]
+    pub struct AiResponse {
+        /// List of commands with optional descriptions
+        pub commands: Vec<CommandEntry>,
+        /// Raw response text (for fallback)
+        pub raw: String,
+    }
+
+    #[derive(Debug, Clone)]
+    pub struct CommandEntry {
+        pub command: String,
+        pub description: Option<String>,
+    }
+
+    impl AiResponse {
+        /// Check if text looks like prose/explanation rather than a shell command
+        fn looks_like_prose(text: &str) -> bool {
+            let text = text.trim();
+
+            // Empty text is not prose
+            if text.is_empty() {
+                return false;
+            }
+
+            // Strip markdown formatting from the beginning
+            let stripped = text
+                .trim_start_matches("**")
+                .trim_start_matches("*")
+                .trim_start_matches("##")
+                .trim_start_matches("#")
+                .trim_start_matches("> ")
+                .trim_start_matches("- ")
+                .trim_start_matches("• ")
+                .trim_start_matches("1. ")
+                .trim_start_matches("2. ")
+                .trim_start_matches("3. ")
+                .trim();
+
+            // Markdown formatting itself indicates prose
+            if text.starts_with("**") || text.starts_with("##") || text.starts_with("# ")
+               || text.starts_with("> ") || text.starts_with("- ") || text.starts_with("• ")
+               || text.starts_with("1. ") {
+                return true;
+            }
+
+            // Multi-line text is usually prose
+            if text.contains('\n') && text.lines().count() > 2 {
+                return true;
+            }
+
+            // Prose indicators (English)
+            let prose_starters = [
+                "I ", "I'm ", "I'll ", "I've ", "I'd ",
+                "The ", "This ", "That ", "These ", "Those ",
+                "Here ", "Here's ", "Here is ",
+                "It ", "It's ", "It is ",
+                "You ", "You're ", "You can ", "You should ", "You need ",
+                "To ", "For ", "In ", "On ", "At ", "With ", "From ",
+                "Let ", "Let's ", "Let me ",
+                "Sure", "Yes", "No", "Sorry", "Please",
+                "Note", "Note:", "Notice",
+                "Would ", "Could ", "Should ", "Will ", "Can ",
+                "There ", "There's ", "There is ", "There are ",
+                "GitHub", "CLI", "Usage", "Example", "Commands",
+            ];
+
+            // Prose indicators (Chinese)
+            let chinese_prose = [
+                "我", "你", "这", "那", "可以", "需要", "应该",
+                "首先", "然后", "最后", "接下来", "以下",
+                "好的", "是的", "不", "请", "注意",
+                "用法", "使用", "命令", "示例", "介绍",
+            ];
+
+            // Check for prose starters (both original and stripped)
+            for starter in &prose_starters {
+                if text.starts_with(starter) || stripped.starts_with(starter) {
+                    return true;
+                }
+            }
+
+            for starter in &chinese_prose {
+                if text.starts_with(starter) || stripped.starts_with(starter) {
+                    return true;
+                }
+            }
+
+            // Check for sentence-like patterns
+            let words: Vec<&str> = text.split_whitespace().collect();
+
+            // Long text with many words is likely prose
+            if words.len() > 8 {
+                // Check for common English words
+                let common_words = ["the", "a", "an", "is", "are", "was", "were", "be", "been",
+                                   "have", "has", "had", "do", "does", "did", "will", "would",
+                                   "could", "should", "can", "may", "might", "must",
+                                   "and", "or", "but", "if", "then", "so", "because",
+                                   "for", "to", "of", "in", "on", "at", "with", "from", "by",
+                                   "your", "you", "it", "this", "that", "these", "those"];
+                let common_count = words.iter()
+                    .filter(|w| common_words.contains(&w.to_lowercase().trim_matches(|c: char| !c.is_alphabetic()).as_ref()))
+                    .count();
+                if common_count >= 2 {
+                    return true;
+                }
+            }
+
+            // Contains backticks (inline code in markdown) indicates prose with embedded commands
+            if text.contains('`') && !text.starts_with('`') {
+                return true;
+            }
+
+            // Text ending with common sentence endings
+            if text.ends_with('.') || text.ends_with('?') || text.ends_with('!') || text.ends_with(':') {
+                let first_word = words.first().map(|s| *s).unwrap_or("");
+                // Remove markdown formatting from first word
+                let first_word = first_word.trim_start_matches("**").trim_start_matches("*").trim_start_matches('`');
+                let known_commands = ["ls", "cd", "cp", "mv", "rm", "mkdir", "cat", "grep", "find",
+                                     "git", "docker", "npm", "cargo", "python", "pip", "node",
+                                     "curl", "wget", "tar", "chmod", "chown", "sudo", "apt",
+                                     "brew", "yum", "dnf", "pacman", "ssh", "scp", "rsync",
+                                     "echo", "export", "source", "gh", "jq", "awk", "sed",
+                                     "make", "cmake", "gcc", "go", "rustc", "java", "ruby",
+                                     "perl", "php", "dotnet", "kubectl", "helm", "terraform"];
+                if !known_commands.contains(&first_word) && !first_word.starts_with('/') && !first_word.starts_with('.') {
+                    return true;
+                }
+            }
+
+            false
+        }
+
+        /// Strip backticks and markdown from a potential command
+        fn clean_command(text: &str) -> String {
+            text.trim()
+                // Remove surrounding backticks
+                .trim_start_matches('`')
+                .trim_end_matches('`')
+                // Remove markdown bold
+                .trim_start_matches("**")
+                .trim_end_matches("**")
+                .trim()
+                .to_string()
+        }
+
+        /// Extract command from a line that might have backticks
+        fn extract_command_from_line(line: &str) -> Option<String> {
+            let line = line.trim();
+
+            // Check for inline code: `command here`
+            if line.starts_with('`') && line.ends_with('`') && line.len() > 2 {
+                let cmd = line[1..line.len()-1].trim();
+                if !cmd.is_empty() && !Self::looks_like_prose(cmd) {
+                    return Some(cmd.to_string());
+                }
+            }
+
+            // Check for backticks in the middle: some text `command` more text
+            if let Some(start) = line.find('`') {
+                if let Some(end) = line[start+1..].find('`') {
+                    let cmd = &line[start+1..start+1+end];
+                    let cmd = cmd.trim();
+                    // Only use if it looks like a command
+                    if !cmd.is_empty() && cmd.split_whitespace().next()
+                        .map(|first| {
+                            let known_commands = ["ls", "cd", "cp", "mv", "rm", "mkdir", "cat", "grep", "find",
+                                                 "git", "docker", "npm", "cargo", "python", "pip", "node",
+                                                 "curl", "wget", "tar", "chmod", "chown", "sudo", "apt",
+                                                 "brew", "yum", "dnf", "pacman", "ssh", "scp", "rsync",
+                                                 "echo", "export", "source", "gh", "jq", "awk", "sed",
+                                                 "make", "cmake", "gcc", "go", "rustc", "java", "ruby"];
+                            known_commands.contains(&first) || first.starts_with('/') || first.starts_with('.')
+                        })
+                        .unwrap_or(false)
+                    {
+                        return Some(cmd.to_string());
+                    }
+                }
+            }
+
+            None
+        }
+
+        /// Parse AI response into structured format
+        pub fn parse(raw: &str) -> Self {
+            let raw = raw.trim().to_string();
+            let mut commands = Vec::new();
+
+            // Try to parse structured format (CMD: / DESC:)
+            let lines: Vec<&str> = raw.lines().collect();
+            let mut current_cmd: Option<String> = None;
+            let mut current_desc: Option<String> = None;
+
+            for line in &lines {
+                let line = line.trim();
+
+                // Skip empty lines
+                if line.is_empty() {
+                    continue;
+                }
+
+                // CMD: format
+                if line.starts_with("CMD:") || line.starts_with("cmd:") {
+                    // Save previous command if exists
+                    if let Some(cmd) = current_cmd.take() {
+                        commands.push(CommandEntry {
+                            command: Self::clean_command(&cmd),
+                            description: current_desc.take(),
+                        });
+                    }
+                    current_cmd = Some(Self::clean_command(&line[4..]));
+                    continue;
+                }
+
+                // DESC: format
+                if line.starts_with("DESC:") || line.starts_with("desc:") {
+                    current_desc = Some(line[5..].trim().to_string());
+                    continue;
+                }
+
+                // Skip markdown code block markers
+                if line.starts_with("```") {
+                    continue;
+                }
+
+                // Skip comment lines
+                if line.starts_with('#') || line.starts_with("//") {
+                    continue;
+                }
+
+                // Try to extract command from backticks
+                if let Some(cmd) = Self::extract_command_from_line(line) {
+                    if current_cmd.is_none() {
+                        current_cmd = Some(cmd);
+                        continue;
+                    }
+                }
+
+                // If no command yet and line doesn't look like prose
+                if current_cmd.is_none() && !Self::looks_like_prose(line) {
+                    // Check if it could be a command
+                    let cleaned = Self::clean_command(line);
+                    if !cleaned.is_empty() {
+                        let first_word = cleaned.split_whitespace().next().unwrap_or("");
+                        let known_commands = ["ls", "cd", "cp", "mv", "rm", "mkdir", "cat", "grep", "find",
+                                             "git", "docker", "npm", "cargo", "python", "pip", "node",
+                                             "curl", "wget", "tar", "chmod", "chown", "sudo", "apt",
+                                             "brew", "yum", "dnf", "pacman", "ssh", "scp", "rsync",
+                                             "echo", "export", "source", "gh", "jq", "awk", "sed",
+                                             "make", "cmake", "gcc", "go", "rustc", "java", "ruby",
+                                             "perl", "php", "dotnet", "kubectl", "helm", "terraform",
+                                             "az", "aws", "gcloud"];
+                        if known_commands.contains(&first_word) || first_word.starts_with('/') || first_word.starts_with('.') {
+                            current_cmd = Some(cleaned);
+                        }
+                    }
+                }
+            }
+
+            // Save last command
+            if let Some(cmd) = current_cmd.take() {
+                let cleaned = Self::clean_command(&cmd);
+                if !cleaned.is_empty() {
+                    commands.push(CommandEntry {
+                        command: cleaned,
+                        description: current_desc.take(),
+                    });
+                }
+            }
+
+            // If no structured commands found, try first line as command
+            if commands.is_empty() && !lines.is_empty() {
+                let first_line = lines[0].trim();
+
+                // Try to extract from backticks first
+                if let Some(cmd) = Self::extract_command_from_line(first_line) {
+                    commands.push(CommandEntry {
+                        command: cmd,
+                        description: None,
+                    });
+                } else {
+                    // Clean up and check if it's a valid command
+                    let cleaned = Self::clean_command(first_line);
+                    if !cleaned.is_empty() && !Self::looks_like_prose(&cleaned) {
+                        let first_word = cleaned.split_whitespace().next().unwrap_or("");
+                        let known_commands = ["ls", "cd", "cp", "mv", "rm", "mkdir", "cat", "grep", "find",
+                                             "git", "docker", "npm", "cargo", "python", "pip", "node",
+                                             "curl", "wget", "tar", "chmod", "chown", "sudo", "apt",
+                                             "brew", "yum", "dnf", "pacman", "ssh", "scp", "rsync",
+                                             "echo", "export", "source", "gh", "jq", "awk", "sed",
+                                             "make", "cmake", "gcc", "go", "rustc", "java", "ruby",
+                                             "perl", "php", "dotnet", "kubectl", "helm", "terraform"];
+                        if known_commands.contains(&first_word) || first_word.starts_with('/') || first_word.starts_with('.') {
+                            commands.push(CommandEntry {
+                                command: cleaned,
+                                description: None,
+                            });
+                        }
+                    }
+                }
+            }
+
+            Self { commands, raw }
+        }
+
+        /// Check if this is a multi-command response
+        pub fn is_multi(&self) -> bool {
+            self.commands.len() > 1 || self.commands.iter().any(|c| c.description.is_some())
+        }
+
+        /// Get first command (for simple execute)
+        pub fn first_command(&self) -> Option<&str> {
+            self.commands.first().map(|c| c.command.as_str())
+        }
+    }
+
     /// Error type for AI operations
     #[derive(Debug)]
     pub enum AiError {
@@ -174,8 +491,13 @@ pub mod llm {
             }
         }
 
-        /// Generate a shell command from natural language
+        /// Generate a shell command from natural language (returns raw string)
         pub fn generate(&self, query: &str, context: &AiContext) -> Result<String, AiError> {
+            self.generate_smart(query, context).map(|r| r.raw)
+        }
+
+        /// Generate shell command(s) with smart parsing
+        pub fn generate_smart(&self, query: &str, context: &AiContext) -> Result<AiResponse, AiError> {
             if !self.effective.enabled {
                 return Err(AiError::NotEnabled);
             }
@@ -189,11 +511,11 @@ pub mod llm {
 
             // Build the prompt with context
             let user_prompt = format!(
-                "Working directory: {}\nShell: {}\nOS: {}\n\nUser request: {}\n\nGenerate ONLY the shell command, no explanation.",
+                "Working directory: {}\nShell: {}\nOS: {}\n\nUser request: {}",
                 context.cwd, context.shell, context.os, query
             );
 
-            match self.effective.provider_type {
+            let raw = match self.effective.provider_type {
                 ProviderType::Claude => self.call_claude(&api_key, &user_prompt),
                 ProviderType::Gemini => self.call_gemini(&api_key, &user_prompt),
                 ProviderType::OpenAI => self.call_openai(&api_key, &user_prompt),
@@ -203,7 +525,9 @@ pub mod llm {
                 ProviderType::Ollama => self.call_ollama(&user_prompt),
                 ProviderType::OpenRouter => self.call_openrouter(&api_key, &user_prompt),
                 ProviderType::Custom => self.call_custom(&api_key, &user_prompt),
-            }
+            }?;
+
+            Ok(AiResponse::parse(&raw))
         }
 
         /// Test the connection to the current provider
