@@ -1,5 +1,7 @@
 # Smart Command (sc)
 
+**English** | [中文](README_zh.md)
+
 An intelligent shell with context-aware command completion, fuzzy search, and multi-language support.
 
 ## Features
