@@ -272,6 +272,97 @@ impl Default for GlobalAiSettings {
     }
 }
 
+/// Active AI configuration
+#[derive(Debug, Clone, serde::Serialize, Deserialize)]
+pub struct ActiveAiConfig {
+    /// Enable Active AI proactive suggestions
+    #[serde(default = "default_true")]
+    pub enabled: bool,
+
+    /// Show AI suggestion prompt after errors
+    #[serde(default = "default_true")]
+    pub show_on_error: bool,
+
+    /// Automatically analyze errors without prompting
+    #[serde(default)]
+    pub auto_analyze: bool,
+
+    /// Minimum exit code to trigger (default: 1)
+    #[serde(default = "default_min_exit_code")]
+    pub min_exit_code: i32,
+
+    /// Skip Active AI for these commands
+    #[serde(default = "default_ignore_commands")]
+    pub ignore_commands: Vec<String>,
+}
+
+fn default_min_exit_code() -> i32 { 1 }
+
+fn default_ignore_commands() -> Vec<String> {
+    vec![
+        "grep".to_string(),
+        "diff".to_string(),
+        "test".to_string(),
+        "[".to_string(),
+    ]
+}
+
+impl Default for ActiveAiConfig {
+    fn default() -> Self {
+        Self {
+            enabled: true,
+            show_on_error: true,
+            auto_analyze: false,
+            min_exit_code: 1,
+            ignore_commands: default_ignore_commands(),
+        }
+    }
+}
+
+impl ActiveAiConfig {
+    /// Check if a command should be ignored
+    pub fn should_ignore(&self, command: &str) -> bool {
+        let cmd = command.split_whitespace().next().unwrap_or("");
+        self.ignore_commands.iter().any(|pattern| {
+            cmd == pattern || command.starts_with(pattern)
+        })
+    }
+}
+
+/// Next command prediction configuration
+#[derive(Debug, Clone, serde::Serialize, Deserialize)]
+pub struct NextCommandConfig {
+    /// Enable next command predictions
+    #[serde(default = "default_true")]
+    pub enabled: bool,
+
+    /// Delay before showing suggestion (milliseconds)
+    #[serde(default = "default_delay")]
+    pub delay_ms: u64,
+
+    /// Minimum confidence to show suggestion (0.0 - 1.0)
+    #[serde(default = "default_confidence")]
+    pub min_confidence: f64,
+
+    /// Use AI for predictions
+    #[serde(default)]
+    pub use_ai: bool,
+}
+
+fn default_delay() -> u64 { 300 }
+fn default_confidence() -> f64 { 0.3 }
+
+impl Default for NextCommandConfig {
+    fn default() -> Self {
+        Self {
+            enabled: true,
+            delay_ms: 300,
+            min_confidence: 0.3,
+            use_ai: false,
+        }
+    }
+}
+
 /// AI completion configuration with multi-provider support
 #[derive(Debug, Deserialize, Clone)]
 pub struct AiConfig {
@@ -290,6 +381,14 @@ pub struct AiConfig {
     /// Global settings
     #[serde(default)]
     pub global: GlobalAiSettings,
+
+    /// Active AI configuration (proactive error assistance)
+    #[serde(default)]
+    pub active_ai: ActiveAiConfig,
+
+    /// Next command prediction configuration
+    #[serde(default)]
+    pub next_command: NextCommandConfig,
 
     // Legacy fields for backward compatibility
     /// AI provider: claude, gemini, openai, glm, custom (deprecated, use active)
@@ -445,6 +544,8 @@ impl Default for AiConfig {
             active: default_ai_provider(),
             providers: default_providers(),
             global: GlobalAiSettings::default(),
+            active_ai: ActiveAiConfig::default(),
+            next_command: NextCommandConfig::default(),
             // Legacy fields
             provider: None,
             api_key: None,

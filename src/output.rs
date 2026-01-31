@@ -181,6 +181,98 @@ impl Output {
         }
     }
 
+    /// Display Active AI hint after command error
+    pub fn active_ai_hint() {
+        let hint_style = Style::new().fg(Color::Cyan);
+        let key_style = Style::new().fg(Color::Yellow).bold();
+        let dim_style = Style::new().fg(Color::DarkGray);
+
+        println!(
+            "  {} {} {} {} {} {} {}",
+            hint_style.paint("[AI]"),
+            dim_style.paint("Press"),
+            key_style.paint("e"),
+            dim_style.paint("explain /"),
+            key_style.paint("f"),
+            dim_style.paint("fix /"),
+            key_style.paint("Enter"),
+            // dim_style.paint("skip")
+        );
+    }
+
+    /// Display Active AI explanation
+    pub fn active_ai_explain(explanation: &str) {
+        let header_style = Style::new().fg(Color::Cyan).bold();
+        let text_style = Style::new().fg(Color::White);
+
+        println!();
+        println!("{} {}", header_style.paint("💡"), header_style.paint("Error Explanation:"));
+        for line in explanation.lines() {
+            println!("   {}", text_style.paint(line));
+        }
+        println!();
+    }
+
+    /// Display Active AI fix suggestion
+    pub fn active_ai_fix(fix_command: &str) {
+        let header_style = Style::new().fg(Color::Green).bold();
+        let cmd_style = Style::new().fg(Color::Yellow).bold();
+
+        println!();
+        println!("{} {}", header_style.paint("🔧"), header_style.paint("Suggested Fix:"));
+        println!("   $ {}", cmd_style.paint(fix_command));
+        println!();
+    }
+
+    /// Display next command suggestion (ghost text style)
+    pub fn next_command_hint(suggestion: &str, confidence: f64) {
+        let hint_style = Style::new().fg(Color::DarkGray).italic();
+        let confidence_style = if confidence >= 0.7 {
+            Style::new().fg(Color::Green)
+        } else {
+            Style::new().fg(Color::DarkGray)
+        };
+
+        let confidence_indicator = if confidence >= 0.8 {
+            "●●●"
+        } else if confidence >= 0.6 {
+            "●●○"
+        } else {
+            "●○○"
+        };
+
+        println!(
+            "  {} {} {}",
+            hint_style.paint("→"),
+            hint_style.paint(suggestion),
+            confidence_style.paint(confidence_indicator)
+        );
+    }
+
+    /// Display session context summary
+    pub fn session_summary(total: usize, failed: usize, duration: &str) {
+        let style = Style::new().fg(Color::DarkGray);
+        let success_rate = if total > 0 {
+            ((total - failed) as f64 / total as f64 * 100.0) as u32
+        } else {
+            100
+        };
+
+        println!(
+            "  {}",
+            style.paint(format!(
+                "Session: {} commands, {}% success, {}",
+                total, success_rate, duration
+            ))
+        );
+    }
+
+    /// Display quick error hint (without AI)
+    pub fn quick_error_hint(hint: &str) {
+        let style = Style::new().fg(Color::Yellow);
+        println!("  {} {}", style.paint("💡"), style.paint(hint));
+    }
+
     /// Display upgrade available notification
     pub fn upgrade_available(current: &str, latest: &str) {
         let style = Style::new().fg(Color::Yellow).bold();

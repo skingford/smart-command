@@ -12,6 +12,7 @@ use std::sync::{Arc, RwLock};
 use tracing::{debug, info, warn};
 use tracing_subscriber::EnvFilter;
 
+mod active_ai;
 mod ai;
 mod ai_stream;
 mod aliases;
@@ -31,6 +32,7 @@ mod loader;
 mod output;
 mod pipeline;
 mod providers;
+mod session;
 mod snippets;
 mod timer;
 mod ui;
@@ -39,9 +41,11 @@ mod watcher;
 mod plugins;
 mod upgrade;
 
+use active_ai::{ActiveAi, CommandResult, ErrorPatterns};
 use ai::{NaturalLanguageTemplates, TypoCorrector};
 use ai_stream::{AiModeCommand, AiSession, StreamingAiGenerator};
 use aliases::AliasManager;
+use session::{NextCommandPredictor, SessionContext};
 use bookmarks::BookmarkManager;
 use cli::{Cli, Commands, ConfigAction};
 use completer::SmartCompleter;
@@ -572,6 +576,11 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
     let mut plugin_manager = PluginManager::new();
     let mut ai_session = AiSession::new();
 
+    // Initialize Active AI and Session Context
+    let mut session_context = SessionContext::new();
+    let active_ai = ActiveAi::new(config.ai.active_ai.clone());
+    let next_cmd_predictor = NextCommandPredictor::new();
+
     // Display startup banner
     output::Output::banner();
 
@@ -583,6 +592,7 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
     Output::dim("  alias/bm    - manage shortcuts   Ctrl-D/exit - quit");
     if config.ai.enabled {
         Output::dim("  ai on       - enter AI mode      ?ai <query> - generate command");
+        Output::dim("  explain/??  - explain last error context    - session context");
     }
     println!();
 
@@ -989,6 +999,83 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                             continue;
                         }
 
+                        // Explain command - explain last error
+                        if cmd == "explain" || cmd == "??" {
+                            if !config.ai.enabled {
+                                Output::warn("AI is not enabled. Set ai.enabled = true in config.");
+                                continue;
+                            }
+
+                            if let Some(last_err) = session_context.last_error() {
+                                Output::dim(&format!("  Analyzing: {}", last_err.command));
+                                let cmd_result = CommandResult::new(
+                                    &last_err.command,
+                                    last_err.exit_code,
+                                    last_err.stdout.clone(),
+                                    last_err.stderr.clone(),
+                                );
+                                match active_ai.explain_error(&cmd_result, &config.ai) {
+                                    Ok(explanation) => {
+                                        Output::active_ai_explain(&explanation);
+                                    }
+                                    Err(e) => {
+                                        Output::error(&e);
+                                    }
+                                }
+                            } else {
+                                Output::dim("No recent error to explain.");
+                            }
+                            continue;
+                        }
+
+                        // Context command - show session context
+                        if cmd == "context" {
+                            let subcommand = parts.get(1).map(|s| *s).unwrap_or("show");
+                            match subcommand {
+                                "show" | "status" => {
+                                    let stats = session_context.stats();
+                                    Output::session_summary(
+                                        stats.total_commands,
+                                        stats.failed_commands,
+                                        &stats.format_duration(),
+                                    );
+                                    println!();
+                                    Output::info("Recent commands:");
+                                    for entry in session_context.recent(5).iter().rev() {
+                                        let status = if entry.is_success() { "✓" } else { "✗" };
+                                        Output::dim(&format!("  [{}] {}", status, entry.command));
+                                    }
+                                }
+                                "clear" => {
+                                    session_context.clear();
+                                    Output::success("Session context cleared.");
+                                }
+                                "errors" => {
+                                    let errors = session_context.recent_errors(5);
+                                    if errors.is_empty() {
+                                        Output::dim("No recent errors.");
+                                    } else {
+                                        Output::info("Recent errors:");
+                                        for entry in errors.iter().rev() {
+                                            Output::dim(&format!("  [exit {}] {}",
+                                                entry.exit_code.map(|c| c.to_string()).unwrap_or_else(|| "?".to_string()),
+                                                entry.command
+                                            ));
+                                            if let Some(ref stderr) = entry.stderr {
+                                                if !stderr.is_empty() && stderr.len() < 100 {
+                                                    Output::dim(&format!("    → {}", stderr.trim()));
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                _ => {
+                                    Output::dim("Usage: context [show|clear|errors]");
+                                }
+                            }
+                            continue;
+                        }
+
                         // Expand aliases before execution
                         let expanded = alias_manager.expand(trimmed);
                         let final_cmd = if expanded != trimmed {
@@ -1000,10 +1087,94 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
 
                         // Time the command execution
                         command_timer.start(&final_cmd);
-                        execute_command(&final_cmd, &current_lang, &state, &typo_corrector);
-                        if let Some(dur) = command_timer.stop(None) {
+                        let cmd_result = execute_command_for_active_ai(&final_cmd, &current_lang, &state, &typo_corrector);
+                        let duration = command_timer.stop(None);
+
+                        if let Some(dur) = duration {
                             if let Some(formatted) = command_timer.format_duration(dur) {
                                 Output::dim(&format!("⏱  {}", formatted));
+                            }
+                        }
+
+                        // Track in session context
+                        session_context.record(&cmd_result, duration);
+
+                        // Active AI: Show proactive suggestions on error
+                        if active_ai.should_handle(&cmd_result) && config.ai.enabled {
+                            // First, try quick hints without AI
+                            if let Some(error_type) = ErrorPatterns::detect_error_type(&cmd_result) {
+                                if let Some(hint) = ErrorPatterns::get_quick_hint(&error_type, &cmd_result) {
+                                    Output::quick_error_hint(&hint);
+                                }
+                            }
+
+                            // Show Active AI prompt
+                            Output::active_ai_hint();
+
+                            // Read user input for Active AI action
+                            let mut ai_input = String::new();
+                            if io::stdin().read_line(&mut ai_input).is_ok() {
+                                let ai_trimmed = ai_input.trim().to_lowercase();
+                                match ai_trimmed.as_str() {
+                                    "e" | "explain" => {
+                                        Output::dim("  Analyzing error...");
+                                        match active_ai.explain_error(&cmd_result, &config.ai) {
+                                            Ok(explanation) => {
+                                                Output::active_ai_explain(&explanation);
+                                            }
+                                            Err(e) => {
+                                                Output::error(&e);
+                                            }
+                                        }
+                                    }
+                                    "f" | "fix" => {
+                                        Output::dim("  Generating fix...");
+                                        match active_ai.suggest_fix(&cmd_result, &config.ai) {
+                                            Ok(fix) => {
+                                                let fix_cmd = fix.trim();
+                                                Output::active_ai_fix(fix_cmd);
+                                                print!("Execute fix? [Y/n]: ");
+                                                io::stdout().flush().ok();
+
+                                                let mut fix_input = String::new();
+                                                if io::stdin().read_line(&mut fix_input).is_ok() {
+                                                    let response = fix_input.trim().to_lowercase();
+                                                    if response.is_empty() || response == "y" || response == "yes" {
+                                                        let fix_result = execute_command_for_active_ai(fix_cmd, &current_lang, &state, &typo_corrector);
+                                                        session_context.record(&fix_result, None);
+                                                    }
+                                                }
+                                            }
+                                            Err(e) => {
+                                                Output::error(&e);
+                                            }
+                                        }
+                                    }
+                                    "r" | "retry" => {
+                                        Output::info("Retrying command...");
+                                        let retry_result = execute_command_for_active_ai(&final_cmd, &current_lang, &state, &typo_corrector);
+                                        session_context.record(&retry_result, None);
+                                    }
+                                    _ => {
+                                        // User pressed Enter or something else, skip
+                                    }
+                                }
+                            }
+                        }
+
+                        // Next command prediction (show hint for next likely command)
+                        if config.ai.next_command.enabled && cmd_result.success {
+                            if let Some((predicted, confidence)) = next_cmd_predictor.predict(&final_cmd, &session_context) {
+                                if confidence >= config.ai.next_command.min_confidence {
+                                    Output::next_command_hint(&predicted, confidence);
+                                }
+                            }
+                        } else if !cmd_result.success {
+                            // After error, suggest recovery command
+                            if let Some((fix_cmd, confidence)) = next_cmd_predictor.predict_after_error(&cmd_result) {
+                                if confidence >= 0.5 {
+                                    Output::next_command_hint(&fix_cmd, confidence);
+                                }
                             }
                         }
                     }
@@ -1350,6 +1521,107 @@ fn execute_command_with_result(
         }
     } else {
         (false, None)
+    }
+}
+
+/// Execute a command and return CommandResult for Active AI integration
+/// This captures stderr for error analysis while still showing output in real-time
+fn execute_command_for_active_ai(
+    command: &str,
+    current_lang: &Arc<RwLock<String>>,
+    state: &AppState,
+    typo_corrector: &TypoCorrector,
+) -> CommandResult {
+    let parts: Vec<&str> = command.split_whitespace().collect();
+
+    if let Some(cmd) = parts.first() {
+        // Handle 'cd' command
+        if *cmd == "cd" {
+            handle_cd(&parts);
+            return CommandResult::new(command, Some(0), None, None);
+        }
+
+        // Handle 'config' command
+        if *cmd == "config" {
+            handle_config(&parts, current_lang);
+            return CommandResult::new(command, Some(0), None, None);
+        }
+
+        // Check for dangerous commands
+        if state.danger_protection {
+            if let Some(warning) = output::get_danger_warning(command) {
+                warn!("Dangerous command detected: {}", command);
+                Output::warn(&warning);
+                print!("Are you sure you want to execute this command? [y/N] ");
+                io::stdout().flush().ok();
+
+                let mut input = String::new();
+                if io::stdin().read_line(&mut input).is_ok() {
+                    let response = input.trim().to_lowercase();
+                    if response != "y" && response != "yes" {
+                        Output::dim("Command cancelled.");
+                        return CommandResult::new(command, None, None, Some("Cancelled by user".to_string()));
+                    }
+                } else {
+                    Output::dim("Command cancelled.");
+                    return CommandResult::new(command, None, None, Some("Cancelled by user".to_string()));
+                }
+            }
+        }
+
+        debug!("Executing command: {}", command);
+
+        // Execute external command with output capture
+        // We use output() instead of status() to capture stderr for error analysis
+        let output = Command::new("sh")
+            .arg("-c")
+            .arg(command)
+            .output();
+
+        match output {
+            Ok(output) => {
+                let code = output.status.code();
+                let stdout = String::from_utf8_lossy(&output.stdout).to_string();
+                let stderr = String::from_utf8_lossy(&output.stderr).to_string();
+
+                // Print stdout if not empty
+                if !stdout.is_empty() {
+                    print!("{}", stdout);
+                }
+
+                // Print stderr if not empty (to stderr)
+                if !stderr.is_empty() {
+                    eprint!("{}", stderr);
+                }
+
+                match code {
+                    Some(0) => {} // Success, silent
+                    Some(127) => {
+                        // Command not found - suggest typo corrections
+                        Output::exit_code(127);
+                        if let Some(message) = typo_corrector.did_you_mean(cmd) {
+                            Output::info(&message);
+                        }
+                    }
+                    Some(c) => Output::exit_code(c),
+                    None => Output::error("Process terminated by signal"),
+                }
+
+                CommandResult::new(
+                    command,
+                    code,
+                    if stdout.is_empty() { None } else { Some(stdout) },
+                    if stderr.is_empty() { None } else { Some(stderr) },
+                )
+            }
+            Err(e) => {
+                let error_msg = format!("Error executing command: {}", e);
+                Output::error(&error_msg);
+                CommandResult::new(command, None, None, Some(error_msg))
+            }
+        }
+    } else {
+        CommandResult::new(command, None, None, None)
     }
 }
 
