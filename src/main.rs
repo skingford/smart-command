@@ -14,6 +14,7 @@ use tracing_subscriber::EnvFilter;
 
 mod active_ai;
 mod ai;
+mod ai_docs;
 mod ai_stream;
 mod aliases;
 mod argument;
@@ -1076,6 +1077,83 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                             continue;
                         }
 
+                        // Learn command - AI documentation generator
+                        if cmd == "learn" || cmd == "doc" {
+                            if !config.ai.enabled {
+                                Output::warn("AI is not enabled. Set ai.enabled = true in config.");
+                                continue;
+                            }
+
+                            let command_name = parts.get(1).map(|s| *s);
+                            if command_name.is_none() {
+                                Output::dim("Usage: learn <command_name>");
+                                Output::dim("Example: learn rg");
+                                Output::dim("         learn ripgrep --verbose");
+                                continue;
+                            }
+
+                            let command_name = command_name.unwrap();
+                            let lang = current_lang.read().unwrap().clone();
+
+                            // Check if command already exists
+                            if let Some(existing_path) = loader::command_exists(command_name) {
+                                Output::info(&format!("Command '{}' already has a definition at:", command_name));
+                                Output::dim(&format!("  {}", existing_path.display()));
+                                print!("Overwrite? [y/N]: ");
+                                io::stdout().flush().ok();
+
+                                let mut input = String::new();
+                                if io::stdin().read_line(&mut input).is_ok() {
+                                    let response = input.trim().to_lowercase();
+                                    if response != "y" && response != "yes" {
+                                        Output::dim("Cancelled.");
+                                        continue;
+                                    }
+                                }
+                            }
+
+                            Output::info(&format!("Learning about '{}'...", command_name));
+                            println!();
+
+                            let docs_generator = ai_docs::AiDocsGenerator::new(&config.ai);
+
+                            match docs_generator.learn_command(command_name) {
+                                Ok(doc) => {
+                                    let spec = doc.to_command_spec();
+
+                                    // Show preview
+                                    let preview = ai_docs::format_command_preview(&spec, &lang);
+                                    println!("{}", preview);
+
+                                    // Ask to save
+                                    print!("Save to command definitions? [Y/n]: ");
+                                    io::stdout().flush().ok();
+
+                                    let mut save_input = String::new();
+                                    if io::stdin().read_line(&mut save_input).is_ok() {
+                                        let response = save_input.trim().to_lowercase();
+                                        if response.is_empty() || response == "y" || response == "yes" {
+                                            match loader::save_command(&spec) {
+                                                Ok(path) => {
+                                                    Output::success(&format!("Saved to: {}", path.display()));
+                                                    Output::dim("Restart shell to load the new command definition.");
+                                                }
+                                                Err(e) => {
+                                                    Output::error(&format!("Failed to save: {}", e));
+                                                }
+                                            }
+                                        } else {
+                                            Output::dim("Not saved.");
+                                        }
+                                    }
+                                }
+                                Err(e) => {
+                                    Output::error(&format!("Failed to learn command: {}", e));
+                                }
+                            }
+                            continue;
+                        }
+
                         // Expand aliases before execution
                         let expanded = alias_manager.expand(trimmed);
                         let final_cmd = if expanded != trimmed {
@@ -1256,7 +1334,30 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                             continue;
                         }
 
-                        // Process AI query with streaming
+                        // Check if this is a "learn command" request - use conversational mode with clean output
+                        if let Some(_intent) = ai_docs::detect_learn_intent(trimmed) {
+                            let effective = config.ai.get_effective_settings();
+                            Output::dim(&format!("  {} thinking...", effective.provider_type));
+
+                            let docs_generator = ai_docs::AiDocsGenerator::new(&config.ai);
+
+                            // Add user message to session
+                            ai_session.add_user_message(trimmed);
+
+                            // Use clean mode (non-streaming) for better terminal formatting
+                            match docs_generator.explain_command_clean(trimmed, Some(&ai_session)) {
+                                Ok(response) => {
+                                    ai_session.add_assistant_message(&response);
+                                    // No save prompt - allows for multi-turn conversation
+                                }
+                                Err(e) => {
+                                    Output::error(&format!("AI error: {}", e));
+                                }
+                            }
+                            continue;
+                        }
+
+                        // Process regular AI query with streaming
                         let effective = config.ai.get_effective_settings();
                         Output::dim(&format!("  {} thinking...", effective.provider_type));
 

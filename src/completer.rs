@@ -42,6 +42,12 @@ impl SmartCompleter {
         }
     }
 
+    /// Add a new command to the completer (used by learn command)
+    #[allow(dead_code)]
+    pub fn add_command(&mut self, cmd: CommandSpec) {
+        self.commands.insert(cmd.name.clone(), cmd);
+    }
+
     /// Get examples for a specific command path (e.g., "git", "git commit")
     pub fn get_examples(&self, command_path: &str, lang: &str) -> Vec<(String, String)> {
         let parts: Vec<&str> = command_path.split_whitespace().collect();
