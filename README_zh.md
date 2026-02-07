@@ -143,10 +143,35 @@ cp -r definitions ~/.config/smart-command/
 # 方式 1：内置安装程序（推荐）
 sc install --skip-bin
 
+# 方式 1b：从本地仓库安装定义（例如当前目录的 definitions）
+sc install --skip-bin --definitions-src ./definitions
+
 # 方式 2：手动复制
 mkdir -p ~/.config/smart-command
 cp -r definitions ~/.config/smart-command/
 ```
+
+安装后可生成补全脚本（按你的 shell 选择）：
+
+```bash
+smart-command completions <shell>
+```
+
+---
+
+### 默认安装目录
+
+安装器会使用平台默认目录（除非通过参数覆盖）：
+
+- 定义文件目录：
+- macOS：`~/Library/Application Support/smart-command/definitions`
+- Linux：`~/.config/smart-command/definitions`（或 `$XDG_CONFIG_HOME/smart-command/definitions`）
+- Windows：`%APPDATA%\\smart-command\\definitions`
+- 二进制目录：按 `PATH` 中优先级选择以下目录的第一个命中的项（若都不在 `PATH`，则取第一个候选）
+- `~/.cargo/bin`
+- `~/.local/bin`
+- `~/bin`
+- Windows 额外候选：`%LOCALAPPDATA%\\Programs\\smart-command\\bin`
 
 ---
 

@@ -143,10 +143,35 @@ After installing the binary, you need command definitions for completions to wor
 # Option 1: Built-in installer (recommended)
 sc install --skip-bin
 
+# Option 1b: Install definitions from local repo (e.g., ./definitions)
+sc install --skip-bin --definitions-src ./definitions
+
 # Option 2: Manual copy
 mkdir -p ~/.config/smart-command
 cp -r definitions ~/.config/smart-command/
 ```
+
+Generate shell completions (pick your shell):
+
+```bash
+smart-command completions <shell>
+```
+
+---
+
+### Default Install Paths
+
+The installer uses platform defaults unless overridden:
+
+- Definitions directory:
+- macOS: `~/Library/Application Support/smart-command/definitions`
+- Linux: `~/.config/smart-command/definitions` (or `$XDG_CONFIG_HOME/smart-command/definitions`)
+- Windows: `%APPDATA%\\smart-command\\definitions`
+- Binary directory: the first `PATH`-matched directory from this list (if none are on `PATH`, the first candidate is used)
+- `~/.cargo/bin`
+- `~/.local/bin`
+- `~/bin`
+- Windows extra candidate: `%LOCALAPPDATA%\\Programs\\smart-command\\bin`
 
 ---
 
