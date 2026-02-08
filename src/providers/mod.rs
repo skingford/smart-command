@@ -204,7 +204,7 @@ impl ProviderRegistry {
     pub fn register(&mut self, provider: Box<dyn CompletionProvider>) {
         self.providers.push(provider);
         // Sort by priority (higher first)
-        self.providers.sort_by(|a, b| b.priority().cmp(&a.priority()));
+        self.providers.sort_by_key(|p| std::cmp::Reverse(p.priority()));
     }
 
     /// Enable/disable specific providers

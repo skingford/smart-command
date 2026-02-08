@@ -68,7 +68,7 @@ impl KubernetesResourceProvider {
                     .lines()
                     .filter_map(|line| {
                         // Output format: type/name
-                        line.split('/').last().map(|name| (name.to_string(), None))
+                        line.split('/').next_back().map(|name| (name.to_string(), None))
                     })
                     .collect()
             }
@@ -336,7 +336,7 @@ impl KubernetesNamespaceProvider {
         match output {
             Ok(output) if output.status.success() => String::from_utf8_lossy(&output.stdout)
                 .lines()
-                .filter_map(|line| line.split('/').last().map(|s| s.to_string()))
+                .filter_map(|line| line.split('/').next_back().map(|s| s.to_string()))
                 .collect(),
             _ => Vec::new(),
         }

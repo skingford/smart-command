@@ -88,11 +88,13 @@ impl Default for UpgradeConfig {
 /// AI provider type enumeration
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "lowercase")]
+#[derive(Default)]
 pub enum ProviderType {
+    #[default]
     Claude,
     OpenAI,
     Gemini,
-    GLM,
+    Glm,
     DeepSeek,
     Qwen,
     Ollama,
@@ -100,11 +102,6 @@ pub enum ProviderType {
     Custom,
 }
 
-impl Default for ProviderType {
-    fn default() -> Self {
-        ProviderType::Claude
-    }
-}
 
 impl std::fmt::Display for ProviderType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -112,7 +109,7 @@ impl std::fmt::Display for ProviderType {
             ProviderType::Claude => write!(f, "claude"),
             ProviderType::OpenAI => write!(f, "openai"),
             ProviderType::Gemini => write!(f, "gemini"),
-            ProviderType::GLM => write!(f, "glm"),
+            ProviderType::Glm => write!(f, "glm"),
             ProviderType::DeepSeek => write!(f, "deepseek"),
             ProviderType::Qwen => write!(f, "qwen"),
             ProviderType::Ollama => write!(f, "ollama"),
@@ -130,7 +127,7 @@ impl std::str::FromStr for ProviderType {
             "claude" | "anthropic" => Ok(ProviderType::Claude),
             "openai" | "gpt" | "chatgpt" | "codex" => Ok(ProviderType::OpenAI),
             "gemini" | "google" => Ok(ProviderType::Gemini),
-            "glm" | "zhipu" | "智谱" => Ok(ProviderType::GLM),
+            "glm" | "zhipu" | "智谱" => Ok(ProviderType::Glm),
             "deepseek" => Ok(ProviderType::DeepSeek),
             "qwen" | "tongyi" | "通义" => Ok(ProviderType::Qwen),
             "ollama" | "local" => Ok(ProviderType::Ollama),
@@ -192,7 +189,7 @@ impl ProviderConfig {
                 None,
                 Some("gemini-2.0-flash".to_string()),
             ),
-            ProviderType::GLM => (
+            ProviderType::Glm => (
                 Some("$ZHIPU_API_KEY".to_string()),
                 Some("https://open.bigmodel.cn/api/paas/v4/chat/completions".to_string()),
                 Some("glm-4-plus".to_string()),
@@ -529,7 +526,7 @@ fn default_providers() -> HashMap<String, ProviderConfig> {
     providers.insert("openai".to_string(), ProviderConfig::new(ProviderType::OpenAI));
     providers.insert("gemini".to_string(), ProviderConfig::new(ProviderType::Gemini));
     providers.insert("deepseek".to_string(), ProviderConfig::new(ProviderType::DeepSeek));
-    providers.insert("glm".to_string(), ProviderConfig::new(ProviderType::GLM));
+    providers.insert("glm".to_string(), ProviderConfig::new(ProviderType::Glm));
     providers.insert("qwen".to_string(), ProviderConfig::new(ProviderType::Qwen));
     providers.insert("ollama".to_string(), ProviderConfig::new(ProviderType::Ollama));
     providers.insert("openrouter".to_string(), ProviderConfig::new(ProviderType::OpenRouter));

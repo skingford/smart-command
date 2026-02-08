@@ -424,7 +424,7 @@ impl AiCommandDoc {
         let subcommands: Vec<CommandSpec> = self
             .subcommands
             .iter()
-            .map(|s| convert_subcommand(s))
+            .map(convert_subcommand)
             .collect();
 
         CommandSpec {
@@ -469,7 +469,7 @@ fn convert_subcommand(sub: &AiSubcommandDoc) -> CommandSpec {
     let subcommands: Vec<CommandSpec> = sub
         .subcommands
         .iter()
-        .map(|s| convert_subcommand(s))
+        .map(convert_subcommand)
         .collect();
 
     CommandSpec {

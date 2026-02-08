@@ -5,7 +5,7 @@
 use super::{CompletionProvider, ProviderContext, ProviderSuggestion};
 use std::collections::HashMap;
 use std::fs;
-use std::path::PathBuf;
+use std::path::Path;
 use std::sync::Mutex;
 use std::time::{Duration, Instant};
 
@@ -26,7 +26,7 @@ impl NpmPackageProvider {
     }
 
     /// Get locally installed packages from node_modules
-    fn get_local_packages(&self, cwd: &PathBuf) -> Vec<String> {
+    fn get_local_packages(&self, cwd: &Path) -> Vec<String> {
         let node_modules = cwd.join("node_modules");
         if !node_modules.exists() {
             return vec![];
@@ -66,7 +66,7 @@ impl NpmPackageProvider {
     }
 
     /// Get packages from package.json dependencies
-    fn get_package_json_deps(&self, cwd: &PathBuf) -> Vec<String> {
+    fn get_package_json_deps(&self, cwd: &Path) -> Vec<String> {
         let package_json = cwd.join("package.json");
         if !package_json.exists() {
             return vec![];

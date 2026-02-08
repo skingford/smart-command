@@ -217,7 +217,7 @@ impl SmartHighlighter {
             if c == '\'' {
                 let mut text = String::from(c);
                 let mut closed = false;
-                while let Some((_, next_c)) = chars.next() {
+                for (_, next_c) in chars.by_ref() {
                     text.push(next_c);
                     if next_c == '\'' {
                         closed = true;
@@ -241,7 +241,7 @@ impl SmartHighlighter {
             if c == '"' {
                 let mut text = String::from(c);
                 let mut closed = false;
-                while let Some((_, next_c)) = chars.next() {
+                for (_, next_c) in chars.by_ref() {
                     text.push(next_c);
                     if next_c == '"' {
                         closed = true;
@@ -267,7 +267,7 @@ impl SmartHighlighter {
                 // Check for ${...} syntax
                 if chars.peek().map(|(_, c)| *c) == Some('{') {
                     text.push(chars.next().unwrap().1);
-                    while let Some((_, next_c)) = chars.next() {
+                    for (_, next_c) in chars.by_ref() {
                         text.push(next_c);
                         if next_c == '}' {
                             break;

@@ -212,8 +212,7 @@ impl BookmarkManager {
 
     /// Check if input is a bookmark reference (@name)
     pub fn try_resolve(&self, input: &str) -> Option<&PathBuf> {
-        if input.starts_with('@') {
-            let name = &input[1..];
+        if let Some(name) = input.strip_prefix('@') {
             self.bookmarks.get(name).map(|b| &b.path)
         } else {
             None

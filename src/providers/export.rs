@@ -372,8 +372,8 @@ impl ExportProvider {
         let line = line.trim();
 
         // Handle: export VAR=value
-        if line.starts_with("export ") {
-            let rest = &line[7..].trim_start();
+        if let Some(rest) = line.strip_prefix("export ") {
+            let rest = rest.trim_start();
             if let Some(eq_pos) = rest.find('=') {
                 let var_name = &rest[..eq_pos];
                 let partial_value = &rest[eq_pos + 1..];

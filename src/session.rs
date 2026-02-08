@@ -374,12 +374,11 @@ impl NextCommandPredictor {
         }
 
         // File not found -> suggest creating or checking path
-        if stderr.contains("No such file or directory") {
-            if cmd.starts_with("cd ") {
+        if stderr.contains("No such file or directory")
+            && cmd.starts_with("cd ") {
                 let path = cmd.strip_prefix("cd ").unwrap_or("");
                 return Some((format!("mkdir -p {}", path), 0.6));
             }
-        }
 
         // Git not a repository -> suggest git init
         if stderr.contains("not a git repository") {

@@ -117,7 +117,7 @@ pub mod llm {
                                    "for", "to", "of", "in", "on", "at", "with", "from", "by",
                                    "your", "you", "it", "this", "that", "these", "those"];
                 let common_count = words.iter()
-                    .filter(|w| common_words.contains(&w.to_lowercase().trim_matches(|c: char| !c.is_alphabetic()).as_ref()))
+                    .filter(|w| common_words.contains(&w.to_lowercase().trim_matches(|c: char| !c.is_alphabetic())))
                     .count();
                 if common_count >= 2 {
                     return true;
@@ -131,7 +131,7 @@ pub mod llm {
 
             // Text ending with common sentence endings
             if text.ends_with('.') || text.ends_with('?') || text.ends_with('!') || text.ends_with(':') {
-                let first_word = words.first().map(|s| *s).unwrap_or("");
+                let first_word = words.first().copied().unwrap_or("");
                 // Remove markdown formatting from first word
                 let first_word = first_word.trim_start_matches("**").trim_start_matches("*").trim_start_matches('`');
                 let known_commands = ["ls", "cd", "cp", "mv", "rm", "mkdir", "cat", "grep", "find",
@@ -478,8 +478,7 @@ pub mod llm {
         fn resolve_api_key(&self) -> Option<String> {
             let key = self.effective.api_key.as_ref()?;
 
-            if key.starts_with('$') {
-                let var_name = &key[1..];
+            if let Some(var_name) = key.strip_prefix('$') {
                 env::var(var_name).ok()
             } else {
                 // Warn user about security risk of plain text API keys
@@ -519,7 +518,7 @@ pub mod llm {
                 ProviderType::Claude => self.call_claude(&api_key, &user_prompt),
                 ProviderType::Gemini => self.call_gemini(&api_key, &user_prompt),
                 ProviderType::OpenAI => self.call_openai(&api_key, &user_prompt),
-                ProviderType::GLM => self.call_glm(&api_key, &user_prompt),
+                ProviderType::Glm => self.call_glm(&api_key, &user_prompt),
                 ProviderType::DeepSeek => self.call_deepseek(&api_key, &user_prompt),
                 ProviderType::Qwen => self.call_qwen(&api_key, &user_prompt),
                 ProviderType::Ollama => self.call_ollama(&user_prompt),

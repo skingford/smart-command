@@ -234,8 +234,8 @@ impl PathProvider {
     /// Parse path and handle special prefixes
     fn parse_path(&self, partial: &str, cwd: &Path) -> (PathBuf, String) {
         // Handle @ bookmark prefix
-        if partial.starts_with('@') {
-            let parts: Vec<&str> = partial[1..].splitn(2, '/').collect();
+        if let Some(rest) = partial.strip_prefix('@') {
+            let parts: Vec<&str> = rest.splitn(2, '/').collect();
             let bookmark_name = parts[0];
 
             if let Some(bookmark_path) = self.get_bookmark(bookmark_name) {
@@ -245,19 +245,19 @@ impl PathProvider {
         }
 
         // Handle ~ home directory
-        if partial.starts_with('~') {
+        if let Some(rest) = partial.strip_prefix('~') {
             if let Some(home) = dirs::home_dir() {
-                let remaining = if partial.len() > 1 {
-                    &partial[2..] // Skip ~/
-                } else {
+                let remaining = if rest.is_empty() {
                     ""
+                } else {
+                    &rest[1..] // Skip /
                 };
                 return (home, remaining.to_string());
             }
         }
 
         // Handle absolute paths
-        if partial.starts_with('/') {
+        if let Some(rest) = partial.strip_prefix('/') {
             let path = PathBuf::from(partial);
             if let Some(parent) = path.parent() {
                 let filename = path
@@ -266,7 +266,7 @@ impl PathProvider {
                     .unwrap_or_default();
                 return (parent.to_path_buf(), filename);
             }
-            return (PathBuf::from("/"), partial[1..].to_string());
+            return (PathBuf::from("/"), rest.to_string());
         }
 
         // Relative path

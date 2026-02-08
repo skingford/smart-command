@@ -25,18 +25,15 @@ pub enum StreamChunk {
 
 /// AI Mode state for interactive conversations
 #[derive(Debug, Clone, PartialEq)]
+#[derive(Default)]
 pub enum AiMode {
     /// Normal shell mode
+    #[default]
     Off,
     /// AI conversation mode - all input goes to AI
     On,
 }
 
-impl Default for AiMode {
-    fn default() -> Self {
-        AiMode::Off
-    }
-}
 
 /// Conversation message for context tracking
 #[derive(Debug, Clone)]
@@ -175,7 +172,7 @@ impl StreamingAiGenerator {
                 ProviderType::OpenAI
                 | ProviderType::DeepSeek
                 | ProviderType::Qwen
-                | ProviderType::GLM
+                | ProviderType::Glm
                 | ProviderType::OpenRouter
                 | ProviderType::Custom => {
                     stream_openai_compatible(&effective, &messages, tx_clone)
@@ -394,8 +391,8 @@ fn stream_claude(
         .api_key
         .as_ref()
         .and_then(|key| {
-            if key.starts_with('$') {
-                std::env::var(&key[1..]).ok()
+            if let Some(var_name) = key.strip_prefix('$') {
+                std::env::var(var_name).ok()
             } else {
                 Some(key.clone())
             }
@@ -528,7 +525,7 @@ fn stream_openai_compatible(
             ProviderType::Qwen => {
                 "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions".to_string()
             }
-            ProviderType::GLM => {
+            ProviderType::Glm => {
                 "https://open.bigmodel.cn/api/paas/v4/chat/completions".to_string()
             }
             ProviderType::OpenRouter => {
@@ -543,8 +540,8 @@ fn stream_openai_compatible(
         .api_key
         .as_ref()
         .and_then(|key| {
-            if key.starts_with('$') {
-                std::env::var(&key[1..]).ok()
+            if let Some(var_name) = key.strip_prefix('$') {
+                std::env::var(var_name).ok()
             } else {
                 Some(key.clone())
             }

@@ -8,7 +8,7 @@
 use lru::LruCache;
 use std::collections::HashMap;
 use std::num::NonZeroUsize;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::sync::RwLock;
 use std::time::{Duration, Instant};
@@ -27,7 +27,7 @@ pub enum ProjectType {
 
 impl ProjectType {
     /// Detect project type from current directory
-    pub fn detect(cwd: &PathBuf) -> Self {
+    pub fn detect(cwd: &Path) -> Self {
         // Check for Rust
         if cwd.join("Cargo.toml").exists() {
             return ProjectType::Rust;
@@ -349,9 +349,9 @@ impl ContextTracker {
     }
 
     /// Record directory pattern
-    pub fn record_dir_pattern(&self, cwd: &PathBuf, command: &str) {
+    pub fn record_dir_pattern(&self, cwd: &Path, command: &str) {
         let mut patterns = self.dir_patterns.write().unwrap();
-        let entry = patterns.entry(cwd.clone()).or_default();
+        let entry = patterns.entry(cwd.to_path_buf()).or_default();
 
         if !entry.contains(&command.to_string()) {
             entry.push(command.to_string());

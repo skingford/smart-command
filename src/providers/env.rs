@@ -39,10 +39,10 @@ impl CompletionProvider for EnvVarProvider {
         let vars = self.get_env_vars();
 
         // Handle ${ prefix
-        let (prefix, var_partial) = if partial.starts_with("${") {
-            ("${", &partial[2..])
-        } else if partial.starts_with('$') {
-            ("$", &partial[1..])
+        let (prefix, var_partial) = if let Some(rest) = partial.strip_prefix("${") {
+            ("${", rest)
+        } else if let Some(rest) = partial.strip_prefix('$') {
+            ("$", rest)
         } else {
             return vec![];
         };

@@ -6,7 +6,7 @@ use reedline::{
 use std::borrow::Cow;
 use std::io::{self, Write};
 use std::path::PathBuf;
-use std::process::Command;
+use std::process::{Command, Stdio};
 use std::sync::Mutex;
 use std::sync::{Arc, RwLock};
 use tracing::{debug, info, warn};
@@ -786,8 +786,8 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                                     let result = execute_command_with_result(&entry.command, &current_lang, &state, &typo_corrector);
                                                     Output::exec_result(result.0, result.1);
                                                 }
-                                            } else if input.is_empty() || input == "y" || input == "yes" {
-                                                if !response.commands.is_empty() {
+                                            } else if (input.is_empty() || input == "y" || input == "yes")
+                                                && !response.commands.is_empty() {
                                                     let entry = &response.commands[0];
                                                     let desc = entry.description.as_deref().unwrap_or("执行命令");
                                                     Output::step(1, 1, desc);
@@ -795,7 +795,6 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                                     let result = execute_command_with_result(&entry.command, &current_lang, &state, &typo_corrector);
                                                     Output::exec_result(result.0, result.1);
                                                 }
-                                            }
                                         }
                                     } else {
                                         // Single command response
@@ -875,7 +874,7 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                         }
 
                         // Handle snippet expansion (`:snippet` prefix)
-                        if trimmed.starts_with(':') {
+                        if let Some(rest) = trimmed.strip_prefix(':') {
                             if let Some(expanded) = snippet_manager.try_expand(trimmed) {
                                 Output::info(&format!("Expanded: {}", expanded));
                                 print!("Execute? [Y/n]: ");
@@ -895,7 +894,7 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                 }
                             } else {
                                 // Try as snippet command
-                                let parts: Vec<&str> = trimmed[1..].split_whitespace().collect();
+                                let parts: Vec<&str> = rest.split_whitespace().collect();
                                 if let Some(output) = snippets::handle_snippet_command(&mut snippet_manager, "snippet", &parts) {
                                     println!("{}", output);
                                 } else {
@@ -924,7 +923,7 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
 
                         // Handle built-in UX commands
                         let parts: Vec<&str> = trimmed.split_whitespace().collect();
-                        let cmd = parts.first().map(|s| *s).unwrap_or("");
+                        let cmd = parts.first().copied().unwrap_or("");
 
                         // Alias command
                         if cmd == "alias" || cmd == "unalias" {
@@ -976,7 +975,7 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
 
                         // AI management commands
                         if cmd == "ai" {
-                            let subcommand = parts.get(1).map(|s| *s).unwrap_or("status");
+                            let subcommand = parts.get(1).copied().unwrap_or("status");
                             let args = if parts.len() > 2 { &parts[2..] } else { &[] };
 
                             // Handle "ai on" to enter AI mode
@@ -1031,7 +1030,7 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
 
                         // Context command - show session context
                         if cmd == "context" {
-                            let subcommand = parts.get(1).map(|s| *s).unwrap_or("show");
+                            let subcommand = parts.get(1).copied().unwrap_or("show");
                             match subcommand {
                                 "show" | "status" => {
                                     let stats = session_context.stats();
@@ -1084,7 +1083,7 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                 continue;
                             }
 
-                            let command_name = parts.get(1).map(|s| *s);
+                            let command_name = parts.get(1).copied();
                             if command_name.is_none() {
                                 Output::dim("Usage: learn <command_name>");
                                 Output::dim("Example: learn rg");
@@ -1672,23 +1671,21 @@ fn execute_command_for_active_ai(
 
         debug!("Executing command: {}", command);
 
-        // Execute external command with output capture
-        // We use output() instead of status() to capture stderr for error analysis
+        // Execute external command with stderr capture
+        // stdin/stdout inherit the terminal so interactive commands work properly
+        // stderr is piped so we can capture error output for AI analysis
         let output = Command::new("sh")
             .arg("-c")
             .arg(command)
+            .stdin(Stdio::inherit())
+            .stdout(Stdio::inherit())
+            .stderr(Stdio::piped())
             .output();
 
         match output {
             Ok(output) => {
                 let code = output.status.code();
-                let stdout = String::from_utf8_lossy(&output.stdout).to_string();
                 let stderr = String::from_utf8_lossy(&output.stderr).to_string();
-
-                // Print stdout if not empty
-                if !stdout.is_empty() {
-                    print!("{}", stdout);
-                }
 
                 // Print stderr if not empty (to stderr)
                 if !stderr.is_empty() {
@@ -1711,7 +1708,7 @@ fn execute_command_for_active_ai(
                 CommandResult::new(
                     command,
                     code,
-                    if stdout.is_empty() { None } else { Some(stdout) },
+                    None,
                     if stderr.is_empty() { None } else { Some(stderr) },
                 )
             }
@@ -1793,7 +1790,7 @@ fn start_background_version_check(
 
 /// Handle 'config' command
 fn handle_config(parts: &[&str], current_lang: &Arc<RwLock<String>>) {
-    let sub = parts.get(1).map(|s| *s).unwrap_or("help");
+    let sub = parts.get(1).copied().unwrap_or("help");
 
     match sub {
         "set-lang" => {
@@ -1975,7 +1972,7 @@ fn handle_config(parts: &[&str], current_lang: &Arc<RwLock<String>>) {
             }
         }
 
-        "help" | _ => {
+        _ => {
             println!();
             Output::info("Config Commands");
             println!();
