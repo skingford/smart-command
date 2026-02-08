@@ -5,7 +5,7 @@
 use super::{CompletionProvider, ProviderContext, ProviderSuggestion};
 use std::collections::HashMap;
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::sync::Mutex;
 use std::time::{Duration, Instant};
 
