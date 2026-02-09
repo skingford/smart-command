@@ -68,7 +68,9 @@ impl KubernetesResourceProvider {
                     .lines()
                     .filter_map(|line| {
                         // Output format: type/name
-                        line.split('/').next_back().map(|name| (name.to_string(), None))
+                        line.split('/')
+                            .next_back()
+                            .map(|name| (name.to_string(), None))
                     })
                     .collect()
             }
@@ -137,8 +139,20 @@ impl CompletionProvider for KubernetesResourceProvider {
 
         // Commands that work with resources
         let resource_commands = [
-            "get", "describe", "delete", "edit", "logs", "exec", "port-forward", "cp", "attach",
-            "scale", "rollout", "label", "annotate", "patch",
+            "get",
+            "describe",
+            "delete",
+            "edit",
+            "logs",
+            "exec",
+            "port-forward",
+            "cp",
+            "attach",
+            "scale",
+            "rollout",
+            "label",
+            "annotate",
+            "patch",
         ];
 
         if !resource_commands.contains(&subcommand.as_str()) {
@@ -190,24 +204,12 @@ impl KubernetesResourceProvider {
     fn matches_resource_type(&self, arg: &str) -> bool {
         let arg_lower = arg.to_lowercase();
         match self.resource_type {
-            "pods" => {
-                ["pod", "pods", "po"].contains(&arg_lower.as_str())
-            }
-            "services" => {
-                ["service", "services", "svc"].contains(&arg_lower.as_str())
-            }
-            "deployments" => {
-                ["deployment", "deployments", "deploy"].contains(&arg_lower.as_str())
-            }
-            "namespaces" => {
-                ["namespace", "namespaces", "ns"].contains(&arg_lower.as_str())
-            }
-            "configmaps" => {
-                ["configmap", "configmaps", "cm"].contains(&arg_lower.as_str())
-            }
-            "secrets" => {
-                ["secret", "secrets"].contains(&arg_lower.as_str())
-            }
+            "pods" => ["pod", "pods", "po"].contains(&arg_lower.as_str()),
+            "services" => ["service", "services", "svc"].contains(&arg_lower.as_str()),
+            "deployments" => ["deployment", "deployments", "deploy"].contains(&arg_lower.as_str()),
+            "namespaces" => ["namespace", "namespaces", "ns"].contains(&arg_lower.as_str()),
+            "configmaps" => ["configmap", "configmaps", "cm"].contains(&arg_lower.as_str()),
+            "secrets" => ["secret", "secrets"].contains(&arg_lower.as_str()),
             _ => false,
         }
     }
@@ -376,8 +378,7 @@ impl CompletionProvider for KubernetesNamespaceProvider {
                 partial.is_empty() || name.to_lowercase().starts_with(&partial.to_lowercase())
             })
             .map(|name| {
-                let mut suggestion =
-                    ProviderSuggestion::new(&name).with_category("namespace");
+                let mut suggestion = ProviderSuggestion::new(&name).with_category("namespace");
 
                 // Boost common namespaces
                 if name == "default" || name == "kube-system" {

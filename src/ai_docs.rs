@@ -27,20 +27,51 @@ pub fn detect_learn_intent(input: &str) -> Option<LearnIntent> {
 
     // English patterns
     let learn_patterns_en = [
-        "learn ", "learn about ", "teach me ", "explain ", "what is ", "what does ",
-        "how to use ", "how do i use ", "tell me about ", "show me how ", "usage of ",
-        "help with ", "guide for ", "tutorial for ", "documentation for ",
+        "learn ",
+        "learn about ",
+        "teach me ",
+        "explain ",
+        "what is ",
+        "what does ",
+        "how to use ",
+        "how do i use ",
+        "tell me about ",
+        "show me how ",
+        "usage of ",
+        "help with ",
+        "guide for ",
+        "tutorial for ",
+        "documentation for ",
     ];
 
     // Chinese patterns
     let learn_patterns_zh = [
-        "学习", "学一下", "教我", "介绍", "解释", "什么是", "怎么用", "如何使用",
-        "告诉我", "用法", "帮我了解", "详细说明", "命令用法", "整理",
+        "学习",
+        "学一下",
+        "教我",
+        "介绍",
+        "解释",
+        "什么是",
+        "怎么用",
+        "如何使用",
+        "告诉我",
+        "用法",
+        "帮我了解",
+        "详细说明",
+        "命令用法",
+        "整理",
     ];
 
     // Command usage patterns (e.g., "rg 用法", "git 详细介绍")
     let usage_patterns_zh = [
-        "用法", "介绍", "怎么用", "如何使用", "详细", "说明", "教程", "帮助",
+        "用法",
+        "介绍",
+        "怎么用",
+        "如何使用",
+        "详细",
+        "说明",
+        "教程",
+        "帮助",
     ];
 
     // Check English patterns
@@ -90,17 +121,83 @@ pub fn detect_learn_intent(input: &str) -> Option<LearnIntent> {
 /// Check if a string looks like a command name
 fn looks_like_command(s: &str) -> bool {
     let known_commands = [
-        "ls", "cd", "cp", "mv", "rm", "mkdir", "cat", "grep", "find", "git", "docker",
-        "npm", "cargo", "python", "pip", "node", "curl", "wget", "tar", "chmod", "chown",
-        "sudo", "apt", "brew", "yum", "dnf", "pacman", "ssh", "scp", "rsync", "echo",
-        "export", "source", "gh", "jq", "awk", "sed", "make", "cmake", "gcc", "go",
-        "rustc", "java", "ruby", "perl", "php", "dotnet", "kubectl", "helm", "terraform",
-        "rg", "fd", "bat", "exa", "eza", "fzf", "tmux", "vim", "nvim", "emacs", "code",
-        "az", "aws", "gcloud", "deno", "bun", "pnpm", "yarn", "ps", "kill", "top", "htop",
+        "ls",
+        "cd",
+        "cp",
+        "mv",
+        "rm",
+        "mkdir",
+        "cat",
+        "grep",
+        "find",
+        "git",
+        "docker",
+        "npm",
+        "cargo",
+        "python",
+        "pip",
+        "node",
+        "curl",
+        "wget",
+        "tar",
+        "chmod",
+        "chown",
+        "sudo",
+        "apt",
+        "brew",
+        "yum",
+        "dnf",
+        "pacman",
+        "ssh",
+        "scp",
+        "rsync",
+        "echo",
+        "export",
+        "source",
+        "gh",
+        "jq",
+        "awk",
+        "sed",
+        "make",
+        "cmake",
+        "gcc",
+        "go",
+        "rustc",
+        "java",
+        "ruby",
+        "perl",
+        "php",
+        "dotnet",
+        "kubectl",
+        "helm",
+        "terraform",
+        "rg",
+        "fd",
+        "bat",
+        "exa",
+        "eza",
+        "fzf",
+        "tmux",
+        "vim",
+        "nvim",
+        "emacs",
+        "code",
+        "az",
+        "aws",
+        "gcloud",
+        "deno",
+        "bun",
+        "pnpm",
+        "yarn",
+        "ps",
+        "kill",
+        "top",
+        "htop",
     ];
 
     known_commands.contains(&s.to_lowercase().as_str())
-        || s.chars().all(|c| c.is_alphanumeric() || c == '-' || c == '_')
+        || s.chars()
+            .all(|c| c.is_alphanumeric() || c == '-' || c == '_')
 }
 
 /// Extract command name from the rest of the input
@@ -122,7 +219,8 @@ fn extract_command_name(input: &str) -> Option<String> {
 /// Extract command name from Chinese input
 fn extract_command_from_chinese(input: &str) -> Option<String> {
     // Look for English command names in the input
-    let words: Vec<&str> = input.split(|c: char| c.is_whitespace() || is_chinese_char(c))
+    let words: Vec<&str> = input
+        .split(|c: char| c.is_whitespace() || is_chinese_char(c))
         .filter(|s| !s.is_empty())
         .collect();
 
@@ -371,9 +469,7 @@ impl AiCommandDoc {
             }
             // Check for obvious shell injection patterns (but allow backticks in examples)
             if example.cmd.contains("$(") {
-                return Err(
-                    "Example command contains potential shell injection: $()".to_string()
-                );
+                return Err("Example command contains potential shell injection: $()".to_string());
             }
         }
 
@@ -421,11 +517,8 @@ impl AiCommandDoc {
             })
             .collect();
 
-        let subcommands: Vec<CommandSpec> = self
-            .subcommands
-            .iter()
-            .map(convert_subcommand)
-            .collect();
+        let subcommands: Vec<CommandSpec> =
+            self.subcommands.iter().map(convert_subcommand).collect();
 
         CommandSpec {
             name: self.name.clone(),
@@ -466,11 +559,7 @@ fn convert_subcommand(sub: &AiSubcommandDoc) -> CommandSpec {
         })
         .collect();
 
-    let subcommands: Vec<CommandSpec> = sub
-        .subcommands
-        .iter()
-        .map(convert_subcommand)
-        .collect();
+    let subcommands: Vec<CommandSpec> = sub.subcommands.iter().map(convert_subcommand).collect();
 
     CommandSpec {
         name: sub.name.clone(),
@@ -624,9 +713,15 @@ fn extract_from_code_block(response: &str) -> Option<String> {
 
     // Try generic ``` block
     if let Some(start) = response.find("```") {
-        let content_start = response[start + 3..].find('\n').map(|i| start + 3 + i + 1)?;
+        let content_start = response[start + 3..]
+            .find('\n')
+            .map(|i| start + 3 + i + 1)?;
         if let Some(end) = response[content_start..].find("```") {
-            return Some(response[content_start..content_start + end].trim().to_string());
+            return Some(
+                response[content_start..content_start + end]
+                    .trim()
+                    .to_string(),
+            );
         }
     }
 
@@ -672,10 +767,7 @@ pub fn format_command_preview(spec: &CommandSpec, lang: &str) -> String {
     if !spec.flags.is_empty() {
         output.push_str("\nFlags:\n");
         for flag in &spec.flags {
-            let short = flag
-                .short
-                .map(|c| format!("-{}, ", c))
-                .unwrap_or_default();
+            let short = flag.short.map(|c| format!("-{}, ", c)).unwrap_or_default();
             let long = flag
                 .long
                 .as_ref()
@@ -839,7 +931,10 @@ mod tests {
     #[test]
     fn test_clean_markdown_backticks() {
         assert_eq!(clean_markdown("`code`"), "code");
-        assert_eq!(clean_markdown("Run `git status` command"), "Run git status command");
+        assert_eq!(
+            clean_markdown("Run `git status` command"),
+            "Run git status command"
+        );
     }
 
     #[test]

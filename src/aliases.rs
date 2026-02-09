@@ -64,7 +64,11 @@ impl AliasManager {
             ("gd", "git diff", "Git diff"),
             ("gco", "git checkout", "Git checkout"),
             ("gb", "git branch", "Git branch"),
-            ("glog", "git log --oneline --graph --decorate", "Git log graph"),
+            (
+                "glog",
+                "git log --oneline --graph --decorate",
+                "Git log graph",
+            ),
             ("dc", "docker compose", "Docker compose shortcut"),
             ("dps", "docker ps", "Docker process list"),
             ("k", "kubectl", "Kubectl shortcut"),
@@ -72,7 +76,11 @@ impl AliasManager {
             ("py", "python3", "Python 3"),
             ("cls", "clear", "Clear screen"),
             ("h", "history", "Show history"),
-            ("ports", "lsof -i -P -n | grep LISTEN", "Show listening ports"),
+            (
+                "ports",
+                "lsof -i -P -n | grep LISTEN",
+                "Show listening ports",
+            ),
             ("myip", "curl -s ifconfig.me", "Show public IP"),
             ("weather", "curl -s wttr.in", "Show weather"),
         ];
@@ -192,8 +200,7 @@ impl AliasManager {
         self.aliases
             .values()
             .filter(|a| {
-                partial.is_empty()
-                    || a.name.to_lowercase().starts_with(&partial.to_lowercase())
+                partial.is_empty() || a.name.to_lowercase().starts_with(&partial.to_lowercase())
             })
             .map(|a| (a.name.as_str(), a.description.as_deref()))
             .collect()

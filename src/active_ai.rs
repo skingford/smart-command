@@ -29,7 +29,12 @@ pub struct CommandResult {
 
 impl CommandResult {
     /// Create a new command result
-    pub fn new(command: &str, exit_code: Option<i32>, stdout: Option<String>, stderr: Option<String>) -> Self {
+    pub fn new(
+        command: &str,
+        exit_code: Option<i32>,
+        stdout: Option<String>,
+        stderr: Option<String>,
+    ) -> Self {
         let success = exit_code == Some(0);
         let cwd = std::env::current_dir()
             .map(|p| p.display().to_string())
@@ -53,8 +58,16 @@ impl CommandResult {
         Self::new(
             command,
             output.status.code(),
-            if stdout.is_empty() { None } else { Some(stdout) },
-            if stderr.is_empty() { None } else { Some(stderr) },
+            if stdout.is_empty() {
+                None
+            } else {
+                Some(stdout)
+            },
+            if stderr.is_empty() {
+                None
+            } else {
+                Some(stderr)
+            },
         )
     }
 
@@ -104,7 +117,6 @@ impl CommandResult {
         context
     }
 }
-
 
 /// Active AI handler for proactive error assistance
 pub struct ActiveAi {
@@ -169,7 +181,11 @@ impl ActiveAi {
     }
 
     /// Generate AI explanation for an error
-    pub fn explain_error(&self, result: &CommandResult, ai_config: &AiConfig) -> Result<String, String> {
+    pub fn explain_error(
+        &self,
+        result: &CommandResult,
+        ai_config: &AiConfig,
+    ) -> Result<String, String> {
         let prompt = format!(
             "Explain this command error in simple terms. Be concise (2-3 sentences max).\n\n{}",
             result.get_error_context()
@@ -179,7 +195,11 @@ impl ActiveAi {
     }
 
     /// Generate AI fix suggestion for an error
-    pub fn suggest_fix(&self, result: &CommandResult, ai_config: &AiConfig) -> Result<String, String> {
+    pub fn suggest_fix(
+        &self,
+        result: &CommandResult,
+        ai_config: &AiConfig,
+    ) -> Result<String, String> {
         let prompt = format!(
             "Suggest a fix for this command error. Provide ONLY the corrected command, no explanation.\n\n{}",
             result.get_error_context()
@@ -221,12 +241,16 @@ impl ErrorPatterns {
         let code = result.exit_code;
 
         // Command not found
-        if code == Some(127) || stderr.contains("command not found") || stderr.contains("not found") {
+        if code == Some(127) || stderr.contains("command not found") || stderr.contains("not found")
+        {
             return Some(ErrorType::CommandNotFound);
         }
 
         // Permission denied
-        if stderr.contains("Permission denied") || stderr.contains("permission denied") || code == Some(126) {
+        if stderr.contains("Permission denied")
+            || stderr.contains("permission denied")
+            || code == Some(126)
+        {
             return Some(ErrorType::PermissionDenied);
         }
 
@@ -241,23 +265,33 @@ impl ErrorPatterns {
         }
 
         // Git errors
-        if stderr.contains("fatal:") && (stderr.contains("git") || result.command.starts_with("git")) {
+        if stderr.contains("fatal:")
+            && (stderr.contains("git") || result.command.starts_with("git"))
+        {
             return Some(ErrorType::GitError);
         }
 
         // Package manager errors
-        if stderr.contains("npm ERR!") || stderr.contains("cargo error") || stderr.contains("pip error") {
+        if stderr.contains("npm ERR!")
+            || stderr.contains("cargo error")
+            || stderr.contains("pip error")
+        {
             return Some(ErrorType::PackageError);
         }
 
         // Network errors
-        if stderr.contains("Could not resolve host") || stderr.contains("Connection refused")
-           || stderr.contains("Network is unreachable") {
+        if stderr.contains("Could not resolve host")
+            || stderr.contains("Connection refused")
+            || stderr.contains("Network is unreachable")
+        {
             return Some(ErrorType::NetworkError);
         }
 
         // Build/compile errors
-        if stderr.contains("error[E") || stderr.contains("error:") || stderr.contains("compilation failed") {
+        if stderr.contains("error[E")
+            || stderr.contains("error:")
+            || stderr.contains("compilation failed")
+        {
             return Some(ErrorType::BuildError);
         }
 
@@ -269,17 +303,21 @@ impl ErrorPatterns {
         match error_type {
             ErrorType::CommandNotFound => {
                 let cmd = result.command.split_whitespace().next()?;
-                Some(format!("Command '{}' not found. Try: which {} or brew install {}", cmd, cmd, cmd))
+                Some(format!(
+                    "Command '{}' not found. Try: which {} or brew install {}",
+                    cmd, cmd, cmd
+                ))
             }
-            ErrorType::PermissionDenied => {
-                Some("Permission denied. Try: sudo or check file permissions with ls -la".to_string())
-            }
+            ErrorType::PermissionDenied => Some(
+                "Permission denied. Try: sudo or check file permissions with ls -la".to_string(),
+            ),
             ErrorType::FileNotFound => {
                 Some("File not found. Check the path with ls or find.".to_string())
             }
-            ErrorType::SyntaxError => {
-                Some("Syntax error in command. Check quotes, brackets, and special characters.".to_string())
-            }
+            ErrorType::SyntaxError => Some(
+                "Syntax error in command. Check quotes, brackets, and special characters."
+                    .to_string(),
+            ),
             _ => None,
         }
     }
@@ -312,18 +350,39 @@ mod tests {
 
     #[test]
     fn test_command_result_error() {
-        let result = CommandResult::new("invalid_cmd", Some(127), None, Some("command not found".to_string()));
+        let result = CommandResult::new(
+            "invalid_cmd",
+            Some(127),
+            None,
+            Some("command not found".to_string()),
+        );
         assert!(!result.success);
         assert!(result.is_ai_helpable_error());
     }
 
     #[test]
     fn test_error_detection() {
-        let result = CommandResult::new("foo", Some(127), None, Some("foo: command not found".to_string()));
-        assert_eq!(ErrorPatterns::detect_error_type(&result), Some(ErrorType::CommandNotFound));
+        let result = CommandResult::new(
+            "foo",
+            Some(127),
+            None,
+            Some("foo: command not found".to_string()),
+        );
+        assert_eq!(
+            ErrorPatterns::detect_error_type(&result),
+            Some(ErrorType::CommandNotFound)
+        );
 
-        let result = CommandResult::new("cat /etc/shadow", Some(1), None, Some("Permission denied".to_string()));
-        assert_eq!(ErrorPatterns::detect_error_type(&result), Some(ErrorType::PermissionDenied));
+        let result = CommandResult::new(
+            "cat /etc/shadow",
+            Some(1),
+            None,
+            Some("Permission denied".to_string()),
+        );
+        assert_eq!(
+            ErrorPatterns::detect_error_type(&result),
+            Some(ErrorType::PermissionDenied)
+        );
     }
 
     #[test]

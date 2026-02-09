@@ -189,9 +189,15 @@ impl ProviderRegistry {
         // Kubernetes providers
         self.register(Box::new(kubernetes::KubernetesResourceProvider::pods()));
         self.register(Box::new(kubernetes::KubernetesResourceProvider::services()));
-        self.register(Box::new(kubernetes::KubernetesResourceProvider::deployments()));
-        self.register(Box::new(kubernetes::KubernetesResourceProvider::namespaces()));
-        self.register(Box::new(kubernetes::KubernetesResourceProvider::configmaps()));
+        self.register(Box::new(
+            kubernetes::KubernetesResourceProvider::deployments(),
+        ));
+        self.register(Box::new(
+            kubernetes::KubernetesResourceProvider::namespaces(),
+        ));
+        self.register(Box::new(
+            kubernetes::KubernetesResourceProvider::configmaps(),
+        ));
         self.register(Box::new(kubernetes::KubernetesResourceProvider::secrets()));
         self.register(Box::new(kubernetes::KubernetesContextProvider::new()));
         self.register(Box::new(kubernetes::KubernetesNamespaceProvider::new()));
@@ -204,7 +210,8 @@ impl ProviderRegistry {
     pub fn register(&mut self, provider: Box<dyn CompletionProvider>) {
         self.providers.push(provider);
         // Sort by priority (higher first)
-        self.providers.sort_by_key(|p| std::cmp::Reverse(p.priority()));
+        self.providers
+            .sort_by_key(|p| std::cmp::Reverse(p.priority()));
     }
 
     /// Enable/disable specific providers

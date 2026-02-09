@@ -128,10 +128,7 @@ impl ArgumentValidator {
             ));
         }
 
-        ValidationResult::Invalid(format!(
-            "Expected one of: {}",
-            choices.join(", ")
-        ))
+        ValidationResult::Invalid(format!("Expected one of: {}", choices.join(", ")))
     }
 
     fn validate_pattern(value: &str, pattern: &str) -> ValidationResult {
@@ -274,7 +271,9 @@ impl ArgumentValidator {
                 // Check if it looks like incomplete JSON
                 let trimmed = value.trim();
                 if trimmed.starts_with('{') && !trimmed.ends_with('}') {
-                    return ValidationResult::Incomplete("Close the JSON object with }".to_string());
+                    return ValidationResult::Incomplete(
+                        "Close the JSON object with }".to_string(),
+                    );
                 }
                 if trimmed.starts_with('[') && !trimmed.ends_with(']') {
                     return ValidationResult::Incomplete("Close the JSON array with ]".to_string());
@@ -343,7 +342,8 @@ impl CommandValidator {
         for (idx, value) in args.iter().enumerate() {
             // Find the argument spec for this position
             let spec = arg_specs.iter().find(|s| {
-                s.position == Some(idx) || (s.variadic && s.position.map(|p| idx >= p).unwrap_or(false))
+                s.position == Some(idx)
+                    || (s.variadic && s.position.map(|p| idx >= p).unwrap_or(false))
             });
 
             if let Some(spec) = spec {
@@ -387,22 +387,46 @@ mod tests {
     #[test]
     fn test_validate_number() {
         assert_eq!(
-            ArgumentValidator::validate("42", &ArgumentType::Number { min: None, max: None }),
+            ArgumentValidator::validate(
+                "42",
+                &ArgumentType::Number {
+                    min: None,
+                    max: None
+                }
+            ),
             ValidationResult::Valid
         );
 
         assert_eq!(
-            ArgumentValidator::validate("5", &ArgumentType::Number { min: Some(1), max: Some(10) }),
+            ArgumentValidator::validate(
+                "5",
+                &ArgumentType::Number {
+                    min: Some(1),
+                    max: Some(10)
+                }
+            ),
             ValidationResult::Valid
         );
 
         assert!(matches!(
-            ArgumentValidator::validate("100", &ArgumentType::Number { min: None, max: Some(50) }),
+            ArgumentValidator::validate(
+                "100",
+                &ArgumentType::Number {
+                    min: None,
+                    max: Some(50)
+                }
+            ),
             ValidationResult::Invalid(_)
         ));
 
         assert!(matches!(
-            ArgumentValidator::validate("abc", &ArgumentType::Number { min: None, max: None }),
+            ArgumentValidator::validate(
+                "abc",
+                &ArgumentType::Number {
+                    min: None,
+                    max: None
+                }
+            ),
             ValidationResult::Invalid(_)
         ));
     }
@@ -433,12 +457,22 @@ mod tests {
         let choices = vec!["red".to_string(), "green".to_string(), "blue".to_string()];
 
         assert_eq!(
-            ArgumentValidator::validate("red", &ArgumentType::Choice { values: choices.clone() }),
+            ArgumentValidator::validate(
+                "red",
+                &ArgumentType::Choice {
+                    values: choices.clone()
+                }
+            ),
             ValidationResult::Valid
         );
 
         assert!(matches!(
-            ArgumentValidator::validate("re", &ArgumentType::Choice { values: choices.clone() }),
+            ArgumentValidator::validate(
+                "re",
+                &ArgumentType::Choice {
+                    values: choices.clone()
+                }
+            ),
             ValidationResult::Incomplete(_)
         ));
 
@@ -510,7 +544,10 @@ mod tests {
         );
 
         assert_eq!(
-            ArgumentValidator::get_hint(&ArgumentType::Number { min: Some(0), max: Some(100) }),
+            ArgumentValidator::get_hint(&ArgumentType::Number {
+                min: Some(0),
+                max: Some(100)
+            }),
             "<number 0-100>"
         );
 

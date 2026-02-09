@@ -24,8 +24,7 @@ pub enum StreamChunk {
 }
 
 /// AI Mode state for interactive conversations
-#[derive(Debug, Clone, PartialEq)]
-#[derive(Default)]
+#[derive(Debug, Clone, PartialEq, Default)]
 pub enum AiMode {
     /// Normal shell mode
     #[default]
@@ -33,7 +32,6 @@ pub enum AiMode {
     /// AI conversation mode - all input goes to AI
     On,
 }
-
 
 /// Conversation message for context tracking
 #[derive(Debug, Clone)]
@@ -174,9 +172,7 @@ impl StreamingAiGenerator {
                 | ProviderType::Qwen
                 | ProviderType::Glm
                 | ProviderType::OpenRouter
-                | ProviderType::Custom => {
-                    stream_openai_compatible(&effective, &messages, tx_clone)
-                }
+                | ProviderType::Custom => stream_openai_compatible(&effective, &messages, tx_clone),
                 _ => {
                     // For Gemini, fall back to blocking call for now
                     stream_fallback(&effective, &messages, tx_clone)
@@ -518,8 +514,10 @@ fn stream_openai_compatible(
         .unwrap_or_else(|| "gpt-4o-mini".to_string());
 
     // Get endpoint based on provider type
-    let endpoint = effective.endpoint.clone().unwrap_or_else(|| {
-        match effective.provider_type {
+    let endpoint = effective
+        .endpoint
+        .clone()
+        .unwrap_or_else(|| match effective.provider_type {
             ProviderType::OpenAI => "https://api.openai.com/v1/chat/completions".to_string(),
             ProviderType::DeepSeek => "https://api.deepseek.com/v1/chat/completions".to_string(),
             ProviderType::Qwen => {
@@ -528,12 +526,9 @@ fn stream_openai_compatible(
             ProviderType::Glm => {
                 "https://open.bigmodel.cn/api/paas/v4/chat/completions".to_string()
             }
-            ProviderType::OpenRouter => {
-                "https://openrouter.ai/api/v1/chat/completions".to_string()
-            }
+            ProviderType::OpenRouter => "https://openrouter.ai/api/v1/chat/completions".to_string(),
             _ => "https://api.openai.com/v1/chat/completions".to_string(),
-        }
-    });
+        });
 
     // Resolve API key
     let api_key = effective
@@ -586,7 +581,10 @@ fn stream_openai_compatible(
             .header("X-Title", "Smart Command");
     }
 
-    let response = request.json(&request_body).send().map_err(|e| e.to_string())?;
+    let response = request
+        .json(&request_body)
+        .send()
+        .map_err(|e| e.to_string())?;
 
     if !response.status().is_success() {
         let status = response.status();
@@ -739,9 +737,18 @@ pub fn show_ai_mode_help() {
     println!();
     Output::info("AI Mode Commands");
     println!();
-    println!("  {}      - Exit AI mode and return to shell", nu_ansi_term::Color::Cyan.paint("/exit"));
-    println!("  {}     - Clear conversation history", nu_ansi_term::Color::Cyan.paint("/clear"));
-    println!("  {}      - Show this help", nu_ansi_term::Color::Cyan.paint("/help"));
+    println!(
+        "  {}      - Exit AI mode and return to shell",
+        nu_ansi_term::Color::Cyan.paint("/exit")
+    );
+    println!(
+        "  {}     - Clear conversation history",
+        nu_ansi_term::Color::Cyan.paint("/clear")
+    );
+    println!(
+        "  {}      - Show this help",
+        nu_ansi_term::Color::Cyan.paint("/help")
+    );
     println!();
     Output::dim("In AI mode, all input is sent to the AI for command generation.");
     Output::dim("The AI remembers your conversation context for follow-up questions.");

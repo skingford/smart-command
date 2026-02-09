@@ -202,11 +202,7 @@ impl CompletionGroups {
         self.order
             .iter()
             .filter_map(|g| self.groups.get(g).map(|items| (g, items)))
-            .chain(
-                self.groups
-                    .iter()
-                    .filter(|(g, _)| !self.order.contains(g)),
-            )
+            .chain(self.groups.iter().filter(|(g, _)| !self.order.contains(g)))
     }
 
     /// Get total completion count
@@ -321,7 +317,11 @@ impl PreviewPane {
     }
 
     /// Generate preview for a command/flag
-    pub fn preview_for_command(name: &str, description: &str, flags: &[(String, String)]) -> PreviewContent {
+    pub fn preview_for_command(
+        name: &str,
+        description: &str,
+        flags: &[(String, String)],
+    ) -> PreviewContent {
         let mut body = description.to_string();
 
         if !flags.is_empty() {
@@ -344,7 +344,11 @@ impl PreviewPane {
     }
 
     /// Generate preview for a flag
-    pub fn preview_for_flag(flag: &str, description: &str, value_hint: Option<&str>) -> PreviewContent {
+    pub fn preview_for_flag(
+        flag: &str,
+        description: &str,
+        value_hint: Option<&str>,
+    ) -> PreviewContent {
         let mut body = description.to_string();
 
         if let Some(hint) = value_hint {
@@ -372,10 +376,7 @@ impl PreviewPane {
 
         // Top border
         let width = self.max_width.min(content.title.len() + 4).max(40);
-        output.push_str(&format!(
-            "{}\n",
-            border_style.paint("─".repeat(width))
-        ));
+        output.push_str(&format!("{}\n", border_style.paint("─".repeat(width))));
 
         // Title
         output.push_str(&format!("{}\n", title_style.paint(&content.title)));
@@ -400,15 +401,15 @@ impl PreviewPane {
         if !content.examples.is_empty() {
             output.push_str(&format!("\n{}\n", title_style.paint("Examples:")));
             for example in content.examples.iter().take(3) {
-                output.push_str(&format!("  {}\n", example_style.paint(format!("$ {}", example))));
+                output.push_str(&format!(
+                    "  {}\n",
+                    example_style.paint(format!("$ {}", example))
+                ));
             }
         }
 
         // Bottom border
-        output.push_str(&format!(
-            "{}",
-            border_style.paint("─".repeat(width))
-        ));
+        output.push_str(&format!("{}", border_style.paint("─".repeat(width))));
 
         Some(output)
     }
@@ -596,7 +597,11 @@ impl KeyHint {
     pub fn render(&self) -> String {
         let key_style = Style::new().fg(Color::Yellow).bold();
         let action_style = Style::new().fg(Color::DarkGray);
-        format!("{} {}", key_style.paint(&self.key), action_style.paint(&self.action))
+        format!(
+            "{} {}",
+            key_style.paint(&self.key),
+            action_style.paint(&self.action)
+        )
     }
 }
 
@@ -725,7 +730,10 @@ mod tests {
             .with_priority(10);
 
         assert_eq!(completion.value, "test");
-        assert_eq!(completion.description, Some("A test completion".to_string()));
+        assert_eq!(
+            completion.description,
+            Some("A test completion".to_string())
+        );
         assert_eq!(completion.priority, 10);
     }
 
@@ -733,7 +741,10 @@ mod tests {
     fn test_completion_groups() {
         let mut groups = CompletionGroups::new();
 
-        groups.add(GroupedCompletion::new("commit", CompletionGroup::Subcommand));
+        groups.add(GroupedCompletion::new(
+            "commit",
+            CompletionGroup::Subcommand,
+        ));
         groups.add(GroupedCompletion::new("push", CompletionGroup::Subcommand));
         groups.add(GroupedCompletion::new("--verbose", CompletionGroup::Flag));
 

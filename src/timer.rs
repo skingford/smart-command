@@ -294,9 +294,18 @@ mod tests {
     fn test_format_duration() {
         let timer = CommandTimer::new().with_threshold(0.0);
 
-        assert_eq!(timer.format_duration(Duration::from_millis(100)), Some("100ms".to_string()));
-        assert_eq!(timer.format_duration(Duration::from_secs_f64(1.5)), Some("1.50s".to_string()));
-        assert_eq!(timer.format_duration(Duration::from_secs(90)), Some("1m30.0s".to_string()));
+        assert_eq!(
+            timer.format_duration(Duration::from_millis(100)),
+            Some("100ms".to_string())
+        );
+        assert_eq!(
+            timer.format_duration(Duration::from_secs_f64(1.5)),
+            Some("1.50s".to_string())
+        );
+        assert_eq!(
+            timer.format_duration(Duration::from_secs(90)),
+            Some("1m30.0s".to_string())
+        );
     }
 
     #[test]

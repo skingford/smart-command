@@ -343,7 +343,9 @@ impl SnippetManager {
             .values()
             .filter(|s| {
                 partial.is_empty()
-                    || s.trigger.to_lowercase().starts_with(&partial.to_lowercase())
+                    || s.trigger
+                        .to_lowercase()
+                        .starts_with(&partial.to_lowercase())
             })
             .map(|s| (s.trigger.as_str(), s.description.as_deref()))
             .collect()

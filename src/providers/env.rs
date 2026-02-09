@@ -99,32 +99,17 @@ mod tests {
     fn test_env_var_provider_matches() {
         let provider = EnvVarProvider::new();
 
-        let ctx = ProviderContext::new(
-            PathBuf::from("."),
-            "echo",
-            vec![],
-            "$HO",
-        );
+        let ctx = ProviderContext::new(PathBuf::from("."), "echo", vec![], "$HO");
         assert!(provider.matches("echo", 0, &ctx));
 
-        let ctx2 = ProviderContext::new(
-            PathBuf::from("."),
-            "echo",
-            vec![],
-            "hello",
-        );
+        let ctx2 = ProviderContext::new(PathBuf::from("."), "echo", vec![], "hello");
         assert!(!provider.matches("echo", 0, &ctx2));
     }
 
     #[test]
     fn test_env_var_completion() {
         let provider = EnvVarProvider::new();
-        let ctx = ProviderContext::new(
-            PathBuf::from("."),
-            "echo",
-            vec![],
-            "$HO",
-        );
+        let ctx = ProviderContext::new(PathBuf::from("."), "echo", vec![], "$HO");
 
         let results = provider.complete("$HO", &ctx);
         // HOME should be in results on most systems

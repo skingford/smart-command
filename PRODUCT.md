@@ -458,6 +458,17 @@ subcommands:
     is_path_completion: true
 ```
 
+**Codex 示例片段**:
+
+```yaml
+name: codex
+examples:
+  - cmd: 'codex -m gpt-5.3-codex -c model_reasoning_effort="xhigh"'
+    scenario:
+      en: Use a specific model with maximum reasoning effort
+      zh: 使用指定模型并设置最高推理强度
+```
+
 ### 现有命令定义 (67 个)
 
 **开发工具**:

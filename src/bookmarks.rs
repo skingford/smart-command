@@ -194,7 +194,11 @@ impl BookmarkManager {
     /// List all bookmarks
     pub fn list(&self) -> Vec<&Bookmark> {
         let mut bookmarks: Vec<_> = self.bookmarks.values().collect();
-        bookmarks.sort_by(|a, b| b.visit_count.cmp(&a.visit_count).then_with(|| a.name.cmp(&b.name)));
+        bookmarks.sort_by(|a, b| {
+            b.visit_count
+                .cmp(&a.visit_count)
+                .then_with(|| a.name.cmp(&b.name))
+        });
         bookmarks
     }
 
@@ -203,8 +207,7 @@ impl BookmarkManager {
         self.bookmarks
             .values()
             .filter(|b| {
-                partial.is_empty()
-                    || b.name.to_lowercase().starts_with(&partial.to_lowercase())
+                partial.is_empty() || b.name.to_lowercase().starts_with(&partial.to_lowercase())
             })
             .map(|b| (b.name.as_str(), &b.path, b.description.as_deref()))
             .collect()
@@ -314,7 +317,6 @@ pub fn handle_bookmark_command(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::path::Path;
 
     #[test]
     fn test_bookmark_creation() {

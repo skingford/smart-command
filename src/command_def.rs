@@ -247,7 +247,10 @@ impl CommandSpec {
     pub fn get_provider_for_position(&self, position: usize) -> Option<&str> {
         self.arguments
             .iter()
-            .find(|arg| arg.position == Some(position) || (arg.variadic && arg.position.map(|p| position >= p).unwrap_or(false)))
+            .find(|arg| {
+                arg.position == Some(position)
+                    || (arg.variadic && arg.position.map(|p| position >= p).unwrap_or(false))
+            })
             .and_then(|arg| {
                 // Check explicit provider field first
                 if let Some(ref provider) = arg.provider {

@@ -32,21 +32,20 @@ mod install;
 mod loader;
 mod output;
 mod pipeline;
+mod plugins;
 mod providers;
 mod session;
 mod snippets;
 mod timer;
 mod ui;
+mod upgrade;
 mod validator;
 mod watcher;
-mod plugins;
-mod upgrade;
 
 use active_ai::{ActiveAi, CommandResult, ErrorPatterns};
 use ai::{NaturalLanguageTemplates, TypoCorrector};
 use ai_stream::{AiModeCommand, AiSession, StreamingAiGenerator};
 use aliases::AliasManager;
-use session::{NextCommandPredictor, SessionContext};
 use bookmarks::BookmarkManager;
 use cli::{Cli, Commands, ConfigAction};
 use completer::SmartCompleter;
@@ -56,10 +55,11 @@ use hinter::SmartHinter;
 use install::InstallOptions;
 use nu_ansi_term::{Color, Style};
 use output::Output;
+use plugins::PluginManager;
+use session::{NextCommandPredictor, SessionContext};
 use snippets::SnippetManager;
 use timer::CommandTimer;
 use validator::SmartValidator;
-use plugins::PluginManager;
 
 // Track previous directory for `cd -`
 static OLDPWD: Mutex<Option<PathBuf>> = Mutex::new(None);
@@ -181,7 +181,9 @@ impl Prompt for AiPrompt {
     fn render_prompt_left(&self) -> Cow<'_, str> {
         Cow::Owned(format!(
             "{}",
-            nu_ansi_term::Color::Magenta.bold().paint(format!("AI [{}]", self.provider))
+            nu_ansi_term::Color::Magenta
+                .bold()
+                .paint(format!("AI [{}]", self.provider))
         ))
     }
 
@@ -190,10 +192,7 @@ impl Prompt for AiPrompt {
     }
 
     fn render_prompt_indicator(&self, _edit_mode: PromptEditMode) -> Cow<'_, str> {
-        Cow::Owned(format!(
-            "\n{} ",
-            nu_ansi_term::Color::Magenta.paint(">>")
-        ))
+        Cow::Owned(format!("\n{} ", nu_ansi_term::Color::Magenta.paint(">>")))
     }
 
     fn render_prompt_multiline_indicator(&self) -> Cow<'_, str> {
@@ -357,7 +356,12 @@ fn handle_subcommand(cmd: Commands, config: &AppConfig) -> anyhow::Result<()> {
             };
             install::run_install(opts)?;
         }
-        Commands::Upgrade { check, force, yes, target_version } => {
+        Commands::Upgrade {
+            check,
+            force,
+            yes,
+            target_version,
+        } => {
             handle_upgrade(config, check, force, yes, target_version.as_deref())?;
         }
         Commands::Example { command, search } => {
@@ -411,10 +415,7 @@ fn handle_upgrade(
 
         match upgrader.check_for_update().await {
             Ok(Some(info)) => {
-                Output::success(&format!(
-                    "发现新版本: {} -> {}",
-                    current, info.version
-                ));
+                Output::success(&format!("发现新版本: {} -> {}", current, info.version));
 
                 if let Some(notes) = &info.release_notes {
                     if !notes.is_empty() {
@@ -521,7 +522,9 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
     keybindings.add_binding(
         reedline::KeyModifiers::ALT,
         reedline::KeyCode::Char('l'),
-        ReedlineEvent::Edit(vec![reedline::EditCommand::InsertString("?ai ".to_string())]),
+        ReedlineEvent::Edit(vec![reedline::EditCommand::InsertString(
+            "?ai ".to_string(),
+        )]),
     );
 
     let command_names: Vec<String> = completer.get_command_names();
@@ -539,9 +542,7 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
     let highlighter = Box::new(SmartHighlighter::new(command_names).with_theme(theme));
 
     // Create SmartHinter for inline suggestions
-    let hinter = Box::new(
-        SmartHinter::new().with_style(Style::new().italic().fg(Color::DarkGray)),
-    );
+    let hinter = Box::new(SmartHinter::new().with_style(Style::new().italic().fg(Color::DarkGray)));
 
     // Create SmartValidator for syntax checking
     let validator = Box::new(SmartValidator::new());
@@ -680,7 +681,11 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                         let mut current_spec = spec;
                                         let mut current_path = root_name.to_string();
                                         for part in parts.iter().skip(1) {
-                                            if let Some(sub) = current_spec.subcommands.iter().find(|s| &s.name == part) {
+                                            if let Some(sub) = current_spec
+                                                .subcommands
+                                                .iter()
+                                                .find(|s| &s.name == part)
+                                            {
                                                 current_spec = sub;
                                                 current_path = format!("{} {}", current_path, part);
                                             } else {
@@ -748,7 +753,10 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                         }
 
                                         if response.commands.len() > 1 {
-                                            print!("\nExecute command [1-{}/n/a(ll)]: ", response.commands.len());
+                                            print!(
+                                                "\nExecute command [1-{}/n/a(ll)]: ",
+                                                response.commands.len()
+                                            );
                                         } else {
                                             print!("\nExecute? [Y/n]: ");
                                         }
@@ -759,17 +767,28 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                             let input = input.trim().to_lowercase();
                                             if input == "a" || input == "all" {
                                                 let total = response.commands.len();
-                                                for (i, entry) in response.commands.iter().enumerate() {
-                                                    let desc = entry.description.as_deref().unwrap_or("执行命令");
+                                                for (i, entry) in
+                                                    response.commands.iter().enumerate()
+                                                {
+                                                    let desc = entry
+                                                        .description
+                                                        .as_deref()
+                                                        .unwrap_or("执行命令");
                                                     Output::step(i + 1, total, desc);
                                                     Output::executing(&entry.command);
-                                                    let result = execute_command_with_result(&entry.command, &current_lang, &state, &typo_corrector);
+                                                    let result = execute_command_with_result(
+                                                        &entry.command,
+                                                        &current_lang,
+                                                        &state,
+                                                        &typo_corrector,
+                                                    );
                                                     Output::exec_result(result.0, result.1);
                                                     if !result.0 {
                                                         print!("Continue? [Y/n]: ");
                                                         io::stdout().flush().ok();
                                                         let mut cont = String::new();
-                                                        if io::stdin().read_line(&mut cont).is_ok() {
+                                                        if io::stdin().read_line(&mut cont).is_ok()
+                                                        {
                                                             let cont = cont.trim().to_lowercase();
                                                             if cont == "n" || cont == "no" {
                                                                 break;
@@ -780,21 +799,40 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                             } else if let Ok(num) = input.parse::<usize>() {
                                                 if num > 0 && num <= response.commands.len() {
                                                     let entry = &response.commands[num - 1];
-                                                    let desc = entry.description.as_deref().unwrap_or("执行命令");
+                                                    let desc = entry
+                                                        .description
+                                                        .as_deref()
+                                                        .unwrap_or("执行命令");
                                                     Output::step(1, 1, desc);
                                                     Output::executing(&entry.command);
-                                                    let result = execute_command_with_result(&entry.command, &current_lang, &state, &typo_corrector);
+                                                    let result = execute_command_with_result(
+                                                        &entry.command,
+                                                        &current_lang,
+                                                        &state,
+                                                        &typo_corrector,
+                                                    );
                                                     Output::exec_result(result.0, result.1);
                                                 }
-                                            } else if (input.is_empty() || input == "y" || input == "yes")
-                                                && !response.commands.is_empty() {
-                                                    let entry = &response.commands[0];
-                                                    let desc = entry.description.as_deref().unwrap_or("执行命令");
-                                                    Output::step(1, 1, desc);
-                                                    Output::executing(&entry.command);
-                                                    let result = execute_command_with_result(&entry.command, &current_lang, &state, &typo_corrector);
-                                                    Output::exec_result(result.0, result.1);
-                                                }
+                                            } else if (input.is_empty()
+                                                || input == "y"
+                                                || input == "yes")
+                                                && !response.commands.is_empty()
+                                            {
+                                                let entry = &response.commands[0];
+                                                let desc = entry
+                                                    .description
+                                                    .as_deref()
+                                                    .unwrap_or("执行命令");
+                                                Output::step(1, 1, desc);
+                                                Output::executing(&entry.command);
+                                                let result = execute_command_with_result(
+                                                    &entry.command,
+                                                    &current_lang,
+                                                    &state,
+                                                    &typo_corrector,
+                                                );
+                                                Output::exec_result(result.0, result.1);
+                                            }
                                         }
                                     } else {
                                         // Single command response
@@ -806,21 +844,37 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                                 Output::warn(&format!(" {}", warning));
                                             }
 
-                                            Output::success(&format!("Generated: {}", Output::command(cmd)));
+                                            Output::success(&format!(
+                                                "Generated: {}",
+                                                Output::command(cmd)
+                                            ));
                                             print!("\nExecute? [Y/n/e(dit)]: ");
                                             io::stdout().flush().ok();
 
                                             let mut input = String::new();
                                             if io::stdin().read_line(&mut input).is_ok() {
                                                 let input = input.trim().to_lowercase();
-                                                if input.is_empty() || input == "y" || input == "yes" {
-                                                    let desc = entry.description.as_deref().unwrap_or("执行命令");
+                                                if input.is_empty()
+                                                    || input == "y"
+                                                    || input == "yes"
+                                                {
+                                                    let desc = entry
+                                                        .description
+                                                        .as_deref()
+                                                        .unwrap_or("执行命令");
                                                     Output::step(1, 1, desc);
                                                     Output::executing(cmd);
-                                                    let result = execute_command_with_result(cmd, &current_lang, &state, &typo_corrector);
+                                                    let result = execute_command_with_result(
+                                                        cmd,
+                                                        &current_lang,
+                                                        &state,
+                                                        &typo_corrector,
+                                                    );
                                                     Output::exec_result(result.0, result.1);
                                                 } else if input == "e" || input == "edit" {
-                                                    Output::info("Command to edit (copy and modify):");
+                                                    Output::info(
+                                                        "Command to edit (copy and modify):",
+                                                    );
                                                     println!("  {}", Output::command(cmd));
                                                 }
                                             }
@@ -841,7 +895,9 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
 
                             if matches.is_empty() {
                                 Output::warn(&format!("No matching commands for: {}", query));
-                                Output::dim("Try keywords like: large files, disk space, git history, etc.");
+                                Output::dim(
+                                    "Try keywords like: large files, disk space, git history, etc.",
+                                );
                             } else {
                                 println!();
                                 Output::info(&format!("Commands for '{}':", query));
@@ -858,7 +914,12 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                         if num > 0 && num <= matches.len() {
                                             let cmd = matches[num - 1].0;
                                             Output::info(&format!("Executing: {}", cmd));
-                                            execute_command(cmd, &current_lang, &state, &typo_corrector);
+                                            execute_command(
+                                                cmd,
+                                                &current_lang,
+                                                &state,
+                                                &typo_corrector,
+                                            );
                                         }
                                     }
                                 }
@@ -884,9 +945,16 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                     let response = input.trim().to_lowercase();
                                     if response.is_empty() || response == "y" || response == "yes" {
                                         command_timer.start(&expanded);
-                                        execute_command(&expanded, &current_lang, &state, &typo_corrector);
+                                        execute_command(
+                                            &expanded,
+                                            &current_lang,
+                                            &state,
+                                            &typo_corrector,
+                                        );
                                         if let Some(dur) = command_timer.stop(None) {
-                                            if let Some(formatted) = command_timer.format_duration(dur) {
+                                            if let Some(formatted) =
+                                                command_timer.format_duration(dur)
+                                            {
                                                 Output::dim(&format!("⏱  {}", formatted));
                                             }
                                         }
@@ -895,7 +963,11 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                             } else {
                                 // Try as snippet command
                                 let parts: Vec<&str> = rest.split_whitespace().collect();
-                                if let Some(output) = snippets::handle_snippet_command(&mut snippet_manager, "snippet", &parts) {
+                                if let Some(output) = snippets::handle_snippet_command(
+                                    &mut snippet_manager,
+                                    "snippet",
+                                    &parts,
+                                ) {
                                     println!("{}", output);
                                 } else {
                                     Output::warn(&format!("Unknown snippet: {}", trimmed));
@@ -927,16 +999,24 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
 
                         // Alias command
                         if cmd == "alias" || cmd == "unalias" {
-                            if let Some(output) = aliases::handle_alias_command(&mut alias_manager, cmd, &parts[1..]) {
+                            if let Some(output) =
+                                aliases::handle_alias_command(&mut alias_manager, cmd, &parts[1..])
+                            {
                                 println!("{}", output);
                             }
                             continue;
                         }
 
                         // Bookmark command
-                        if cmd == "bookmark" || cmd == "bm" || cmd == "unbookmark" || cmd == "unbm" {
+                        if cmd == "bookmark" || cmd == "bm" || cmd == "unbookmark" || cmd == "unbm"
+                        {
                             let cwd = std::env::current_dir().unwrap_or_default();
-                            if let Some(output) = bookmarks::handle_bookmark_command(&mut bookmark_manager, cmd, &parts[1..], &cwd) {
+                            if let Some(output) = bookmarks::handle_bookmark_command(
+                                &mut bookmark_manager,
+                                cmd,
+                                &parts[1..],
+                                &cwd,
+                            ) {
                                 println!("{}", output);
                             }
                             continue;
@@ -944,7 +1024,11 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
 
                         // Snippet command
                         if cmd == "snippet" || cmd == "snip" {
-                            if let Some(output) = snippets::handle_snippet_command(&mut snippet_manager, cmd, &parts[1..]) {
+                            if let Some(output) = snippets::handle_snippet_command(
+                                &mut snippet_manager,
+                                cmd,
+                                &parts[1..],
+                            ) {
                                 println!("{}", output);
                             }
                             continue;
@@ -952,7 +1036,9 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
 
                         // Timer command
                         if cmd == "time" || cmd == "timer" {
-                            if let Some(output) = timer::handle_timer_command(&command_timer, cmd, &parts[1..]) {
+                            if let Some(output) =
+                                timer::handle_timer_command(&command_timer, cmd, &parts[1..])
+                            {
                                 println!("{}", output);
                             }
                             continue;
@@ -960,7 +1046,11 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
 
                         // Plugin command
                         if cmd == "plugin" || cmd == "plugins" {
-                            if let Some(output) = plugins::handle_plugin_command(&mut plugin_manager, cmd, &parts[1..]) {
+                            if let Some(output) = plugins::handle_plugin_command(
+                                &mut plugin_manager,
+                                cmd,
+                                &parts[1..],
+                            ) {
                                 println!("{}", output);
                             }
                             continue;
@@ -979,9 +1069,15 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                             let args = if parts.len() > 2 { &parts[2..] } else { &[] };
 
                             // Handle "ai on" to enter AI mode
-                            if subcommand == "on" || subcommand == "start" || subcommand == "enter" || subcommand == "mode" {
+                            if subcommand == "on"
+                                || subcommand == "start"
+                                || subcommand == "enter"
+                                || subcommand == "mode"
+                            {
                                 if !config.ai.enabled {
-                                    Output::warn("AI is not enabled. Set ai.enabled = true in config.");
+                                    Output::warn(
+                                        "AI is not enabled. Set ai.enabled = true in config.",
+                                    );
                                     Output::dim("Run: config edit");
                                     continue;
                                 }
@@ -1057,13 +1153,20 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                     } else {
                                         Output::info("Recent errors:");
                                         for entry in errors.iter().rev() {
-                                            Output::dim(&format!("  [exit {}] {}",
-                                                entry.exit_code.map(|c| c.to_string()).unwrap_or_else(|| "?".to_string()),
+                                            Output::dim(&format!(
+                                                "  [exit {}] {}",
+                                                entry
+                                                    .exit_code
+                                                    .map(|c| c.to_string())
+                                                    .unwrap_or_else(|| "?".to_string()),
                                                 entry.command
                                             ));
                                             if let Some(ref stderr) = entry.stderr {
                                                 if !stderr.is_empty() && stderr.len() < 100 {
-                                                    Output::dim(&format!("    → {}", stderr.trim()));
+                                                    Output::dim(&format!(
+                                                        "    → {}",
+                                                        stderr.trim()
+                                                    ));
                                                 }
                                             }
                                         }
@@ -1096,7 +1199,10 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
 
                             // Check if command already exists
                             if let Some(existing_path) = loader::command_exists(command_name) {
-                                Output::info(&format!("Command '{}' already has a definition at:", command_name));
+                                Output::info(&format!(
+                                    "Command '{}' already has a definition at:",
+                                    command_name
+                                ));
                                 Output::dim(&format!("  {}", existing_path.display()));
                                 print!("Overwrite? [y/N]: ");
                                 io::stdout().flush().ok();
@@ -1131,14 +1237,23 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                     let mut save_input = String::new();
                                     if io::stdin().read_line(&mut save_input).is_ok() {
                                         let response = save_input.trim().to_lowercase();
-                                        if response.is_empty() || response == "y" || response == "yes" {
+                                        if response.is_empty()
+                                            || response == "y"
+                                            || response == "yes"
+                                        {
                                             match loader::save_command(&spec) {
                                                 Ok(path) => {
-                                                    Output::success(&format!("Saved to: {}", path.display()));
+                                                    Output::success(&format!(
+                                                        "Saved to: {}",
+                                                        path.display()
+                                                    ));
                                                     Output::dim("Restart shell to load the new command definition.");
                                                 }
                                                 Err(e) => {
-                                                    Output::error(&format!("Failed to save: {}", e));
+                                                    Output::error(&format!(
+                                                        "Failed to save: {}",
+                                                        e
+                                                    ));
                                                 }
                                             }
                                         } else {
@@ -1164,7 +1279,12 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
 
                         // Time the command execution
                         command_timer.start(&final_cmd);
-                        let cmd_result = execute_command_for_active_ai(&final_cmd, &current_lang, &state, &typo_corrector);
+                        let cmd_result = execute_command_for_active_ai(
+                            &final_cmd,
+                            &current_lang,
+                            &state,
+                            &typo_corrector,
+                        );
                         let duration = command_timer.stop(None);
 
                         if let Some(dur) = duration {
@@ -1179,8 +1299,11 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                         // Active AI: Show proactive suggestions on error
                         if active_ai.should_handle(&cmd_result) && config.ai.enabled {
                             // First, try quick hints without AI
-                            if let Some(error_type) = ErrorPatterns::detect_error_type(&cmd_result) {
-                                if let Some(hint) = ErrorPatterns::get_quick_hint(&error_type, &cmd_result) {
+                            if let Some(error_type) = ErrorPatterns::detect_error_type(&cmd_result)
+                            {
+                                if let Some(hint) =
+                                    ErrorPatterns::get_quick_hint(&error_type, &cmd_result)
+                                {
                                     Output::quick_error_hint(&hint);
                                 }
                             }
@@ -1216,8 +1339,17 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                                 let mut fix_input = String::new();
                                                 if io::stdin().read_line(&mut fix_input).is_ok() {
                                                     let response = fix_input.trim().to_lowercase();
-                                                    if response.is_empty() || response == "y" || response == "yes" {
-                                                        let fix_result = execute_command_for_active_ai(fix_cmd, &current_lang, &state, &typo_corrector);
+                                                    if response.is_empty()
+                                                        || response == "y"
+                                                        || response == "yes"
+                                                    {
+                                                        let fix_result =
+                                                            execute_command_for_active_ai(
+                                                                fix_cmd,
+                                                                &current_lang,
+                                                                &state,
+                                                                &typo_corrector,
+                                                            );
                                                         session_context.record(&fix_result, None);
                                                     }
                                                 }
@@ -1229,7 +1361,12 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                     }
                                     "r" | "retry" => {
                                         Output::info("Retrying command...");
-                                        let retry_result = execute_command_for_active_ai(&final_cmd, &current_lang, &state, &typo_corrector);
+                                        let retry_result = execute_command_for_active_ai(
+                                            &final_cmd,
+                                            &current_lang,
+                                            &state,
+                                            &typo_corrector,
+                                        );
                                         session_context.record(&retry_result, None);
                                     }
                                     _ => {
@@ -1241,14 +1378,18 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
 
                         // Next command prediction (show hint for next likely command)
                         if config.ai.next_command.enabled && cmd_result.success {
-                            if let Some((predicted, confidence)) = next_cmd_predictor.predict(&final_cmd, &session_context) {
+                            if let Some((predicted, confidence)) =
+                                next_cmd_predictor.predict(&final_cmd, &session_context)
+                            {
                                 if confidence >= config.ai.next_command.min_confidence {
                                     Output::next_command_hint(&predicted, confidence);
                                 }
                             }
                         } else if !cmd_result.success {
                             // After error, suggest recovery command
-                            if let Some((fix_cmd, confidence)) = next_cmd_predictor.predict_after_error(&cmd_result) {
+                            if let Some((fix_cmd, confidence)) =
+                                next_cmd_predictor.predict_after_error(&cmd_result)
+                            {
                                 if confidence >= 0.5 {
                                     Output::next_command_hint(&fix_cmd, confidence);
                                 }
@@ -1393,10 +1534,16 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                         let input = input.trim().to_lowercase();
                                         if input.is_empty() || input == "y" || input == "yes" {
                                             // Show step info
-                                            let desc = entry.description.as_deref().unwrap_or("执行命令");
+                                            let desc =
+                                                entry.description.as_deref().unwrap_or("执行命令");
                                             Output::step(1, 1, desc);
                                             Output::executing(cmd);
-                                            let result = execute_command_with_result(cmd, &current_lang, &state, &typo_corrector);
+                                            let result = execute_command_with_result(
+                                                cmd,
+                                                &current_lang,
+                                                &state,
+                                                &typo_corrector,
+                                            );
                                             Output::exec_result(result.0, result.1);
                                         } else if input == "e" || input == "edit" {
                                             Output::info("Command to edit (copy and modify):");
@@ -1409,9 +1556,18 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                     Output::dim("Generated commands:");
                                     for (i, entry) in parsed.commands.iter().enumerate() {
                                         if let Some(desc) = &entry.description {
-                                            println!("  {}. {} - {}", i + 1, Output::command(&entry.command), desc);
+                                            println!(
+                                                "  {}. {} - {}",
+                                                i + 1,
+                                                Output::command(&entry.command),
+                                                desc
+                                            );
                                         } else {
-                                            println!("  {}. {}", i + 1, Output::command(&entry.command));
+                                            println!(
+                                                "  {}. {}",
+                                                i + 1,
+                                                Output::command(&entry.command)
+                                            );
                                         }
                                     }
                                     print!("\nExecute [1-{}/n/a(ll)]: ", parsed.commands.len());
@@ -1423,10 +1579,18 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                         if input == "a" || input == "all" {
                                             let total = parsed.commands.len();
                                             for (i, entry) in parsed.commands.iter().enumerate() {
-                                                let desc = entry.description.as_deref().unwrap_or("执行命令");
+                                                let desc = entry
+                                                    .description
+                                                    .as_deref()
+                                                    .unwrap_or("执行命令");
                                                 Output::step(i + 1, total, desc);
                                                 Output::executing(&entry.command);
-                                                let result = execute_command_with_result(&entry.command, &current_lang, &state, &typo_corrector);
+                                                let result = execute_command_with_result(
+                                                    &entry.command,
+                                                    &current_lang,
+                                                    &state,
+                                                    &typo_corrector,
+                                                );
                                                 Output::exec_result(result.0, result.1);
                                                 // If command failed, ask if continue
                                                 if !result.0 {
@@ -1444,10 +1608,18 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                         } else if let Ok(num) = input.parse::<usize>() {
                                             if num > 0 && num <= parsed.commands.len() {
                                                 let entry = &parsed.commands[num - 1];
-                                                let desc = entry.description.as_deref().unwrap_or("执行命令");
+                                                let desc = entry
+                                                    .description
+                                                    .as_deref()
+                                                    .unwrap_or("执行命令");
                                                 Output::step(1, 1, desc);
                                                 Output::executing(&entry.command);
-                                                let result = execute_command_with_result(&entry.command, &current_lang, &state, &typo_corrector);
+                                                let result = execute_command_with_result(
+                                                    &entry.command,
+                                                    &current_lang,
+                                                    &state,
+                                                    &typo_corrector,
+                                                );
                                                 Output::exec_result(result.0, result.1);
                                             }
                                         }
@@ -1660,11 +1832,21 @@ fn execute_command_for_active_ai(
                     let response = input.trim().to_lowercase();
                     if response != "y" && response != "yes" {
                         Output::dim("Command cancelled.");
-                        return CommandResult::new(command, None, None, Some("Cancelled by user".to_string()));
+                        return CommandResult::new(
+                            command,
+                            None,
+                            None,
+                            Some("Cancelled by user".to_string()),
+                        );
                     }
                 } else {
                     Output::dim("Command cancelled.");
-                    return CommandResult::new(command, None, None, Some("Cancelled by user".to_string()));
+                    return CommandResult::new(
+                        command,
+                        None,
+                        None,
+                        Some("Cancelled by user".to_string()),
+                    );
                 }
             }
         }
@@ -1709,7 +1891,11 @@ fn execute_command_for_active_ai(
                     command,
                     code,
                     None,
-                    if stderr.is_empty() { None } else { Some(stderr) },
+                    if stderr.is_empty() {
+                        None
+                    } else {
+                        Some(stderr)
+                    },
                 )
             }
             Err(e) => {
@@ -1812,7 +1998,10 @@ fn handle_config(parts: &[&str], current_lang: &Arc<RwLock<String>>) {
 
             if !config_path.exists() {
                 Output::warn("Config file not found.");
-                Output::dim(&format!("Create one with: config example > {}", config_path.display()));
+                Output::dim(&format!(
+                    "Create one with: config example > {}",
+                    config_path.display()
+                ));
                 return;
             }
 
@@ -1919,7 +2108,11 @@ fn handle_config(parts: &[&str], current_lang: &Arc<RwLock<String>>) {
 
             // Try to open in editor
             let editor = std::env::var("EDITOR").unwrap_or_else(|_| "vim".to_string());
-            Output::info(&format!("Opening {} with {}...", config_path.display(), editor));
+            Output::info(&format!(
+                "Opening {} with {}...",
+                config_path.display(),
+                editor
+            ));
 
             let status = std::process::Command::new(&editor)
                 .arg(&config_path)
@@ -1932,7 +2125,10 @@ fn handle_config(parts: &[&str], current_lang: &Arc<RwLock<String>>) {
                 Ok(_) => Output::warn("Editor exited with non-zero status"),
                 Err(e) => {
                     Output::error(&format!("Failed to open editor: {}", e));
-                    Output::dim(&format!("Set EDITOR env var or edit manually: {}", config_path.display()));
+                    Output::dim(&format!(
+                        "Set EDITOR env var or edit manually: {}",
+                        config_path.display()
+                    ));
                 }
             }
         }
@@ -1948,7 +2144,10 @@ fn handle_config(parts: &[&str], current_lang: &Arc<RwLock<String>>) {
             let config_path = AppConfig::config_file_path();
 
             if config_path.exists() {
-                Output::warn(&format!("Config file already exists: {}", config_path.display()));
+                Output::warn(&format!(
+                    "Config file already exists: {}",
+                    config_path.display()
+                ));
                 Output::dim("Use 'config edit' to modify or 'config show' to view");
                 return;
             }
@@ -1976,15 +2175,39 @@ fn handle_config(parts: &[&str], current_lang: &Arc<RwLock<String>>) {
             println!();
             Output::info("Config Commands");
             println!();
-            println!("  {}       - Validate config file", Color::Cyan.paint("config check"));
-            println!("  {}        - Show current config", Color::Cyan.paint("config show"));
-            println!("  {}        - Show config file path", Color::Cyan.paint("config path"));
-            println!("  {}        - Edit config file in $EDITOR", Color::Cyan.paint("config edit"));
-            println!("  {}        - Initialize config file", Color::Cyan.paint("config init"));
-            println!("  {}     - Print example config", Color::Cyan.paint("config example"));
-            println!("  {} - Set display language", Color::Cyan.paint("config set-lang <en|zh>"));
+            println!(
+                "  {}       - Validate config file",
+                Color::Cyan.paint("config check")
+            );
+            println!(
+                "  {}        - Show current config",
+                Color::Cyan.paint("config show")
+            );
+            println!(
+                "  {}        - Show config file path",
+                Color::Cyan.paint("config path")
+            );
+            println!(
+                "  {}        - Edit config file in $EDITOR",
+                Color::Cyan.paint("config edit")
+            );
+            println!(
+                "  {}        - Initialize config file",
+                Color::Cyan.paint("config init")
+            );
+            println!(
+                "  {}     - Print example config",
+                Color::Cyan.paint("config example")
+            );
+            println!(
+                "  {} - Set display language",
+                Color::Cyan.paint("config set-lang <en|zh>")
+            );
             println!();
-            Output::dim(&format!("Config file: {}", AppConfig::config_file_path().display()));
+            Output::dim(&format!(
+                "Config file: {}",
+                AppConfig::config_file_path().display()
+            ));
             println!();
         }
     }
@@ -2148,7 +2371,10 @@ fn handle_ai_command(ai_config: &mut AiConfig, subcommand: &str, args: &[&str]) 
                             format!("{} ({} not set)", Color::Yellow.paint("missing"), key)
                         }
                     }
-                    Some(_) => format!("{}", Color::Yellow.paint("configured (plain text - not recommended)")),
+                    Some(_) => format!(
+                        "{}",
+                        Color::Yellow.paint("configured (plain text - not recommended)")
+                    ),
                     None => {
                         if provider.provider_type == ProviderType::Ollama {
                             format!("{}", Color::Green.paint("not required (local)"))
@@ -2248,9 +2474,17 @@ fn handle_ai_command(ai_config: &mut AiConfig, subcommand: &str, args: &[&str]) 
             println!();
 
             let providers = [
-                ("claude", "Anthropic Claude", "claude-sonnet-4, claude-opus-4"),
+                (
+                    "claude",
+                    "Anthropic Claude",
+                    "claude-sonnet-4, claude-opus-4",
+                ),
                 ("openai", "OpenAI GPT", "gpt-4o, gpt-4o-mini, o1"),
-                ("gemini", "Google Gemini", "gemini-2.0-flash, gemini-1.5-pro"),
+                (
+                    "gemini",
+                    "Google Gemini",
+                    "gemini-2.0-flash, gemini-1.5-pro",
+                ),
                 ("deepseek", "DeepSeek", "deepseek-chat, deepseek-reasoner"),
                 ("glm", "智谱AI GLM", "glm-4-plus, glm-4-flash"),
                 ("qwen", "阿里通义千问", "qwen-max, qwen-plus"),
@@ -2292,13 +2526,34 @@ fn handle_ai_command(ai_config: &mut AiConfig, subcommand: &str, args: &[&str]) 
             println!();
             Output::info("AI Command Help");
             println!();
-            println!("  {}      - Show current AI configuration", Color::Cyan.paint("ai status"));
-            println!("  {}        - List all configured providers", Color::Cyan.paint("ai list"));
-            println!("  {} - Switch to a different provider", Color::Cyan.paint("ai use <name>"));
-            println!("  {}        - Test the current provider connection", Color::Cyan.paint("ai test"));
-            println!("  {}   - Show available provider types", Color::Cyan.paint("ai providers"));
-            println!("  {}      - Enable AI completion", Color::Cyan.paint("ai enable"));
-            println!("  {}     - Disable AI completion", Color::Cyan.paint("ai disable"));
+            println!(
+                "  {}      - Show current AI configuration",
+                Color::Cyan.paint("ai status")
+            );
+            println!(
+                "  {}        - List all configured providers",
+                Color::Cyan.paint("ai list")
+            );
+            println!(
+                "  {} - Switch to a different provider",
+                Color::Cyan.paint("ai use <name>")
+            );
+            println!(
+                "  {}        - Test the current provider connection",
+                Color::Cyan.paint("ai test")
+            );
+            println!(
+                "  {}   - Show available provider types",
+                Color::Cyan.paint("ai providers")
+            );
+            println!(
+                "  {}      - Enable AI completion",
+                Color::Cyan.paint("ai enable")
+            );
+            println!(
+                "  {}     - Disable AI completion",
+                Color::Cyan.paint("ai disable")
+            );
             println!();
             Output::dim("Generate commands with AI:");
             Output::dim("  ?ai <query>   - Generate a command from natural language");

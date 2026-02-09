@@ -142,7 +142,11 @@ impl PluginManager {
     pub fn get_by_type(&self, plugin_type: PluginType) -> Vec<&Plugin> {
         self.plugins
             .values()
-            .filter(|p| p.enabled && (p.meta.plugin_type == plugin_type || p.meta.plugin_type == PluginType::Mixed))
+            .filter(|p| {
+                p.enabled
+                    && (p.meta.plugin_type == plugin_type
+                        || p.meta.plugin_type == PluginType::Mixed)
+            })
             .collect()
     }
 
@@ -281,7 +285,10 @@ pub fn handle_plugin_command(
                 manager.reload();
                 Some(format!("Reloaded {} plugins", manager.list().len()))
             } else if args[0] == "path" {
-                Some(format!("Plugins directory: {}", manager.plugins_dir().display()))
+                Some(format!(
+                    "Plugins directory: {}",
+                    manager.plugins_dir().display()
+                ))
             } else {
                 Some("Usage: plugin [list|enable|disable|reload|path]".to_string())
             }

@@ -237,8 +237,10 @@ impl ExportProvider {
                                 .file_name()
                                 .map(|n| n.to_string_lossy().to_string())
                                 .unwrap_or_default();
-                            results
-                                .push((path.to_string_lossy().to_string(), format!("asdf {}", version)));
+                            results.push((
+                                path.to_string_lossy().to_string(),
+                                format!("asdf {}", version),
+                            ));
                         }
                     }
                 }
@@ -251,10 +253,7 @@ impl ExportProvider {
 
             // Direct path check
             if path.exists() && path.join(info.validation_subdir).exists() {
-                results.push((
-                    search_path.to_string(),
-                    "System installation".to_string(),
-                ));
+                results.push((search_path.to_string(), "System installation".to_string()));
             }
 
             // Check subdirectories
@@ -269,7 +268,8 @@ impl ExportProvider {
                                 .unwrap_or_default();
 
                             // Check if directory matches pattern
-                            let matches_pattern = info.dir_patterns.iter().any(|p| name.contains(p));
+                            let matches_pattern =
+                                info.dir_patterns.iter().any(|p| name.contains(p));
                             if matches_pattern {
                                 // For Java, check Contents/Home on macOS
                                 let java_home = entry_path.join("Contents/Home");
@@ -284,10 +284,8 @@ impl ExportProvider {
                                         .file_name()
                                         .map(|n| n.to_string_lossy().to_string())
                                         .unwrap_or_default();
-                                    results.push((
-                                        actual_path.to_string_lossy().to_string(),
-                                        version,
-                                    ));
+                                    results
+                                        .push((actual_path.to_string_lossy().to_string(), version));
                                 }
                             }
                         }
@@ -487,7 +485,10 @@ mod tests {
     #[test]
     fn test_recognize_maven() {
         let provider = ExportProvider::new();
-        assert_eq!(provider.recognize_variable_type("MAVEN_HOME"), Some("maven"));
+        assert_eq!(
+            provider.recognize_variable_type("MAVEN_HOME"),
+            Some("maven")
+        );
         assert_eq!(provider.recognize_variable_type("M2_HOME"), Some("maven"));
     }
 

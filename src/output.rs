@@ -65,7 +65,10 @@ impl Output {
         println!(
             "    {} {}",
             accent_style.paint("⚡"),
-            version_style.paint(format!("v{} · AI-Powered Intelligent Shell", env!("CARGO_PKG_VERSION")))
+            version_style.paint(format!(
+                "v{} · AI-Powered Intelligent Shell",
+                env!("CARGO_PKG_VERSION")
+            ))
         );
 
         // Show current working directory
@@ -154,11 +157,7 @@ impl Output {
     pub fn executing(cmd: &str) {
         let prompt_style = Style::new().fg(Color::DarkGray);
         let cmd_style = Style::new().fg(Color::Yellow).bold();
-        println!(
-            "  {} {}",
-            prompt_style.paint("$"),
-            cmd_style.paint(cmd)
-        );
+        println!("  {} {}", prompt_style.paint("$"), cmd_style.paint(cmd));
         // Print separator line
         let separator = Style::new().fg(Color::DarkGray);
         println!("  {}", separator.paint("─".repeat(50)));
@@ -174,7 +173,12 @@ impl Output {
             println!("  {} {}", style.paint("✓"), style.paint("Done"));
         } else if let Some(code) = exit_code {
             let style = Style::new().fg(Color::Red);
-            println!("  {} {} (exit: {})", style.paint("✗"), style.paint("Failed"), code);
+            println!(
+                "  {} {} (exit: {})",
+                style.paint("✗"),
+                style.paint("Failed"),
+                code
+            );
         } else {
             let style = Style::new().fg(Color::Red);
             println!("  {} {}", style.paint("✗"), style.paint("Failed"));
@@ -206,7 +210,11 @@ impl Output {
         let text_style = Style::new().fg(Color::White);
 
         println!();
-        println!("{} {}", header_style.paint("💡"), header_style.paint("Error Explanation:"));
+        println!(
+            "{} {}",
+            header_style.paint("💡"),
+            header_style.paint("Error Explanation:")
+        );
         for line in explanation.lines() {
             println!("   {}", text_style.paint(line));
         }
@@ -219,7 +227,11 @@ impl Output {
         let cmd_style = Style::new().fg(Color::Yellow).bold();
 
         println!();
-        println!("{} {}", header_style.paint("🔧"), header_style.paint("Suggested Fix:"));
+        println!(
+            "{} {}",
+            header_style.paint("🔧"),
+            header_style.paint("Suggested Fix:")
+        );
         println!("   $ {}", cmd_style.paint(fix_command));
         println!();
     }
@@ -289,10 +301,7 @@ impl Output {
             style.paint("→"),
             version_new.paint(latest)
         );
-        println!(
-            "    运行 {} 进行升级",
-            cmd_style.paint("sc upgrade")
-        );
+        println!("    运行 {} 进行升级", cmd_style.paint("sc upgrade"));
         println!();
     }
 }
@@ -346,8 +355,15 @@ pub fn display_categorized_help(
 
     // Display subcommands if any
     if !subcommands.is_empty() {
-        let sub_header = if lang == "zh" { "子命令" } else { "Subcommands" };
-        println!("{}", category_style.paint(format!("  {} ──────────────────────", sub_header)));
+        let sub_header = if lang == "zh" {
+            "子命令"
+        } else {
+            "Subcommands"
+        };
+        println!(
+            "{}",
+            category_style.paint(format!("  {} ──────────────────────", sub_header))
+        );
 
         for sub in subcommands {
             println!(
@@ -375,12 +391,19 @@ pub fn display_categorized_help(
     // Display each category
     for (_order, (category, category_flags)) in grouped {
         let cat_name = category.display_name(lang);
-        println!("{}", category_style.paint(format!("  {} ──────────────────────", cat_name)));
+        println!(
+            "{}",
+            category_style.paint(format!("  {} ──────────────────────", cat_name))
+        );
 
         for flag in category_flags {
             // Format the flag display
             let short = flag.short.map(|c| format!("-{}", c)).unwrap_or_default();
-            let long = flag.long.as_ref().map(|l| format!("--{}", l)).unwrap_or_default();
+            let long = flag
+                .long
+                .as_ref()
+                .map(|l| format!("--{}", l))
+                .unwrap_or_default();
 
             let flag_display = match (flag.short, flag.long.as_ref()) {
                 (Some(_), Some(_)) => format!("{}, {}", short, long),

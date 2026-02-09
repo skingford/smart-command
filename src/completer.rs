@@ -185,17 +185,15 @@ impl SmartCompleter {
             }
 
             // Check if all characters in combo are valid flags
-            let all_valid = combo.combo.chars().all(|c| {
-                spec.flags.iter().any(|f| f.short == Some(c))
-            });
+            let all_valid = combo
+                .combo
+                .chars()
+                .all(|c| spec.flags.iter().any(|f| f.short == Some(c)));
 
             if all_valid {
                 suggestions.push(Suggestion {
                     value: format!("-{}", combo.combo),
-                    description: Some(format!(
-                        "[combo] {}",
-                        combo.description.get(lang)
-                    )),
+                    description: Some(format!("[combo] {}", combo.description.get(lang))),
                     extra: None,
                     span: Span {
                         start: start_idx,
@@ -217,9 +215,10 @@ impl SmartCompleter {
 
                 // Skip if last char in chain takes value (can't chain further)
                 if let Some(last_char) = used_chars.last() {
-                    let last_takes_value = spec.flags.iter().any(|f| {
-                        f.short == Some(*last_char) && f.takes_value
-                    });
+                    let last_takes_value = spec
+                        .flags
+                        .iter()
+                        .any(|f| f.short == Some(*last_char) && f.takes_value);
                     if last_takes_value {
                         continue;
                     }
@@ -227,11 +226,7 @@ impl SmartCompleter {
 
                 suggestions.push(Suggestion {
                     value: format!("{}{}", current_chain, c),
-                    description: Some(format!(
-                        "(+{}) {}",
-                        c,
-                        flag.description.get(lang)
-                    )),
+                    description: Some(format!("(+{}) {}", c, flag.description.get(lang))),
                     extra: None,
                     span: Span {
                         start: start_idx,
@@ -342,12 +337,7 @@ impl SmartCompleter {
     }
 
     /// Get completions from dynamic providers
-    fn get_provider_completions(
-        &self,
-        cmd: &str,
-        args: &[&str],
-        partial: &str,
-    ) -> Vec<Suggestion> {
+    fn get_provider_completions(&self, cmd: &str, args: &[&str], partial: &str) -> Vec<Suggestion> {
         let cwd = std::env::current_dir().unwrap_or_else(|_| PathBuf::from("."));
 
         let context = ProviderContext::new(
@@ -528,7 +518,10 @@ impl Completer for SmartCompleter {
                     })
                     .map(|c| Suggestion {
                         value: c.clone(),
-                        description: Some(format!("[{}]", c.split_whitespace().next().unwrap_or(c))),
+                        description: Some(format!(
+                            "[{}]",
+                            c.split_whitespace().next().unwrap_or(c)
+                        )),
                         extra: None,
                         span: Span {
                             start: start_idx,
@@ -573,7 +566,10 @@ impl Completer for SmartCompleter {
                 let mut current_spec = root_spec;
                 let mut subcommand_depth = 0;
                 for sub_name in parts.iter().take(num_parts_to_descend).skip(1) {
-                    if let Some(sub) = current_spec.subcommands.iter().find(|s| &s.name == sub_name)
+                    if let Some(sub) = current_spec
+                        .subcommands
+                        .iter()
+                        .find(|s| &s.name == sub_name)
                     {
                         current_spec = sub;
                         subcommand_depth += 1;
@@ -597,11 +593,8 @@ impl Completer for SmartCompleter {
                 };
 
                 // 1. Try dynamic provider completions first
-                let provider_suggestions = self.get_provider_completions(
-                    cmd_name,
-                    &parts[1..],
-                    query,
-                );
+                let provider_suggestions =
+                    self.get_provider_completions(cmd_name, &parts[1..], query);
 
                 if !provider_suggestions.is_empty() {
                     return provider_suggestions
@@ -692,9 +685,7 @@ impl Completer for SmartCompleter {
                                 if l.starts_with(query) || (is_new_arg && query.is_empty()) {
                                     flag_suggestions.push(Suggestion {
                                         value: l.clone(),
-                                        description: Some(
-                                            flag.description.get(&lang).to_string(),
-                                        ),
+                                        description: Some(flag.description.get(&lang).to_string()),
                                         extra: None,
                                         span: Span {
                                             start: start_idx,
@@ -751,11 +742,7 @@ impl Completer for SmartCompleter {
                 parts.last().unwrap_or(&"")
             };
 
-            let provider_suggestions = self.get_provider_completions(
-                cmd_name,
-                &parts[1..],
-                query,
-            );
+            let provider_suggestions = self.get_provider_completions(cmd_name, &parts[1..], query);
 
             if !provider_suggestions.is_empty() {
                 let start_idx = if is_new_arg { pos } else { pos - query.len() };

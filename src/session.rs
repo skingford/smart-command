@@ -58,7 +58,10 @@ impl SessionEntry {
     /// Get a summary of this entry for AI context
     pub fn to_context_string(&self) -> String {
         let status = if self.is_success() { "✓" } else { "✗" };
-        let code = self.exit_code.map(|c| c.to_string()).unwrap_or_else(|| "?".to_string());
+        let code = self
+            .exit_code
+            .map(|c| c.to_string())
+            .unwrap_or_else(|| "?".to_string());
 
         let mut s = format!("[{}] {} (exit: {})", status, self.command, code);
 
@@ -81,7 +84,11 @@ fn truncate_output(output: &str, max_len: usize) -> String {
     if output.len() <= max_len {
         output.to_string()
     } else {
-        format!("{}...(truncated {} bytes)", &output[..max_len], output.len() - max_len)
+        format!(
+            "{}...(truncated {} bytes)",
+            &output[..max_len],
+            output.len() - max_len
+        )
     }
 }
 
@@ -214,10 +221,12 @@ impl SessionContext {
 
     /// Trim output to stay within memory limits
     fn trim_output_size(&mut self) {
-        let mut total_size: usize = self.history.iter()
+        let mut total_size: usize = self
+            .history
+            .iter()
             .map(|e| {
-                e.stdout.as_ref().map(|s| s.len()).unwrap_or(0) +
-                e.stderr.as_ref().map(|s| s.len()).unwrap_or(0)
+                e.stdout.as_ref().map(|s| s.len()).unwrap_or(0)
+                    + e.stderr.as_ref().map(|s| s.len()).unwrap_or(0)
             })
             .sum();
 
@@ -273,7 +282,6 @@ impl SessionStats {
     }
 }
 
-
 /// Next command predictor using session context
 pub struct NextCommandPredictor {
     /// Common command sequences (bigrams)
@@ -298,7 +306,6 @@ impl NextCommandPredictor {
             ("git checkout".into(), "git pull".into(), 0.5),
             ("git fetch".into(), "git merge".into(), 0.6),
             ("git stash".into(), "git pull".into(), 0.7),
-
             // Cargo workflows
             ("cargo build".into(), "cargo run".into(), 0.6),
             ("cargo build".into(), "cargo test".into(), 0.5),
@@ -306,22 +313,22 @@ impl NextCommandPredictor {
             ("cargo check".into(), "cargo build".into(), 0.7),
             ("cargo fmt".into(), "cargo clippy".into(), 0.6),
             ("cargo clippy".into(), "cargo test".into(), 0.5),
-
             // npm workflows
             ("npm install".into(), "npm run".into(), 0.5),
             ("npm test".into(), "npm run build".into(), 0.4),
             ("npm run build".into(), "npm start".into(), 0.5),
-
             // Docker workflows
             ("docker build".into(), "docker run".into(), 0.8),
             ("docker ps".into(), "docker logs".into(), 0.5),
-            ("docker-compose up".into(), "docker-compose logs".into(), 0.4),
-
+            (
+                "docker-compose up".into(),
+                "docker-compose logs".into(),
+                0.4,
+            ),
             // Directory navigation
             ("ls".into(), "cd".into(), 0.4),
             ("cd".into(), "ls".into(), 0.6),
             ("mkdir".into(), "cd".into(), 0.7),
-
             // Error recovery
             // After failed command, often retry with sudo or fix
         ]
@@ -347,10 +354,11 @@ impl NextCommandPredictor {
         // Boost confidence if we have session history showing this pattern
         if let Some((ref cmd, confidence)) = best {
             let recent = session.recent(10);
-            let pattern_count = recent.windows(2)
+            let pattern_count = recent
+                .windows(2)
                 .filter(|w| {
-                    Self::normalize_command(&w[1].command).starts_with(&normalized) &&
-                    Self::normalize_command(&w[0].command).starts_with(cmd)
+                    Self::normalize_command(&w[1].command).starts_with(&normalized)
+                        && Self::normalize_command(&w[0].command).starts_with(cmd)
                 })
                 .count();
 
@@ -374,11 +382,10 @@ impl NextCommandPredictor {
         }
 
         // File not found -> suggest creating or checking path
-        if stderr.contains("No such file or directory")
-            && cmd.starts_with("cd ") {
-                let path = cmd.strip_prefix("cd ").unwrap_or("");
-                return Some((format!("mkdir -p {}", path), 0.6));
-            }
+        if stderr.contains("No such file or directory") && cmd.starts_with("cd ") {
+            let path = cmd.strip_prefix("cd ").unwrap_or("");
+            return Some((format!("mkdir -p {}", path), 0.6));
+        }
 
         // Git not a repository -> suggest git init
         if stderr.contains("not a git repository") {

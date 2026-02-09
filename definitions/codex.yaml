@@ -327,6 +327,10 @@ examples:
     scenario:
       en: Run with workspace write permissions
       zh: 以工作区写入权限运行
+  - cmd: 'codex -m gpt-5.3-codex -c model_reasoning_effort="xhigh"'
+    scenario:
+      en: Use a specific model with maximum reasoning effort
+      zh: 使用指定模型并设置最高推理强度
   - cmd: 'codex --sandbox read-only --ask-for-approval never'
     scenario:
       en: Read-only sandbox with no approval prompts

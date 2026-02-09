@@ -93,10 +93,8 @@ pub fn save_command(spec: &CommandSpec) -> Result<PathBuf, String> {
 /// Load a single command from a file path
 #[allow(dead_code)]
 pub fn load_command_from_file(path: &Path) -> Result<CommandSpec, String> {
-    let content = fs::read_to_string(path)
-        .map_err(|e| format!("Failed to read file: {}", e))?;
-    serde_yaml::from_str(&content)
-        .map_err(|e| format!("Failed to parse YAML: {}", e))
+    let content = fs::read_to_string(path).map_err(|e| format!("Failed to read file: {}", e))?;
+    serde_yaml::from_str(&content).map_err(|e| format!("Failed to parse YAML: {}", e))
 }
 
 /// Find the definitions directory from multiple candidate paths

@@ -122,17 +122,13 @@ impl Upgrader {
             self.config.repository
         );
 
-        let response = client
-            .get(&url)
-            .send()
-            .await
-            .map_err(|e| {
-                if e.is_timeout() || e.is_connect() {
-                    UpgradeError::NetworkUnavailable
-                } else {
-                    UpgradeError::CheckFailed(e.to_string())
-                }
-            })?;
+        let response = client.get(&url).send().await.map_err(|e| {
+            if e.is_timeout() || e.is_connect() {
+                UpgradeError::NetworkUnavailable
+            } else {
+                UpgradeError::CheckFailed(e.to_string())
+            }
+        })?;
 
         if response.status() == 403 {
             return Err(UpgradeError::RateLimited);
@@ -162,17 +158,15 @@ impl Upgrader {
 
         // Parse version (remove 'v' prefix if present)
         let version_str = release.tag_name.trim_start_matches('v');
-        let latest = Version::parse(version_str)
-            .map_err(|e| UpgradeError::Parse(e.to_string()))?;
+        let latest = Version::parse(version_str).map_err(|e| UpgradeError::Parse(e.to_string()))?;
         let current = Version::parse(Self::current_version())
             .map_err(|e| UpgradeError::Parse(e.to_string()))?;
 
         // Find matching asset for current platform
         let platform = Self::detect_platform()?;
-        let asset = release
-            .assets
-            .iter()
-            .find(|a| a.name.contains(&platform) || Self::asset_matches_platform(&a.name, &platform));
+        let asset = release.assets.iter().find(|a| {
+            a.name.contains(&platform) || Self::asset_matches_platform(&a.name, &platform)
+        });
 
         // Save to cache
         let now = SystemTime::now()
@@ -210,14 +204,22 @@ impl Upgrader {
 
         // Check architecture
         let arch_match = match arch {
-            "x86_64" => name_lower.contains("x86_64") || name_lower.contains("amd64") || name_lower.contains("x64"),
+            "x86_64" => {
+                name_lower.contains("x86_64")
+                    || name_lower.contains("amd64")
+                    || name_lower.contains("x64")
+            }
             "aarch64" => name_lower.contains("aarch64") || name_lower.contains("arm64"),
             _ => false,
         };
 
         // Check OS
         let os_match = match os {
-            "apple-darwin" => name_lower.contains("darwin") || name_lower.contains("macos") || name_lower.contains("apple"),
+            "apple-darwin" => {
+                name_lower.contains("darwin")
+                    || name_lower.contains("macos")
+                    || name_lower.contains("apple")
+            }
             "unknown-linux-gnu" => name_lower.contains("linux"),
             "pc-windows-msvc" => name_lower.contains("windows") || name_lower.contains(".exe"),
             _ => false,
@@ -266,8 +268,8 @@ impl Upgrader {
         if let Some(parent) = self.cache_path.parent() {
             fs::create_dir_all(parent)?;
         }
-        let content = serde_json::to_string_pretty(cache)
-            .map_err(|e| UpgradeError::Parse(e.to_string()))?;
+        let content =
+            serde_json::to_string_pretty(cache).map_err(|e| UpgradeError::Parse(e.to_string()))?;
         fs::write(&self.cache_path, content)?;
         Ok(())
     }
@@ -326,7 +328,11 @@ impl Upgrader {
     }
 
     /// Extract binary from archive
-    fn extract_binary(&self, archive_path: &std::path::Path, dest_dir: &std::path::Path) -> Result<PathBuf, UpgradeError> {
+    fn extract_binary(
+        &self,
+        archive_path: &std::path::Path,
+        dest_dir: &std::path::Path,
+    ) -> Result<PathBuf, UpgradeError> {
         let archive_name = archive_path
             .file_name()
             .and_then(|n| n.to_str())
@@ -341,7 +347,11 @@ impl Upgrader {
     }
 
     /// Extract .tar.gz archive
-    fn extract_tar_gz(&self, archive_path: &std::path::Path, dest_dir: &std::path::Path) -> Result<PathBuf, UpgradeError> {
+    fn extract_tar_gz(
+        &self,
+        archive_path: &std::path::Path,
+        dest_dir: &std::path::Path,
+    ) -> Result<PathBuf, UpgradeError> {
         use std::io::BufReader;
 
         let file = fs::File::open(archive_path)?;
@@ -379,17 +389,14 @@ impl Upgrader {
         }
 
         find_file(dir, binary_name).ok_or_else(|| {
-            UpgradeError::InstallFailed(format!(
-                "在下载的文件中找不到 {} 二进制文件",
-                binary_name
-            ))
+            UpgradeError::InstallFailed(format!("在下载的文件中找不到 {} 二进制文件", binary_name))
         })
     }
 
     /// Replace current binary with new one
     fn replace_binary(&self, new_binary: &std::path::Path) -> Result<(), UpgradeError> {
-        let current_exe = std::env::current_exe()
-            .map_err(|e| UpgradeError::InstallFailed(e.to_string()))?;
+        let current_exe =
+            std::env::current_exe().map_err(|e| UpgradeError::InstallFailed(e.to_string()))?;
 
         // On Windows, rename current to .old first
         #[cfg(windows)]
@@ -473,19 +480,43 @@ mod tests {
     #[test]
     fn test_asset_matches_platform() {
         // macOS Intel
-        assert!(Upgrader::asset_matches_platform("sc-x86_64-apple-darwin.tar.gz", "x86_64-apple-darwin"));
-        assert!(Upgrader::asset_matches_platform("sc-macos-amd64.tar.gz", "x86_64-apple-darwin"));
+        assert!(Upgrader::asset_matches_platform(
+            "sc-x86_64-apple-darwin.tar.gz",
+            "x86_64-apple-darwin"
+        ));
+        assert!(Upgrader::asset_matches_platform(
+            "sc-macos-amd64.tar.gz",
+            "x86_64-apple-darwin"
+        ));
 
         // macOS ARM
-        assert!(Upgrader::asset_matches_platform("sc-aarch64-apple-darwin.tar.gz", "aarch64-apple-darwin"));
-        assert!(Upgrader::asset_matches_platform("sc-macos-arm64.tar.gz", "aarch64-apple-darwin"));
+        assert!(Upgrader::asset_matches_platform(
+            "sc-aarch64-apple-darwin.tar.gz",
+            "aarch64-apple-darwin"
+        ));
+        assert!(Upgrader::asset_matches_platform(
+            "sc-macos-arm64.tar.gz",
+            "aarch64-apple-darwin"
+        ));
 
         // Linux
-        assert!(Upgrader::asset_matches_platform("sc-x86_64-unknown-linux-gnu.tar.gz", "x86_64-unknown-linux-gnu"));
-        assert!(Upgrader::asset_matches_platform("sc-linux-amd64.tar.gz", "x86_64-unknown-linux-gnu"));
+        assert!(Upgrader::asset_matches_platform(
+            "sc-x86_64-unknown-linux-gnu.tar.gz",
+            "x86_64-unknown-linux-gnu"
+        ));
+        assert!(Upgrader::asset_matches_platform(
+            "sc-linux-amd64.tar.gz",
+            "x86_64-unknown-linux-gnu"
+        ));
 
         // Windows
-        assert!(Upgrader::asset_matches_platform("sc-x86_64-pc-windows-msvc.zip", "x86_64-pc-windows-msvc"));
-        assert!(Upgrader::asset_matches_platform("sc-windows-x64.exe", "x86_64-pc-windows-msvc"));
+        assert!(Upgrader::asset_matches_platform(
+            "sc-x86_64-pc-windows-msvc.zip",
+            "x86_64-pc-windows-msvc"
+        ));
+        assert!(Upgrader::asset_matches_platform(
+            "sc-windows-x64.exe",
+            "x86_64-pc-windows-msvc"
+        ));
     }
 }

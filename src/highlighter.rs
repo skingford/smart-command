@@ -72,8 +72,8 @@ impl SyntaxTheme {
         Self {
             command: Style::new().bold().fg(Color::Rgb(136, 192, 208)), // frost
             unknown_command: Style::new().fg(Color::Rgb(191, 97, 106)).underline(), // red
-            subcommand: Style::new().fg(Color::Rgb(163, 190, 140)), // green
-            flag_short: Style::new().fg(Color::Rgb(129, 161, 193)), // frost lighter
+            subcommand: Style::new().fg(Color::Rgb(163, 190, 140)),     // green
+            flag_short: Style::new().fg(Color::Rgb(129, 161, 193)),     // frost lighter
             flag_long: Style::new().fg(Color::Rgb(129, 161, 193)),
             invalid_flag: Style::new().fg(Color::Rgb(191, 97, 106)).underline(),
             string_single: Style::new().fg(Color::Rgb(163, 190, 140)), // green
@@ -93,8 +93,8 @@ impl SyntaxTheme {
         Self {
             command: Style::new().bold().fg(Color::Rgb(189, 147, 249)), // purple
             unknown_command: Style::new().fg(Color::Rgb(255, 85, 85)).underline(), // red
-            subcommand: Style::new().fg(Color::Rgb(80, 250, 123)), // green
-            flag_short: Style::new().fg(Color::Rgb(139, 233, 253)), // cyan
+            subcommand: Style::new().fg(Color::Rgb(80, 250, 123)),      // green
+            flag_short: Style::new().fg(Color::Rgb(139, 233, 253)),     // cyan
             flag_long: Style::new().fg(Color::Rgb(139, 233, 253)),
             invalid_flag: Style::new().fg(Color::Rgb(255, 85, 85)).underline(),
             string_single: Style::new().fg(Color::Rgb(241, 250, 140)), // yellow
@@ -103,7 +103,7 @@ impl SyntaxTheme {
             path_exists: Style::new().fg(Color::Rgb(248, 248, 242)), // foreground
             path_missing: Style::new().fg(Color::Rgb(255, 85, 85)).dimmed(),
             operator: Style::new().bold().fg(Color::Rgb(255, 121, 198)), // pink
-            variable: Style::new().fg(Color::Rgb(80, 250, 123)), // green
+            variable: Style::new().fg(Color::Rgb(80, 250, 123)),         // green
             comment: Style::new().fg(Color::Rgb(98, 114, 164)).dimmed(), // comment
             default: Style::new().fg(Color::Rgb(248, 248, 242)),
         }
@@ -319,7 +319,10 @@ impl SmartHighlighter {
                 TokenType::LongFlag
             } else if text.starts_with('-') && text.len() > 1 {
                 TokenType::ShortFlag
-            } else if text.chars().all(|c| c.is_ascii_digit() || c == '.' || c == '-') {
+            } else if text
+                .chars()
+                .all(|c| c.is_ascii_digit() || c == '.' || c == '-')
+            {
                 TokenType::Number
             } else if text.contains('/') || text.starts_with('.') || text.starts_with('~') {
                 TokenType::Path
@@ -413,14 +416,87 @@ impl SmartHighlighter {
     fn is_system_command(&self, cmd: &str) -> bool {
         // Common system commands that might not be in our definitions
         let system_commands = [
-            "ls", "cd", "pwd", "echo", "cat", "grep", "find", "mkdir", "rm", "cp", "mv", "touch",
-            "chmod", "chown", "sudo", "apt", "yum", "brew", "which", "whereis", "man", "less",
-            "more", "head", "tail", "wc", "sort", "uniq", "cut", "awk", "sed", "tr", "xargs",
-            "curl", "wget", "ssh", "scp", "rsync", "tar", "zip", "unzip", "gzip", "gunzip",
-            "python", "python3", "node", "npm", "npx", "yarn", "pnpm", "cargo", "rustc", "go",
-            "java", "javac", "ruby", "perl", "php", "make", "cmake", "gcc", "g++", "clang",
-            "git", "docker", "kubectl", "terraform", "ansible", "vim", "nvim", "nano", "code",
-            "exit", "config", "clear", "history", "alias", "export", "source", "env", "set",
+            "ls",
+            "cd",
+            "pwd",
+            "echo",
+            "cat",
+            "grep",
+            "find",
+            "mkdir",
+            "rm",
+            "cp",
+            "mv",
+            "touch",
+            "chmod",
+            "chown",
+            "sudo",
+            "apt",
+            "yum",
+            "brew",
+            "which",
+            "whereis",
+            "man",
+            "less",
+            "more",
+            "head",
+            "tail",
+            "wc",
+            "sort",
+            "uniq",
+            "cut",
+            "awk",
+            "sed",
+            "tr",
+            "xargs",
+            "curl",
+            "wget",
+            "ssh",
+            "scp",
+            "rsync",
+            "tar",
+            "zip",
+            "unzip",
+            "gzip",
+            "gunzip",
+            "python",
+            "python3",
+            "node",
+            "npm",
+            "npx",
+            "yarn",
+            "pnpm",
+            "cargo",
+            "rustc",
+            "go",
+            "java",
+            "javac",
+            "ruby",
+            "perl",
+            "php",
+            "make",
+            "cmake",
+            "gcc",
+            "g++",
+            "clang",
+            "git",
+            "docker",
+            "kubectl",
+            "terraform",
+            "ansible",
+            "vim",
+            "nvim",
+            "nano",
+            "code",
+            "exit",
+            "config",
+            "clear",
+            "history",
+            "alias",
+            "export",
+            "source",
+            "env",
+            "set",
         ];
 
         system_commands.contains(&cmd)

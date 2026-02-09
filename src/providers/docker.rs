@@ -248,7 +248,8 @@ impl CompletionProvider for DockerContainerProvider {
         let subcommand = context.args.first().map(|s| s.as_str()).unwrap_or("");
 
         // For exec/attach/etc, only show running containers
-        let running_only = ["exec", "attach", "top", "stats", "kill", "pause"].contains(&subcommand);
+        let running_only =
+            ["exec", "attach", "top", "stats", "kill", "pause"].contains(&subcommand);
         let containers = self.get_containers(!running_only);
 
         let partial_lower = partial.to_lowercase();

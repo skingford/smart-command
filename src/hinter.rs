@@ -141,15 +141,11 @@ impl Hinter for SmartHinter {
                 ))
                 .ok()
                 .and_then(|results| results.first().cloned())
-                .and_then(|entry| {
-                    entry
-                        .command_line
-                        .get(line.len()..)
-                        .map(|s| s.to_string())
-                });
+                .and_then(|entry| entry.command_line.get(line.len()..).map(|s| s.to_string()));
 
             // If no history hint, try AI prediction
-            history_hint.or_else(|| self.get_prediction_hint(line))
+            history_hint
+                .or_else(|| self.get_prediction_hint(line))
                 .unwrap_or_default()
         } else {
             String::new()

@@ -5,11 +5,11 @@
 
 #![allow(dead_code)]
 
-use strsim::levenshtein;
+use crate::config::{AiConfig, EffectiveAiSettings, ProviderType};
 use std::collections::HashMap;
 use std::env;
 use std::time::Duration;
-use crate::config::{AiConfig, EffectiveAiSettings, ProviderType};
+use strsim::levenshtein;
 
 /// AI Provider for generating shell commands from natural language
 pub mod llm {
@@ -56,9 +56,14 @@ pub mod llm {
                 .trim();
 
             // Markdown formatting itself indicates prose
-            if text.starts_with("**") || text.starts_with("##") || text.starts_with("# ")
-               || text.starts_with("> ") || text.starts_with("- ") || text.starts_with("• ")
-               || text.starts_with("1. ") {
+            if text.starts_with("**")
+                || text.starts_with("##")
+                || text.starts_with("# ")
+                || text.starts_with("> ")
+                || text.starts_with("- ")
+                || text.starts_with("• ")
+                || text.starts_with("1. ")
+            {
                 return true;
             }
 
@@ -69,26 +74,85 @@ pub mod llm {
 
             // Prose indicators (English)
             let prose_starters = [
-                "I ", "I'm ", "I'll ", "I've ", "I'd ",
-                "The ", "This ", "That ", "These ", "Those ",
-                "Here ", "Here's ", "Here is ",
-                "It ", "It's ", "It is ",
-                "You ", "You're ", "You can ", "You should ", "You need ",
-                "To ", "For ", "In ", "On ", "At ", "With ", "From ",
-                "Let ", "Let's ", "Let me ",
-                "Sure", "Yes", "No", "Sorry", "Please",
-                "Note", "Note:", "Notice",
-                "Would ", "Could ", "Should ", "Will ", "Can ",
-                "There ", "There's ", "There is ", "There are ",
-                "GitHub", "CLI", "Usage", "Example", "Commands",
+                "I ",
+                "I'm ",
+                "I'll ",
+                "I've ",
+                "I'd ",
+                "The ",
+                "This ",
+                "That ",
+                "These ",
+                "Those ",
+                "Here ",
+                "Here's ",
+                "Here is ",
+                "It ",
+                "It's ",
+                "It is ",
+                "You ",
+                "You're ",
+                "You can ",
+                "You should ",
+                "You need ",
+                "To ",
+                "For ",
+                "In ",
+                "On ",
+                "At ",
+                "With ",
+                "From ",
+                "Let ",
+                "Let's ",
+                "Let me ",
+                "Sure",
+                "Yes",
+                "No",
+                "Sorry",
+                "Please",
+                "Note",
+                "Note:",
+                "Notice",
+                "Would ",
+                "Could ",
+                "Should ",
+                "Will ",
+                "Can ",
+                "There ",
+                "There's ",
+                "There is ",
+                "There are ",
+                "GitHub",
+                "CLI",
+                "Usage",
+                "Example",
+                "Commands",
             ];
 
             // Prose indicators (Chinese)
             let chinese_prose = [
-                "我", "你", "这", "那", "可以", "需要", "应该",
-                "首先", "然后", "最后", "接下来", "以下",
-                "好的", "是的", "不", "请", "注意",
-                "用法", "使用", "命令", "示例", "介绍",
+                "我",
+                "你",
+                "这",
+                "那",
+                "可以",
+                "需要",
+                "应该",
+                "首先",
+                "然后",
+                "最后",
+                "接下来",
+                "以下",
+                "好的",
+                "是的",
+                "不",
+                "请",
+                "注意",
+                "用法",
+                "使用",
+                "命令",
+                "示例",
+                "介绍",
             ];
 
             // Check for prose starters (both original and stripped)
@@ -110,14 +174,19 @@ pub mod llm {
             // Long text with many words is likely prose
             if words.len() > 8 {
                 // Check for common English words
-                let common_words = ["the", "a", "an", "is", "are", "was", "were", "be", "been",
-                                   "have", "has", "had", "do", "does", "did", "will", "would",
-                                   "could", "should", "can", "may", "might", "must",
-                                   "and", "or", "but", "if", "then", "so", "because",
-                                   "for", "to", "of", "in", "on", "at", "with", "from", "by",
-                                   "your", "you", "it", "this", "that", "these", "those"];
-                let common_count = words.iter()
-                    .filter(|w| common_words.contains(&w.to_lowercase().trim_matches(|c: char| !c.is_alphabetic())))
+                let common_words = [
+                    "the", "a", "an", "is", "are", "was", "were", "be", "been", "have", "has",
+                    "had", "do", "does", "did", "will", "would", "could", "should", "can", "may",
+                    "might", "must", "and", "or", "but", "if", "then", "so", "because", "for",
+                    "to", "of", "in", "on", "at", "with", "from", "by", "your", "you", "it",
+                    "this", "that", "these", "those",
+                ];
+                let common_count = words
+                    .iter()
+                    .filter(|w| {
+                        common_words
+                            .contains(&w.to_lowercase().trim_matches(|c: char| !c.is_alphabetic()))
+                    })
                     .count();
                 if common_count >= 2 {
                     return true;
@@ -130,18 +199,73 @@ pub mod llm {
             }
 
             // Text ending with common sentence endings
-            if text.ends_with('.') || text.ends_with('?') || text.ends_with('!') || text.ends_with(':') {
+            if text.ends_with('.')
+                || text.ends_with('?')
+                || text.ends_with('!')
+                || text.ends_with(':')
+            {
                 let first_word = words.first().copied().unwrap_or("");
                 // Remove markdown formatting from first word
-                let first_word = first_word.trim_start_matches("**").trim_start_matches("*").trim_start_matches('`');
-                let known_commands = ["ls", "cd", "cp", "mv", "rm", "mkdir", "cat", "grep", "find",
-                                     "git", "docker", "npm", "cargo", "python", "pip", "node",
-                                     "curl", "wget", "tar", "chmod", "chown", "sudo", "apt",
-                                     "brew", "yum", "dnf", "pacman", "ssh", "scp", "rsync",
-                                     "echo", "export", "source", "gh", "jq", "awk", "sed",
-                                     "make", "cmake", "gcc", "go", "rustc", "java", "ruby",
-                                     "perl", "php", "dotnet", "kubectl", "helm", "terraform"];
-                if !known_commands.contains(&first_word) && !first_word.starts_with('/') && !first_word.starts_with('.') {
+                let first_word = first_word
+                    .trim_start_matches("**")
+                    .trim_start_matches("*")
+                    .trim_start_matches('`');
+                let known_commands = [
+                    "ls",
+                    "cd",
+                    "cp",
+                    "mv",
+                    "rm",
+                    "mkdir",
+                    "cat",
+                    "grep",
+                    "find",
+                    "git",
+                    "docker",
+                    "npm",
+                    "cargo",
+                    "python",
+                    "pip",
+                    "node",
+                    "curl",
+                    "wget",
+                    "tar",
+                    "chmod",
+                    "chown",
+                    "sudo",
+                    "apt",
+                    "brew",
+                    "yum",
+                    "dnf",
+                    "pacman",
+                    "ssh",
+                    "scp",
+                    "rsync",
+                    "echo",
+                    "export",
+                    "source",
+                    "gh",
+                    "jq",
+                    "awk",
+                    "sed",
+                    "make",
+                    "cmake",
+                    "gcc",
+                    "go",
+                    "rustc",
+                    "java",
+                    "ruby",
+                    "perl",
+                    "php",
+                    "dotnet",
+                    "kubectl",
+                    "helm",
+                    "terraform",
+                ];
+                if !known_commands.contains(&first_word)
+                    && !first_word.starts_with('/')
+                    && !first_word.starts_with('.')
+                {
                     return true;
                 }
             }
@@ -168,7 +292,7 @@ pub mod llm {
 
             // Check for inline code: `command here`
             if line.starts_with('`') && line.ends_with('`') && line.len() > 2 {
-                let cmd = line[1..line.len()-1].trim();
+                let cmd = line[1..line.len() - 1].trim();
                 if !cmd.is_empty() && !Self::looks_like_prose(cmd) {
                     return Some(cmd.to_string());
                 }
@@ -176,21 +300,28 @@ pub mod llm {
 
             // Check for backticks in the middle: some text `command` more text
             if let Some(start) = line.find('`') {
-                if let Some(end) = line[start+1..].find('`') {
-                    let cmd = &line[start+1..start+1+end];
+                if let Some(end) = line[start + 1..].find('`') {
+                    let cmd = &line[start + 1..start + 1 + end];
                     let cmd = cmd.trim();
                     // Only use if it looks like a command
-                    if !cmd.is_empty() && cmd.split_whitespace().next()
-                        .map(|first| {
-                            let known_commands = ["ls", "cd", "cp", "mv", "rm", "mkdir", "cat", "grep", "find",
-                                                 "git", "docker", "npm", "cargo", "python", "pip", "node",
-                                                 "curl", "wget", "tar", "chmod", "chown", "sudo", "apt",
-                                                 "brew", "yum", "dnf", "pacman", "ssh", "scp", "rsync",
-                                                 "echo", "export", "source", "gh", "jq", "awk", "sed",
-                                                 "make", "cmake", "gcc", "go", "rustc", "java", "ruby"];
-                            known_commands.contains(&first) || first.starts_with('/') || first.starts_with('.')
-                        })
-                        .unwrap_or(false)
+                    if !cmd.is_empty()
+                        && cmd
+                            .split_whitespace()
+                            .next()
+                            .map(|first| {
+                                let known_commands = [
+                                    "ls", "cd", "cp", "mv", "rm", "mkdir", "cat", "grep", "find",
+                                    "git", "docker", "npm", "cargo", "python", "pip", "node",
+                                    "curl", "wget", "tar", "chmod", "chown", "sudo", "apt", "brew",
+                                    "yum", "dnf", "pacman", "ssh", "scp", "rsync", "echo",
+                                    "export", "source", "gh", "jq", "awk", "sed", "make", "cmake",
+                                    "gcc", "go", "rustc", "java", "ruby",
+                                ];
+                                known_commands.contains(&first)
+                                    || first.starts_with('/')
+                                    || first.starts_with('.')
+                            })
+                            .unwrap_or(false)
                     {
                         return Some(cmd.to_string());
                     }
@@ -261,15 +392,65 @@ pub mod llm {
                     let cleaned = Self::clean_command(line);
                     if !cleaned.is_empty() {
                         let first_word = cleaned.split_whitespace().next().unwrap_or("");
-                        let known_commands = ["ls", "cd", "cp", "mv", "rm", "mkdir", "cat", "grep", "find",
-                                             "git", "docker", "npm", "cargo", "python", "pip", "node",
-                                             "curl", "wget", "tar", "chmod", "chown", "sudo", "apt",
-                                             "brew", "yum", "dnf", "pacman", "ssh", "scp", "rsync",
-                                             "echo", "export", "source", "gh", "jq", "awk", "sed",
-                                             "make", "cmake", "gcc", "go", "rustc", "java", "ruby",
-                                             "perl", "php", "dotnet", "kubectl", "helm", "terraform",
-                                             "az", "aws", "gcloud"];
-                        if known_commands.contains(&first_word) || first_word.starts_with('/') || first_word.starts_with('.') {
+                        let known_commands = [
+                            "ls",
+                            "cd",
+                            "cp",
+                            "mv",
+                            "rm",
+                            "mkdir",
+                            "cat",
+                            "grep",
+                            "find",
+                            "git",
+                            "docker",
+                            "npm",
+                            "cargo",
+                            "python",
+                            "pip",
+                            "node",
+                            "curl",
+                            "wget",
+                            "tar",
+                            "chmod",
+                            "chown",
+                            "sudo",
+                            "apt",
+                            "brew",
+                            "yum",
+                            "dnf",
+                            "pacman",
+                            "ssh",
+                            "scp",
+                            "rsync",
+                            "echo",
+                            "export",
+                            "source",
+                            "gh",
+                            "jq",
+                            "awk",
+                            "sed",
+                            "make",
+                            "cmake",
+                            "gcc",
+                            "go",
+                            "rustc",
+                            "java",
+                            "ruby",
+                            "perl",
+                            "php",
+                            "dotnet",
+                            "kubectl",
+                            "helm",
+                            "terraform",
+                            "az",
+                            "aws",
+                            "gcloud",
+                        ];
+                        if known_commands.contains(&first_word)
+                            || first_word.starts_with('/')
+                            || first_word.starts_with('.')
+                        {
                             current_cmd = Some(cleaned);
                         }
                     }
@@ -302,14 +483,62 @@ pub mod llm {
                     let cleaned = Self::clean_command(first_line);
                     if !cleaned.is_empty() && !Self::looks_like_prose(&cleaned) {
                         let first_word = cleaned.split_whitespace().next().unwrap_or("");
-                        let known_commands = ["ls", "cd", "cp", "mv", "rm", "mkdir", "cat", "grep", "find",
-                                             "git", "docker", "npm", "cargo", "python", "pip", "node",
-                                             "curl", "wget", "tar", "chmod", "chown", "sudo", "apt",
-                                             "brew", "yum", "dnf", "pacman", "ssh", "scp", "rsync",
-                                             "echo", "export", "source", "gh", "jq", "awk", "sed",
-                                             "make", "cmake", "gcc", "go", "rustc", "java", "ruby",
-                                             "perl", "php", "dotnet", "kubectl", "helm", "terraform"];
-                        if known_commands.contains(&first_word) || first_word.starts_with('/') || first_word.starts_with('.') {
+                        let known_commands = [
+                            "ls",
+                            "cd",
+                            "cp",
+                            "mv",
+                            "rm",
+                            "mkdir",
+                            "cat",
+                            "grep",
+                            "find",
+                            "git",
+                            "docker",
+                            "npm",
+                            "cargo",
+                            "python",
+                            "pip",
+                            "node",
+                            "curl",
+                            "wget",
+                            "tar",
+                            "chmod",
+                            "chown",
+                            "sudo",
+                            "apt",
+                            "brew",
+                            "yum",
+                            "dnf",
+                            "pacman",
+                            "ssh",
+                            "scp",
+                            "rsync",
+                            "echo",
+                            "export",
+                            "source",
+                            "gh",
+                            "jq",
+                            "awk",
+                            "sed",
+                            "make",
+                            "cmake",
+                            "gcc",
+                            "go",
+                            "rustc",
+                            "java",
+                            "ruby",
+                            "perl",
+                            "php",
+                            "dotnet",
+                            "kubectl",
+                            "helm",
+                            "terraform",
+                        ];
+                        if known_commands.contains(&first_word)
+                            || first_word.starts_with('/')
+                            || first_word.starts_with('.')
+                        {
                             commands.push(CommandEntry {
                                 command: cleaned,
                                 description: None,
@@ -496,7 +725,11 @@ pub mod llm {
         }
 
         /// Generate shell command(s) with smart parsing
-        pub fn generate_smart(&self, query: &str, context: &AiContext) -> Result<AiResponse, AiError> {
+        pub fn generate_smart(
+            &self,
+            query: &str,
+            context: &AiContext,
+        ) -> Result<AiResponse, AiError> {
             if !self.effective.enabled {
                 return Err(AiError::NotEnabled);
             }
@@ -538,17 +771,26 @@ pub mod llm {
             // Simple test query
             let context = AiContext::default();
             match self.generate("echo hello", &context) {
-                Ok(_) => Ok(format!("✓ Connected to {} successfully", self.effective.provider_type)),
+                Ok(_) => Ok(format!(
+                    "✓ Connected to {} successfully",
+                    self.effective.provider_type
+                )),
                 Err(e) => Err(e),
             }
         }
 
         fn call_claude(&self, api_key: &str, user_prompt: &str) -> Result<String, AiError> {
-            let model = self.effective.model.clone()
+            let model = self
+                .effective
+                .model
+                .clone()
                 .unwrap_or_else(|| "claude-sonnet-4-20250514".to_string());
 
             // Support custom endpoint for proxy/relay services
-            let endpoint = self.effective.endpoint.clone()
+            let endpoint = self
+                .effective
+                .endpoint
+                .clone()
                 .unwrap_or_else(|| "https://api.anthropic.com/v1/messages".to_string());
 
             let request = ClaudeRequest {
@@ -561,7 +803,8 @@ pub mod llm {
                 system: Some(self.effective.system_prompt.clone()),
             };
 
-            let response = self.client
+            let response = self
+                .client
                 .post(&endpoint)
                 .header("x-api-key", api_key)
                 .header("anthropic-version", "2023-06-01")
@@ -576,19 +819,28 @@ pub mod llm {
                 return Err(AiError::ApiError(format!("Status {}: {}", status, body)));
             }
 
-            let result: ClaudeResponse = response.json()
+            let result: ClaudeResponse = response
+                .json()
                 .map_err(|e| AiError::ParseError(e.to_string()))?;
 
-            result.content.first()
+            result
+                .content
+                .first()
                 .map(|c| c.text.trim().to_string())
                 .ok_or_else(|| AiError::ParseError("Empty response".to_string()))
         }
 
         fn call_openai(&self, api_key: &str, user_prompt: &str) -> Result<String, AiError> {
-            let model = self.effective.model.clone()
+            let model = self
+                .effective
+                .model
+                .clone()
                 .unwrap_or_else(|| "gpt-4o-mini".to_string());
 
-            let endpoint = self.effective.endpoint.clone()
+            let endpoint = self
+                .effective
+                .endpoint
+                .clone()
                 .unwrap_or_else(|| "https://api.openai.com/v1/chat/completions".to_string());
 
             let request = OpenAiRequest {
@@ -607,7 +859,8 @@ pub mod llm {
                 temperature: self.effective.temperature,
             };
 
-            let response = self.client
+            let response = self
+                .client
                 .post(&endpoint)
                 .header("Authorization", format!("Bearer {}", api_key))
                 .header("content-type", "application/json")
@@ -621,10 +874,13 @@ pub mod llm {
                 return Err(AiError::ApiError(format!("Status {}: {}", status, body)));
             }
 
-            let result: OpenAiResponse = response.json()
+            let result: OpenAiResponse = response
+                .json()
                 .map_err(|e| AiError::ParseError(e.to_string()))?;
 
-            result.choices.first()
+            result
+                .choices
+                .first()
                 .map(|c| c.message.content.trim().to_string())
                 .ok_or_else(|| AiError::ParseError("Empty response".to_string()))
         }
@@ -632,7 +888,10 @@ pub mod llm {
         fn call_gemini(&self, api_key: &str, user_prompt: &str) -> Result<String, AiError> {
             // NOTE: Gemini API requires API key in URL query parameter (for official endpoint).
             // Custom endpoints (proxy/relay) may use different auth methods.
-            let model = self.effective.model.clone()
+            let model = self
+                .effective
+                .model
+                .clone()
                 .unwrap_or_else(|| "gemini-2.0-flash".to_string());
 
             // Support custom endpoint for proxy/relay services
@@ -692,13 +951,12 @@ pub mod llm {
             let full_prompt = format!("{}\n\n{}", self.effective.system_prompt, user_prompt);
             let request = GeminiRequest {
                 contents: vec![GeminiContent {
-                    parts: vec![GeminiPart {
-                        text: full_prompt,
-                    }],
+                    parts: vec![GeminiPart { text: full_prompt }],
                 }],
             };
 
-            let response = self.client
+            let response = self
+                .client
                 .post(&endpoint)
                 .header("content-type", "application/json")
                 .json(&request)
@@ -711,10 +969,13 @@ pub mod llm {
                 return Err(AiError::ApiError(format!("Status {}: {}", status, body)));
             }
 
-            let result: GeminiResponse = response.json()
+            let result: GeminiResponse = response
+                .json()
                 .map_err(|e| AiError::ParseError(e.to_string()))?;
 
-            result.candidates.first()
+            result
+                .candidates
+                .first()
                 .and_then(|c| c.content.parts.first())
                 .map(|p| p.text.trim().to_string())
                 .ok_or_else(|| AiError::ParseError("Empty response".to_string()))
@@ -722,11 +983,15 @@ pub mod llm {
 
         fn call_glm(&self, api_key: &str, user_prompt: &str) -> Result<String, AiError> {
             // GLM (智谱AI) uses OpenAI-compatible format
-            let model = self.effective.model.clone()
+            let model = self
+                .effective
+                .model
+                .clone()
                 .unwrap_or_else(|| "glm-4-plus".to_string());
 
-            let endpoint = self.effective.endpoint.clone()
-                .unwrap_or_else(|| "https://open.bigmodel.cn/api/paas/v4/chat/completions".to_string());
+            let endpoint = self.effective.endpoint.clone().unwrap_or_else(|| {
+                "https://open.bigmodel.cn/api/paas/v4/chat/completions".to_string()
+            });
 
             let request = OpenAiRequest {
                 model,
@@ -744,7 +1009,8 @@ pub mod llm {
                 temperature: self.effective.temperature,
             };
 
-            let response = self.client
+            let response = self
+                .client
                 .post(&endpoint)
                 .header("Authorization", format!("Bearer {}", api_key))
                 .header("content-type", "application/json")
@@ -758,20 +1024,27 @@ pub mod llm {
                 return Err(AiError::ApiError(format!("Status {}: {}", status, body)));
             }
 
-            let result: OpenAiResponse = response.json()
+            let result: OpenAiResponse = response
+                .json()
                 .map_err(|e| AiError::ParseError(e.to_string()))?;
 
-            result.choices.first()
+            result
+                .choices
+                .first()
                 .map(|c| c.message.content.trim().to_string())
                 .ok_or_else(|| AiError::ParseError("Empty response".to_string()))
         }
 
         fn call_custom(&self, api_key: &str, user_prompt: &str) -> Result<String, AiError> {
             // Custom provider uses OpenAI-compatible format
-            let endpoint = self.effective.endpoint.clone()
-                .ok_or_else(|| AiError::ApiError("Custom provider requires endpoint".to_string()))?;
+            let endpoint = self.effective.endpoint.clone().ok_or_else(|| {
+                AiError::ApiError("Custom provider requires endpoint".to_string())
+            })?;
 
-            let model = self.effective.model.clone()
+            let model = self
+                .effective
+                .model
+                .clone()
                 .unwrap_or_else(|| "default".to_string());
 
             let request = OpenAiRequest {
@@ -790,7 +1063,8 @@ pub mod llm {
                 temperature: self.effective.temperature,
             };
 
-            let response = self.client
+            let response = self
+                .client
                 .post(&endpoint)
                 .header("Authorization", format!("Bearer {}", api_key))
                 .header("content-type", "application/json")
@@ -804,20 +1078,29 @@ pub mod llm {
                 return Err(AiError::ApiError(format!("Status {}: {}", status, body)));
             }
 
-            let result: OpenAiResponse = response.json()
+            let result: OpenAiResponse = response
+                .json()
                 .map_err(|e| AiError::ParseError(e.to_string()))?;
 
-            result.choices.first()
+            result
+                .choices
+                .first()
                 .map(|c| c.message.content.trim().to_string())
                 .ok_or_else(|| AiError::ParseError("Empty response".to_string()))
         }
 
         /// DeepSeek - Uses OpenAI-compatible format
         fn call_deepseek(&self, api_key: &str, user_prompt: &str) -> Result<String, AiError> {
-            let model = self.effective.model.clone()
+            let model = self
+                .effective
+                .model
+                .clone()
                 .unwrap_or_else(|| "deepseek-chat".to_string());
 
-            let endpoint = self.effective.endpoint.clone()
+            let endpoint = self
+                .effective
+                .endpoint
+                .clone()
                 .unwrap_or_else(|| "https://api.deepseek.com/v1/chat/completions".to_string());
 
             self.call_openai_compatible(&endpoint, api_key, &model, user_prompt)
@@ -825,21 +1108,31 @@ pub mod llm {
 
         /// Qwen (通义千问) - Uses OpenAI-compatible format
         fn call_qwen(&self, api_key: &str, user_prompt: &str) -> Result<String, AiError> {
-            let model = self.effective.model.clone()
+            let model = self
+                .effective
+                .model
+                .clone()
                 .unwrap_or_else(|| "qwen-max".to_string());
 
-            let endpoint = self.effective.endpoint.clone()
-                .unwrap_or_else(|| "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions".to_string());
+            let endpoint = self.effective.endpoint.clone().unwrap_or_else(|| {
+                "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions".to_string()
+            });
 
             self.call_openai_compatible(&endpoint, api_key, &model, user_prompt)
         }
 
         /// OpenRouter - Access multiple providers through one API
         fn call_openrouter(&self, api_key: &str, user_prompt: &str) -> Result<String, AiError> {
-            let model = self.effective.model.clone()
+            let model = self
+                .effective
+                .model
+                .clone()
                 .unwrap_or_else(|| "anthropic/claude-sonnet-4".to_string());
 
-            let endpoint = self.effective.endpoint.clone()
+            let endpoint = self
+                .effective
+                .endpoint
+                .clone()
                 .unwrap_or_else(|| "https://openrouter.ai/api/v1/chat/completions".to_string());
 
             let request = OpenAiRequest {
@@ -858,7 +1151,8 @@ pub mod llm {
                 temperature: self.effective.temperature,
             };
 
-            let response = self.client
+            let response = self
+                .client
                 .post(&endpoint)
                 .header("Authorization", format!("Bearer {}", api_key))
                 .header("HTTP-Referer", "https://github.com/skingford/smart-command")
@@ -874,20 +1168,29 @@ pub mod llm {
                 return Err(AiError::ApiError(format!("Status {}: {}", status, body)));
             }
 
-            let result: OpenAiResponse = response.json()
+            let result: OpenAiResponse = response
+                .json()
                 .map_err(|e| AiError::ParseError(e.to_string()))?;
 
-            result.choices.first()
+            result
+                .choices
+                .first()
                 .map(|c| c.message.content.trim().to_string())
                 .ok_or_else(|| AiError::ParseError("Empty response".to_string()))
         }
 
         /// Ollama - Local models (no API key required)
         fn call_ollama(&self, user_prompt: &str) -> Result<String, AiError> {
-            let model = self.effective.model.clone()
+            let model = self
+                .effective
+                .model
+                .clone()
                 .unwrap_or_else(|| "qwen2.5:7b".to_string());
 
-            let endpoint = self.effective.endpoint.clone()
+            let endpoint = self
+                .effective
+                .endpoint
+                .clone()
                 .unwrap_or_else(|| "http://localhost:11434/api/chat".to_string());
 
             // Ollama has its own request format
@@ -929,7 +1232,8 @@ pub mod llm {
                 stream: false,
             };
 
-            let response = self.client
+            let response = self
+                .client
                 .post(&endpoint)
                 .header("content-type", "application/json")
                 .json(&request)
@@ -942,7 +1246,8 @@ pub mod llm {
                 return Err(AiError::ApiError(format!("Status {}: {}", status, body)));
             }
 
-            let result: OllamaResponse = response.json()
+            let result: OllamaResponse = response
+                .json()
                 .map_err(|e| AiError::ParseError(e.to_string()))?;
 
             Ok(result.message.content.trim().to_string())
@@ -972,7 +1277,8 @@ pub mod llm {
                 temperature: self.effective.temperature,
             };
 
-            let response = self.client
+            let response = self
+                .client
                 .post(endpoint)
                 .header("Authorization", format!("Bearer {}", api_key))
                 .header("content-type", "application/json")
@@ -986,10 +1292,13 @@ pub mod llm {
                 return Err(AiError::ApiError(format!("Status {}: {}", status, body)));
             }
 
-            let result: OpenAiResponse = response.json()
+            let result: OpenAiResponse = response
+                .json()
                 .map_err(|e| AiError::ParseError(e.to_string()))?;
 
-            result.choices.first()
+            result
+                .choices
+                .first()
                 .map(|c| c.message.content.trim().to_string())
                 .ok_or_else(|| AiError::ParseError("Empty response".to_string()))
         }
@@ -1079,7 +1388,10 @@ impl CommandPredictor {
     /// Record a command execution
     pub fn record(&mut self, command: &str, previous_command: Option<&str>) {
         // Update frequency
-        *self.frequent_commands.entry(command.to_string()).or_insert(0) += 1;
+        *self
+            .frequent_commands
+            .entry(command.to_string())
+            .or_insert(0) += 1;
 
         // Update bigram
         if let Some(prev) = previous_command {
@@ -1131,9 +1443,7 @@ impl CommandPredictor {
         let predictions = self.predict(previous_command);
 
         // Only return if probability is high enough
-        predictions
-            .into_iter()
-            .find(|(_, prob)| *prob >= 0.3)
+        predictions.into_iter().find(|(_, prob)| *prob >= 0.3)
     }
 }
 
@@ -1148,10 +1458,7 @@ impl SmartDefaults {
         let mut common_flags = HashMap::new();
 
         // Pre-populate with common flag combinations
-        common_flags.insert(
-            "git commit".to_string(),
-            vec!["-m".to_string()],
-        );
+        common_flags.insert("git commit".to_string(), vec!["-m".to_string()]);
         common_flags.insert(
             "git push".to_string(),
             vec!["-u".to_string(), "origin".to_string()],
@@ -1160,38 +1467,17 @@ impl SmartDefaults {
             "git log".to_string(),
             vec!["--oneline".to_string(), "-10".to_string()],
         );
-        common_flags.insert(
-            "ls".to_string(),
-            vec!["-la".to_string()],
-        );
-        common_flags.insert(
-            "grep".to_string(),
-            vec!["-r".to_string(), "-n".to_string()],
-        );
-        common_flags.insert(
-            "rm".to_string(),
-            vec!["-rf".to_string()],
-        );
-        common_flags.insert(
-            "cp".to_string(),
-            vec!["-r".to_string()],
-        );
+        common_flags.insert("ls".to_string(), vec!["-la".to_string()]);
+        common_flags.insert("grep".to_string(), vec!["-r".to_string(), "-n".to_string()]);
+        common_flags.insert("rm".to_string(), vec!["-rf".to_string()]);
+        common_flags.insert("cp".to_string(), vec!["-r".to_string()]);
         common_flags.insert(
             "docker run".to_string(),
             vec!["--rm".to_string(), "-it".to_string()],
         );
-        common_flags.insert(
-            "docker build".to_string(),
-            vec!["-t".to_string()],
-        );
-        common_flags.insert(
-            "cargo build".to_string(),
-            vec!["--release".to_string()],
-        );
-        common_flags.insert(
-            "npm install".to_string(),
-            vec!["--save-dev".to_string()],
-        );
+        common_flags.insert("docker build".to_string(), vec!["-t".to_string()]);
+        common_flags.insert("cargo build".to_string(), vec!["--release".to_string()]);
+        common_flags.insert("npm install".to_string(), vec!["--save-dev".to_string()]);
 
         Self { common_flags }
     }
@@ -1240,30 +1526,118 @@ impl NaturalLanguageTemplates {
         Self {
             templates: vec![
                 // (trigger words, command, description)
-                (vec!["large", "files", "big"], "find . -size +100M -type f", "Find files larger than 100MB"),
-                (vec!["compress", "folder", "zip"], "tar -czvf archive.tar.gz ./", "Compress folder to tar.gz"),
-                (vec!["decompress", "extract", "unzip"], "tar -xzvf", "Extract tar.gz archive"),
-                (vec!["disk", "space", "usage"], "du -sh *", "Show disk usage of files"),
-                (vec!["free", "space", "available"], "df -h", "Show available disk space"),
-                (vec!["running", "processes"], "ps aux", "Show running processes"),
+                (
+                    vec!["large", "files", "big"],
+                    "find . -size +100M -type f",
+                    "Find files larger than 100MB",
+                ),
+                (
+                    vec!["compress", "folder", "zip"],
+                    "tar -czvf archive.tar.gz ./",
+                    "Compress folder to tar.gz",
+                ),
+                (
+                    vec!["decompress", "extract", "unzip"],
+                    "tar -xzvf",
+                    "Extract tar.gz archive",
+                ),
+                (
+                    vec!["disk", "space", "usage"],
+                    "du -sh *",
+                    "Show disk usage of files",
+                ),
+                (
+                    vec!["free", "space", "available"],
+                    "df -h",
+                    "Show available disk space",
+                ),
+                (
+                    vec!["running", "processes"],
+                    "ps aux",
+                    "Show running processes",
+                ),
                 (vec!["kill", "process"], "pkill", "Kill process by name"),
                 (vec!["memory", "usage"], "free -h", "Show memory usage"),
-                (vec!["network", "connections"], "netstat -tuln", "Show network connections"),
-                (vec!["open", "ports"], "lsof -i -P -n | grep LISTEN", "Show open ports"),
-                (vec!["git", "history", "log"], "git log --oneline -20", "Show recent git commits"),
-                (vec!["git", "changes", "modified"], "git status", "Show git status"),
-                (vec!["undo", "last", "commit"], "git reset --soft HEAD~1", "Undo last commit"),
-                (vec!["docker", "running", "containers"], "docker ps", "Show running containers"),
-                (vec!["docker", "all", "images"], "docker images", "Show all docker images"),
-                (vec!["empty", "file", "truncate"], "truncate -s 0", "Empty/truncate a file"),
-                (vec!["count", "lines", "file"], "wc -l", "Count lines in file"),
-                (vec!["search", "text", "grep"], "grep -rn", "Search for text recursively"),
-                (vec!["replace", "text", "sed"], "sed -i 's/old/new/g'", "Replace text in file"),
-                (vec!["permission", "executable"], "chmod +x", "Make file executable"),
-                (vec!["ownership", "chown"], "chown -R $USER:$USER", "Change ownership"),
-                (vec!["download", "file", "url"], "curl -O", "Download file from URL"),
-                (vec!["http", "server", "python"], "python -m http.server 8000", "Start HTTP server"),
-                (vec!["json", "format", "pretty"], "jq '.'", "Pretty print JSON"),
+                (
+                    vec!["network", "connections"],
+                    "netstat -tuln",
+                    "Show network connections",
+                ),
+                (
+                    vec!["open", "ports"],
+                    "lsof -i -P -n | grep LISTEN",
+                    "Show open ports",
+                ),
+                (
+                    vec!["git", "history", "log"],
+                    "git log --oneline -20",
+                    "Show recent git commits",
+                ),
+                (
+                    vec!["git", "changes", "modified"],
+                    "git status",
+                    "Show git status",
+                ),
+                (
+                    vec!["undo", "last", "commit"],
+                    "git reset --soft HEAD~1",
+                    "Undo last commit",
+                ),
+                (
+                    vec!["docker", "running", "containers"],
+                    "docker ps",
+                    "Show running containers",
+                ),
+                (
+                    vec!["docker", "all", "images"],
+                    "docker images",
+                    "Show all docker images",
+                ),
+                (
+                    vec!["empty", "file", "truncate"],
+                    "truncate -s 0",
+                    "Empty/truncate a file",
+                ),
+                (
+                    vec!["count", "lines", "file"],
+                    "wc -l",
+                    "Count lines in file",
+                ),
+                (
+                    vec!["search", "text", "grep"],
+                    "grep -rn",
+                    "Search for text recursively",
+                ),
+                (
+                    vec!["replace", "text", "sed"],
+                    "sed -i 's/old/new/g'",
+                    "Replace text in file",
+                ),
+                (
+                    vec!["permission", "executable"],
+                    "chmod +x",
+                    "Make file executable",
+                ),
+                (
+                    vec!["ownership", "chown"],
+                    "chown -R $USER:$USER",
+                    "Change ownership",
+                ),
+                (
+                    vec!["download", "file", "url"],
+                    "curl -O",
+                    "Download file from URL",
+                ),
+                (
+                    vec!["http", "server", "python"],
+                    "python -m http.server 8000",
+                    "Start HTTP server",
+                ),
+                (
+                    vec!["json", "format", "pretty"],
+                    "jq '.'",
+                    "Pretty print JSON",
+                ),
                 (vec!["base64", "encode"], "base64", "Encode to base64"),
                 (vec!["base64", "decode"], "base64 -d", "Decode from base64"),
             ],

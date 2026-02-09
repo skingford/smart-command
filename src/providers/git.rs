@@ -94,7 +94,13 @@ impl CompletionProvider for GitBranchProvider {
         // git switch <branch>
         // git diff <branch>
         let branch_commands = [
-            "checkout", "merge", "rebase", "switch", "diff", "cherry-pick", "reset",
+            "checkout",
+            "merge",
+            "rebase",
+            "switch",
+            "diff",
+            "cherry-pick",
+            "reset",
         ];
 
         if cmd == "git" && arg_position >= 1 {
@@ -218,9 +224,7 @@ impl CompletionProvider for GitRemoteProvider {
             }
 
             // git remote remove <remote>
-            if subcommand == "remote"
-                && context.args.get(1).map(|s| s.as_str()) == Some("remove")
-            {
+            if subcommand == "remote" && context.args.get(1).map(|s| s.as_str()) == Some("remove") {
                 return true;
             }
         }
@@ -386,8 +390,7 @@ impl CompletionProvider for GitStashProvider {
             let stash_subcommand = context.args.get(1).map(|s| s.as_str()).unwrap_or("");
 
             // git stash apply|pop|drop|show <stash>
-            if subcommand == "stash"
-                && ["apply", "pop", "drop", "show"].contains(&stash_subcommand)
+            if subcommand == "stash" && ["apply", "pop", "drop", "show"].contains(&stash_subcommand)
             {
                 return true;
             }

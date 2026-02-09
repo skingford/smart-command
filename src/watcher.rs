@@ -123,10 +123,7 @@ impl FileWatcher {
 
 /// Classify a file change event based on path
 fn classify_event(path: &Path) -> WatchEvent {
-    let filename = path
-        .file_name()
-        .and_then(|n| n.to_str())
-        .unwrap_or("");
+    let filename = path.file_name().and_then(|n| n.to_str()).unwrap_or("");
     let parent = path
         .parent()
         .and_then(|p| p.file_name())
@@ -257,14 +254,12 @@ impl DebouncedWatcher {
 
         // Deduplicate by path
         let mut seen_paths = std::collections::HashSet::new();
-        events.retain(|e| {
-            match e {
-                WatchEvent::DefinitionChanged(p) | WatchEvent::PluginChanged(p) => {
-                    seen_paths.insert(p.clone())
-                }
-                WatchEvent::ConfigChanged => seen_paths.insert(PathBuf::from("__config__")),
-                WatchEvent::Error(_) => true,
+        events.retain(|e| match e {
+            WatchEvent::DefinitionChanged(p) | WatchEvent::PluginChanged(p) => {
+                seen_paths.insert(p.clone())
             }
+            WatchEvent::ConfigChanged => seen_paths.insert(PathBuf::from("__config__")),
+            WatchEvent::Error(_) => true,
         });
 
         events
@@ -292,7 +287,10 @@ mod tests {
         ));
 
         let path = PathBuf::from("/home/user/plugins/my-plugin/main.sh");
-        assert!(matches!(classify_event(&path), WatchEvent::PluginChanged(_)));
+        assert!(matches!(
+            classify_event(&path),
+            WatchEvent::PluginChanged(_)
+        ));
     }
 
     #[test]

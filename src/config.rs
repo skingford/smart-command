@@ -102,7 +102,6 @@ pub enum ProviderType {
     Custom,
 }
 
-
 impl std::fmt::Display for ProviderType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
@@ -201,7 +200,10 @@ impl ProviderConfig {
             ),
             ProviderType::Qwen => (
                 Some("$DASHSCOPE_API_KEY".to_string()),
-                Some("https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions".to_string()),
+                Some(
+                    "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions"
+                        .to_string(),
+                ),
                 Some("qwen-max".to_string()),
             ),
             ProviderType::Ollama => (
@@ -214,11 +216,7 @@ impl ProviderConfig {
                 Some("https://openrouter.ai/api/v1/chat/completions".to_string()),
                 Some("anthropic/claude-sonnet-4".to_string()),
             ),
-            ProviderType::Custom => (
-                Some("$CUSTOM_API_KEY".to_string()),
-                None,
-                None,
-            ),
+            ProviderType::Custom => (Some("$CUSTOM_API_KEY".to_string()), None, None),
         };
 
         Self {
@@ -293,7 +291,9 @@ pub struct ActiveAiConfig {
     pub ignore_commands: Vec<String>,
 }
 
-fn default_min_exit_code() -> i32 { 1 }
+fn default_min_exit_code() -> i32 {
+    1
+}
 
 fn default_ignore_commands() -> Vec<String> {
     vec![
@@ -320,9 +320,9 @@ impl ActiveAiConfig {
     /// Check if a command should be ignored
     pub fn should_ignore(&self, command: &str) -> bool {
         let cmd = command.split_whitespace().next().unwrap_or("");
-        self.ignore_commands.iter().any(|pattern| {
-            cmd == pattern || command.starts_with(pattern)
-        })
+        self.ignore_commands
+            .iter()
+            .any(|pattern| cmd == pattern || command.starts_with(pattern))
     }
 }
 
@@ -346,8 +346,12 @@ pub struct NextCommandConfig {
     pub use_ai: bool,
 }
 
-fn default_delay() -> u64 { 300 }
-fn default_confidence() -> f64 { 0.3 }
+fn default_delay() -> u64 {
+    300
+}
+fn default_confidence() -> f64 {
+    0.3
+}
 
 impl Default for NextCommandConfig {
     fn default() -> Self {
@@ -451,8 +455,11 @@ impl AiConfig {
             self.active = name.to_string();
             Ok(())
         } else {
-            Err(format!("Provider '{}' not found. Available: {:?}",
-                name, self.providers.keys().collect::<Vec<_>>()))
+            Err(format!(
+                "Provider '{}' not found. Available: {:?}",
+                name,
+                self.providers.keys().collect::<Vec<_>>()
+            ))
         }
     }
 
@@ -482,22 +489,32 @@ impl AiConfig {
 
         EffectiveAiSettings {
             enabled: self.enabled,
-            provider_type: provider.map(|p| p.provider_type.clone()).unwrap_or_default(),
-            api_key: provider.and_then(|p| p.api_key.clone())
+            provider_type: provider
+                .map(|p| p.provider_type.clone())
+                .unwrap_or_default(),
+            api_key: provider
+                .and_then(|p| p.api_key.clone())
                 .or_else(|| self.api_key.clone()),
-            endpoint: provider.and_then(|p| p.endpoint.clone())
+            endpoint: provider
+                .and_then(|p| p.endpoint.clone())
                 .or_else(|| self.endpoint.clone()),
-            model: provider.and_then(|p| p.model.clone())
+            model: provider
+                .and_then(|p| p.model.clone())
                 .or_else(|| self.model.clone()),
-            system_prompt: self.system_prompt.clone()
+            system_prompt: self
+                .system_prompt
+                .clone()
                 .unwrap_or_else(|| self.global.system_prompt.clone()),
-            max_tokens: provider.and_then(|p| p.max_tokens)
+            max_tokens: provider
+                .and_then(|p| p.max_tokens)
                 .or(self.max_tokens)
                 .unwrap_or(self.global.max_tokens),
-            temperature: provider.and_then(|p| p.temperature)
+            temperature: provider
+                .and_then(|p| p.temperature)
                 .or(self.temperature)
                 .unwrap_or(self.global.temperature),
-            timeout_secs: provider.and_then(|p| p.timeout_secs)
+            timeout_secs: provider
+                .and_then(|p| p.timeout_secs)
                 .or(self.timeout_secs)
                 .unwrap_or(self.global.timeout_secs),
         }
@@ -522,14 +539,32 @@ fn default_providers() -> HashMap<String, ProviderConfig> {
     let mut providers = HashMap::new();
 
     // Pre-configure common providers with environment variable references
-    providers.insert("claude".to_string(), ProviderConfig::new(ProviderType::Claude));
-    providers.insert("openai".to_string(), ProviderConfig::new(ProviderType::OpenAI));
-    providers.insert("gemini".to_string(), ProviderConfig::new(ProviderType::Gemini));
-    providers.insert("deepseek".to_string(), ProviderConfig::new(ProviderType::DeepSeek));
+    providers.insert(
+        "claude".to_string(),
+        ProviderConfig::new(ProviderType::Claude),
+    );
+    providers.insert(
+        "openai".to_string(),
+        ProviderConfig::new(ProviderType::OpenAI),
+    );
+    providers.insert(
+        "gemini".to_string(),
+        ProviderConfig::new(ProviderType::Gemini),
+    );
+    providers.insert(
+        "deepseek".to_string(),
+        ProviderConfig::new(ProviderType::DeepSeek),
+    );
     providers.insert("glm".to_string(), ProviderConfig::new(ProviderType::Glm));
     providers.insert("qwen".to_string(), ProviderConfig::new(ProviderType::Qwen));
-    providers.insert("ollama".to_string(), ProviderConfig::new(ProviderType::Ollama));
-    providers.insert("openrouter".to_string(), ProviderConfig::new(ProviderType::OpenRouter));
+    providers.insert(
+        "ollama".to_string(),
+        ProviderConfig::new(ProviderType::Ollama),
+    );
+    providers.insert(
+        "openrouter".to_string(),
+        ProviderConfig::new(ProviderType::OpenRouter),
+    );
 
     providers
 }
@@ -589,7 +624,8 @@ CRITICAL RULES:
 - NEVER start response with "I", "Here", "The", "You", "This"
 - For usage/help queries, ALWAYS use CMD:/DESC: format
 - Detect user's language for DESC: content
-- Prefer portable Unix commands"#.to_string()
+- Prefer portable Unix commands"#
+        .to_string()
 }
 
 fn default_ai_max_tokens() -> u32 {
@@ -733,8 +769,13 @@ impl AppConfig {
                         // Merge providers: user-defined providers take precedence
                         if let Some(providers) = ai.get("providers").and_then(|v| v.as_table()) {
                             for (name, provider_value) in providers {
-                                if let Ok(provider_config) = provider_value.clone().try_into::<ProviderConfig>() {
-                                    app_config.ai.providers.insert(name.clone(), provider_config);
+                                if let Ok(provider_config) =
+                                    provider_value.clone().try_into::<ProviderConfig>()
+                                {
+                                    app_config
+                                        .ai
+                                        .providers
+                                        .insert(name.clone(), provider_config);
                                 }
                             }
                         }

@@ -21,14 +21,19 @@ pub fn run_install(opts: InstallOptions) -> Result<()> {
     }
 
     if !opts.skip_definitions {
-        install_definitions(opts.definitions_src.as_deref(), opts.definitions_dir.as_deref())?;
+        install_definitions(
+            opts.definitions_src.as_deref(),
+            opts.definitions_dir.as_deref(),
+        )?;
         did_work = true;
     }
 
     if !did_work {
         Output::warn("Nothing to install (both steps were skipped).");
     } else {
-        Output::info("Completions: run `smart-command completions <shell>` to enable tab completion.");
+        Output::info(
+            "Completions: run `smart-command completions <shell>` to enable tab completion.",
+        );
     }
 
     Ok(())
@@ -48,10 +53,7 @@ fn install_binary(bin_dir_override: Option<&Path>) -> Result<()> {
 
     let target = bin_dir.join(exe_name);
     if is_same_path(&exe, &target) {
-        Output::info(&format!(
-            "Binary already installed at {}",
-            target.display()
-        ));
+        Output::info(&format!("Binary already installed at {}", target.display()));
     } else {
         fs::copy(&exe, &target).with_context(|| {
             format!(
@@ -67,10 +69,7 @@ fn install_binary(bin_dir_override: Option<&Path>) -> Result<()> {
     if !path_contains_dir(&bin_dir) {
         Output::warn("Binary directory is not on PATH.");
         if cfg!(windows) {
-            Output::dim(&format!(
-                "Add this folder to PATH: {}",
-                bin_dir.display()
-            ));
+            Output::dim(&format!("Add this folder to PATH: {}", bin_dir.display()));
         } else {
             Output::dim(&format!(
                 "Add to your shell rc: export PATH=\"{}:$PATH\"",
@@ -87,9 +86,7 @@ fn install_definitions(src_override: Option<&Path>, dest_override: Option<&Path>
         .map(PathBuf::from)
         .or_else(find_definitions_source)
         .ok_or_else(|| {
-            anyhow!(
-                "Definitions source not found. Use --definitions-src to specify a path."
-            )
+            anyhow!("Definitions source not found. Use --definitions-src to specify a path.")
         })?;
 
     let dest = dest_override
@@ -117,9 +114,7 @@ fn install_definitions(src_override: Option<&Path>, dest_override: Option<&Path>
 
 fn find_definitions_source() -> Option<PathBuf> {
     let candidates = [
-        std::env::current_dir()
-            .ok()
-            .map(|p| p.join("definitions")),
+        std::env::current_dir().ok().map(|p| p.join("definitions")),
         std::env::current_exe()
             .ok()
             .and_then(|p| p.parent().map(|p| p.join("definitions"))),
@@ -136,7 +131,10 @@ fn default_definitions_dir() -> PathBuf {
         return dir.join("smart-command").join("definitions");
     }
     if let Some(home) = dirs::home_dir() {
-        return home.join(".config").join("smart-command").join("definitions");
+        return home
+            .join(".config")
+            .join("smart-command")
+            .join("definitions");
     }
     PathBuf::from("definitions")
 }
@@ -195,11 +193,7 @@ fn path_contains_dir(dir: &Path) -> bool {
     };
 
     let dir = fs::canonicalize(dir).unwrap_or_else(|_| dir.to_path_buf());
-    std::env::split_paths(&path_var).any(|p| {
-        fs::canonicalize(&p)
-            .unwrap_or(p)
-            .eq(&dir)
-    })
+    std::env::split_paths(&path_var).any(|p| fs::canonicalize(&p).unwrap_or(p).eq(&dir))
 }
 
 fn is_same_path(a: &Path, b: &Path) -> bool {

@@ -5,7 +5,7 @@
 use super::{CompletionProvider, ProviderContext, ProviderSuggestion};
 use std::collections::HashMap;
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use std::sync::Mutex;
 use std::time::{Duration, Instant};
 
@@ -217,10 +217,17 @@ impl CompletionProvider for NpmPackageProvider {
         // pnpm remove <package>
 
         match cmd {
-            "npm" => {
-                ["install", "i", "uninstall", "un", "remove", "info", "view", "update"]
-                    .contains(&subcommand)
-            }
+            "npm" => [
+                "install",
+                "i",
+                "uninstall",
+                "un",
+                "remove",
+                "info",
+                "view",
+                "update",
+            ]
+            .contains(&subcommand),
             "yarn" => ["add", "remove", "info", "upgrade"].contains(&subcommand),
             "pnpm" => ["add", "remove", "info", "update"].contains(&subcommand),
             _ => false,
@@ -267,8 +274,7 @@ impl CompletionProvider for NpmPackageProvider {
 
             // Popular packages
             for pkg in self.get_popular_packages() {
-                if pkg.to_lowercase().starts_with(&partial_lower)
-                    && !local.iter().any(|l| l == pkg)
+                if pkg.to_lowercase().starts_with(&partial_lower) && !local.iter().any(|l| l == pkg)
                 {
                     suggestions.push(
                         ProviderSuggestion::new(pkg)
@@ -295,6 +301,7 @@ impl CompletionProvider for NpmPackageProvider {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::path::PathBuf;
 
     #[test]
     fn test_npm_package_provider_matches() {
