@@ -447,6 +447,14 @@ This will automatically:
 - [reqwest](https://crates.io/crates/reqwest) - HTTP client for upgrades
 - [semver](https://crates.io/crates/semver) - Version parsing
 
+## Definition Lint
+
+Use the built-in script to check risky unquoted `:` in `definitions/*.yaml` text fields:
+
+```bash
+./scripts/lint_definitions_yaml.sh
+```
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.

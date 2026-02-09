@@ -1,0 +1,20 @@
+name: YAML Lint
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  definitions-yaml-lint:
+    name: definitions yaml lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run definitions YAML lint
+        run: ./scripts/lint_definitions_yaml.sh
+

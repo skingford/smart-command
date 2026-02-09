@@ -123,8 +123,8 @@ subcommands:
       - long: tag
         short: t
         description:
-          en: Name and optionally a tag (name:tag)
-          zh: 名称和可选标签（name:tag）
+          en: "Name and optionally a tag (name:tag)"
+          zh: "名称和可选标签（name:tag）"
         takes_value: true
       - long: file
         short: f

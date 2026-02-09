@@ -79,13 +79,13 @@ flags:
       zh: 禁用认证代理转发
   - short: L
     description:
-      en: Local port forwarding (port:host:hostport)
-      zh: 本地端口转发（端口:主机:主机端口）
+      en: "Local port forwarding (port:host:hostport)"
+      zh: "本地端口转发（端口:主机:主机端口）"
     takes_value: true
   - short: R
     description:
-      en: Remote port forwarding (port:host:hostport)
-      zh: 远程端口转发（端口:主机:主机端口）
+      en: "Remote port forwarding (port:host:hostport)"
+      zh: "远程端口转发（端口:主机:主机端口）"
     takes_value: true
   - short: D
     description:
@@ -94,8 +94,8 @@ flags:
     takes_value: true
   - short: W
     description:
-      en: Forward stdin and stdout to host:port
-      zh: 将标准输入输出转发到主机:端口
+      en: "Forward stdin and stdout to host:port"
+      zh: "将标准输入输出转发到主机:端口"
     takes_value: true
   - short: J
     description:

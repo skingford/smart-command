@@ -447,6 +447,14 @@ git push origin v0.1.1
 - [reqwest](https://crates.io/crates/reqwest) - HTTP 客户端（用于升级）
 - [semver](https://crates.io/crates/semver) - 版本解析
 
+## 定义文件 Lint
+
+使用内置脚本检查 `definitions/*.yaml` 中文本字段里未加引号的冒号风险：
+
+```bash
+./scripts/lint_definitions_yaml.sh
+```
+
 ## 贡献
 
 欢迎贡献！请随时提交 Pull Request。
