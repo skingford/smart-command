@@ -154,7 +154,7 @@ cp -r definitions ~/.config/smart-command/
 安装后可生成补全脚本（按你的 shell 选择）：
 
 ```bash
-smart-command completions <shell>
+sc completions <shell>
 ```
 
 ---
@@ -395,7 +395,7 @@ cargo deb
 ## 项目结构
 
 ```
-smart-command/
+sc/
 ├── src/
 │   ├── main.rs          # REPL 循环、提示符、命令执行
 │   ├── completer.rs     # 智能补全与模糊匹配

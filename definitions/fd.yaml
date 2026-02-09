@@ -26,7 +26,7 @@ flags:
   - long: glob
     short: g
     description:
-      en: Glob-based search (default: regex)
+      en: "Glob-based search (default: regex)"
       zh: 基于 glob 的搜索（默认：正则表达式）
   - long: fixed-strings
     short: F

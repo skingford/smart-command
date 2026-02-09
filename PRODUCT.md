@@ -149,7 +149,7 @@ Smart Command 是一个智能命令行 Shell，使用 Rust 构建，核心特性
 ### 项目目录结构
 
 ```
-smart-command/
+sc/
 ├── src/                      # Rust 源代码
 │   ├── main.rs              # REPL 主循环、命令执行
 │   ├── completer.rs         # 智能补全引擎
@@ -586,43 +586,43 @@ cargo run -- install
 
 ```bash
 # 启动交互式 Shell
-smart-command
+sc
 
 # 执行单条命令
-smart-command -c "ls -la"
+sc -c "ls -la"
 
 # 搜索命令
-smart-command search git
+sc search git
 
 # 列出所有命令
-smart-command list
+sc list
 
 # 生成 Shell 补全脚本
-smart-command completions bash > ~/.bash_completion.d/smart-command
+sc completions bash > ~/.bash_completion.d/sc
 
 # 查看配置
-smart-command config show
+sc config show
 
 # 生成示例配置
-smart-command config generate
+sc config generate
 
 # 安装到系统
-smart-command install
+sc install
 ```
 
 ### 安装选项
 
 ```bash
 # 自定义安装路径
-smart-command install \
+sc install \
   --bin-dir ~/.local/bin \
   --definitions-dir ~/.config/smart-command/definitions
 
 # 仅安装定义文件
-smart-command install --skip-bin
+sc install --skip-bin
 
 # 仅安装二进制
-smart-command install --skip-definitions
+sc install --skip-definitions
 ```
 
 ---
@@ -732,7 +732,7 @@ cargo test
 设置日志级别查看详细信息:
 
 ```bash
-SMART_CMD_LOG_LEVEL=debug smart-command
+SMART_CMD_LOG_LEVEL=debug sc
 ```
 
 ### 问题排查
@@ -745,7 +745,7 @@ SMART_CMD_LOG_LEVEL=debug smart-command
 
 #### 配置不生效
 
-1. 检查配置文件路径: `smart-command config path`
+1. 检查配置文件路径: `sc config path`
 2. 验证 TOML 语法
 3. 检查环境变量是否覆盖
 
@@ -782,14 +782,14 @@ echo 'lang = "zh"' >> ~/.config/smart-command/config.toml
 export SMART_CMD_LANG=zh
 
 # 方法 3: 命令行参数
-smart-command --lang zh
+sc --lang zh
 ```
 
 ### Q: 如何禁用危险命令保护?
 
 ```bash
 # 命令行参数
-smart-command --no-danger-protection
+sc --no-danger-protection
 
 # 或配置文件
 echo 'danger_protection = false' >> ~/.config/smart-command/config.toml

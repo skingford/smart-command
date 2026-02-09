@@ -12,7 +12,7 @@ use std::path::PathBuf;
 
 /// Smart Command - An intelligent shell with context-aware completion
 #[derive(Parser, Debug)]
-#[command(name = "smart-command")]
+#[command(name = "sc")]
 #[command(author, version, about, long_about = None)]
 #[command(propagate_version = true)]
 pub struct Cli {
@@ -158,27 +158,25 @@ pub fn print_completion_instructions(shell: Shell) {
     match shell {
         Shell::Bash => {
             println!("# Add to ~/.bashrc:");
-            println!("eval \"$(smart-command completions bash)\"");
+            println!("eval \"$(sc completions bash)\"");
             println!();
             println!("# Or save to file:");
-            println!("smart-command completions bash > ~/.local/share/bash-completion/completions/smart-command");
+            println!("sc completions bash > ~/.local/share/bash-completion/completions/sc");
         }
         Shell::Zsh => {
             println!("# Add to ~/.zshrc:");
-            println!("eval \"$(smart-command completions zsh)\"");
+            println!("eval \"$(sc completions zsh)\"");
             println!();
             println!("# Or save to fpath directory:");
-            println!("smart-command completions zsh > ~/.zsh/completions/_smart-command");
+            println!("sc completions zsh > ~/.zsh/completions/_sc");
         }
         Shell::Fish => {
             println!("# Save to fish completions directory:");
-            println!(
-                "smart-command completions fish > ~/.config/fish/completions/smart-command.fish"
-            );
+            println!("sc completions fish > ~/.config/fish/completions/sc.fish");
         }
         Shell::PowerShell => {
             println!("# Add to PowerShell profile:");
-            println!("Invoke-Expression (smart-command completions powershell | Out-String)");
+            println!("Invoke-Expression (sc completions powershell | Out-String)");
         }
         _ => {
             println!("# Pipe completions output to appropriate location for your shell");
@@ -193,12 +191,12 @@ mod tests {
     #[test]
     fn test_cli_parsing() {
         // Test default parsing
-        let cli = Cli::parse_from(["smart-command"]);
+        let cli = Cli::parse_from(["sc"]);
         assert!(cli.lang.is_none());
         assert!(!cli.verbose);
 
         // Test with flags
-        let cli = Cli::parse_from(["smart-command", "-l", "zh", "-v"]);
+        let cli = Cli::parse_from(["sc", "-l", "zh", "-v"]);
         assert_eq!(cli.lang, Some("zh".to_string()));
         assert!(cli.verbose);
     }

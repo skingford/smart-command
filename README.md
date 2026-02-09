@@ -154,7 +154,7 @@ cp -r definitions ~/.config/smart-command/
 Generate shell completions (pick your shell):
 
 ```bash
-smart-command completions <shell>
+sc completions <shell>
 ```
 
 ---
@@ -395,7 +395,7 @@ cargo deb
 ## Project Structure
 
 ```
-smart-command/
+sc/
 ├── src/
 │   ├── main.rs          # REPL loop, prompt, command execution
 │   ├── completer.rs     # Smart completion with fuzzy matching

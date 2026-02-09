@@ -31,9 +31,7 @@ pub fn run_install(opts: InstallOptions) -> Result<()> {
     if !did_work {
         Output::warn("Nothing to install (both steps were skipped).");
     } else {
-        Output::info(
-            "Completions: run `smart-command completions <shell>` to enable tab completion.",
-        );
+        Output::info("Completions: run `sc completions <shell>` to enable tab completion.");
     }
 
     Ok(())

@@ -1,4 +1,5 @@
 use crate::command_def::CommandSpec;
+use std::collections::HashSet;
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -97,8 +98,8 @@ pub fn load_command_from_file(path: &Path) -> Result<CommandSpec, String> {
     serde_yaml::from_str(&content).map_err(|e| format!("Failed to parse YAML: {}", e))
 }
 
-/// Find the definitions directory from multiple candidate paths
-fn find_definitions_dir() -> Option<PathBuf> {
+/// Get definition directories from multiple candidate paths in priority order
+fn definition_dirs_in_priority_order() -> Vec<PathBuf> {
     let candidates = [
         // 1. Current working directory
         std::env::current_dir().ok().map(|p| p.join("definitions")),
@@ -116,10 +117,16 @@ fn find_definitions_dir() -> Option<PathBuf> {
         Some(PathBuf::from("/usr/local/share/smart-command/definitions")),
     ];
 
-    candidates
-        .into_iter()
-        .flatten()
-        .find(|p| p.exists() && p.is_dir())
+    let mut unique_paths = HashSet::new();
+    let mut result = Vec::new();
+
+    for candidate in candidates.into_iter().flatten() {
+        if candidate.exists() && candidate.is_dir() && unique_paths.insert(candidate.clone()) {
+            result.push(candidate);
+        }
+    }
+
+    result
 }
 
 /// Load commands from a specific directory
@@ -148,29 +155,63 @@ fn load_from_dir<P: AsRef<Path>>(dir: P, commands: &mut Vec<CommandSpec>) -> usi
     loaded
 }
 
-/// Load commands from the first available definitions directory
+/// Load commands from all available definitions directories in priority order.
+///
+/// If the same command exists in multiple directories, the higher-priority
+/// directory (earlier in search order) wins.
 pub fn load_commands<P: AsRef<Path>>(fallback_dir: P) -> Vec<CommandSpec> {
     let mut commands = Vec::new();
+    let mut loaded_names = HashSet::new();
+    let mut loaded_dirs = Vec::new();
 
-    // Try to find definitions directory
-    let definitions_dir =
-        find_definitions_dir().unwrap_or_else(|| fallback_dir.as_ref().to_path_buf());
+    // Load from all available directories in priority order
+    for dir in definition_dirs_in_priority_order() {
+        let mut dir_commands = Vec::new();
+        let count = load_from_dir(&dir, &mut dir_commands);
 
-    if definitions_dir.exists() {
-        let count = load_from_dir(&definitions_dir, &mut commands);
+        let mut accepted = 0;
+        for cmd in dir_commands {
+            if loaded_names.insert(cmd.name.clone()) {
+                commands.push(cmd);
+                accepted += 1;
+            }
+        }
+
         if count > 0 {
-            println!(
-                "Loaded {} commands from: {}",
-                count,
-                definitions_dir.display()
-            );
+            loaded_dirs.push((dir, accepted));
+        }
+    }
+
+    // Fallback only when no command loaded from standard search paths
+    if commands.is_empty() {
+        let fallback = fallback_dir.as_ref();
+        if fallback.exists() && fallback.is_dir() {
+            let count = load_from_dir(fallback, &mut commands);
+            if count > 0 {
+                println!("Loaded {} commands from: {}", count, fallback.display());
+            }
+        } else {
+            eprintln!("Warning: definitions directory not found.");
+            eprintln!("Searched paths:");
+            eprintln!("  • ./definitions/");
+            eprintln!("  • ~/.config/smart-command/definitions/");
+            eprintln!("  • /usr/share/smart-command/definitions/");
         }
     } else {
-        eprintln!("Warning: definitions directory not found.");
-        eprintln!("Searched paths:");
-        eprintln!("  • ./definitions/");
-        eprintln!("  • ~/.config/smart-command/definitions/");
-        eprintln!("  • /usr/share/smart-command/definitions/");
+        let total = commands.len();
+        if loaded_dirs.len() == 1 {
+            let (dir, _) = &loaded_dirs[0];
+            println!("Loaded {} commands from: {}", total, dir.display());
+        } else {
+            println!(
+                "Loaded {} commands from {} definition directories:",
+                total,
+                loaded_dirs.len()
+            );
+            for (dir, accepted) in loaded_dirs {
+                println!("  • {} ({})", dir.display(), accepted);
+            }
+        }
     }
 
     commands
