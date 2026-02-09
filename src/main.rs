@@ -142,7 +142,7 @@ impl Prompt for SmartPrompt {
     }
 
     fn render_prompt_indicator(&self, _edit_mode: PromptEditMode) -> Cow<'_, str> {
-        Cow::Owned(format!("\n{} ", self.config.prompt.indicator))
+        Cow::Owned(format!("{} ", self.config.prompt.indicator))
     }
 
     fn render_prompt_multiline_indicator(&self) -> Cow<'_, str> {
@@ -192,7 +192,7 @@ impl Prompt for AiPrompt {
     }
 
     fn render_prompt_indicator(&self, _edit_mode: PromptEditMode) -> Cow<'_, str> {
-        Cow::Owned(format!("\n{} ", nu_ansi_term::Color::Magenta.paint(">>")))
+        Cow::Owned(format!("{} ", nu_ansi_term::Color::Magenta.paint(">>")))
     }
 
     fn render_prompt_multiline_indicator(&self) -> Cow<'_, str> {
