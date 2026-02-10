@@ -113,7 +113,7 @@ cargo install --git https://github.com/skingford/smart-command.git
 # 或克隆后本地安装
 git clone https://github.com/skingford/smart-command.git
 cd smart-command
-cargo install --path .
+cargo install --path . --force
 
 # 确保 Cargo bin 在 PATH 中（重启 shell 生效）
 echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> ~/.zshrc
