@@ -5,7 +5,7 @@
 
 #![allow(dead_code)]
 
-use crate::config::{AiConfig, EffectiveAiSettings, ProviderType};
+use sc_core::config::{AiConfig, EffectiveAiSettings, ProviderType};
 use std::collections::HashMap;
 use std::env;
 use std::time::Duration;

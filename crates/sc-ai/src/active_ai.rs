@@ -6,8 +6,8 @@
 #![allow(dead_code)]
 
 use crate::ai_stream::StreamingAiGenerator;
-use crate::config::{ActiveAiConfig, AiConfig};
-use crate::output::Output;
+use sc_core::config::{ActiveAiConfig, AiConfig};
+use sc_core::output::Output;
 use std::process::Output as ProcessOutput;
 
 /// Result of command execution with captured output

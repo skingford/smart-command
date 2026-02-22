@@ -5,8 +5,8 @@
 
 #![allow(dead_code)]
 
-use crate::ai::CommandPredictor;
-use crate::context::tracker;
+use sc_ai::ai::CommandPredictor;
+use sc_core::context::tracker;
 use nu_ansi_term::{Color, Style};
 use reedline::{Hinter, History, SearchQuery};
 use std::path::PathBuf;

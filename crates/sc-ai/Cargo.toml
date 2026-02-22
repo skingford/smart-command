@@ -1,0 +1,20 @@
+[package]
+name = "sc-ai"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+sc-core = { workspace = true }
+strsim = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+serde_yaml = { workspace = true }
+nu-ansi-term = { workspace = true }
+reqwest = { workspace = true, optional = true }
+futures-util = { workspace = true, optional = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+
+[features]
+default = []
+ai = ["reqwest", "futures-util"]

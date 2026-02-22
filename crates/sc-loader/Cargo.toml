@@ -1,0 +1,10 @@
+[package]
+name = "sc-loader"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+sc-core = { workspace = true }
+serde_yaml = { workspace = true }
+dirs = { workspace = true }
+tracing = { workspace = true }

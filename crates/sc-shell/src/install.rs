@@ -1,4 +1,4 @@
-use crate::output::Output;
+use sc_core::output::Output;
 use anyhow::{anyhow, Context, Result};
 use std::fs;
 use std::path::{Path, PathBuf};

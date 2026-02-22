@@ -1,0 +1,12 @@
+[package]
+name = "sc-completion"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+sc-core = { workspace = true }
+sc-loader = { workspace = true }
+sc-providers = { workspace = true }
+reedline = { workspace = true }
+nu-ansi-term = { workspace = true }
+fuzzy-matcher = { workspace = true }

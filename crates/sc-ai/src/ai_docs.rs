@@ -5,8 +5,8 @@
 
 use crate::ai::llm::{AiContext, AiError};
 use crate::ai_stream::StreamingAiGenerator;
-use crate::command_def::{CommandSpec, Example, FlagSpec, I18nString};
-use crate::config::AiConfig;
+use sc_core::command_def::{CommandSpec, Example, FlagSpec, I18nString};
+use sc_core::config::AiConfig;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fs;
@@ -499,7 +499,7 @@ impl AiCommandDoc {
                 }),
                 takes_value: f.takes_value,
                 value_type: None,
-                category: crate::command_def::FlagCategory::Common,
+                category: sc_core::command_def::FlagCategory::Common,
             })
             .collect();
 
@@ -555,7 +555,7 @@ fn convert_subcommand(sub: &AiSubcommandDoc) -> CommandSpec {
             }),
             takes_value: f.takes_value,
             value_type: None,
-            category: crate::command_def::FlagCategory::Common,
+            category: sc_core::command_def::FlagCategory::Common,
         })
         .collect();
 

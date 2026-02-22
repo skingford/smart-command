@@ -6,9 +6,9 @@
 //! - Download and install new versions
 //! - Cross-platform support (macOS, Linux, Windows)
 
-use crate::config::UpgradeConfig;
-use crate::error::UpgradeError;
-use crate::output::Output;
+use sc_core::config::UpgradeConfig;
+use sc_core::error::UpgradeError;
+use sc_core::output::Output;
 
 use semver::Version;
 use serde::{Deserialize, Serialize};

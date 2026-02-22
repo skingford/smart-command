@@ -1,7 +1,7 @@
-use crate::command_def::CommandSpec;
-use crate::context::tracker;
-use crate::definitions;
-use crate::providers::{self, ProviderContext, ProviderSuggestion};
+use sc_core::command_def::CommandSpec;
+use sc_core::context::tracker;
+use sc_loader::definitions;
+use sc_providers::{ProviderContext, ProviderSuggestion, registry};
 use fuzzy_matcher::skim::SkimMatcherV2;
 use fuzzy_matcher::FuzzyMatcher;
 use reedline::{Completer, Span, Suggestion};
@@ -347,7 +347,7 @@ impl SmartCompleter {
             partial,
         );
 
-        let registry = providers::registry();
+        let registry = registry();
         let suggestions = registry.complete(&context);
 
         suggestions
@@ -775,7 +775,7 @@ impl Completer for SmartCompleter {
             query,
         );
 
-        let registry = providers::registry();
+        let registry = registry();
         let path_suggestions = registry.complete(&context);
 
         if !path_suggestions.is_empty() {

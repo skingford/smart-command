@@ -1,0 +1,11 @@
+pub mod aliases;
+pub mod bookmarks;
+pub mod install;
+pub mod pipeline;
+pub mod plugins;
+pub mod session;
+pub mod snippets;
+pub mod timer;
+pub mod ui;
+pub mod upgrade;
+pub mod watcher;

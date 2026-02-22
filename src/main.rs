@@ -12,54 +12,27 @@ use std::sync::{Arc, RwLock};
 use tracing::{debug, info, warn};
 use tracing_subscriber::EnvFilter;
 
-mod active_ai;
-mod ai;
-mod ai_docs;
-mod ai_stream;
-mod aliases;
-mod argument;
-mod bookmarks;
 mod cli;
-mod command_def;
-mod completer;
-mod config;
-mod context;
-mod definitions;
-mod error;
-mod highlighter;
 mod hinter;
-mod install;
-mod loader;
-mod output;
-mod pipeline;
-mod plugins;
-mod providers;
-mod session;
-mod snippets;
-mod timer;
-mod ui;
-mod upgrade;
-mod validator;
-mod watcher;
 
-use active_ai::{ActiveAi, CommandResult, ErrorPatterns};
-use ai::{NaturalLanguageTemplates, TypoCorrector};
-use ai_stream::{AiModeCommand, AiSession, StreamingAiGenerator};
-use aliases::AliasManager;
-use bookmarks::BookmarkManager;
+use sc_ai::active_ai::{ActiveAi, CommandResult, ErrorPatterns};
+use sc_ai::ai::{NaturalLanguageTemplates, TypoCorrector};
+use sc_ai::ai_stream::{AiModeCommand, AiSession, StreamingAiGenerator};
+use sc_shell::aliases::AliasManager;
+use sc_shell::bookmarks::BookmarkManager;
 use cli::{Cli, Commands, ConfigAction};
-use completer::SmartCompleter;
-use config::{AiConfig, AppConfig, ProviderType};
-use highlighter::{SmartHighlighter, SyntaxTheme};
+use sc_completion::completer::SmartCompleter;
+use sc_core::config::{AiConfig, AppConfig, ProviderType};
+use sc_completion::highlighter::{SmartHighlighter, SyntaxTheme};
 use hinter::SmartHinter;
-use install::InstallOptions;
+use sc_shell::install::InstallOptions;
 use nu_ansi_term::{Color, Style};
-use output::Output;
-use plugins::PluginManager;
-use session::{NextCommandPredictor, SessionContext};
-use snippets::SnippetManager;
-use timer::CommandTimer;
-use validator::SmartValidator;
+use sc_core::output::Output;
+use sc_shell::plugins::PluginManager;
+use sc_shell::session::{NextCommandPredictor, SessionContext};
+use sc_shell::snippets::SnippetManager;
+use sc_shell::timer::CommandTimer;
+use sc_completion::validator::SmartValidator;
 
 // Track previous directory for `cd -`
 static OLDPWD: Mutex<Option<PathBuf>> = Mutex::new(None);
@@ -131,7 +104,7 @@ impl Prompt for SmartPrompt {
             }
         }
 
-        Cow::Owned(output::Output::prompt(
+        Cow::Owned(Output::prompt(
             &parts.join(" "),
             Self::get_git_branch().as_deref(),
         ))
@@ -268,7 +241,7 @@ fn main() -> anyhow::Result<()> {
             .definitions_dir
             .clone()
             .unwrap_or_else(|| PathBuf::from("definitions"));
-        let commands = loader::load_commands(&definitions_dir);
+        let commands = sc_loader::loader::load_commands(&definitions_dir);
         let current_lang = Arc::new(RwLock::new(config.lang.clone()));
         let completer = SmartCompleter::new(commands, current_lang.clone());
         let command_names = completer.get_command_names();
@@ -298,7 +271,7 @@ fn handle_subcommand(cmd: Commands, config: &AppConfig) -> anyhow::Result<()> {
                 println!("{:#?}", config);
             }
             ConfigAction::Generate => {
-                println!("{}", config::generate_example_config());
+                println!("{}", sc_core::config::generate_example_config());
             }
             ConfigAction::Path => {
                 Output::info(&format!(
@@ -312,7 +285,7 @@ fn handle_subcommand(cmd: Commands, config: &AppConfig) -> anyhow::Result<()> {
                 .definitions_dir
                 .clone()
                 .unwrap_or_else(|| PathBuf::from("definitions"));
-            let commands = loader::load_commands(&definitions_dir);
+            let commands = sc_loader::loader::load_commands(&definitions_dir);
             let current_lang = Arc::new(RwLock::new(config.lang.clone()));
             let completer = SmartCompleter::new(commands, current_lang);
 
@@ -331,7 +304,7 @@ fn handle_subcommand(cmd: Commands, config: &AppConfig) -> anyhow::Result<()> {
                 .definitions_dir
                 .clone()
                 .unwrap_or_else(|| PathBuf::from("definitions"));
-            let commands = loader::load_commands(&definitions_dir);
+            let commands = sc_loader::loader::load_commands(&definitions_dir);
             let current_lang = Arc::new(RwLock::new(config.lang.clone()));
             let completer = SmartCompleter::new(commands, current_lang);
 
@@ -354,7 +327,7 @@ fn handle_subcommand(cmd: Commands, config: &AppConfig) -> anyhow::Result<()> {
                 skip_bin,
                 skip_definitions,
             };
-            install::run_install(opts)?;
+            sc_shell::install::run_install(opts)?;
         }
         Commands::Upgrade {
             check,
@@ -369,7 +342,7 @@ fn handle_subcommand(cmd: Commands, config: &AppConfig) -> anyhow::Result<()> {
                 .definitions_dir
                 .clone()
                 .unwrap_or_else(|| PathBuf::from("definitions"));
-            let commands = loader::load_commands(&definitions_dir);
+            let commands = sc_loader::loader::load_commands(&definitions_dir);
             let current_lang = Arc::new(RwLock::new(config.lang.clone()));
             let completer = SmartCompleter::new(commands, current_lang.clone());
             let lang = current_lang.read().unwrap().clone();
@@ -402,7 +375,7 @@ fn handle_upgrade(
     skip_confirm: bool,
     _target_version: Option<&str>,
 ) -> anyhow::Result<()> {
-    use upgrade::Upgrader;
+    use sc_shell::upgrade::Upgrader;
 
     let rt = tokio::runtime::Runtime::new()?;
 
@@ -481,7 +454,7 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
         .definitions_dir
         .clone()
         .unwrap_or_else(|| PathBuf::from("definitions"));
-    let commands = loader::load_commands(&definitions_dir);
+    let commands = sc_loader::loader::load_commands(&definitions_dir);
     let current_lang = Arc::new(RwLock::new(config.lang.clone()));
     let completer = SmartCompleter::new(commands, current_lang.clone());
     let completer_for_editor = Box::new(completer.clone());
@@ -584,7 +557,7 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
     let next_cmd_predictor = NextCommandPredictor::new();
 
     // Display startup banner
-    output::Output::banner();
+    Output::banner();
 
     // Welcome message
     Output::dim("  Tab         - completion menu    /<keyword>  - search commands");
@@ -612,7 +585,7 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
         // Give the check a moment to complete
         std::thread::sleep(std::time::Duration::from_millis(100));
         if let Ok(Some(new_version)) = rx.try_recv() {
-            Output::upgrade_available(upgrade::Upgrader::current_version(), &new_version);
+            Output::upgrade_available(sc_shell::upgrade::Upgrader::current_version(), &new_version);
         }
     }
 
@@ -692,7 +665,7 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                                 break;
                                             }
                                         }
-                                        output::display_categorized_help(
+                                        sc_core::output::display_categorized_help(
                                             &current_path,
                                             &current_spec.subcommands,
                                             &current_spec.flags,
@@ -722,11 +695,11 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                             Output::dim(&format!("  {} streaming...", effective.provider_type));
 
                             let generator = StreamingAiGenerator::new(&config.ai);
-                            let context = ai::llm::AiContext::default();
+                            let context = sc_ai::ai::llm::AiContext::default();
 
                             match generator.generate_streaming(query, &context, None) {
                                 Ok(raw_response) => {
-                                    let response = ai::llm::AiResponse::parse(&raw_response);
+                                    let response = sc_ai::ai::llm::AiResponse::parse(&raw_response);
 
                                     if response.commands.is_empty() {
                                         // AI returned prose/explanation, not a command
@@ -738,7 +711,7 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                         Output::success("Generated commands:");
                                         println!();
                                         for (i, entry) in response.commands.iter().enumerate() {
-                                            let danger = output::get_danger_warning(&entry.command);
+                                            let danger = sc_core::output::get_danger_warning(&entry.command);
                                             let cmd_display = Output::command(&entry.command);
 
                                             if let Some(desc) = &entry.description {
@@ -840,7 +813,7 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                             let entry = &response.commands[0];
                                             let cmd = &entry.command;
                                             println!();
-                                            if let Some(warning) = output::get_danger_warning(cmd) {
+                                            if let Some(warning) = sc_core::output::get_danger_warning(cmd) {
                                                 Output::warn(&format!(" {}", warning));
                                             }
 
@@ -963,7 +936,7 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                             } else {
                                 // Try as snippet command
                                 let parts: Vec<&str> = rest.split_whitespace().collect();
-                                if let Some(output) = snippets::handle_snippet_command(
+                                if let Some(output) = sc_shell::snippets::handle_snippet_command(
                                     &mut snippet_manager,
                                     "snippet",
                                     &parts,
@@ -1000,7 +973,7 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                         // Alias command
                         if cmd == "alias" || cmd == "unalias" {
                             if let Some(output) =
-                                aliases::handle_alias_command(&mut alias_manager, cmd, &parts[1..])
+                                sc_shell::aliases::handle_alias_command(&mut alias_manager, cmd, &parts[1..])
                             {
                                 println!("{}", output);
                             }
@@ -1011,7 +984,7 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                         if cmd == "bookmark" || cmd == "bm" || cmd == "unbookmark" || cmd == "unbm"
                         {
                             let cwd = std::env::current_dir().unwrap_or_default();
-                            if let Some(output) = bookmarks::handle_bookmark_command(
+                            if let Some(output) = sc_shell::bookmarks::handle_bookmark_command(
                                 &mut bookmark_manager,
                                 cmd,
                                 &parts[1..],
@@ -1024,7 +997,7 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
 
                         // Snippet command
                         if cmd == "snippet" || cmd == "snip" {
-                            if let Some(output) = snippets::handle_snippet_command(
+                            if let Some(output) = sc_shell::snippets::handle_snippet_command(
                                 &mut snippet_manager,
                                 cmd,
                                 &parts[1..],
@@ -1037,7 +1010,7 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                         // Timer command
                         if cmd == "time" || cmd == "timer" {
                             if let Some(output) =
-                                timer::handle_timer_command(&command_timer, cmd, &parts[1..])
+                                sc_shell::timer::handle_timer_command(&command_timer, cmd, &parts[1..])
                             {
                                 println!("{}", output);
                             }
@@ -1046,7 +1019,7 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
 
                         // Plugin command
                         if cmd == "plugin" || cmd == "plugins" {
-                            if let Some(output) = plugins::handle_plugin_command(
+                            if let Some(output) = sc_shell::plugins::handle_plugin_command(
                                 &mut plugin_manager,
                                 cmd,
                                 &parts[1..],
@@ -1084,7 +1057,7 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                 let effective = config.ai.get_effective_settings();
                                 ai_session.enter();
                                 shell_state = ShellState::AiMode;
-                                ai_stream::show_ai_mode_welcome(
+                                sc_ai::ai_stream::show_ai_mode_welcome(
                                     &format!("{}", effective.provider_type),
                                     effective.model.as_deref(),
                                 );
@@ -1198,7 +1171,7 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                             let lang = current_lang.read().unwrap().clone();
 
                             // Check if command already exists
-                            if let Some(existing_path) = loader::command_exists(command_name) {
+                            if let Some(existing_path) = sc_loader::loader::command_exists(command_name) {
                                 Output::info(&format!(
                                     "Command '{}' already has a definition at:",
                                     command_name
@@ -1220,14 +1193,14 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                             Output::info(&format!("Learning about '{}'...", command_name));
                             println!();
 
-                            let docs_generator = ai_docs::AiDocsGenerator::new(&config.ai);
+                            let docs_generator = sc_ai::ai_docs::AiDocsGenerator::new(&config.ai);
 
                             match docs_generator.learn_command(command_name) {
                                 Ok(doc) => {
                                     let spec = doc.to_command_spec();
 
                                     // Show preview
-                                    let preview = ai_docs::format_command_preview(&spec, &lang);
+                                    let preview = sc_ai::ai_docs::format_command_preview(&spec, &lang);
                                     println!("{}", preview);
 
                                     // Ask to save
@@ -1241,7 +1214,7 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                             || response == "y"
                                             || response == "yes"
                                         {
-                                            match loader::save_command(&spec) {
+                                            match sc_loader::loader::save_command(&spec) {
                                                 Ok(path) => {
                                                     Output::success(&format!(
                                                         "Saved to: {}",
@@ -1437,12 +1410,12 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
 
                     ShellState::AiMode => {
                         // Handle AI mode commands
-                        if let Some(cmd) = ai_stream::parse_ai_mode_command(trimmed) {
+                        if let Some(cmd) = sc_ai::ai_stream::parse_ai_mode_command(trimmed) {
                             match cmd {
                                 AiModeCommand::Exit => {
                                     ai_session.exit();
                                     shell_state = ShellState::Normal;
-                                    ai_stream::show_ai_mode_exit();
+                                    sc_ai::ai_stream::show_ai_mode_exit();
                                     continue;
                                 }
                                 AiModeCommand::Clear => {
@@ -1451,7 +1424,7 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                     continue;
                                 }
                                 AiModeCommand::Help => {
-                                    ai_stream::show_ai_mode_help();
+                                    sc_ai::ai_stream::show_ai_mode_help();
                                     continue;
                                 }
                                 AiModeCommand::Enter => {
@@ -1470,16 +1443,16 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                         if trimmed == "exit" {
                             ai_session.exit();
                             shell_state = ShellState::Normal;
-                            ai_stream::show_ai_mode_exit();
+                            sc_ai::ai_stream::show_ai_mode_exit();
                             continue;
                         }
 
                         // Check if this is a "learn command" request - use conversational mode with clean output
-                        if let Some(_intent) = ai_docs::detect_learn_intent(trimmed) {
+                        if let Some(_intent) = sc_ai::ai_docs::detect_learn_intent(trimmed) {
                             let effective = config.ai.get_effective_settings();
                             Output::dim(&format!("  {} thinking...", effective.provider_type));
 
-                            let docs_generator = ai_docs::AiDocsGenerator::new(&config.ai);
+                            let docs_generator = sc_ai::ai_docs::AiDocsGenerator::new(&config.ai);
 
                             // Add user message to session
                             ai_session.add_user_message(trimmed);
@@ -1502,7 +1475,7 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                         Output::dim(&format!("  {} thinking...", effective.provider_type));
 
                         let generator = StreamingAiGenerator::new(&config.ai);
-                        let context = ai::llm::AiContext::default();
+                        let context = sc_ai::ai::llm::AiContext::default();
 
                         // Add user message to session
                         ai_session.add_user_message(trimmed);
@@ -1513,7 +1486,7 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                 ai_session.add_assistant_message(&response);
 
                                 // Parse response for commands
-                                let parsed = ai::llm::AiResponse::parse(&response);
+                                let parsed = sc_ai::ai::llm::AiResponse::parse(&response);
 
                                 if parsed.commands.is_empty() {
                                     // AI returned prose/explanation, not a command
@@ -1523,7 +1496,7 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                                     let entry = &parsed.commands[0];
                                     let cmd = &entry.command;
                                     println!();
-                                    if let Some(warning) = output::get_danger_warning(cmd) {
+                                    if let Some(warning) = sc_core::output::get_danger_warning(cmd) {
                                         Output::warn(&format!("  {}", warning));
                                     }
                                     print!("Execute? [Y/n/e(dit)]: ");
@@ -1637,7 +1610,7 @@ fn run_repl(mut config: AppConfig) -> anyhow::Result<()> {
                 println!("^C");
                 if ai_session.is_active() {
                     ai_session.exit();
-                    ai_stream::show_ai_mode_exit();
+                    sc_ai::ai_stream::show_ai_mode_exit();
                 }
                 shell_state = ShellState::Normal;
             }
@@ -1675,7 +1648,7 @@ fn execute_command(
 
         // Check for dangerous commands
         if state.danger_protection {
-            if let Some(warning) = output::get_danger_warning(command) {
+            if let Some(warning) = sc_core::output::get_danger_warning(command) {
                 warn!("Dangerous command detected: {}", command);
                 Output::warn(&warning);
                 print!("Are you sure you want to execute this command? [y/N] ");
@@ -1745,7 +1718,7 @@ fn execute_command_with_result(
 
         // Check for dangerous commands
         if state.danger_protection {
-            if let Some(warning) = output::get_danger_warning(command) {
+            if let Some(warning) = sc_core::output::get_danger_warning(command) {
                 warn!("Dangerous command detected: {}", command);
                 Output::warn(&warning);
                 print!("Are you sure you want to execute this command? [y/N] ");
@@ -1821,7 +1794,7 @@ fn execute_command_for_active_ai(
 
         // Check for dangerous commands
         if state.danger_protection {
-            if let Some(warning) = output::get_danger_warning(command) {
+            if let Some(warning) = sc_core::output::get_danger_warning(command) {
                 warn!("Dangerous command detected: {}", command);
                 Output::warn(&warning);
                 print!("Are you sure you want to execute this command? [y/N] ");
@@ -1949,10 +1922,10 @@ fn handle_cd(parts: &[&str]) {
 
 /// Start background version check
 fn start_background_version_check(
-    config: config::UpgradeConfig,
+    config: sc_core::config::UpgradeConfig,
 ) -> std::sync::mpsc::Receiver<Option<String>> {
     use std::sync::mpsc;
-    use upgrade::Upgrader;
+    use sc_shell::upgrade::Upgrader;
 
     let (tx, rx) = mpsc::channel();
 
@@ -2098,7 +2071,7 @@ fn handle_config(parts: &[&str], current_lang: &Arc<RwLock<String>>) {
                 if let Some(parent) = config_path.parent() {
                     let _ = std::fs::create_dir_all(parent);
                 }
-                let example = config::generate_example_config();
+                let example = sc_core::config::generate_example_config();
                 if std::fs::write(&config_path, &example).is_err() {
                     Output::error("Failed to create config file");
                     return;
@@ -2135,7 +2108,7 @@ fn handle_config(parts: &[&str], current_lang: &Arc<RwLock<String>>) {
 
         "example" => {
             // Generate example config
-            let example = config::generate_example_config();
+            let example = sc_core::config::generate_example_config();
             println!("{}", example);
         }
 
@@ -2161,7 +2134,7 @@ fn handle_config(parts: &[&str], current_lang: &Arc<RwLock<String>>) {
             }
 
             // Write example config
-            let example = config::generate_example_config();
+            let example = sc_core::config::generate_example_config();
             match std::fs::write(&config_path, &example) {
                 Ok(_) => {
                     Output::success(&format!("Created config file: {}", config_path.display()));
@@ -2460,7 +2433,7 @@ fn handle_ai_command(ai_config: &mut AiConfig, subcommand: &str, args: &[&str]) 
 
             Output::info(&format!("Testing connection to {}...", ai_config.active));
 
-            let generator = ai::llm::AiCommandGenerator::new(ai_config);
+            let generator = sc_ai::ai::llm::AiCommandGenerator::new(ai_config);
             match generator.test_connection() {
                 Ok(msg) => Output::success(&msg),
                 Err(e) => Output::error(&format!("Connection failed: {}", e)),

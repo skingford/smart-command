@@ -1,7 +1,64 @@
-[package]
-name = "smart-command"
+[workspace]
+resolver = "2"
+members = [
+    "crates/sc-core",
+    "crates/sc-loader",
+    "crates/sc-providers",
+    "crates/sc-completion",
+    "crates/sc-ai",
+    "crates/sc-shell",
+    ".",
+]
+
+[workspace.package]
 version = "0.1.0"
 edition = "2021"
+
+[workspace.dependencies]
+# Internal crates
+sc-core = { path = "crates/sc-core" }
+sc-loader = { path = "crates/sc-loader" }
+sc-providers = { path = "crates/sc-providers" }
+sc-completion = { path = "crates/sc-completion" }
+sc-ai = { path = "crates/sc-ai" }
+sc-shell = { path = "crates/sc-shell" }
+
+# External dependencies
+reedline = "0.38.0"
+nu-ansi-term = "0.50.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde_yaml = "0.9.34"
+anyhow = "1.0"
+crossterm = "0.27"
+regex = "1.10"
+dirs = "5.0"
+fuzzy-matcher = "0.3"
+clap = { version = "4.5", features = ["derive", "env"] }
+clap_complete = "4.5"
+config = "0.14"
+toml = "0.8"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+thiserror = "2.0"
+tokio = { version = "1", features = ["rt-multi-thread", "fs", "process", "time", "sync"] }
+notify = "6.0"
+rusqlite = { version = "0.31", features = ["bundled"] }
+reqwest = { version = "0.11", default-features = false, features = ["json", "rustls-tls", "blocking", "stream"] }
+futures-util = "0.3"
+lru = "0.12"
+once_cell = "1.19"
+strsim = "0.11"
+semver = "1.0"
+sha2 = "0.10"
+tempfile = "3"
+flate2 = "1"
+tar = "0.4"
+
+[package]
+name = "smart-command"
+version.workspace = true
+edition.workspace = true
 description = "An intelligent shell with context-aware command completion"
 authors = ["kingford"]
 license = "MIT"
@@ -9,84 +66,37 @@ repository = "https://github.com/skingford/smart-command"
 keywords = ["shell", "cli", "completion", "terminal"]
 categories = ["command-line-utilities"]
 
-[dependencies]
-reedline = "0.38.0"
-nu-ansi-term = "0.50.0"
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-anyhow = "1.0"
-crossterm = "0.27"
-regex = "1.10"
-dirs = "5.0"
-serde_yaml = "0.9.34"
-fuzzy-matcher = "0.3"
-
-# CLI Framework with shell completion support
-clap = { version = "4.5", features = ["derive", "env"] }
-clap_complete = "4.5"
-
-# Configuration management
-config = "0.14"
-toml = "0.8"
-
-# Logging/Tracing
-tracing = "0.1"
-tracing-subscriber = { version = "0.3", features = ["env-filter"] }
-
-# Better error handling
-thiserror = "2.0"
-
-# Async runtime for providers
-tokio = { version = "1", features = ["rt-multi-thread", "fs", "process", "time", "sync"] }
-
-# File watching for cache invalidation
-notify = "6.0"
-
-# SQLite for context storage (optional)
-rusqlite = { version = "0.31", features = ["bundled"], optional = true }
-
-# HTTP client for npm/AI APIs (optional)
-# Use rustls-tls to avoid OpenSSL dependency issues in cross-compilation
-reqwest = { version = "0.11", default-features = false, features = ["json", "rustls-tls", "blocking", "stream"], optional = true }
-
-# Async streaming utilities
-futures-util = { version = "0.3", optional = true }
-
-# LRU cache for providers
-lru = "0.12"
-
-# Once cell for lazy statics
-once_cell = "1.19"
-
-# Edit distance for typo correction
-strsim = "0.11"
-
-# Version parsing for upgrade
-semver = "1.0"
-
-
-# SHA256 checksum verification
-sha2 = "0.10"
-
-# Temp file for upgrade downloads
-tempfile = "3"
-
-# Archive extraction for upgrade
-flate2 = "1"
-tar = "0.4"
-
-[features]
-default = ["providers", "highlighting", "context", "upgrade"]
-providers = []
-highlighting = []
-context = ["rusqlite"]
-ai = ["reqwest", "futures-util"]
-upgrade = ["reqwest"]
-full = ["providers", "highlighting", "context", "ai", "upgrade"]
-
 [[bin]]
 name = "sc"
 path = "src/main.rs"
+
+[dependencies]
+sc-core = { workspace = true }
+sc-loader = { workspace = true }
+sc-providers = { workspace = true }
+sc-completion = { workspace = true }
+sc-ai = { workspace = true, features = ["ai"] }
+sc-shell = { workspace = true, features = ["upgrade"] }
+reedline = { workspace = true }
+nu-ansi-term = { workspace = true }
+crossterm = { workspace = true }
+clap = { workspace = true }
+clap_complete = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+strsim = { workspace = true }
+tokio = { workspace = true }
+fuzzy-matcher = { workspace = true }
+anyhow = { workspace = true }
+dirs = { workspace = true }
+
+[features]
+default = ["providers", "highlighting", "context"]
+providers = []
+highlighting = []
+context = []
+ai = ["sc-ai/ai"]
+full = ["providers", "highlighting", "context", "ai"]
 
 [package.metadata.deb]
 maintainer = "kingford"

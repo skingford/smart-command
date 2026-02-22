@@ -5,7 +5,7 @@
 
 #![allow(dead_code)]
 
-use crate::active_ai::CommandResult;
+use sc_ai::active_ai::CommandResult;
 use std::collections::VecDeque;
 use std::time::{Duration, Instant};
 

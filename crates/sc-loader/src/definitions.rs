@@ -1,4 +1,4 @@
-use crate::command_def::{CommandSpec, FlagCategory, FlagSpec};
+use sc_core::command_def::{CommandSpec, FlagCategory, FlagSpec};
 
 pub fn other_specs() -> Vec<CommandSpec> {
     vec![

@@ -1,4 +1,4 @@
-use crate::command_def::CommandSpec;
+use sc_core::command_def::CommandSpec;
 use std::collections::HashSet;
 use std::fs;
 use std::path::{Path, PathBuf};

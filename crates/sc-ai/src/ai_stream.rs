@@ -7,8 +7,8 @@ use std::io::{self, Write};
 use std::sync::mpsc::{self, Receiver, Sender};
 use std::time::Duration;
 
-use crate::config::{AiConfig, EffectiveAiSettings, ProviderType};
-use crate::output::Output;
+use sc_core::config::{AiConfig, EffectiveAiSettings, ProviderType};
+use sc_core::output::Output;
 
 /// Streaming chunk types
 #[derive(Debug, Clone)]
@@ -647,14 +647,14 @@ fn stream_fallback(
     let _ = tx.send(StreamChunk::Start);
 
     // Use the existing blocking implementation
-    let config = crate::config::AiConfig {
+    let config = sc_core::config::AiConfig {
         enabled: effective.enabled,
         active: "fallback".to_string(),
         providers: {
             let mut providers = std::collections::HashMap::new();
             providers.insert(
                 "fallback".to_string(),
-                crate::config::ProviderConfig {
+                sc_core::config::ProviderConfig {
                     provider_type: effective.provider_type.clone(),
                     api_key: effective.api_key.clone(),
                     endpoint: effective.endpoint.clone(),
@@ -666,7 +666,7 @@ fn stream_fallback(
             );
             providers
         },
-        global: crate::config::GlobalAiSettings {
+        global: sc_core::config::GlobalAiSettings {
             system_prompt: effective.system_prompt.clone(),
             max_tokens: effective.max_tokens,
             temperature: effective.temperature,
